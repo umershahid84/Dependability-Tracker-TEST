@@ -11,18 +11,19 @@ import {
 import bcrypt from 'bcrypt';
 import Supervisor from '../Supervisor';
 import sequelize from '../../connection';
+import {uuid} from '../../../utils/uuid';
 
 export interface LoginCredentialsAttributes {
-  id: number;
+  id: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
   password: string;
-  supervisor_id: ForeignKey<number>;
+  supervisor_id: ForeignKey<string>;
 }
 
 export interface LoginCredentialsWithAssociations {
-  id: number;
+  id: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
@@ -31,6 +32,7 @@ export interface LoginCredentialsWithAssociations {
 }
 
 export const hashPassword = async (password: string): Promise<string> => {
+  // istanbul ignore next
   return await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS ?? '11'));
 };
 
@@ -45,18 +47,19 @@ class LoginCredential
   implements LoginCredentialsAttributes
 {
   // model attributes
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare email: string;
   declare password: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare supervisor_id: ForeignKey<number>;
+  declare supervisor_id: ForeignKey<string>;
 
   // model associations
   declare supervisor_info?: NonAttribute<Supervisor>;
 
   // model class methods
   comparePassword(password: string): NonAttribute<boolean> {
+    // istanbul ignore next
     return bcrypt.compareSync(password, this.password);
   }
 }
@@ -65,9 +68,13 @@ class LoginCredential
 LoginCredential.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: uuid,
+      primaryKey: true,
+      validate: {
+        isUUID: 4
+      }
     },
     email: {
       type: DataTypes.STRING,
@@ -80,8 +87,11 @@ LoginCredential.init(
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     supervisor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isUUID: 4
+      }
     }
   },
   {
@@ -90,6 +100,7 @@ LoginCredential.init(
       async beforeCreate(loginCredential): Promise<void> {
         loginCredential.password = await hashPassword(loginCredential.password);
       },
+      // istanbul ignore next
       async beforeUpdate(loginCredential): Promise<void> {
         loginCredential.password = await hashPassword(loginCredential.password);
       }

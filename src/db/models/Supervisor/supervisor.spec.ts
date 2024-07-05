@@ -1,3 +1,6 @@
+import {Op} from 'sequelize';
+import Employee from '../Employee';
+import {uuidV4Regex} from '../../../utils/uuid';
 import Supervisor, {SupervisorCreationAttributes} from '.';
 
 describe('Supervisor model', () => {
@@ -7,8 +10,15 @@ describe('Supervisor model', () => {
   });
 
   it('Should create a supervisor', async () => {
+    const existingSupervisors = await Supervisor.findAll().then(supervisors =>
+      supervisors.map(supervisor => supervisor.employee_id)
+    );
+    const employeeId = await Employee.findOne({
+      where: {id: {[Op.notIn]: existingSupervisors}}
+    }).then(employee => employee?.id);
+
     supervisor = await Supervisor.create({
-      employee_id: 17,
+      employee_id: employeeId,
       is_admin: false
     } as SupervisorCreationAttributes);
 
@@ -18,13 +28,13 @@ describe('Supervisor model', () => {
 
   it('Should have an id', () => {
     expect(supervisor.id).toBeDefined();
-    expect(supervisor.id).toBe(17);
+    expect(uuidV4Regex.test(supervisor.id)).toBe(true);
     expect.assertions(2);
   });
 
   it('Should have an employee_id', () => {
     expect(supervisor.employee_id).toBeDefined();
-    expect(supervisor.employee_id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(supervisor.employee_id)).toBe(true);
     expect.assertions(2);
   });
 

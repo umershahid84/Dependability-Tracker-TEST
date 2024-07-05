@@ -7,9 +7,10 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import sequelize from '../../connection';
+import {uuid} from '../../../utils/uuid';
 
 export interface DivisionAttributes {
-  id: number;
+  id: string;
   name: string;
   createdAt: Date;
   updatedAt: Date;
@@ -26,7 +27,7 @@ export enum DefaultDivisions {
 
 class Division extends Model<InferAttributes<Division>, InferCreationAttributes<Division>> {
   // model attributes
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare name: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -35,9 +36,13 @@ class Division extends Model<InferAttributes<Division>, InferCreationAttributes<
 Division.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true
+      type: DataTypes.STRING,
+      defaultValue: uuid,
+      allowNull: false,
+      primaryKey: true,
+      validate: {
+        isUUID: 4
+      }
     },
     name: {
       type: DataTypes.STRING,

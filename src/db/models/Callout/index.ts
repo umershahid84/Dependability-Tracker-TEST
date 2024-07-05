@@ -11,26 +11,27 @@ import {
 import Employee from '../Employee';
 import LeaveType from '../LeaveType';
 import Supervisor from '../Supervisor';
+import {uuid} from '../../../utils/uuid';
 import sequelize from '../../connection';
 
 export interface CallOutAttributes {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
   shift_time: Date;
   callout_date: Date;
   callout_time: Date;
-  employee_id: number;
-  supervisor_id: number;
-  leave_type_id: number;
+  employee_id: string;
+  supervisor_id: string;
+  leave_type_id: string;
   supervisor_comments: string;
   left_early_mins: number | null;
   arrived_late_mins: number | null;
 }
 
 export interface CallOutWithAssociations {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
@@ -53,7 +54,7 @@ class CallOut
   implements CallOutAttributes
 {
   // model attributes
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare shift_date: Date;
   declare shift_time: Date;
   declare callout_date: Date;
@@ -61,9 +62,9 @@ class CallOut
   declare supervisor_comments: string;
   declare left_early_mins: number | null;
   declare arrived_late_mins: number | null;
-  declare employee_id: ForeignKey<number>;
-  declare supervisor_id: ForeignKey<number>;
-  declare leave_type_id: ForeignKey<number>;
+  declare employee_id: ForeignKey<string>;
+  declare supervisor_id: ForeignKey<string>;
+  declare leave_type_id: ForeignKey<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -77,9 +78,13 @@ class CallOut
 CallOut.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: uuid,
+      primaryKey: true,
+      validate: {
+        isUUID: 4
+      }
     },
     shift_date: {
       type: DataTypes.DATE,
@@ -110,16 +115,25 @@ CallOut.init(
       allowNull: false
     },
     employee_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isUUID: 4
+      }
     },
     supervisor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isUUID: 4
+      }
     },
     leave_type_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isUUID: 4
+      }
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

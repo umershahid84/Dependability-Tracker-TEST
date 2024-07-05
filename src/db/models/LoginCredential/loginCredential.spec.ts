@@ -1,3 +1,5 @@
+import Supervisor from '../Supervisor';
+import {uuidV4Regex} from '../../../utils/uuid';
 import LoginCredential, {LoginCredentialsCreationAttributes} from './';
 
 describe('LoginCredential', () => {
@@ -7,8 +9,9 @@ describe('LoginCredential', () => {
   });
 
   it('should create a login credential', async () => {
+    const supervisorId = await Supervisor.findOne().then(supervisor => supervisor?.id);
     loginCredential = await LoginCredential.create({
-      supervisor_id: 1,
+      supervisor_id: supervisorId,
       email: 'testuser@test.com',
       password: 'testpassword'
     } as LoginCredentialsCreationAttributes);
@@ -18,13 +21,13 @@ describe('LoginCredential', () => {
 
   it('should have an id', () => {
     expect(loginCredential.id).toBeDefined();
-    expect(loginCredential.id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(loginCredential.id)).toBe(true);
     expect.assertions(2);
   });
 
   it('should have a supervisor_id', () => {
     expect(loginCredential.supervisor_id).toBeDefined();
-    expect(loginCredential.supervisor_id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(loginCredential.supervisor_id)).toBe(true);
     expect.assertions(2);
   });
 

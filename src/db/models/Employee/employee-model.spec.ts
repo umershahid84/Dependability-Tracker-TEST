@@ -1,3 +1,5 @@
+import Division from '../Division';
+import {uuidV4Regex} from '../../../utils/uuid';
 import Employee, {EmployeeCreationAttributes} from './index';
 
 describe('Employee model', () => {
@@ -8,9 +10,12 @@ describe('Employee model', () => {
   });
 
   it('Should create an employee', async () => {
+    const divisionIds = await Division.findAll().then(divisions =>
+      divisions.map(division => division.id)
+    );
     employee = await Employee.create({
       name: 'John Doe',
-      division_ids: [1, 2]
+      division_ids: divisionIds
     } as EmployeeCreationAttributes);
 
     expect(employee).toBeDefined();
@@ -19,7 +24,7 @@ describe('Employee model', () => {
 
   it('Should have an id', () => {
     expect(employee.id).toBeDefined();
-    expect(employee.id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(employee.id)).toBe(true);
     expect.assertions(2);
   });
 
@@ -40,9 +45,12 @@ describe('Employee model', () => {
     expect.assertions(2);
   });
 
-  it('Should have division_ids', () => {
+  it('Should have division_ids', async () => {
+    const divisionIds = await Division.findAll().then(divisions =>
+      divisions.map(division => division.id)
+    );
     expect(employee.division_ids).toBeDefined();
-    expect(employee.division_ids).toEqual([1, 2]);
+    expect(employee.division_ids).toEqual(divisionIds);
     expect.assertions(2);
   });
 });

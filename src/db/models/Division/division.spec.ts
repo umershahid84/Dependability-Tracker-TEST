@@ -1,3 +1,4 @@
+import {uuidV4Regex} from '../../../utils/uuid';
 import Division, {DivisionCreationAttributes} from './index';
 
 describe('Division model', () => {
@@ -17,7 +18,7 @@ describe('Division model', () => {
 
   it('Should have an id', () => {
     expect(division.id).toBeDefined();
-    expect(division.id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(division.id)).toBe(true);
     expect.assertions(2);
   });
 

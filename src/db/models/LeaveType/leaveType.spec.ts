@@ -1,3 +1,4 @@
+import {uuidV4Regex} from '../../../utils/uuid';
 import LeaveType, {LeaveTypeCreationAttributes} from './';
 
 describe('LeaveType Model', () => {
@@ -18,7 +19,7 @@ describe('LeaveType Model', () => {
 
   it('Should have an id', () => {
     expect(leaveType.id).toBeDefined();
-    expect(leaveType.id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(leaveType.id)).toBe(true);
     expect.assertions(2);
   });
 

@@ -10,18 +10,19 @@ import {
 } from 'sequelize';
 import Employee from '../Employee';
 import sequelize from '../../connection';
+import {uuid} from '../../../utils/uuid';
 import LoginCredential from '../LoginCredential';
 
 export interface SupervisorAttributes {
-  id: number;
-  employee_id: ForeignKey<number>;
+  id: string;
+  employee_id: ForeignKey<string>;
   is_admin: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface SupervisorWithAssociations {
-  id: number;
+  id: string;
   is_admin: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -40,8 +41,8 @@ class Supervisor
   implements SupervisorAttributes
 {
   // model attributes
-  declare id: CreationOptional<number>;
-  declare employee_id: ForeignKey<number>;
+  declare id: CreationOptional<string>;
+  declare employee_id: ForeignKey<string>;
   declare is_admin: boolean;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -55,13 +56,20 @@ class Supervisor
 Supervisor.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: uuid,
+      primaryKey: true,
+      validate: {
+        isUUID: 4
+      }
     },
     employee_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isUUID: 4
+      }
     },
     is_admin: {
       type: DataTypes.BOOLEAN,

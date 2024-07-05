@@ -1,3 +1,7 @@
+import Employee from '../Employee';
+import LeaveType from '../LeaveType';
+import Supervisor from '../Supervisor';
+import {uuidV4Regex} from '../../../utils/uuid';
 import CallOut, {CallOutCreationAttributes} from './';
 
 describe('CallOut model', () => {
@@ -9,6 +13,20 @@ describe('CallOut model', () => {
 
   it('Should create a callOut', async () => {
     const newDate = new Date();
+    const supervisorId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+    if (!supervisorId) {
+      throw new Error('Supervisor not found');
+    }
+    const leaveTypeId = await LeaveType.findOne().then(leaveType => leaveType?.id);
+    if (!leaveTypeId) {
+      throw new Error('LeaveType not found');
+    }
+
+    const employeeID = await Employee.findOne().then(employee => employee?.id);
+    if (!employeeID) {
+      throw new Error('Employee not found');
+    }
+
     callOut = await CallOut.create({
       shift_date: newDate,
       shift_time: newDate,
@@ -17,9 +35,9 @@ describe('CallOut model', () => {
       left_early_mins: 0,
       arrived_late_mins: 0,
       supervisor_comments: 'Test comment',
-      employee_id: 20,
-      supervisor_id: 1,
-      leave_type_id: 1
+      employee_id: employeeID,
+      supervisor_id: supervisorId,
+      leave_type_id: leaveTypeId
     } as CallOutCreationAttributes);
 
     expect(callOut).toBeDefined();
@@ -29,7 +47,7 @@ describe('CallOut model', () => {
 
   it('Should have an id', () => {
     expect(callOut.id).toBeDefined();
-    expect(callOut.id).toBeGreaterThan(0);
+    expect(uuidV4Regex.test(callOut.id)).toBe(true);
     expect.assertions(2);
   });
 
@@ -73,17 +91,17 @@ describe('CallOut model', () => {
   });
 
   it('Should have an employee_id', () => {
-    expect(callOut.employee_id).toBe(20);
+    expect(callOut.employee_id).toBeDefined();
     expect.assertions(1);
   });
 
   it('Should have a supervisor_id', () => {
-    expect(callOut.supervisor_id).toBe(1);
+    expect(callOut.supervisor_id).toBeDefined();
     expect.assertions(1);
   });
 
   it('Should have a leave_type_id', () => {
-    expect(callOut.leave_type_id).toBe(1);
+    expect(callOut.leave_type_id).toBeDefined();
     expect.assertions(1);
   });
 

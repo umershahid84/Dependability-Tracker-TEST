@@ -7,9 +7,10 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import sequelize from '../../connection';
+import {uuid} from '../../../utils/uuid';
 
 export interface LeaveTypeAttributes {
-  id: number;
+  id: string;
   reason: string;
   createdAt: Date;
   updatedAt: Date;
@@ -40,7 +41,7 @@ export interface LeaveTypeCreationAttributes
 
 class LeaveType extends Model<InferAttributes<LeaveType>, InferCreationAttributes<LeaveType>> {
   // model attributes
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare reason: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -49,9 +50,13 @@ class LeaveType extends Model<InferAttributes<LeaveType>, InferCreationAttribute
 LeaveType.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: uuid,
+      primaryKey: true,
+      validate: {
+        isUUID: 4
+      }
     },
     reason: {
       type: DataTypes.STRING,
