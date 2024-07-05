@@ -56,7 +56,8 @@ LeaveType.init(
       primaryKey: true,
       validate: {
         isUUID: 4
-      }
+      },
+      unique: true
     },
     reason: {
       type: DataTypes.STRING,

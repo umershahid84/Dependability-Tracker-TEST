@@ -45,7 +45,8 @@ Division.init(
       primaryKey: true,
       validate: {
         isUUID: 4
-      }
+      },
+      unique: true
     },
     name: {
       type: DataTypes.STRING,

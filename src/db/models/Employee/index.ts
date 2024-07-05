@@ -21,7 +21,7 @@ import {
 import CallOut from '../Callout';
 import {uuid} from '../../../utils/uuid';
 import sequelize from '../../connection';
-import {DivisionAttributes} from '../Division';
+import Division, {DivisionAttributes} from '../Division';
 
 export interface EmployeeAttributes {
   id: string;
@@ -93,7 +93,8 @@ Employee.init(
       primaryKey: true,
       validate: {
         isUUID: 4
-      }
+      },
+      unique: true
     },
     name: {
       type: DataTypes.STRING,
@@ -104,7 +105,8 @@ Employee.init(
     division_ids: {
       // @ts-expect-error - this is a JSON column
       type: DataTypes.JSON(DataTypes.STRING),
-      allowNull: true
+      allowNull: true,
+      defaultValue: []
     }
   },
   {

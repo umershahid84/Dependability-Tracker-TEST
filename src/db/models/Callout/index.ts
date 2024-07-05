@@ -84,7 +84,8 @@ CallOut.init(
       primaryKey: true,
       validate: {
         isUUID: 4
-      }
+      },
+      unique: true
     },
     shift_date: {
       type: DataTypes.DATE,
@@ -119,6 +120,11 @@ CallOut.init(
       allowNull: false,
       validate: {
         isUUID: 4
+      },
+      unique: true,
+      references: {
+        model: 'employees',
+        key: 'id'
       }
     },
     supervisor_id: {
@@ -126,6 +132,11 @@ CallOut.init(
       allowNull: false,
       validate: {
         isUUID: 4
+      },
+      unique: true,
+      references: {
+        model: 'supervisors',
+        key: 'id'
       }
     },
     leave_type_id: {
@@ -133,6 +144,11 @@ CallOut.init(
       allowNull: false,
       validate: {
         isUUID: 4
+      },
+      unique: true,
+      references: {
+        model: 'leave_types',
+        key: 'id'
       }
     },
     createdAt: DataTypes.DATE,

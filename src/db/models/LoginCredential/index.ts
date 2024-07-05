@@ -74,7 +74,8 @@ LoginCredential.init(
       primaryKey: true,
       validate: {
         isUUID: 4
-      }
+      },
+      unique: true
     },
     email: {
       type: DataTypes.STRING,
@@ -91,6 +92,11 @@ LoginCredential.init(
       allowNull: false,
       validate: {
         isUUID: 4
+      },
+      unique: true,
+      references: {
+        model: 'supervisors',
+        key: 'id'
       }
     }
   },
