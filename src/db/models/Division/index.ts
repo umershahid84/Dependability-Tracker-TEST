@@ -1,6 +1,5 @@
 import {
   Model,
-  Optional,
   DataTypes,
   InferAttributes,
   CreationOptional,
@@ -16,8 +15,12 @@ export interface DivisionAttributes {
   updatedAt: Date;
 }
 
-export interface DivisionCreationAttributes
-  extends Optional<DivisionAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+export type DivisionCreationAttributes = {
+  id?: string;
+  name: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
 
 export enum DefaultDivisions {
   PUBLIC_PARKING = 'Public Parking',
@@ -46,7 +49,8 @@ Division.init(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

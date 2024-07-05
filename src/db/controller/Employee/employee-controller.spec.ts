@@ -8,8 +8,6 @@ describe('Employee Controller', () => {
         divisions.map(division => division.id)
       );
 
-      console.log('DIVISION IDS', divisionIds);
-
       const employeeData = {
         name: 'John Doe',
         division_ids: divisionIds

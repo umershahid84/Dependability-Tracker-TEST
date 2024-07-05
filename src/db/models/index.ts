@@ -33,6 +33,12 @@ Employee.hasMany(CallOut, {
   as: 'callOuts'
 });
 
+Employee.belongsTo(Supervisor, {
+  foreignKey: 'employee_id',
+  as: 'supervisor_info',
+  onDelete: 'CASCADE'
+});
+
 LoginCredential.belongsTo(Supervisor, {
   foreignKey: 'supervisor_id',
   as: 'supervisor_info'
@@ -46,7 +52,8 @@ Supervisor.belongsTo(Employee, {
 
 Supervisor.hasOne(LoginCredential, {
   foreignKey: 'supervisor_id',
-  as: 'login_credentials'
+  as: 'login_credentials',
+  onDelete: 'CASCADE'
 });
 
 const models = {

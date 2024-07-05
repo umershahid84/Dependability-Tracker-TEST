@@ -7,19 +7,17 @@ import {
 } from '../../models/types';
 import {Employee} from '../../models';
 import {
-  populateEmployeeWithDivisions,
+  validateEmployeeName,
   validateEmployeeDivisionIds,
-  validateEmployeeName
+  populateEmployeeWithDivisions
 } from './helpers';
 
 // (C)reate
 export const createEmployeeInDB = async (
   withEmployeeData: EmployeeCreationAttributes
 ): Promise<EmployeeWithAssociations | null> => {
-  // validate the division ids
-
-  validateEmployeeDivisionIds(withEmployeeData.division_ids);
   validateEmployeeName(withEmployeeData.name);
+  validateEmployeeDivisionIds(withEmployeeData.division_ids);
 
   try {
     const createdEmployee = (await Employee.create(withEmployeeData)).get({
