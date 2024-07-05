@@ -6,17 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ts": "node --loader ts-node/esm --env-file=./.env -r ts-node/register",
+    "test": "node --env-file=./.env.test ./node_modules/.bin/jest --detectOpenHandles"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "mysql2": "^3.10.2",
     "next": "14.2.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20",
+    "@types/node": "^20.14.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

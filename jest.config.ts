@@ -7,7 +7,9 @@ const jestConfig: JestConfigWithTsJest = {
   },
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
-  }
+  },
+  globalSetup: '<rootDir>/jest.setup.ts',
+  globalTeardown: '<rootDir>/jest.teardown.ts'
 };
 
 export default jestConfig;
