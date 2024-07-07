@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "seed": "npm run ts ./src/db/seeds/index.ts",
     "ts": "node --loader ts-node/esm --env-file=./.env -r ts-node/register",
     "test": "node --env-file=./.env.test ./node_modules/.bin/jest --detectOpenHandles"
   },

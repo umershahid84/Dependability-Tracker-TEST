@@ -5,12 +5,14 @@ import {
   EmployeeWithAssociations,
   EmployeeCreationAttributes
 } from '../../models/types';
-import {Employee} from '../../models';
 import {
   validateEmployeeName,
   validateEmployeeDivisionIds,
   populateEmployeeWithDivisions
 } from './helpers';
+import {Op} from 'sequelize';
+import {Employee} from '../../models';
+import {getSupervisorFromDB} from '../Supervisor';
 
 // (C)reate
 export const createEmployeeInDB = async (
@@ -61,19 +63,68 @@ export const getEmployeeFromDB = {
       throw new Error(`\n❌ Error fetching employee: ${error}`);
     }
   },
-  all: async (): Promise<EmployeeWithAssociations[]> => {
-    try {
-      const employees = await Employee.findAll();
-      return await Promise.all(
-        employees.map(employee =>
-          populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
-        )
-      );
-    } catch (error) {
-      // istanbul ignore next
-      throw new Error(`\n❌ Error fetching employees: ${error}`);
-    }
-  }
+  all: (() => {
+    const _ = async (): Promise<EmployeeWithAssociations[]> => {
+      try {
+        const employees = await Employee.findAll();
+        return await Promise.all(
+          employees.map(employee =>
+            populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
+          )
+        );
+      } catch (error) {
+        // istanbul ignore next
+        throw new Error(`\n❌ Error fetching employees: ${error}`);
+      }
+    };
+
+    const byDivision = async (divisionId: string): Promise<EmployeeWithAssociations[]> => {
+      try {
+        const _employees: EmployeeWithAssociations[] = (
+          await employeeModelController.getEmployeeFromDB.all()
+        ).reduce((acc, employee) => {
+          if (employee.divisions.map(division => division.id).includes(divisionId)) {
+            acc.push(employee);
+          }
+          return acc;
+        }, [] as EmployeeWithAssociations[]);
+        // istanbul ignore next
+        return _employees ?? [];
+      } catch (error) {
+        // istanbul ignore next
+        throw new Error(`\n❌ Error fetching employees: ${error}`);
+      }
+    };
+
+    const nonSupervisors = async (): Promise<EmployeeWithAssociations[]> => {
+      const supervisors = await getSupervisorFromDB.all();
+      const supervisorIds = supervisors.map(supervisor => supervisor.supervisor_info.id);
+
+      try {
+        const employees = await Employee.findAll({
+          where: {
+            id: {
+              [Op.notIn]: supervisorIds
+            }
+          }
+        });
+
+        return await Promise.all(
+          employees.map(employee =>
+            populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
+          )
+        );
+      } catch (error) {
+        // istanbul ignore next
+        throw new Error(`\n❌ Error fetching employees: ${error}`);
+      }
+    };
+
+    return Object.assign(_, {
+      byDivision,
+      nonSupervisors
+    });
+  })()
 };
 
 // (U)pdate

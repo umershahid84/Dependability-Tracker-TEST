@@ -150,6 +150,29 @@ describe('Supervisor controller', () => {
         expect(result).toBeNull();
       });
     });
+
+    describe('all', () => {
+      it('Should get all supervisors', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.all();
+        const supervisors = await Supervisor.findAll().then(supervisors => supervisors);
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result.length).toBe(supervisors.length);
+
+        expect.assertions(11);
+      });
+    });
   });
 
   describe('updateSupervisorInDB', () => {
@@ -239,7 +262,7 @@ describe('Supervisor controller', () => {
 
   describe('deleteSupervisorFromDB', () => {
     it('Should delete a supervisor', async () => {
-      const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+      const existingId = await Supervisor.findAll().then(supervisors => supervisors[0].id);
 
       const result = await supervisorModelController.deleteSupervisorFromDB(existingId as string);
 

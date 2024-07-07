@@ -5,10 +5,10 @@ import {Employee, Division} from '../../models';
 import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '../../models/types';
 
 /**
- * This is a hack really. There is a way to properly associate the Employee and Division models through
- * another table, hence a relational database. However, for the sake of simplicity, we are just going to
- * store the division IDs in an array in the Employee model. This function will fetch the divisions
- * associated with an employee and the front-end is none the wiser.
+ * This is a hack really. There is a way to properly associate the Employee and Division models
+ * through * another table, hence a relational database. However, for the sake of simplicity, we are
+ * just going to store the division IDs in an array in the Employee model. This function will fetch
+ * the divisions associated with an employee and the front-end is none the wiser.
  * @param employeeId - The ID of the employee whose divisions we want to fetch
  * @returns
  */

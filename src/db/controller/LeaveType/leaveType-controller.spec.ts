@@ -1,6 +1,6 @@
 import {uuidV4Regex} from '../../../utils/uuid';
-import {LeaveTypeAttributes} from '../../models/LeaveType';
 import {LeaveTypeModelController} from './index';
+import LeaveType, {LeaveTypeAttributes} from '../../models/LeaveType';
 
 describe('LeaveTypeModelController', () => {
   describe('createLeaveTypeInDB', () => {
@@ -113,33 +113,46 @@ describe('LeaveTypeModelController', () => {
   });
 
   describe('getLeaveTypeFromDB', () => {
-    it('should get a LeaveType from the database', async () => {
-      const leaveType = {
-        reason: 'Test Reason 0'
-      };
+    describe('all', () => {
+      it('should get all LeaveTypes from the database', async () => {
+        const result: LeaveTypeAttributes[] =
+          await LeaveTypeModelController.getLeaveTypeFromDB.all();
+        const leaveTypes = (await LeaveType.findAll()).map(leaveType =>
+          leaveType.get({plain: true})
+        );
 
-      const createdLeaveType: LeaveTypeAttributes | null =
-        await LeaveTypeModelController.createLeaveTypeInDB(leaveType);
-
-      const result: LeaveTypeAttributes | null = await LeaveTypeModelController.getLeaveTypeFromDB(
-        createdLeaveType?.id as string
-      );
-
-      expect(result).toHaveProperty('id');
-      expect(result?.reason).toBe(leaveType.reason);
-      expect(uuidV4Regex.test(result?.id as string)).toBe(true);
-
-      expect.assertions(3);
+        expect(result.length).toBe(leaveTypes.length);
+        expect(result).toEqual(leaveTypes);
+      });
     });
 
-    it('should return null if the LeaveType does not exist', async () => {
-      const result: LeaveTypeAttributes | null = await LeaveTypeModelController.getLeaveTypeFromDB(
-        '123'
-      );
+    describe('byId', () => {
+      it('should get a LeaveType from the database', async () => {
+        const leaveType = {
+          reason: 'Test Reason 0'
+        };
 
-      expect(result).toBeNull();
+        const createdLeaveType: LeaveTypeAttributes | null =
+          await LeaveTypeModelController.createLeaveTypeInDB(leaveType);
 
-      expect.assertions(1);
+        const result: LeaveTypeAttributes | null =
+          await LeaveTypeModelController.getLeaveTypeFromDB.byId(createdLeaveType?.id as string);
+
+        expect(result).toHaveProperty('id');
+        expect(result?.reason).toBe(leaveType.reason);
+        expect(uuidV4Regex.test(result?.id as string)).toBe(true);
+
+        expect.assertions(3);
+      });
+
+      it('should return null if the LeaveType does not exist', async () => {
+        const result: LeaveTypeAttributes | null =
+          await LeaveTypeModelController.getLeaveTypeFromDB.byId('123');
+
+        expect(result).toBeNull();
+
+        expect.assertions(1);
+      });
     });
   });
 

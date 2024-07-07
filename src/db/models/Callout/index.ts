@@ -1,6 +1,5 @@
 import {
   Model,
-  Optional,
   DataTypes,
   ForeignKey,
   NonAttribute,
@@ -8,12 +7,15 @@ import {
   CreationOptional,
   InferCreationAttributes
 } from 'sequelize';
-import Employee from '../Employee';
-import LeaveType from '../LeaveType';
-import Supervisor from '../Supervisor';
 import {uuid} from '../../../utils/uuid';
 import sequelize from '../../connection';
+import {EmployeeWithAssociations} from '../Employee';
+import {SupervisorWithAssociations} from '../Supervisor';
+import LeaveType, {LeaveTypeAttributes} from '../LeaveType';
 
+/**
+ * Represents the attributes of a CallOut model.
+ */
 export interface CallOutAttributes {
   id: string;
   createdAt: Date;
@@ -30,7 +32,29 @@ export interface CallOutAttributes {
   arrived_late_mins: number | null;
 }
 
-export interface CallOutWithAssociations {
+/**
+ * Represents the creation attributes of a CallOut model.
+ */
+export type CallOutCreationAttributes = {
+  id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  shift_date: Date;
+  shift_time: Date;
+  callout_date: Date;
+  callout_time: Date;
+  employee_id: string;
+  supervisor_id: string;
+  leave_type_id: string;
+  supervisor_comments: string;
+  left_early_mins?: number | null;
+  arrived_late_mins?: number | null;
+};
+
+/**
+ * Represents a CallOut model with associations.
+ */
+export type CallOutWithAssociations = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -40,20 +64,16 @@ export interface CallOutWithAssociations {
   callout_time: Date;
   supervisor_comments: string;
   left_early_mins: number | null;
+  leaveType: LeaveTypeAttributes;
   arrived_late_mins: number | null;
-  employee: Employee;
-  leaveType: LeaveType;
-  supervisor: Supervisor;
-}
-
-export interface CallOutCreationAttributes
-  extends Optional<CallOutAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+  employee: EmployeeWithAssociations;
+  supervisor: SupervisorWithAssociations;
+};
 
 class CallOut
   extends Model<InferAttributes<CallOut>, InferCreationAttributes<CallOut>>
   implements CallOutAttributes
 {
-  // model attributes
   declare id: CreationOptional<string>;
   declare shift_date: Date;
   declare shift_time: Date;
@@ -67,11 +87,9 @@ class CallOut
   declare leave_type_id: ForeignKey<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-
-  // associations
-  declare employee?: NonAttribute<Employee>;
   declare leaveType?: NonAttribute<LeaveType>;
-  declare supervisor?: NonAttribute<Supervisor>;
+  declare employee?: NonAttribute<EmployeeWithAssociations>;
+  declare supervisor?: NonAttribute<SupervisorWithAssociations>;
 }
 
 // initialize model
@@ -121,7 +139,6 @@ CallOut.init(
       validate: {
         isUUID: 4
       },
-      unique: true,
       references: {
         model: 'employees',
         key: 'id'
@@ -133,7 +150,6 @@ CallOut.init(
       validate: {
         isUUID: 4
       },
-      unique: true,
       references: {
         model: 'supervisors',
         key: 'id'
@@ -145,7 +161,6 @@ CallOut.init(
       validate: {
         isUUID: 4
       },
-      unique: true,
       references: {
         model: 'leave_types',
         key: 'id'

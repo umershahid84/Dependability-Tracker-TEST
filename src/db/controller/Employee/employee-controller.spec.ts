@@ -1,7 +1,12 @@
-import {Division, Employee} from '../../models';
+import {Op} from 'sequelize';
+import {uuid} from '../../../utils';
 import {employeeModelController} from './index';
+import {Division, Employee} from '../../models';
+import {getSupervisorFromDB} from '../Supervisor';
+import {EmployeeWithAssociations} from '../../models/Employee';
 
 describe('Employee Controller', () => {
+  // CRUD: Create
   describe('createEmployeeInDB', () => {
     it('should create an employee', async () => {
       const divisionIds = await Division.findAll().then(divisions =>
@@ -130,64 +135,151 @@ describe('Employee Controller', () => {
     });
   });
 
+  // CRUD: Read
   describe('getEmployeeFromDB', () => {
-    it('should get an employee by id', async () => {
-      const employeeId = await Employee.findOne().then(employee => employee?.id);
-      const employee = await employeeModelController.getEmployeeFromDB.byId(employeeId as string);
-      expect(employee).toHaveProperty('id', employeeId);
+    describe('byId', () => {
+      it('should get an employee by id', async () => {
+        const employeeId = await Employee.findOne().then(employee => employee?.id);
+        const employee = await employeeModelController.getEmployeeFromDB.byId(employeeId as string);
+        expect(employee).toHaveProperty('id', employeeId);
 
-      expect.assertions(1);
+        expect.assertions(1);
+      });
+
+      it('should throw an error if the employee id is not a UUID', async () => {
+        try {
+          await employeeModelController.getEmployeeFromDB.byId('invalid-id');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(String(error)).toMatch(/Error fetching employee/);
+        }
+      });
+
+      it('should throw an error if the employee id is not a string', async () => {
+        try {
+          // @ts-expect-error - Testing invalid data
+          await employeeModelController.getEmployeeFromDB.byId(1);
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(String(error)).toMatch(/Error fetching employee/);
+        }
+      });
     });
 
-    it('should get an employee by name', async () => {
-      const employeeName = 'John Doe';
-      const employee = await employeeModelController.getEmployeeFromDB.byName(employeeName);
-      expect(employee).toHaveProperty('name', employeeName);
+    describe('byName', () => {
+      it('should get an employee by name', async () => {
+        const employeeName = 'John Doe';
+        const employee = await employeeModelController.getEmployeeFromDB.byName(employeeName);
+        expect(employee).toHaveProperty('name', employeeName);
 
-      expect.assertions(1);
+        expect.assertions(1);
+      });
+
+      it('should return null if the employee name does not exist', async () => {
+        const employee = await employeeModelController.getEmployeeFromDB.byName('invalid-name');
+        expect(employee).toBeNull();
+      });
+
+      it('should throw an error if the employee name is invalid', async () => {
+        try {
+          // @ts-expect-error - Testing invalid data
+          await employeeModelController.getEmployeeFromDB.byName(1);
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(String(error)).toMatch(/Error fetching employee/);
+        }
+      });
     });
 
-    it('should get all employees', async () => {
-      const employees = await employeeModelController.getEmployeeFromDB.all();
-      expect(employees).toBeInstanceOf(Array);
-      expect(employees.length).toBeGreaterThan(0);
+    describe('all', () => {
+      it('should get all employees', async () => {
+        const [employees, _employees] = await Promise.all([
+          employeeModelController.getEmployeeFromDB.all(),
+          Employee.findAll()
+        ]);
 
-      expect.assertions(2);
-    });
+        expect(employees).toBeInstanceOf(Array);
+        expect(employees.length).toBe(_employees.length);
 
-    it('should return null if the employee id does not exist', async () => {
-      const employee = await employeeModelController.getEmployeeFromDB.byId('invalid-id');
-      expect(employee).toBeNull();
+        expect.assertions(2);
+      });
 
-      expect.assertions(1);
-    });
+      describe('byDivision', () => {
+        it('should get all employees by division', async () => {
+          const divisionId = (await Division.findOne().then(division => division?.id)) as string;
 
-    it('should return null if the employee name does not exist', async () => {
-      const employee = await employeeModelController.getEmployeeFromDB.byName('invalid-name');
-      expect(employee).toBeNull();
-    });
+          const _employees: EmployeeWithAssociations[] = (
+            (await employeeModelController.getEmployeeFromDB.all()) as EmployeeWithAssociations[]
+          ).reduce((acc, employee) => {
+            if (employee.divisions.map(division => division.id).includes(divisionId)) {
+              acc.push(employee);
+            }
+            return acc;
+          }, [] as EmployeeWithAssociations[]);
 
-    it('should throw an error if the employee id is invalid', async () => {
-      try {
-        // @ts-expect-error - Testing invalid data
-        await employeeModelController.getEmployeeFromDB.byId(1);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect(String(error)).toMatch(/Error fetching employee/);
-      }
-    });
+          const employees = await employeeModelController.getEmployeeFromDB.all.byDivision(
+            divisionId as string
+          );
+          expect(employees).toBeInstanceOf(Array);
+          expect(employees.length).toBe(_employees?.length);
 
-    it('should throw an error if the employee name is invalid', async () => {
-      try {
-        // @ts-expect-error - Testing invalid data
-        await employeeModelController.getEmployeeFromDB.byName(1);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect(String(error)).toMatch(/Error fetching employee/);
-      }
+          expect.assertions(2);
+        });
+
+        it('should throw an error if the division id is invalid', async () => {
+          try {
+            await employeeModelController.getEmployeeFromDB.all.byDivision('invalid-id');
+          } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+            expect(String(error)).toMatch(/Error fetching employees/);
+          }
+        });
+
+        it('should throw an error if the division id is not a string', async () => {
+          try {
+            // @ts-expect-error - Testing invalid data
+            await employeeModelController.getEmployeeFromDB.all.byDivision(1);
+          } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+            expect(String(error)).toMatch(/Error fetching employees/);
+          }
+        });
+
+        it('should return an empty array if the division id does not exist', async () => {
+          const employees = await employeeModelController.getEmployeeFromDB.all.byDivision(uuid());
+          expect(employees).toBeInstanceOf(Array);
+          expect(employees.length).toBe(0);
+        });
+      });
+
+      describe('nonSupervisors', () => {
+        it('should get all non-supervisors', async () => {
+          const supervisorIds = await getSupervisorFromDB
+            .all()
+            .then(supervisors => supervisors.map(supervisor => supervisor.supervisor_info.id));
+
+          const [nonSupervisors, _nonSupers] = await Promise.all([
+            Employee.findAll({
+              where: {
+                id: {
+                  [Op.notIn]: supervisorIds
+                }
+              }
+            }),
+            employeeModelController.getEmployeeFromDB.all.nonSupervisors()
+          ]);
+
+          expect(nonSupervisors).toBeInstanceOf(Array);
+          expect(nonSupervisors.length).toBe(_nonSupers.length);
+          expect(nonSupervisors.every(employee => !supervisorIds.includes(employee.id))).toBe(true);
+
+          expect.assertions(3);
+        });
+      });
     });
   });
 
+  // CRUD: Update
   describe('updateEmployeeInDB', () => {
     describe('employeeName', () => {
       it('should update an employee name', async () => {
@@ -313,6 +405,7 @@ describe('Employee Controller', () => {
     });
   });
 
+  // CRUD: Delete
   describe('deleteEmployeeFromDB', () => {
     it('should delete an employee', async () => {
       const employeeId = await Employee.findOne().then(employee => employee?.id);

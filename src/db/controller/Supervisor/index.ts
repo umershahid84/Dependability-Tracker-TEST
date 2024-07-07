@@ -1,5 +1,4 @@
 // CRUD controller for the Supervisor Model
-
 import {
   SupervisorAttributes,
   SupervisorWithAssociations,
@@ -49,6 +48,40 @@ export const getSupervisorFromDB = {
       login_credentials: superV?.login_credentials as LoginCredential,
       supervisor_info: await populateEmployeeWithDivisions(superV?.supervisor_info as Employee)
     };
+  },
+  all: async (): Promise<SupervisorWithAssociations[]> => {
+    const supervisors: Promise<SupervisorWithAssociations | null>[] = (
+      await Supervisor.findAll({
+        include: [
+          {
+            model: Employee,
+            as: 'supervisor_info'
+          },
+          {
+            model: LoginCredential,
+            as: 'login_credentials'
+          }
+        ]
+      })
+    ).map(async (supervisor: Supervisor) => {
+      const superV: SupervisorWithAssociations | null = supervisor.get({
+        plain: true
+      }) as unknown as SupervisorWithAssociations | null;
+
+      // istanbul ignore next
+      if (!superV) return null;
+
+      return {
+        id: superV.id,
+        is_admin: superV.is_admin,
+        createdAt: superV.createdAt,
+        updatedAt: superV.updatedAt,
+        login_credentials: superV.login_credentials as LoginCredential,
+        supervisor_info: await populateEmployeeWithDivisions(superV.supervisor_info as Employee)
+      };
+    });
+    // istanbul ignore next
+    return (await Promise.all(supervisors)).filter(el => el !== null) ?? [];
   }
 };
 
@@ -74,8 +107,13 @@ export const updateSupervisorInDB = {
 export const deleteSupervisorFromDB = async (id: string): Promise<boolean> => {
   if (!id) throw new Error('ID is required');
   if (!uuidV4Regex.test(id)) throw new Error('Invalid ID');
-  const deleted: number = await Supervisor.destroy({where: {id}});
-  return deleted > 0;
+  try {
+    const deleted: number = await Supervisor.destroy({where: {id}});
+    return deleted > 0;
+  } catch (error) {
+    // istanbul ignore next
+    throw new Error(`\n❌ Error deleting supervisor: ${error}`);
+  }
 };
 
 export const supervisorModelController = {

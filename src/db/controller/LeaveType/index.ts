@@ -15,12 +15,22 @@ export const createLeaveTypeInDB = async (
   }
 };
 // (R)ead
-export const getLeaveTypeFromDB = async (id: string): Promise<LeaveTypeAttributes | null> => {
-  try {
-    return (await LeaveType.findByPk(id))?.get({plain: true}) ?? null;
-  } catch (error) {
-    // istanbul ignore next
-    throw new Error(`\n❌ Error fetching leave type: ${error}`);
+export const getLeaveTypeFromDB = {
+  all: async (): Promise<LeaveTypeAttributes[]> => {
+    try {
+      return (await LeaveType.findAll()).map(leaveType => leaveType.get({plain: true}));
+    } catch (error) {
+      // istanbul ignore next
+      throw new Error(`\n❌ Error fetching leave types: ${error}`);
+    }
+  },
+  byId: async (id: string): Promise<LeaveTypeAttributes | null> => {
+    try {
+      return (await LeaveType.findByPk(id))?.get({plain: true}) ?? null;
+    } catch (error) {
+      // istanbul ignore next
+      throw new Error(`\n❌ Error fetching leave type: ${error}`);
+    }
   }
 };
 // (U)pdate
@@ -31,7 +41,7 @@ export const updateLeaveTypeInDB = async (
   validateLeaveTypeReason(leaveType.reason);
   try {
     await LeaveType.update(leaveType, {where: {id}});
-    return getLeaveTypeFromDB(id);
+    return getLeaveTypeFromDB.byId(id);
   } catch (error) {
     throw new Error(`\n❌ Error updating leave type: ${error}`);
   }

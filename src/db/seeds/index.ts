@@ -1,4 +1,5 @@
 import sequelize from '../connection';
+import seedCallouts from './callouts';
 import seedEmployees from './employees';
 import seedDivisions from './divisions';
 import seedLeaveTypes from './leaveTypes';
@@ -20,5 +21,14 @@ export const seedDatabase = async () => {
 
 // if this file is run directly, seed the database
 if (require.main === module) {
-  seedDatabase();
+  const [, , ...args] = process.argv;
+
+  (async () => {
+    await seedDatabase();
+    // seed callouts only in development if the callouts flag is passed
+    if (args.includes('callouts') && process.env.NODE_ENV !== 'production') {
+      const numberOfCallouts = parseInt(args[args.indexOf('callouts') + 1] ?? 20, 10);
+      await seedCallouts(numberOfCallouts);
+    }
+  })();
 }

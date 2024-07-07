@@ -1,0 +1,165 @@
+import {CallOut, DefaultLeaveTypes} from '../models';
+import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
+import {
+  LeaveTypeAttributes,
+  EmployeeWithAssociations,
+  CallOutCreationAttributes,
+  SupervisorWithAssociations
+} from '../models/types';
+
+const numberOfCallouts = 365;
+
+const supervisorComments: string[] = [
+  "Personal emergency that couldn't be postponed.",
+  'Employee is dealing with a family illness.',
+  'Unexpected childcare issues.',
+  'Severe weather preventing safe travel.',
+  "Medical appointment that couldn't be rescheduled.",
+  "Employee's car broke down on the way to work.",
+  'Sudden onset of flu-like symptoms.',
+  "Employee's home experienced flooding.",
+  'Attending a funeral for a close relative.',
+  'Employee is recovering from minor surgery.',
+  'Mental health day as per company policy.',
+  "Employee's child is unwell and needs care.",
+  "Unexpected power outage at employee's residence.",
+  "Employee's pet is seriously ill.",
+  'Employee involved in a minor car accident.',
+  'Employee is experiencing severe migraines.',
+  'Employee needs to care for a sick parent.',
+  'Scheduled house repair requiring presence.',
+  'Employee needs to move unexpectedly.',
+  "Employee's house caught fire, dealing with aftermath.",
+  'Urgent legal matter requiring immediate attention.',
+  'Employee is experiencing food poisoning.',
+  "Employee's spouse is in the hospital.",
+  "Employee's residence is under evacuation due to an emergency.",
+  'Employee dealing with severe back pain.',
+  "Employee's child has a school emergency.",
+  'Employee assisting with a medical emergency for a neighbor.',
+  "Employee's immediate family member in a serious accident.",
+  'Employee needs to meet with a contractor for emergency repairs.',
+  'Employee has a severe allergic reaction.',
+  'Employee attending to urgent personal financial matters.',
+  'Employee experiencing severe anxiety attacks.',
+  "Employee's spouse lost a job, needing support.",
+  "Employee's child in a serious accident.",
+  "Employee's partner is giving birth.",
+  "Employee's house was burglarized, dealing with police.",
+  'Employee experiencing unexpected complications from a recent illness.',
+  "Employee's home requires immediate plumbing repairs.",
+  "Employee's neighborhood is under severe weather advisory.",
+  'Employee has a contagious illness.',
+  'Employee needs to take care of immediate legal obligations.',
+  "Employee's sibling is experiencing a medical emergency.",
+  "Employee's house had a gas leak, waiting for resolution.",
+  'Employee was called for emergency jury duty.',
+  'Employee has an urgent school meeting for their child.',
+  "Employee's partner in a minor accident and needs assistance.",
+  "Employee's parent has sudden health complications.",
+  'Employee needs to deal with a sudden insurance issue.',
+  'Employee is having severe dental pain.'
+];
+
+function getRelevantComments(leaveType: DefaultLeaveTypes): string[] {
+  const leaveTypeToComments: {[key in DefaultLeaveTypes]: number[]} = {
+    [DefaultLeaveTypes.SICK]: [6, 15, 19, 24, 28, 31, 33, 38, 48],
+    [DefaultLeaveTypes.HOLIDAY]: [],
+    [DefaultLeaveTypes.VACATION]: [],
+    [DefaultLeaveTypes.PTO]: [1, 5, 14, 22, 27, 29],
+    [DefaultLeaveTypes.JURY_DUTY]: [44],
+    [DefaultLeaveTypes.MATERNITY]: [34, 32],
+    [DefaultLeaveTypes.PATERNITY]: [34],
+    [DefaultLeaveTypes.LEFT_EARLY]: [3, 13, 30, 35, 45, 46],
+    [DefaultLeaveTypes.LWOP]: [],
+    [DefaultLeaveTypes.BEREAVEMENT]: [9, 11],
+    [DefaultLeaveTypes.LATE_ARRIVAL]: [12, 13, 45, 46],
+    [DefaultLeaveTypes.FCA]: [2, 11, 16, 17, 25],
+    [DefaultLeaveTypes.FMLA]: [7, 10, 18, 21, 36, 37],
+    [DefaultLeaveTypes.NO_CALL_NO_SHOW]: [],
+    [DefaultLeaveTypes.PHEL]: [0, 4, 6, 20, 33, 38, 48],
+    [DefaultLeaveTypes.PERSONAL_HOLIDAY]: [8, 17, 30],
+    [DefaultLeaveTypes.HOLIDAY_OPTIONAL]: []
+  };
+
+  const indices = leaveTypeToComments[leaveType];
+  return indices.map(index => supervisorComments[index]);
+}
+
+// Function to generate a random date within the past year
+function getRandomDateWithinPastYear(): Date {
+  const today = new Date();
+  const pastYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+  const randomTimestamp =
+    pastYear.getTime() + Math.random() * (today.getTime() - pastYear.getTime());
+  return new Date(randomTimestamp);
+}
+
+// Function to generate a shift date that is on or after the callout date
+function getRelevantShiftDate(calloutDate: Date): Date {
+  const daysDifference = Math.floor(Math.random() * 7); // Shift date within 0 to 7 days after callout
+  const shiftDate = new Date(calloutDate);
+  shiftDate.setDate(calloutDate.getDate() + daysDifference);
+  return shiftDate;
+}
+
+// Function to generate a random time within reasonable working hours (8 AM to 6 PM)
+function getRandomTime(date: Date): Date {
+  const time = new Date(date);
+  const hour = Math.floor(Math.random() * 10) + 8; // Hour between 8 AM and 6 PM
+  const minute = Math.floor(Math.random() * 60);
+  time.setHours(hour, minute, 0, 0);
+  return time;
+}
+
+// Function to seed callouts
+const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
+  try {
+    const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
+    const supervisors: SupervisorWithAssociations[] = await getSupervisorFromDB.all();
+    const employees: EmployeeWithAssociations[] = await getEmployeeFromDB.all.nonSupervisors();
+
+    const iterations: number = numOfSeeds ?? numberOfCallouts;
+
+    for (let i = 0; i < iterations; i++) {
+      const employee: EmployeeWithAssociations =
+        employees[Math.floor(Math.random() * employees.length)];
+      const supervisor: SupervisorWithAssociations =
+        supervisors[Math.floor(Math.random() * supervisors.length)];
+      const leaveType: LeaveTypeAttributes =
+        leaveTypes[Math.floor(Math.random() * leaveTypes.length)];
+      const leaveTypeReason: DefaultLeaveTypes = leaveType.reason as DefaultLeaveTypes;
+      const relevantComments: string[] = getRelevantComments(leaveTypeReason);
+      const comment: string | undefined =
+        relevantComments[Math.floor(Math.random() * relevantComments.length)];
+
+      const calloutDate: Date = getRandomDateWithinPastYear();
+      const calloutTime: Date = getRandomTime(calloutDate);
+      const shiftDate: Date = getRelevantShiftDate(calloutDate);
+      const shiftTime: Date =
+        shiftDate.getTime() === calloutDate.getTime()
+          ? new Date(calloutTime.getTime() + Math.random() * 36000000)
+          : getRandomTime(shiftDate); // shiftTime either later on the same day or a new random time on shiftDate
+
+      const callout: CallOutCreationAttributes = {
+        shift_time: shiftTime,
+        shift_date: shiftDate,
+        employee_id: employee.id,
+        callout_date: calloutDate,
+        callout_time: calloutTime,
+        leave_type_id: leaveType.id,
+        supervisor_id: supervisor.id,
+        supervisor_comments: comment ?? 'No comments',
+        left_early_mins: Math.floor(Math.random() * 60),
+        arrived_late_mins: Math.floor(Math.random() * 60)
+      };
+
+      await CallOut.create(callout);
+    }
+    console.log(`✅ Callouts seeded successfully!`);
+  } catch (error) {
+    console.error(`❌ Error seeding callouts: ${error}`);
+  }
+};
+
+export default seedCallouts;
