@@ -51,11 +51,6 @@ const employeeSeeds = [
     division_ids: ['1', '2', '3']
   },
   {
-    id: '10',
-    name: 'Margaret Launiuvao',
-    division_ids: ['1', '2', '3']
-  },
-  {
     id: '11',
     name: 'Kanwaljeet Singh',
     division_ids: ['1', '2', '3']

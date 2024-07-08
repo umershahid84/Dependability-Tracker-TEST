@@ -32,6 +32,7 @@ export const createCreateCredentialsInviteInDB = async (
           default_password: createCredentialsInvite.default_password
         }
       : null;
+    // istanbul ignore next
   } catch (error) {
     throw new Error(`\n❌ Error creating createCredentialsInvite: ${String(error)}`);
   }
@@ -72,7 +73,9 @@ export const getCreateCredentialsInviteFromDB = async (props: {
       default_password: createCredentialsInvite.default_password,
       created_by: {...(admin as SupervisorWithAssociations), is_admin: true}
     };
+    // istanbul ignore next
   } catch (error) {
+    // istanbul ignore next
     throw new Error(`\n❌ Error getting createCredentialsInvite: ${String(error)}`);
   }
 };

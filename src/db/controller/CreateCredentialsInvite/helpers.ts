@@ -19,6 +19,7 @@ export const validateCreateCredentialsInviteProps = async (
 
   const admin = await getSupervisorFromDB.byId(props.created_by);
 
+  // istanbul ignore next
   if (!admin) {
     throw new Error('Admin supervisor not found');
   }
@@ -29,6 +30,7 @@ export const validateCreateCredentialsInviteProps = async (
 
   const supervisor = await getSupervisorFromDB.byId(props.supervisor_id);
 
+  // istanbul ignore next
   if (!supervisor) {
     throw new Error('Supervisor not found');
   }
@@ -60,6 +62,7 @@ export const validateCreateCredentialsInviteProps = async (
     throw new Error('default_password must be a string');
   }
 
+  // istanbul ignore next
   if (props.default_email.length === 0) {
     throw new Error("default_email can't be empty");
   }

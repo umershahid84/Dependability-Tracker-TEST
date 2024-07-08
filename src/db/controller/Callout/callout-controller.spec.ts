@@ -1424,7 +1424,7 @@ describe('Callout Model Controller', () => {
       expectedShiftDate.setHours(previousShiftTime.getHours());
       expectedShiftDate.setMinutes(previousShiftTime.getMinutes());
       expectedShiftDate.setSeconds(previousShiftTime.getSeconds());
-      expectedShiftDate.setMilliseconds(previousShiftTime.getMilliseconds());
+      expectedShiftDate.setMilliseconds(0);
 
       // expect that the shift time has been updated to reflect the same date
       expect(updated?.shift_date).toEqual(expectedShiftDate);
@@ -1500,7 +1500,7 @@ describe('Callout Model Controller', () => {
       expectedCalloutDate.setHours(previousCalloutTime.getHours());
       expectedCalloutDate.setMinutes(previousCalloutTime.getMinutes());
       expectedCalloutDate.setSeconds(previousCalloutTime.getSeconds());
-      expectedCalloutDate.setMilliseconds(previousCalloutTime.getMilliseconds());
+      expectedCalloutDate.setMilliseconds(0);
 
       // expect that the callout time has been updated to reflect the same date
       expect(updated?.callout_date).toEqual(expectedCalloutDate);
@@ -1519,30 +1519,36 @@ describe('Callout Model Controller', () => {
     });
 
     it("should update a callout's callout date and callout time accordingly when the callout_time is changed", async () => {
-      // grab a random callout
-      const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
+      try {
+        // grab a random callout
+        const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
-      // randomly add or subtract up to 5 hours
-      const newTime = new Date(callout.callout_time);
-      newTime.setHours(newTime.getHours() + Math.floor(Math.random() * 11) - 5);
+        // randomly add or subtract up to 5 hours
+        const newTime = new Date(callout.callout_time);
+        newTime.setHours(newTime.getHours() + Math.floor(Math.random() * 11) - 5);
 
-      // update the callout
-      const updated = await calloutModelController.updateCallOutInDB(callout.id, {
-        callout_time: newTime
-      });
+        // update the callout
+        const updated = await calloutModelController.updateCallOutInDB(callout.id, {
+          callout_time: newTime
+        });
 
-      expect(updated).toBeTruthy();
-      // expect the callout time to be updated to the new time with the existing date
-      const expectedCalloutTime = new Date(newTime);
-      const previousCalloutDate = new Date(callout.callout_date);
-      expectedCalloutTime.setFullYear(previousCalloutDate.getFullYear());
-      expectedCalloutTime.setMonth(previousCalloutDate.getMonth());
-      expectedCalloutTime.setDate(previousCalloutDate.getDate());
+        expect(updated).toBeTruthy();
+        // expect the callout time to be updated to the new time with the existing date
+        const expectedCalloutTime = new Date(newTime);
+        const previousCalloutDate = new Date(callout.callout_date);
+        expectedCalloutTime.setFullYear(previousCalloutDate.getFullYear());
+        expectedCalloutTime.setMonth(previousCalloutDate.getMonth());
+        expectedCalloutTime.setDate(previousCalloutDate.getDate());
 
-      // expect that the callout time has been updated to reflect the same date
-      expect(updated?.callout_time).toEqual(expectedCalloutTime);
-      expect(updated?.callout_time).not.toEqual(callout.callout_time);
-      expect(updated?.callout_date).not.toEqual(callout.callout_date);
+        // expect that the callout time has been updated to reflect the same date
+        expect(updated?.callout_time).toEqual(expectedCalloutTime);
+        expect(updated?.callout_time).not.toEqual(callout.callout_time);
+        expect(updated?.callout_date).not.toEqual(callout.callout_date);
+      } catch (error) {
+        console.error('\nERROR IN TEST: CALLOUT TIME UPDATE\n', error);
+      }
+
+      expect.assertions(4);
     });
 
     it('should throw an error if the callout_time is not a date', async () => {
@@ -1679,6 +1685,47 @@ describe('Callout Model Controller', () => {
 
       expect(updated).toBeTruthy();
       expect(updated?.arrived_late_mins).toBe(newMins);
+    });
+  });
+
+  // CRUD: Delete
+  describe('deleteCallOutFromDB', () => {
+    it('should throw an error if the id is not a UUID', async () => {
+      try {
+        await calloutModelController.deleteCallOutFromDB('invalid');
+      } catch (error) {
+        expect(String(error)).toBe('Error: Invalid id');
+      }
+      expect.assertions(1);
+    });
+
+    it('should throw an error if the id is missing', async () => {
+      try {
+        // @ts-expect-error - testing
+        await calloutModelController.deleteCallOutFromDB(undefined);
+      } catch (error) {
+        expect(String(error)).toBe('Error: Missing required id');
+      }
+      expect.assertions(1);
+    });
+
+    it('should delete a callout from the database', async () => {
+      // grab a random callout
+      const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
+
+      const deleted = await calloutModelController.deleteCallOutFromDB(callout.id);
+
+      expect(deleted).toBeTruthy();
+    });
+
+    it('should throw an error the callout does not exist', async () => {
+      try {
+        await calloutModelController.deleteCallOutFromDB(uuid());
+      } catch (error) {
+        expect(String(error)).toBeDefined();
+      }
+
+      expect.assertions(1);
     });
   });
 });

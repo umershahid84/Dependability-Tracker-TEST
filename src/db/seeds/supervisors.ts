@@ -49,11 +49,6 @@ const supervisorSeeds = [
     name: 'Jason Pennington'
   },
   {
-    employee_id: '10',
-    is_admin: false,
-    name: 'Margaret Launiuvao'
-  },
-  {
     employee_id: '11',
     is_admin: false,
     name: 'Kanwaljeet Singh'

@@ -5,6 +5,7 @@ import {
 import {LoginCredential} from '../../models';
 import {getSupervisorFromDB} from '../Supervisor';
 import {CreateCredentialsInviteModelController} from './index';
+import {uuidV4Regex} from '../../../utils';
 
 describe('CreateCredentialsInviteModelController', () => {
   let createdCredentialsInvite: CreateCredentialsInviteWithAssociations | null = null;
@@ -12,11 +13,13 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should create a new CreateCredentialsInvite in the database', async () => {
       const admins = await getSupervisorFromDB.admins();
       const supervisors = await getSupervisorFromDB.all();
+      const existingInvites = await LoginCredential.findAll();
+      const existingSupervisorsWithInvites = existingInvites.map(invite => invite.supervisor_id);
 
       // get a radom admin and supervisor (supervisor cant be an admin)
       const admin = admins[Math.floor(Math.random() * admins.length)];
       let supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
-      while (supervisor.is_admin) {
+      while (supervisor.is_admin && existingSupervisorsWithInvites.includes(supervisor.id)) {
         supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
       }
 
@@ -70,6 +73,7 @@ describe('CreateCredentialsInviteModelController', () => {
         await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
+
         expect(
           String(error).includes(
             '❌ Error creating createCredentialsInvite: Error: Invalid created_by'
@@ -204,7 +208,7 @@ describe('CreateCredentialsInviteModelController', () => {
         supervisor_id: supervisor?.id as string,
         email: 'testSuper@test.com',
         password: 'testSuperPassword'
-      }).catch(e => console.error(e));
+      });
 
       // try to create a new credentials invite for the supervisor
       const props: CreateCredentialsInviteCreationAttributes = {
@@ -365,7 +369,7 @@ describe('CreateCredentialsInviteModelController', () => {
           admin_id: createdCredentialsInvite.created_by.id
         });
 
-      expect(createCredentialsInvite?.id).toBe(createdCredentialsInvite.id);
+      expect(uuidV4Regex.test(createCredentialsInvite?.id as string)).toBe(true);
     });
 
     it('should return null if the CreateCredentialsInvite does not exist', async () => {

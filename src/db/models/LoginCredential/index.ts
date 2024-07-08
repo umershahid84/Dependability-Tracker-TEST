@@ -8,11 +8,11 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import bcrypt from 'bcrypt';
-import Supervisor from '../Supervisor';
 import {uuid} from '../../../utils/uuid';
 import sequelize from '../../connection';
+import {SupervisorWithAssociations} from '../Supervisor';
 
-export interface LoginCredentialsAttributes {
+export type LoginCredentialsAttributes = {
   id: string;
   email: string;
   createdAt: Date;
@@ -20,7 +20,7 @@ export interface LoginCredentialsAttributes {
   password: string;
   is_default?: boolean;
   supervisor_id: ForeignKey<string>;
-}
+};
 
 export type LoginCredentialsCreationAttributes = {
   id?: string;
@@ -39,7 +39,7 @@ export type LoginCredentialsWithAssociations = {
   updatedAt: Date;
   password: string;
   is_default?: boolean;
-  supervisor_info: Supervisor;
+  supervisor_info: SupervisorWithAssociations;
 };
 
 export const hashPassword = async (password: string): Promise<string> => {
@@ -64,7 +64,7 @@ class LoginCredential
   declare is_default?: CreationOptional<boolean>;
 
   // model associations
-  declare supervisor_info?: NonAttribute<Supervisor>;
+  declare supervisor_info?: NonAttribute<SupervisorWithAssociations>;
 
   // model class methods
   comparePassword(password: string): NonAttribute<boolean> {

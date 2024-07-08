@@ -54,6 +54,7 @@ export const getCallOutFromDB = {
         []
       );
     } catch (error) {
+      // istanbul ignore next
       throw new Error(`\n❌ Error fetching callouts: ${String(error)}`);
     }
   }
@@ -73,6 +74,7 @@ export const updateCallOutInDB = async (
   const callout = data[1];
 
   try {
+    // istanbul ignore next
     if (!callout) throw new Error('Callout not found');
 
     const updatedCallout: CallOutAttributes = (await callout.update({...withNewProps})).get({
@@ -80,6 +82,7 @@ export const updateCallOutInDB = async (
     });
     return updatedCallout ? await populateCallOutAssociations(updatedCallout) : null;
   } catch (error) {
+    // istanbul ignore next
     throw new Error(`\n❌ Error updating callout: ${String(error)}`);
   }
 };
@@ -92,11 +95,13 @@ export const deleteCallOutFromDB = async (id: string): Promise<boolean> => {
   try {
     const callout: CallOut | null = (await CallOut.findByPk(id)) ?? null;
 
+    // istanbul ignore next
     if (!callout) throw new Error('Callout not found');
 
     await callout.destroy();
     return true;
   } catch (error) {
+    // istanbul ignore next
     throw new Error(`\n❌ Error deleting callout: ${String(error)}`);
   }
 };

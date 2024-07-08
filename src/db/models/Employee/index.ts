@@ -21,7 +21,7 @@ import {
 import CallOut from '../Callout';
 import {uuid} from '../../../utils/uuid';
 import sequelize from '../../connection';
-import Division, {DivisionAttributes} from '../Division';
+import {DivisionAttributes} from '../Division';
 
 export interface EmployeeAttributes {
   id: string;

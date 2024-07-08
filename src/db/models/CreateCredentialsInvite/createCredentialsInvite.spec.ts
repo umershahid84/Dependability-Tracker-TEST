@@ -11,7 +11,14 @@ describe('CreateCredentialsInvite', () => {
   it('should create a create credentials invite', async () => {
     const supervisors = await getSupervisorFromDB.all();
     const admin = supervisors.find(supervisor => supervisor.is_admin === true);
-    const supervisor = supervisors.find(supervisor => supervisor.is_admin === false);
+
+    const existingInvites = await CreateCredentialsInvite.findAll();
+    const existingSupervisorsWithInvites = existingInvites.map(invite => invite.supervisor_id);
+
+    const supervisor = supervisors.find(
+      supervisor =>
+        supervisor.is_admin === false && !existingSupervisorsWithInvites.includes(supervisor.id)
+    );
 
     createCredentialsInvite = await CreateCredentialsInvite.create({
       created_by: admin?.id,

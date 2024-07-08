@@ -18,11 +18,6 @@ CallOut.belongsTo(Supervisor, {
   onDelete: 'CASCADE'
 });
 
-Supervisor.belongsTo(CallOut, {
-  foreignKey: 'supervisor_id',
-  onDelete: 'CASCADE'
-});
-
 CallOut.belongsTo(Employee, {
   foreignKey: 'employee_id',
   onDelete: 'CASCADE'
@@ -37,12 +32,6 @@ Employee.hasMany(CallOut, {
   sourceKey: 'id',
   foreignKey: 'employee_id',
   as: 'callouts'
-});
-
-Employee.belongsTo(Supervisor, {
-  foreignKey: 'employee_id',
-  as: 'supervisor_info',
-  onDelete: 'CASCADE'
 });
 
 LoginCredential.belongsTo(Supervisor, {
