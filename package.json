@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"next dev\"",
+    "dev": "concurrently \"ts-node ./src/scripts/removeExpired.ts\" \"next dev\"",
     "build": "next build",
-    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"next start\"",
+    "start": "concurrently \"ts-node ./src/scripts/removeExpired.ts\" \"next start\"",
     "lint": "next lint",
-    "seed": "npm run ts ./src/db/seeds/index.ts",
+    "seed": "ts-node ./src/db/seeds/index.ts",
     "ts": "node --loader ts-node/esm --env-file=./.env -r ts-node/register",
     "test": "node --env-file=./.env.test ./node_modules/.bin/jest --detectOpenHandles"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
     "mysql2": "^3.10.2",
     "next": "14.2.4",
     "react": "^18",

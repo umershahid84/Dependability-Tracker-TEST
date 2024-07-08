@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {Op} from 'sequelize';
 import {getSequelize, CreateCredentialsInvite} from '../db';
 

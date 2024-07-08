@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import sequelize from '../connection';
 import seedCallouts from './callouts';
 import seedEmployees from './employees';

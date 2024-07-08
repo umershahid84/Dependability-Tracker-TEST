@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {seedDatabase} from './src/db/seeds';
 import seedCallouts from './src/db/seeds/callouts';
 
