@@ -1,3 +1,4 @@
+import {Op} from 'sequelize';
 import Supervisor from '../Supervisor';
 import {uuidV4Regex} from '../../../utils/uuid';
 import LoginCredential, {LoginCredentialsCreationAttributes} from './';
@@ -9,14 +10,29 @@ describe('LoginCredential', () => {
   });
 
   it('should create a login credential', async () => {
-    const supervisorId = await Supervisor.findOne().then(supervisor => supervisor?.id);
-    loginCredential = await LoginCredential.create({
-      supervisor_id: supervisorId,
-      email: 'testuser@test.com',
-      password: 'testpassword'
-    } as LoginCredentialsCreationAttributes);
+    try {
+      // tests run in parallel, so we need to make sure we don't create a login credential for the same supervisor
+      const existingLogins = await LoginCredential.findAll();
+      const existingLoginSupervisorIds = existingLogins.map(login => login.supervisor_id);
+      const supervisorId = await Supervisor.findOne({
+        where: {
+          id: {
+            [Op.notIn]: existingLoginSupervisorIds
+          }
+        }
+      }).then(supervisor => supervisor?.id);
+      loginCredential = await LoginCredential.create({
+        supervisor_id: supervisorId,
+        email: 'testlogincreds@test.com',
+        password: 'testpassword'
+      } as LoginCredentialsCreationAttributes);
 
-    expect(loginCredential).toBeDefined();
+      expect(loginCredential).toBeDefined();
+    } catch (error) {
+      console.error(error);
+    }
+
+    expect.assertions(1);
   });
 
   it('should have an id', () => {
@@ -33,7 +49,7 @@ describe('LoginCredential', () => {
 
   it('should have an email', () => {
     expect(loginCredential.email).toBeDefined();
-    expect(loginCredential.email).toBe('testuser@test.com');
+    expect(loginCredential.email).toBe('testlogincreds@test.com');
     expect.assertions(2);
   });
 
@@ -57,6 +73,12 @@ describe('LoginCredential', () => {
   it('should have an updatedAt date', () => {
     expect(loginCredential.updatedAt).toBeDefined();
     expect(loginCredential.updatedAt).toBeInstanceOf(Date);
+    expect.assertions(2);
+  });
+
+  it('should have a is_default value of false', () => {
+    expect(loginCredential.is_default).toBeDefined();
+    expect(loginCredential.is_default).toBe(false);
     expect.assertions(2);
   });
 });

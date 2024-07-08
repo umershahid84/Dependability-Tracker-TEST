@@ -37,7 +37,7 @@ describe('Supervisor controller', () => {
       expect(result?.updatedAt).toBeDefined();
       // @ts-expect-error - testing for return values
       expect(result?.employee_id).toBeUndefined();
-      expect(result?.login_credentials).toBeNull();
+      expect(result?.login_credentials).toBeUndefined();
       expect(result?.supervisor_info).toBeDefined();
       expect(result?.supervisor_info).toMatchObject(
         (await getEmployeeFromDB.byId(employee?.id as string)) ?? {}
@@ -137,11 +137,80 @@ describe('Supervisor controller', () => {
         expect(result?.is_admin).toBeDefined();
         expect(result?.createdAt).toBeDefined();
         expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeUndefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+      });
+
+      it('Should return the login_credentials if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.getSupervisorFromDB.byId(
+          existingId as string,
+          {
+            showCredentials: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBeDefined();
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
         expect(result?.login_credentials).toBeDefined();
         expect(result?.supervisor_info).toBeDefined();
         expect(result?.supervisor_info).toMatchObject(
           (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
         );
+      });
+
+      it('Should return the create_credentials_invite if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.getSupervisorFromDB.byId(
+          existingId as string,
+          {
+            showCreateCredentialsInvite: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBeDefined();
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeUndefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+        expect(result?.create_credentials_invite).toBeDefined();
+      });
+
+      it('Should return the login_credentials and create_credentials_invite if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.getSupervisorFromDB.byId(
+          existingId as string,
+          {
+            showCredentials: true,
+            showCreateCredentialsInvite: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBeDefined();
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeDefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+        expect(result?.create_credentials_invite).toBeDefined();
       });
 
       it('Should return null if the supervisor does not exist', async () => {
@@ -163,7 +232,7 @@ describe('Supervisor controller', () => {
         expect(result[0].is_admin).toBeDefined();
         expect(result[0].createdAt).toBeDefined();
         expect(result[0].updatedAt).toBeDefined();
-        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].login_credentials).toBeUndefined();
         expect(result[0].supervisor_info).toBeDefined();
         expect(result[0].supervisor_info).toMatchObject(
           (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
@@ -171,6 +240,179 @@ describe('Supervisor controller', () => {
         expect(result.length).toBe(supervisors.length);
 
         expect.assertions(11);
+      });
+
+      it('Should return the login_credentials if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.all({
+          showCredentials: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+
+        expect.assertions(10);
+      });
+
+      it('Should return the create_credentials_invite if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.all({
+          showCreateCredentialsInvite: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeUndefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result[0].create_credentials_invite).toBeDefined();
+
+        expect.assertions(11);
+      });
+
+      it('Should return the login_credentials and create_credentials_invite if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.all({
+          showCredentials: true,
+          showCreateCredentialsInvite: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result[0].create_credentials_invite).toBeDefined();
+
+        expect.assertions(11);
+      });
+    });
+
+    describe('admins', () => {
+      it('Should get all supervisors who are admins', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.admins();
+        const supervisors = await Supervisor.findAll({
+          where: {is_admin: true}
+        }).then(supervisors => supervisors);
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeUndefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result.length).toBe(supervisors.length);
+
+        for (const supervisor of result) {
+          expect(supervisor.is_admin).toBe(true);
+        }
+
+        expect.assertions(result.length + 11);
+      });
+
+      it('Should return the login_credentials if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.admins({
+          showCredentials: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+
+        for (const supervisor of result) {
+          expect(supervisor.is_admin).toBe(true);
+        }
+
+        expect.assertions(result.length + 10);
+      });
+
+      it('Should return the create_credentials_invite if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.admins({
+          showCreateCredentialsInvite: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeUndefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result[0].create_credentials_invite).toBeDefined();
+
+        for (const supervisor of result) {
+          expect(supervisor.is_admin).toBe(true);
+        }
+
+        expect.assertions(result.length + 11);
+      });
+
+      it('Should return the login_credentials and create_credentials_invite if requested', async () => {
+        const result = await supervisorModelController.getSupervisorFromDB.admins({
+          showCredentials: true,
+          showCreateCredentialsInvite: true
+        });
+
+        expect(result).toBeDefined();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].id).toBeDefined();
+        expect(result[0].is_admin).toBeDefined();
+        expect(result[0].createdAt).toBeDefined();
+        expect(result[0].updatedAt).toBeDefined();
+        expect(result[0].login_credentials).toBeDefined();
+        expect(result[0].supervisor_info).toBeDefined();
+        expect(result[0].supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result[0].supervisor_info.id)) ?? {}
+        );
+        expect(result[0].create_credentials_invite).toBeDefined();
+
+        for (const supervisor of result) {
+          expect(supervisor.is_admin).toBe(true);
+        }
+
+        expect.assertions(result.length + 11);
       });
     });
   });
@@ -190,11 +432,83 @@ describe('Supervisor controller', () => {
         expect(result?.is_admin).toBe(true);
         expect(result?.createdAt).toBeDefined();
         expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeUndefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+      });
+
+      it('Should return the login_credentials if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.updateSupervisorInDB.setAdminStatus(
+          existingId as string,
+          true,
+          {
+            showCredentials: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBe(true);
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
         expect(result?.login_credentials).toBeDefined();
         expect(result?.supervisor_info).toBeDefined();
         expect(result?.supervisor_info).toMatchObject(
           (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
         );
+      });
+
+      it('Should return the create_credentials_invite if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.updateSupervisorInDB.setAdminStatus(
+          existingId as string,
+          true,
+          {
+            showCreateCredentialsInvite: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBe(true);
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeUndefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+        expect(result?.create_credentials_invite).toBeDefined();
+      });
+
+      it('Should return the login_credentials and create_credentials_invite if requested', async () => {
+        const existingId = await Supervisor.findOne().then(supervisor => supervisor?.id);
+
+        const result = await supervisorModelController.updateSupervisorInDB.setAdminStatus(
+          existingId as string,
+          true,
+          {
+            showCredentials: true,
+            showCreateCredentialsInvite: true
+          }
+        );
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBeDefined();
+        expect(result?.is_admin).toBe(true);
+        expect(result?.createdAt).toBeDefined();
+        expect(result?.updatedAt).toBeDefined();
+        expect(result?.login_credentials).toBeDefined();
+        expect(result?.supervisor_info).toBeDefined();
+        expect(result?.supervisor_info).toMatchObject(
+          (await getEmployeeFromDB.byId(result?.supervisor_info.id as string)) ?? {}
+        );
+        expect(result?.create_credentials_invite).toBeDefined();
       });
 
       it('Should return null if the supervisor does not exist', async () => {

@@ -11,6 +11,7 @@ import sequelize from '../../connection';
 import {uuid} from '../../../utils/uuid';
 import LoginCredential from '../LoginCredential';
 import {EmployeeWithAssociations} from '../Employee';
+import {CreateCredentialsInviteWithAssociations} from '../CreateCredentialsInvite';
 
 export interface SupervisorAttributes {
   id: string;
@@ -20,15 +21,6 @@ export interface SupervisorAttributes {
   updatedAt: Date;
 }
 
-export type SupervisorWithAssociations = {
-  id: string;
-  is_admin: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  login_credentials?: LoginCredential;
-  supervisor_info: EmployeeWithAssociations;
-};
-
 export type SupervisorCreationAttributes = {
   id?: string;
   employee_id: string;
@@ -37,10 +29,27 @@ export type SupervisorCreationAttributes = {
   updatedAt?: Date;
   login_credentials?: string;
 };
+
+export type SupervisorWithAssociations = {
+  id: string;
+  is_admin: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  login_credentials?: LoginCredential;
+  create_credentials_invite?: CreateCredentialsInviteWithAssociations;
+  supervisor_info: EmployeeWithAssociations;
+};
+
 class Supervisor
   extends Model<
-    InferAttributes<Supervisor, {omit: 'supervisor_info'}>,
-    InferCreationAttributes<Supervisor, {omit: 'supervisor_info'}>
+    InferAttributes<
+      Supervisor,
+      {omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite'}
+    >,
+    InferCreationAttributes<
+      Supervisor,
+      {omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite'}
+    >
   >
   implements SupervisorAttributes
 {
@@ -55,6 +64,7 @@ class Supervisor
 
   declare login_credentials?: NonAttribute<LoginCredential>;
   declare supervisor_info?: NonAttribute<EmployeeWithAssociations>;
+  declare create_credentials_invite?: NonAttribute<CreateCredentialsInviteWithAssociations>;
 }
 
 // configure model
@@ -96,5 +106,7 @@ Supervisor.init(
     underscored: true
   }
 );
-
+export type AdminSupervisor = (Supervisor | SupervisorWithAssociations | SupervisorAttributes) & {
+  is_admin: true;
+};
 export default Supervisor;

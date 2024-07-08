@@ -8,10 +8,9 @@ import {
   validateCallOutProps,
   EditableCalloutProps,
   GetCallAllCalloutOptions,
+  buildEditableCalloutProps,
   buildCalloutAllQueryOptions,
-  populateCallOutAssociations,
-  validateEditableCalloutProps,
-  buildEditableCalloutProps
+  populateCallOutAssociations
 } from './helpers';
 import {CallOut} from '../../models';
 import {uuidV4Regex} from '../../../utils';

@@ -1,6 +1,5 @@
 import {
   Model,
-  Optional,
   DataTypes,
   ForeignKey,
   NonAttribute,
@@ -10,8 +9,8 @@ import {
 } from 'sequelize';
 import bcrypt from 'bcrypt';
 import Supervisor from '../Supervisor';
-import sequelize from '../../connection';
 import {uuid} from '../../../utils/uuid';
+import sequelize from '../../connection';
 
 export interface LoginCredentialsAttributes {
   id: string;
@@ -19,25 +18,34 @@ export interface LoginCredentialsAttributes {
   createdAt: Date;
   updatedAt: Date;
   password: string;
+  is_default?: boolean;
   supervisor_id: ForeignKey<string>;
 }
 
-export interface LoginCredentialsWithAssociations {
+export type LoginCredentialsCreationAttributes = {
+  id?: string;
+  email: string;
+  password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  is_default?: boolean;
+  supervisor_id: string;
+};
+
+export type LoginCredentialsWithAssociations = {
   id: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
   password: string;
+  is_default?: boolean;
   supervisor_info: Supervisor;
-}
+};
 
 export const hashPassword = async (password: string): Promise<string> => {
   // istanbul ignore next
   return await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS ?? '11'));
 };
-
-export interface LoginCredentialsCreationAttributes
-  extends Optional<LoginCredentialsAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class LoginCredential
   extends Model<
@@ -47,12 +55,13 @@ class LoginCredential
   implements LoginCredentialsAttributes
 {
   // model attributes
-  declare id: CreationOptional<string>;
   declare email: string;
   declare password: string;
+  declare id: CreationOptional<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare supervisor_id: ForeignKey<string>;
+  declare is_default?: CreationOptional<boolean>;
 
   // model associations
   declare supervisor_info?: NonAttribute<Supervisor>;
@@ -79,11 +88,19 @@ LoginCredential.init(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    is_default: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

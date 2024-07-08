@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"next dev\"",
     "build": "next build",
-    "start": "next start",
+    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"next start\"",
     "lint": "next lint",
     "seed": "npm run ts ./src/db/seeds/index.ts",
     "ts": "node --loader ts-node/esm --env-file=./.env -r ts-node/register",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "concurrently": "^8.2.2",
     "mysql2": "^3.10.2",
     "next": "14.2.4",
     "react": "^18",
