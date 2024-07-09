@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {validators} from '../utils/shared/validators';
+import {validators} from '../lib/utils/shared/validators';
 
 const noWhiteSpaces = 'Cannot contain white-space';
 

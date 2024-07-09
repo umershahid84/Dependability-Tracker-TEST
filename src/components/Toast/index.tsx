@@ -1,6 +1,6 @@
 'use client';
 import {useState, useEffect} from 'react';
-import {formatter, removeExtraWhiteSpaces} from '../../utils/shared/strings';
+import {formatter, removeExtraWhiteSpaces} from '../../lib/utils/shared/strings';
 import {CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon} from '../Icons';
 
 export enum ToastTypes {

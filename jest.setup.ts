@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import {seedDatabase} from './src/db/seeds';
-import seedCallouts from './src/db/seeds/callouts';
+import {seedDatabase} from './src/lib/db/seeds';
+import seedCallouts from './src/lib/db/seeds/callouts';
 
 const globalSetup = async () => {
   console.log('\nSetting up the database for tests...');

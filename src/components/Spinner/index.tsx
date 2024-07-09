@@ -1,4 +1,4 @@
-import {removeExtraWhiteSpaces} from '@/utils/shared/strings';
+import {removeExtraWhiteSpaces} from '@/lib/utils/shared/strings';
 
 export type SpinnerProps = {
   label?: string;

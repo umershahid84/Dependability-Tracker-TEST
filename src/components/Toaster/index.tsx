@@ -1,5 +1,5 @@
 'use client';
-import {uuid} from '../../utils';
+import {uuid} from '../../lib/utils';
 import Toast, {ToastTypes} from '../Toast';
 import {useEffect, useState, useCallback} from 'react';
 
