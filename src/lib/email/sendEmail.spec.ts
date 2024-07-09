@@ -139,7 +139,7 @@ describe('Email Module', () => {
       console.log('EMAIL SEND RESULT', result);
       expect(result).toBe(true);
       expect.assertions(1);
-    });
+    }, 30000);
 
     it('should throw an error if email is not valid', async () => {
       try {
