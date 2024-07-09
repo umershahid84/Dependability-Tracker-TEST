@@ -15,8 +15,7 @@ export const createLoginCredentialInDB = async (
 ): Promise<LoginCredentialsWithAssociations | null> => {
   await validateSupervisorCanCreateLoginCredential(
     props.supervisor_id,
-    props.default_email,
-    props.default_password
+    props.invite_token as string
   );
   try {
     const loginCredential: LoginCredentialsAttributes = (await LoginCredential.create(props)).get({

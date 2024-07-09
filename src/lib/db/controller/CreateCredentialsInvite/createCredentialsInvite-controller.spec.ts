@@ -2,8 +2,8 @@ import {
   CreateCredentialsInviteWithAssociations,
   CreateCredentialsInviteCreationAttributes
 } from '../../models/types';
-import {LoginCredential} from '../../models';
 import {uuidV4Regex} from '../../../utils';
+import {LoginCredential} from '../../models';
 import {getSupervisorFromDB} from '../Supervisor';
 import {CreateCredentialsInviteModelController} from './index';
 
@@ -25,9 +25,7 @@ describe('CreateCredentialsInviteModelController', () => {
 
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: admin.id,
-        supervisor_id: supervisor.id,
-        default_email: 'createTestEmail@test.com',
-        default_password: 'createTestPassword'
+        supervisor_id: supervisor.id
       };
 
       createdCredentialsInvite =
@@ -39,8 +37,7 @@ describe('CreateCredentialsInviteModelController', () => {
       expect(createdCredentialsInvite).toHaveProperty('createdAt');
       expect(createdCredentialsInvite).toHaveProperty('updatedAt');
       expect(createdCredentialsInvite).toHaveProperty('expires_at');
-      expect(createdCredentialsInvite).toHaveProperty('default_email');
-      expect(createdCredentialsInvite).toHaveProperty('default_password');
+      expect(createdCredentialsInvite).toHaveProperty('invite_token');
       expect(createdCredentialsInvite?.supervisor_info).toHaveProperty('id');
       expect(createdCredentialsInvite?.supervisor_info).toMatchObject(supervisor);
       expect(createdCredentialsInvite?.created_by).toHaveProperty('id');
@@ -64,9 +61,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the created_by property is not a valid UUID', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: 'notAValidUUID',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test@test.com',
-        default_password: 'testPassword'
+        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? ''
       };
 
       try {
@@ -87,9 +82,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the supervisor_id property is not a valid UUID', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: 'notAValidUUID',
-        default_email: 'test@test.com',
-        default_password: 'testPassword'
+        supervisor_id: 'notAValidUUID'
       };
 
       try {
@@ -109,9 +102,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the admin supervisor does not exist', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: '00000000-0000-0000-0000-000000000000',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test@test.com',
-        default_password: 'testPassword'
+        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? ''
       };
 
       try {
@@ -131,9 +122,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the supervisor does not exist', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: '00000000-0000-0000-0000-000000000000',
-        default_email: 'test@test.com',
-        default_password: 'testPassword'
+        supervisor_id: '00000000-0000-0000-0000-000000000000'
       };
 
       try {
@@ -153,9 +142,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the supervisor already has a credentials invite', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test@test.com',
-        default_password: 'testPassword'
+        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? ''
       };
 
       try {
@@ -178,9 +165,7 @@ describe('CreateCredentialsInviteModelController', () => {
 
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: supervisor.id,
-        supervisor_id: supervisor.id,
-        default_email: 'test.com',
-        default_password: 'testPassword'
+        supervisor_id: supervisor.id
       };
 
       try {
@@ -214,9 +199,7 @@ describe('CreateCredentialsInviteModelController', () => {
         // try to create a new credentials invite for the supervisor
         const props: CreateCredentialsInviteCreationAttributes = {
           created_by: existingAdmin,
-          supervisor_id: supervisor?.id as string,
-          default_email: 'test1@test.com',
-          default_password: 'testPassword'
+          supervisor_id: supervisor?.id as string
         };
 
         await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
@@ -227,82 +210,10 @@ describe('CreateCredentialsInviteModelController', () => {
       expect.assertions(1);
     });
 
-    it('should throw an error if the default_email is missing', async () => {
-      const props: CreateCredentialsInviteCreationAttributes = {
-        created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        // @ts-expect-error testing bad input
-        default_email: undefined,
-        default_password: 'testPassword'
-      };
-
-      try {
-        await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-
-      expect.assertions(1);
-    });
-
-    it('should throw an error if the default_password is missing', async () => {
-      const props: CreateCredentialsInviteCreationAttributes = {
-        created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test@test.com',
-        // @ts-expect-error testing bad input
-        default_password: undefined
-      };
-
-      try {
-        await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-      expect.assertions(1);
-    });
-
-    it('should throw an error if the default_email is not a string', async () => {
-      const props: CreateCredentialsInviteCreationAttributes = {
-        created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        // @ts-expect-error testing bad input
-        default_email: 12345,
-        default_password: 'testPassword'
-      };
-
-      try {
-        await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-
-      expect.assertions(1);
-    });
-
-    it('should throw an error if the default_password is not a string', async () => {
-      const props: CreateCredentialsInviteCreationAttributes = {
-        created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test@test.com',
-        // @ts-expect-error testing bad input
-        default_password: 12345
-      };
-
-      try {
-        await CreateCredentialsInviteModelController.createCreateCredentialsInviteInDB(props);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-      expect.assertions(1);
-    });
-
     it('should throw an error if the email is an empty string', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: '',
-        default_password: 'testPassword'
+        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? ''
       };
 
       try {
@@ -317,9 +228,7 @@ describe('CreateCredentialsInviteModelController', () => {
     it('should throw an error if the password is less than 8 characters', async () => {
       const props: CreateCredentialsInviteCreationAttributes = {
         created_by: createdCredentialsInvite?.created_by.id ?? '',
-        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? '',
-        default_email: 'test99@test.com',
-        default_password: 'test'
+        supervisor_id: createdCredentialsInvite?.supervisor_info.id ?? ''
       };
 
       try {

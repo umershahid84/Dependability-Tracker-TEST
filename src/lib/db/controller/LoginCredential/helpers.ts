@@ -3,8 +3,7 @@ import {getCreateCredentialsInviteFromDB} from '../CreateCredentialsInvite';
 
 export const validateSupervisorCanCreateLoginCredential = async (
   supervisor_id: string,
-  default_email: string,
-  default_password: string
+  invite_token: string
 ): Promise<boolean> => {
   const credentialInvite: CreateCredentialsInviteWithAssociations | null =
     await getCreateCredentialsInviteFromDB({supervisor_id});
@@ -15,13 +14,13 @@ export const validateSupervisorCanCreateLoginCredential = async (
     );
   }
 
-  if (credentialInvite.default_email !== default_email) {
+  if ((credentialInvite?.expires_at ?? 0) < new Date()) {
     throw new Error(
       `\n❌ Supervisor ${supervisor_id} does not have permission to create login credentials`
     );
   }
 
-  if (!credentialInvite.comparePassword(default_password)) {
+  if (credentialInvite.invite_token !== invite_token) {
     throw new Error(
       `\n❌ Supervisor ${supervisor_id} does not have permission to create login credentials`
     );

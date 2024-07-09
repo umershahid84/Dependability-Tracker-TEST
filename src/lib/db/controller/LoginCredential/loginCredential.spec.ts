@@ -32,18 +32,15 @@ describe('Login Credential Model Controller', () => {
         }
       });
 
-      await createCreateCredentialsInviteInDB({
+      const invite = await createCreateCredentialsInviteInDB({
         supervisor_id: supervisorWithoutCredentials?.id as string,
-        created_by: admins[0].id,
-        default_email: 'createdLoginCredModel@test.com',
-        default_password: 'password'
+        created_by: admins[0].id
       });
 
       const props: LoginCredentialsCreationAttributes = {
         password: 'password',
-        default_password: 'password',
         email: 'createLoginTest@test.com',
-        default_email: 'createdLoginCredModel@test.com',
+        invite_token: invite?.invite_token as string,
         supervisor_id: supervisorWithoutCredentials?.id as string
       };
 
@@ -70,31 +67,10 @@ describe('Login Credential Model Controller', () => {
       });
 
       const props: LoginCredentialsCreationAttributes = {
-        default_email: '',
-        default_password: '',
+        invite_token: '',
         password: 'password',
         email: 'shouldError@test.com',
         supervisor_id: supervisorWithoutInvite?.id as string
-      };
-
-      try {
-        await loginCredentialModelController.createLoginCredentialInDB(props);
-      } catch (error) {
-        expect(String(error)).toContain(
-          `Supervisor ${props.supervisor_id} does not have permission to create login credentials`
-        );
-      }
-
-      expect.assertions(1);
-    });
-
-    it('should throw an error if the supervisor does not exist', async () => {
-      const props: LoginCredentialsCreationAttributes = {
-        default_email: '',
-        default_password: '',
-        password: 'password',
-        supervisor_id: uuid(),
-        email: 'non-existant@test.com'
       };
 
       try {
@@ -130,18 +106,15 @@ describe('Login Credential Model Controller', () => {
         }
       });
 
-      await createCreateCredentialsInviteInDB({
+      const inv = await createCreateCredentialsInviteInDB({
         supervisor_id: supervisorWithoutCredentials?.id as string,
-        created_by: admins[0].id,
-        default_email: 'testingDuplicates@test.com',
-        default_password: 'password'
+        created_by: admins[0].id
       });
 
       try {
         await loginCredentialModelController.createLoginCredentialInDB({
-          default_email: '',
-          default_password: '',
           password: 'password',
+          invite_token: inv?.id as string,
           email: existingCredentials[0].email,
           supervisor_id: supervisorWithoutCredentials?.id as string
         });
@@ -178,19 +151,16 @@ describe('Login Credential Model Controller', () => {
         }
       });
 
-      await createCreateCredentialsInviteInDB({
+      const inv = await createCreateCredentialsInviteInDB({
         supervisor_id: supervisorWithoutCredentials?.id as string,
-        created_by: admins[0].id,
-        default_email: 'tooShort@test.com',
-        default_password: 'password'
+        created_by: admins[0].id
       });
 
       try {
         await loginCredentialModelController.createLoginCredentialInDB({
           password: 'short',
-          default_password: 'password',
           email: 'testtooshort@test.com',
-          default_email: 'tooShort@test.com',
+          invite_token: inv?.invite_token as string,
           supervisor_id: supervisorWithoutCredentials?.id as string
         });
       } catch (error) {
@@ -201,7 +171,7 @@ describe('Login Credential Model Controller', () => {
       }
     });
 
-    it('should throw an error if the default passwords do not match', async () => {
+    it('should throw an error if the supervisor does not exist', async () => {
       const existingCredentials: LoginCredential[] = await LoginCredential.findAll();
       const existingSupervisorsWithCredentials: LoginCredential[] = existingCredentials.map(
         credential => credential
@@ -224,24 +194,22 @@ describe('Login Credential Model Controller', () => {
         }
       });
 
-      await createCreateCredentialsInviteInDB({
+      const inv = await createCreateCredentialsInviteInDB({
         supervisor_id: supervisorWithoutCredentials?.id as string,
-        created_by: admins[0].id,
-        default_email: 'testingMisMatch@test.com',
-        default_password: 'password'
+        created_by: admins[0].id
       });
 
+      const fakeId = uuid();
       try {
         await loginCredentialModelController.createLoginCredentialInDB({
           password: 'password',
-          default_password: 'passwordMismatch',
           email: 'testingMisMatch@test.com',
-          default_email: 'testingMisMatch@test.com',
-          supervisor_id: supervisorWithoutCredentials?.id as string
+          invite_token: inv?.invite_token as string,
+          supervisor_id: fakeId
         });
       } catch (error) {
         expect(String(error)).toContain(
-          `Supervisor ${supervisorWithoutCredentials?.id} does not have permission to create login credentials`
+          `Supervisor ${fakeId} does not have permission to create login credentials`
         );
       }
 

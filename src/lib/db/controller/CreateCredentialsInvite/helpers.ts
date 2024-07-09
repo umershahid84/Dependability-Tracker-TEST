@@ -46,30 +46,5 @@ export const validateCreateCredentialsInviteProps = async (
     );
   }
 
-  if (!props.default_email) {
-    throw new Error('Missing required default_email');
-  }
-
-  if (!props.default_password) {
-    throw new Error('Missing required default_password');
-  }
-
-  if (typeof props.default_email !== 'string') {
-    throw new Error('default_email must be a string');
-  }
-
-  if (typeof props.default_password !== 'string') {
-    throw new Error('default_password must be a string');
-  }
-
-  // istanbul ignore next
-  if (props.default_email.length === 0) {
-    throw new Error("default_email can't be empty");
-  }
-
-  if (props.default_password.length < 8) {
-    throw new Error('default_password must be at least 8 characters');
-  }
-
   return [admin, supervisor];
 };

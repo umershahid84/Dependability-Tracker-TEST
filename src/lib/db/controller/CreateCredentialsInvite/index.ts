@@ -27,9 +27,7 @@ export const createCreateCredentialsInviteInDB = async (
           createdAt: createCredentialsInvite.createdAt,
           updatedAt: createCredentialsInvite.updatedAt,
           expires_at: createCredentialsInvite.expires_at,
-          default_email: createCredentialsInvite.default_email,
-          comparePassword: createCredentialsInvite.comparePassword,
-          default_password: createCredentialsInvite.default_password
+          invite_token: createCredentialsInvite.invite_token
         }
       : null;
     // istanbul ignore next
@@ -67,10 +65,8 @@ export const getCreateCredentialsInviteFromDB = async (props: {
       createdAt: createCredentialsInvite.createdAt,
       updatedAt: createCredentialsInvite.updatedAt,
       expires_at: createCredentialsInvite.expires_at,
-      default_email: createCredentialsInvite.default_email,
-      comparePassword: createCredentialsInvite.comparePassword,
+      invite_token: createCredentialsInvite.invite_token,
       supervisor_info: supervisor as SupervisorWithAssociations,
-      default_password: createCredentialsInvite.default_password,
       created_by: {...(admin as SupervisorWithAssociations), is_admin: true}
     };
     // istanbul ignore next

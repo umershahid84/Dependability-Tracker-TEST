@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import {Op} from 'sequelize';
-import {getSequelize, CreateCredentialsInvite} from '../db';
+import {getSequelize, CreateCredentialsInvite} from '../lib/db';
 
 const removeExpired = async () => {
   let count = 0;

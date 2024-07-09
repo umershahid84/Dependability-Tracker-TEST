@@ -30,8 +30,7 @@ export type LoginCredentialsCreationAttributes = {
   updatedAt?: Date;
   is_default?: boolean;
   supervisor_id: string;
-  default_email: string;
-  default_password: string;
+  invite_token?: string;
 };
 
 export type LoginCredentialsWithAssociations = {

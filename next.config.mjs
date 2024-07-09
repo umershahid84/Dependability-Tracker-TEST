@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  skipTrailingSlashRedirect: true
+  reactStrictMode: true,
 };
 
 export default nextConfig;

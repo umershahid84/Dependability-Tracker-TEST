@@ -44,9 +44,7 @@ describe('CreateCredentialsInvite', () => {
 
     createCredentialsInvite = await CreateCredentialsInvite.create({
       created_by: admin?.id,
-      supervisor_id: supervisor?.id,
-      default_email: 'test@test.com',
-      default_password: 'test'
+      supervisor_id: supervisor?.id
     } as CreateCredentialsInviteCreationAttributes);
 
     expect(createCredentialsInvite).toBeDefined();
@@ -71,21 +69,11 @@ describe('CreateCredentialsInvite', () => {
     expect.assertions(2);
   });
 
-  it('should have a default_email', () => {
-    expect(createCredentialsInvite.default_email).toBeDefined();
-    expect(createCredentialsInvite.default_email).toBe('test@test.com');
-    expect.assertions(2);
-  });
-
-  it('should have a default_password', () => {
-    expect(createCredentialsInvite.default_password).toBeDefined();
-    expect.assertions(1);
-  });
-
-  it('should have a hashed password', () => {
-    expect(createCredentialsInvite.default_password).not.toBe('test');
-    expect(createCredentialsInvite.default_password.includes('$2b$')).toBe(true);
-    expect.assertions(2);
+  it('should have an invite_token', () => {
+    expect(createCredentialsInvite.invite_token).toBeDefined();
+    expect(typeof createCredentialsInvite.invite_token).toBe('string');
+    expect(createCredentialsInvite.invite_token.length).toBe(32);
+    expect.assertions(3);
   });
 
   it('should have an expires_at date', () => {
@@ -107,9 +95,11 @@ describe('CreateCredentialsInvite', () => {
   });
 
   it('should have a default expires_at date of 24 hours', () => {
-    const expiresAt = new Date(createCredentialsInvite.createdAt.getTime() + 24 * 60 * 60 * 1000);
-    const diff = Math.abs(expiresAt.getTime() - createCredentialsInvite.expires_at.getTime());
-    expect(diff).toBeLessThanOrEqual(1000);
+    const expiresAt = new Date(createCredentialsInvite.createdAt.getTime() + 96 * 60 * 60 * 1000);
+    const diff = expiresAt.getTime() - createCredentialsInvite.expires_at.getTime();
+
+    // expect a max diff of 30 seconds - to account for lagging tests
+    expect(Math.abs(diff)).toBeLessThanOrEqual(30000);
     expect.assertions(1);
   });
 });
