@@ -38,7 +38,7 @@ if (require.main === module) {
   const [, , ...args] = process.argv;
 
   // run every minute by default, expects an interval in milliseconds
-  const intervalInMs: number = parseInt(args[0], 10) || 60000;
+  const intervalInMs: number = parseInt(args[0], 10) ?? 60000;
   removeExpired();
   setInterval(() => {
     removeExpired();

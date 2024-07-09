@@ -1,0 +1,69 @@
+'use client';
+import {useEffect, useState} from 'react';
+
+export type FormInputProps = {
+  id: string;
+  type: string;
+  label: string;
+  value: string;
+  errors?: string[];
+  required?: boolean;
+  placeholder?: string;
+  onBlur?: (event: Event) => void;
+  onFocus?: (event: Event) => void;
+  onChange?: (event: Event) => void;
+  setValidated?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const defaultStyles = {
+  label: 'place-self-start mb-1',
+  required: 'text-red-600 text-bold',
+  error: 'text-red-600 text-sm text-bold mb-1 ',
+  span: 'flex flex-row justify-between items-center w-full',
+  div: 'w-full flex flex-col justify-center items-center p-2',
+  input:
+    'w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none focus:ring-[var(--green)]'
+};
+
+export default function FormInput(props: Readonly<FormInputProps>): React.JSX.Element {
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [styles, setStyles] = useState<typeof defaultStyles>(defaultStyles);
+
+  useEffect(() => {
+    props.value.length > 0 && setHasError((props?.errors?.length ?? 0) > 0);
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    props.value.length > 0 && setHasError((props?.errors?.length ?? 0) > 0);
+    // eslint-disable-next-line
+  }, [props.errors]);
+
+  useEffect(() => {
+    hasError &&
+      setStyles({
+        ...styles,
+        input:
+          'w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none focus:ring-red-500'
+      });
+
+    !hasError && setStyles({...styles, input: defaultStyles.input});
+    // eslint-disable-next-line
+  }, [hasError]);
+  return (
+    <div className={styles.div}>
+      <span className={styles.span}>
+        <label className={styles.label} htmlFor={props.id}>
+          {props.required && <span className={styles.required}>*</span>} {props.label}
+        </label>
+        {props.errors?.map((error, i) => (
+          <p className={styles.error} key={`${props.label}-${i}`}>
+            {error}
+          </p>
+        ))}
+      </span>
+      {/* @ts-ignore */}
+      <input className={styles.input} tabIndex={0} {...props} />
+    </div>
+  );
+}

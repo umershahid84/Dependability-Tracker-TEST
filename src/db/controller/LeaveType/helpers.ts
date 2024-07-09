@@ -5,7 +5,7 @@ export const validateLeaveTypeReason = (reason: string): boolean => {
   if (typeof reason !== 'string') {
     throw new Error('Reason must be a string');
   }
-  if (reason.length < 5 || reason.length > 100) {
+  if (reason.length < 5 ?? reason.length > 100) {
     throw new Error('Reason must be between 5 and 100 characters');
   }
 

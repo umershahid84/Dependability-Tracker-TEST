@@ -1,4 +1,4 @@
-import {uuid} from '../../utils/uuid';
+import {uuid} from '../../utils/shared/uuid';
 import {Division, Employee} from '../models';
 import {EmployeeCreationAttributes} from '../models/Employee';
 

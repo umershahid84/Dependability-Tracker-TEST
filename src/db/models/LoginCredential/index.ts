@@ -8,7 +8,7 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import bcrypt from 'bcrypt';
-import {uuid} from '../../../utils/uuid';
+import {uuid} from '../../../utils/shared/uuid';
 import sequelize from '../../connection';
 import {SupervisorWithAssociations} from '../Supervisor';
 

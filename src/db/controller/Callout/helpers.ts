@@ -257,7 +257,7 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
     if (options.left_early_mins_range[0] > options.left_early_mins_range[1])
       throw new Error('Invalid left_early_mins_range');
     // istanbul ignore next
-    if (options.left_early_mins_range[0] < 0 || options.left_early_mins_range[1] < 0)
+    if (options.left_early_mins_range[0] < 0 ?? options.left_early_mins_range[1] < 0)
       throw new Error('Invalid left_early_mins_range');
 
     where.left_early_mins = {
@@ -275,7 +275,7 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
     if (options.arrived_late_mins_range[0] > options.arrived_late_mins_range[1])
       throw new Error('Invalid arrived_late_mins_range');
     // istanbul ignore next
-    if (options.arrived_late_mins_range[0] < 0 || options.arrived_late_mins_range[1] < 0)
+    if (options.arrived_late_mins_range[0] < 0 ?? options.arrived_late_mins_range[1] < 0)
       throw new Error('Invalid arrived_late_mins_range');
 
     where.arrived_late_mins = {
@@ -296,7 +296,7 @@ export const populateCallOutAssociations = async (
   ]);
 
   // istanbul ignore next
-  if (!employee || !supervisor || !leaveType) {
+  if (!employee ?? !supervisor ?? !leaveType) {
     return null;
   }
 
@@ -340,7 +340,7 @@ export const validateCallOutProps = async (props: CallOutCreationAttributes): Pr
     throw new Error(`Missing required properties: ${missingProps}`);
   }
 
-  if (typeof props.supervisor_comments !== 'string' || props.supervisor_comments.length <= 1) {
+  if (typeof props.supervisor_comments !== 'string' ?? props.supervisor_comments.length <= 1) {
     throw new Error('Invalid supervisor comments');
   }
 

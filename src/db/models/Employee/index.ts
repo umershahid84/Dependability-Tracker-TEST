@@ -19,7 +19,7 @@ import {
   HasManyRemoveAssociationsMixin
 } from 'sequelize';
 import CallOut from '../Callout';
-import {uuid} from '../../../utils/uuid';
+import {uuid} from '../../../utils/shared/uuid';
 import sequelize from '../../connection';
 import {DivisionAttributes} from '../Division';
 

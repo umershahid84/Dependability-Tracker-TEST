@@ -1,0 +1,74 @@
+'use client';
+import Loading from '../Loading';
+import {useEffect, useState} from 'react';
+
+export type FormActionProps = {
+  type: string;
+  label?: string;
+  isValid: boolean;
+  hasError?: boolean;
+  onAction?: (event: Event) => void;
+};
+
+const defaultStyles = {
+  div: 'w-full flex flex-col justify-center items-center mt-4',
+  defaultButton:
+    'min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md hover:bg-[var(--green)] hover:text-white ',
+  disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
+};
+
+export default function FormAction(props: Readonly<FormActionProps>): React.JSX.Element {
+  const [styles, setStyles] = useState(defaultStyles);
+  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsValid(props.isValid && !isClicked);
+  }, [props.isValid, isClicked]);
+
+  useEffect(() => {
+    !isValid &&
+      styles.defaultButton !== defaultStyles.disabled &&
+      setStyles({
+        ...styles,
+        defaultButton: defaultStyles.disabled
+      });
+
+    isValid &&
+      styles.defaultButton !== defaultStyles.defaultButton &&
+      setStyles({
+        ...styles,
+        defaultButton: defaultStyles.defaultButton
+      });
+    // eslint-disable-next-line
+  }, [isValid]);
+
+  const actionWrapper = (event: Event): void => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (props.onAction) {
+      setIsClicked(true);
+      props.onAction(event);
+    }
+  };
+
+  useEffect(() => {
+    if (props.hasError) {
+      setIsClicked(false);
+    }
+  }, [props.hasError]);
+
+  return (
+    <div className={styles.div}>
+      <button
+        type="button"
+        // @ts-ignore
+        onClick={actionWrapper}
+        disabled={!props.isValid}
+        className={styles.defaultButton}>
+        {isClicked && isValid ? <Loading label="Processing..." /> : props.label ?? 'Submit'}
+      </button>
+    </div>
+  );
+}

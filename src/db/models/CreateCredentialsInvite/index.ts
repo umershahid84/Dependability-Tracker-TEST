@@ -9,7 +9,7 @@ import {
 } from 'sequelize';
 import bcrypt from 'bcrypt';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/uuid';
+import {uuid} from '../../../utils/shared/uuid';
 import {hashPassword} from '../LoginCredential';
 import Supervisor, {AdminSupervisor, SupervisorWithAssociations} from '../Supervisor';
 

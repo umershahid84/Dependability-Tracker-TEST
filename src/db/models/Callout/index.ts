@@ -7,7 +7,7 @@ import {
   CreationOptional,
   InferCreationAttributes
 } from 'sequelize';
-import {uuid} from '../../../utils/uuid';
+import {uuid} from '../../../utils/shared/uuid';
 import sequelize from '../../connection';
 import {EmployeeWithAssociations} from '../Employee';
 import {SupervisorWithAssociations} from '../Supervisor';

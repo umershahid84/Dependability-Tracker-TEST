@@ -6,7 +6,7 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/uuid';
+import {uuid} from '../../../utils/shared/uuid';
 
 export interface DivisionAttributes {
   id: string;
