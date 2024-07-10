@@ -17,35 +17,31 @@ export interface IToastProps {
 }
 
 const styles = {
+  infoBg: 'bg-cyan-500',
+  errorBg: 'bg-red-500',
+  warningBg: 'bg-amber-500',
+  successBg: 'bg-[var(--green)]',
+  infoText: 'text-cyan-500',
+  errorText: 'text-red-500',
+  warningText: 'text-amber-500',
+  successText: 'text-[var(--green)]',
   heading: 'text-xl font-light',
-
   toastIcon: 'w-6 h-6 mr-2 fill-current',
   message: 'text-gray-300 text-base mt-2',
   timestamp: 'text-gray-400 text-xs mt-2',
   body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-slate-800 
-  relative p-2 rounded-r-[5px] border-2 border-slate-900`,
+  relative p-2 rounded-r-[5px]`,
   closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 hover:text-red-500',
-  article: `w-[550px] bg-slate-800 rounded-[8px] shadow-lg flex flex-row 
-  items-center justify-end border-2 border-slate-900`,
+  article: `w-[450px] sm:w-[550px] rounded-[8px] flex flex-row 
+  items-center justify-end`,
   textContainer: 'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300'
 };
 
-const toastClassNames = {
-  [ToastTypes.Info]: {bg: 'bg-cyan-500', text: 'text-cyan-500'},
-  [ToastTypes.Error]: {bg: 'bg-red-500', text: 'text-red-500'},
-  [ToastTypes.Warning]: {bg: 'bg-amber-500', text: 'text-amber-500'},
-  [ToastTypes.Success]: {bg: 'bg-[var(--green)]', text: 'text-[var(--green)]'}
-};
-
 const toastIcons = {
-  [ToastTypes.Info]: <InfoIcon className={`w-8 h-8 ${toastClassNames[ToastTypes.Info].text}`} />,
-  [ToastTypes.Error]: <ErrorIcon className={`w-8 h-8 ${toastClassNames[ToastTypes.Error].text}`} />,
-  [ToastTypes.Warning]: (
-    <WarningIcon className={`w-8 ${toastClassNames[ToastTypes.Warning].text}`} />
-  ),
-  [ToastTypes.Success]: (
-    <SuccessIcon className={`w-8 h-8 ${toastClassNames[ToastTypes.Success].text}`} />
-  )
+  [ToastTypes.Info]: <InfoIcon className={`w-8 h-8 ${styles.infoText}`} />,
+  [ToastTypes.Error]: <ErrorIcon className={`w-8 h-8 ${styles.errorText}`} />,
+  [ToastTypes.Warning]: <WarningIcon className={`w-8 ${styles.warningText}`} />,
+  [ToastTypes.Success]: <SuccessIcon className={`w-8 h-8 ${styles.successText}`} />
 };
 
 const formatDateTime = (date: Date): string => {
@@ -106,9 +102,11 @@ export default function Toast(props: {
 
   const title: string | undefined = props.title !== '' ? props.title : props.type;
 
+  const bg = styles[`${props.type}Bg`];
+  const dropShadow = `toast-${props.type}`;
+
   return isMounted ? (
-    <article
-      className={removeExtraWhiteSpaces(`${styles.article} ${toastClassNames[props.type].bg}`)}>
+    <article className={removeExtraWhiteSpaces(`${styles.article} ${bg} ${dropShadow}`)}>
       <section className={removeExtraWhiteSpaces(styles.body)}>
         <CloseIcon className={styles.closeIcon} onClick={onClose} />
 

@@ -2,32 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global CSS file */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
+  -webkit-text-fill-color: rgb(255,255,255) !important;
+}
+
+input:-moz-autofill,
+input:-moz-autofill:hover,
+input:-moz-autofill:focus,
+input:-moz-autofill:active {
+  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
+  -moz-text-fill-color: rgb(255,255,255) !important;
+}
+
+input:-ms-autofill,
+input:-ms-autofill:hover,
+input:-ms-autofill:focus,
+input:-ms-autofill:active {
+  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
+  -ms-text-fill-color: rgb(255,255,255) !important;
+}
+
+input:-o-autofill,
+input:-o-autofill:hover,
+input:-o-autofill:focus,
+input:-o-autofill:active {
+  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
+  -o-text-fill-color: rgb(255,255,255) !important;
+}
+
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --green:#4aca00;
+
+  --error: #ff0000;
+  --success: #09a52e;
+  --warning: #ff9f1a;
+  --info: #1bc2ff;
+
+   scrollbar-width: thin;
+  scrollbar-color: rgb(51 65 85) rgb(28, 33, 37) ;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+::-webkit-scrollbar-track {
+  background: rgb(28, 33, 37);
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(51 65 85);
+  border-radius: 12px;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.toast-info {
+    box-shadow: 0 0 0 2px var(--info) !important;
+}
+
+.toast-success {
+    box-shadow: 0 0 0 2px var(--success)!important;
+}
+
+.toast-warning {
+    box-shadow: 0 0 0 2px var(--warning)!important;
+}
+
+.toast-error {
+    box-shadow: 0 0 0 2px var(--error)!important;
 }

@@ -56,11 +56,13 @@ export default function FormInput(props: Readonly<FormInputProps>): React.JSX.El
         <label className={styles.label} htmlFor={props.id}>
           {props.required && <span className={styles.required}>*</span>} {props.label}
         </label>
-        {props.errors?.map((error, i) => (
-          <p className={styles.error} key={`${props.label}-${i}`}>
-            {error}
-          </p>
-        ))}
+        <span>
+          {props.errors?.map((error, i) => (
+            <p className={styles.error} key={`${props.label}-${i}`}>
+              {error}
+            </p>
+          ))}
+        </span>
       </span>
       {/* @ts-ignore */}
       <input className={styles.input} tabIndex={0} {...props} />

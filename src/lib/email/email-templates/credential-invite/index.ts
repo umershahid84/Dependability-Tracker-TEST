@@ -1,17 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-const logoPath = path.resolve(__dirname, './seatac-dark.png');
-
-console.log('LOGO PATH:', logoPath);
+const logoPath = path.resolve(__dirname, '../seatac-dark.png');
 
 const logo = fs.readFileSync(logoPath, 'base64');
 
-export const emailVerificationTemplate = (
+export const credentialInviteTemplate = (
   inviteId: string,
   username: string,
   inviteToken: string,
-  defaultPassword: string,
   createLoginCredentialsLink: string
 ): string => {
   return `
@@ -129,18 +126,6 @@ export const emailVerificationTemplate = (
         .button a:hover {
             background-color: #2980b9;
         }
-
-        .closing {
-            margin-top: 20px;
-        }
-
-        .footer {
-            text-align: center;
-            padding-top: 20px;
-            font-size: 12px;
-            color: #888;
-            width: 100%;
-        }
     </style>
         </head>
         <body>
@@ -154,16 +139,14 @@ export const emailVerificationTemplate = (
                     <p>Dear ${username},</p>
                     <p>Click on the link below to create your login credentials:</p>
                     <div class="verification-code">
-                        <h2>Use the token below when creating your login credentials!</h2>
+                        <h2>Click the link below</h2>
                         
-                      <p>Invite Token: ${inviteToken}</p>
-
+                        <p>Invite Token: ${inviteToken}</p>
 
                         <div class="button">
-                            <a href=${createLoginCredentialsLink}?invite-id=${inviteId} rel='noreferrer noopener' target="_blank">Create Credentials</a>
+                            <a href=${createLoginCredentialsLink}?invite-id=${inviteId}&token=${inviteToken} rel='noreferrer noopener' target="_blank">Create Credentials</a>
                         </div>
                     </div>  
-                    
                 </div>
             </section>
         </body>

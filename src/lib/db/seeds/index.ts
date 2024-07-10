@@ -5,6 +5,7 @@ import seedEmployees from './employees';
 import seedDivisions from './divisions';
 import seedLeaveTypes from './leaveTypes';
 import seedSupervisors from './supervisors';
+import seedCredentialInvites from './credentialInvites';
 
 export const seedDatabase = async () => {
   try {
@@ -30,6 +31,10 @@ if (require.main === module) {
     if (args.includes('callouts') && process.env.NODE_ENV !== 'production') {
       const numberOfCallouts = parseInt(args[args.indexOf('callouts') + 1] ?? 20, 10);
       await seedCallouts(numberOfCallouts);
+    }
+
+    if (args.includes('credentialInvites')) {
+      await seedCredentialInvites();
     }
   })();
 }

@@ -41,6 +41,7 @@ export type LoginCredentialsWithAssociations = {
   password: string;
   is_default?: boolean;
   supervisor_info: SupervisorWithAssociations;
+  comparePassword: (password: string) => boolean;
 };
 
 export const hashPassword = async (password: string): Promise<string> => {

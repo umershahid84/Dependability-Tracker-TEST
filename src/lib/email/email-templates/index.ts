@@ -1,1 +1,1 @@
-export * from './email-verification';
+export * from './credential-invite';

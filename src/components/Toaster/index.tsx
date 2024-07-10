@@ -20,7 +20,7 @@ export const makeToast = (props: IToastMessageContextType): void => {
 };
 
 const styles = {
-  toaster: 'fixed top-0 left-60 z-50 w-auto flex flex-col items-center p-4 gap-6'
+  toaster: 'absolute top-0 lef-60 z-50 w-auto flex flex-col items-center p-4 gap-6'
 };
 
 // test messages
@@ -64,7 +64,6 @@ export default function Toaster(): JSX.Element {
   const handleRemoveToast = useCallback((event: CustomEvent): void => {
     const {detail} = event;
     const {id} = detail as {id: string};
-
     setToasts(prevToasts => {
       const newToasts = {...prevToasts};
       delete newToasts[id];

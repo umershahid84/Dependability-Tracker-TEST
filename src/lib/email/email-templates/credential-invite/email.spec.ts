@@ -1,12 +1,11 @@
-import {emailVerificationTemplate} from './index';
+import {credentialInviteTemplate} from './index';
 
 describe('Email Verification Template', () => {
-  const template = emailVerificationTemplate(
+  const template = credentialInviteTemplate(
     '123',
     'Testy McTestface',
-    'default email',
     '1234',
-    'http://localhost:3000'
+    'http://localhost:3001'
   );
 
   console.log(template);

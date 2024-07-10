@@ -16,5 +16,6 @@ export const validators = {
     const re = /^[a-zA-Z0-9 ]*$/g;
     return re.test(value);
   },
-  has8Chars: (value: string) => value?.length >= 8
+  has8Chars: (value: string) => value?.length >= 8,
+  has16Chars: (value: string) => value?.length >= 16
 };

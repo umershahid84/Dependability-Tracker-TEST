@@ -1,17 +1,19 @@
 'use client';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
-import {FormInput, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators} from '../../hooks';
+import {FormInput, Form, FormAction, makeToast, ToastTypes} from '../../components';
 
 interface FormState {
-  email: string | null;
-  password: string | null;
+  email: string;
+  password: string;
 }
 
 const defaultFormState: FormState = {email: '', password: ''};
 
 export default function LoginForm(): React.JSX.Element {
+  const router = useRouter();
   const [hasError, setHasError] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean | null>(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
@@ -31,8 +33,8 @@ export default function LoginForm(): React.JSX.Element {
 
   //  event handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const name = e?.target?.getAttribute('id') ?? '';
     const {value} = e.target;
+    const name = e?.target?.getAttribute('id') ?? '';
     // update the form state
     setFormState({...formState, [name]: value});
   };
@@ -42,12 +44,39 @@ export default function LoginForm(): React.JSX.Element {
     e.stopPropagation();
 
     try {
-      // reset the form state
-      setFormState(defaultFormState);
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formState)
+      });
 
-      window.location.reload();
+      if (!response.ok) {
+        throw new Error('Unauthorized request');
+      } else {
+        const data = await response.json();
+
+        makeToast({
+          title: 'Success',
+          type: ToastTypes.Success,
+          message: data.message
+        });
+
+        // reset the form and redirect to the dashboard
+        setFormState(defaultFormState);
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 800);
+      }
     } catch (error) {
       setHasError(true);
+      makeToast({
+        title: 'Error',
+        type: ToastTypes.Error,
+        message: 'There was an error logging into your account. Please try again.',
+        timeOut: 7500
+      });
     }
   };
 
