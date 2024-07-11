@@ -1,5 +1,5 @@
 import {PropsWithChildren} from 'react';
-import {removeExtraWhiteSpaces} from '../../lib/utils/shared/strings';
+import {trim} from '../../lib/utils/shared/strings';
 
 const styles = {
   form: `flex flex-col justify-center items-center w-full min-w-[450px] max-w-2xl bg-slate-900 p-4
@@ -7,5 +7,5 @@ const styles = {
 };
 
 export default function Form({children}: Readonly<PropsWithChildren>): JSX.Element {
-  return <form className={removeExtraWhiteSpaces(styles.form)}>{children}</form>;
+  return <form className={trim(styles.form)}>{children}</form>;
 }

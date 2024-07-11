@@ -1,5 +1,5 @@
 // remove extra white spaces from a string, tabs, and new lines
-export const removeExtraWhiteSpaces = (str: string): string => str.replace(/\s+/g, ' ').trim();
+export const trim = (str: string): string => str?.replace(/\s+/g, ' ')?.trim();
 export function headingNormalizer(text = '') {
   if (!text ?? text === undefined) {
     return '';
@@ -21,4 +21,13 @@ export const formatter = {
    * headingNormalizer('HELLO WORLD!') // 'Hello World!'
    */
   headingNormalizer
+};
+
+export const getDivisionNameFromPath = (path: string) => {
+  const words = path.split('/divisions/')[1].replace('-', ' ')?.replace('.json', '')?.split(' ');
+
+  for (let word of words) {
+    word = word.charAt(0).toUpperCase() + word.slice(1);
+  }
+  return words?.join(' ');
 };

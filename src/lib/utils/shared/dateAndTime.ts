@@ -18,3 +18,11 @@ export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
   const _date = new Date(date);
   return _date.toISOString().split('T')[0];
 };
+
+export const getDate = (date: Date): string => {
+  return new Date(date).toLocaleDateString();
+};
+
+export const getTime = (date: Date): string => {
+  return new Date(date).toLocaleTimeString();
+};

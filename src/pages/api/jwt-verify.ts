@@ -3,14 +3,14 @@ import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
 import {getSupervisorFromDB} from '@/lib/db/controller';
-import {IJwtPayload, verifyJwtToken_RequiresNode} from '@/auth';
+import {JwtPayload, verifyJwtToken_RequiresNode} from '@/auth';
 import {SupervisorWithAssociations} from '@/lib/db/models/Supervisor';
 
 // inviteToken, password, email
 
 export default async function supervisorLoginApiHandler(
   req: Request,
-  res: NextApiResponse<{token: IJwtPayload} | ApiData>
+  res: NextApiResponse<{token: JwtPayload} | ApiData>
 ) {
   const {token} = req.body as {
     token: string;
@@ -22,7 +22,7 @@ export default async function supervisorLoginApiHandler(
 
   //@ts-ignore
 
-  const verifiedToken: IJwtPayload | undefined = verifyJwtToken_RequiresNode(token);
+  const verifiedToken: JwtPayload | undefined = verifyJwtToken_RequiresNode(token);
 
   if (!verifiedToken) {
     return res.status(401).json({error: 'Unauthorized request'});

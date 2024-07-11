@@ -1,7 +1,7 @@
 'use client';
 import {useState, useEffect} from 'react';
-import {formatter, removeExtraWhiteSpaces} from '../../lib/utils/shared/strings';
-import {CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon} from '../Icons';
+import {formatter, trim} from '../../../lib/utils/shared/strings';
+import {CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon} from '../../Icons';
 
 export enum ToastTypes {
   Info = 'info',
@@ -106,8 +106,8 @@ export function Toast(props: {
   const dropShadow = `toast-${props.type}`;
 
   return isMounted ? (
-    <article className={removeExtraWhiteSpaces(`${styles.article} ${bg} ${dropShadow}`)}>
-      <section className={removeExtraWhiteSpaces(styles.body)}>
+    <article className={trim(`${styles.article} ${bg} ${dropShadow}`)}>
+      <section className={trim(styles.body)}>
         <CloseIcon className={styles.closeIcon} onClick={onClose} />
 
         {toastIcons[props.type]}

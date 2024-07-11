@@ -12,27 +12,27 @@ const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) || ('HS256
 // TODO: Encrypt the JWT so it is unreadable by the client
 
 // the payload of the jwt token
-export type IJwtPayload = {
+export type JwtPayload = {
   email: string;
   username: string;
   isAdmin: boolean;
   supervisorId: string;
 };
 
-// details from the IJwtPayload that are exposed to the client
+// details from the JwtPayload that are exposed to the client
 export type ClientSidePayload = {
   username: string;
   isAdmin: boolean;
 };
 
 // not to be used outside of the node environment uses the crypto module from node
-export const verifyJwtToken_RequiresNode = (token: string): IJwtPayload | undefined => {
+export const verifyJwtToken_RequiresNode = (token: string): JwtPayload | undefined => {
   try {
     // we decode the token and return it if it is valid
-    const decoded: IJwtPayload = jwt.verify(token, SECRET, {
+    const decoded: JwtPayload = jwt.verify(token, SECRET, {
       maxAge: EXPIRES_IN,
       algorithms: [ALGORITHM]
-    }) as IJwtPayload;
+    }) as JwtPayload;
 
     return decoded;
   } catch (error) {
@@ -51,7 +51,7 @@ export type Redirect = {
 // To be used in getServerSideProps to get the token and forward the user to the login page if the token is invalid
 export const getTokenForServerSideProps = (request: {
   req: Request;
-}): IJwtPayload | Redirect | undefined => {
+}): JwtPayload | Redirect | undefined => {
   const {req} = request;
   const cookie = req.cookies['auth-token'];
   const token = verifyJwtToken_RequiresNode(cookie ?? '');
@@ -72,7 +72,7 @@ export const getTokenForServerSideProps = (request: {
 export const getJwtTokenForAPI = (
   req: Request,
   res: NextApiResponse<ApiData>
-): undefined | IJwtPayload | Redirect => {
+): undefined | JwtPayload | Redirect => {
   const token = getTokenForServerSideProps({req});
 
   const hasRedirect = (token as Redirect)?.redirect;
@@ -88,7 +88,7 @@ export const getJwtTokenForAPI = (
 // To be used in the NextEdge Environment aka NextMiddleware
 export const getJwtTokenInEdgeEnvironments = async (
   req: NextRequest
-): Promise<IJwtPayload | undefined> => {
+): Promise<JwtPayload | undefined> => {
   try {
     let cookies: RequestCookies = req.cookies ?? '';
 
@@ -115,6 +115,6 @@ export const getJwtTokenInEdgeEnvironments = async (
   }
 };
 
-export const signJwtToken = (payload: IJwtPayload): string => {
+export const signJwtToken = (payload: JwtPayload): string => {
   return jwt.sign({...payload}, SECRET, {algorithm: ALGORITHM, expiresIn: EXPIRES_IN});
 };

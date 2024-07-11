@@ -1,4 +1,4 @@
-import {getJwtTokenInEdgeEnvironments, IJwtPayload} from './auth';
+import {getJwtTokenInEdgeEnvironments, JwtPayload} from './auth';
 import {NextResponse, NextRequest} from 'next/server';
 
 const supervisorPaths: string[] = [
@@ -11,13 +11,13 @@ const supervisorPaths: string[] = [
   '/divisions/ground-transportation'
 ];
 
-const supervisorOnly = (authToken: IJwtPayload | undefined, request: NextRequest) => {
+const supervisorOnly = (authToken: JwtPayload | undefined, request: NextRequest) => {
   if (!authToken) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 };
 
-const adminOnly = (authToken: IJwtPayload | undefined, request: NextRequest) => {};
+const adminOnly = (authToken: JwtPayload | undefined, request: NextRequest) => {};
 
 export async function middleware(request: NextRequest) {
   const authToken = await getJwtTokenInEdgeEnvironments(request);
@@ -28,7 +28,6 @@ export async function middleware(request: NextRequest) {
 
   for (const path of supervisorPaths) {
     if (request.nextUrl.pathname.startsWith(path)) {
-      console.log('path', path);
       return supervisorOnly(authToken, request);
     }
   }

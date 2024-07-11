@@ -93,6 +93,7 @@ export const buildEditableCalloutProps = async (
     withProps.callout_date = newTime;
     withProps.callout_time = newTime;
   }
+
   return [withProps, existingCallout as CallOut];
 };
 

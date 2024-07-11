@@ -1,10 +1,17 @@
 import {
   DivisionAttributes,
   LeaveTypeAttributes,
-  EmployeeWithAssociations
+  EmployeeWithAssociations,
+  CallOutWithAssociations
 } from '@/lib/db/models/types';
 import {DefaultLeaveTypes} from '@/lib/db/models';
-import {getDivisionFromDB, getEmployeeFromDB, getLeaveTypeFromDB} from '@/lib/db/controller';
+import {
+  getCallOutFromDB,
+  getDivisionFromDB,
+  getEmployeeFromDB,
+  getLeaveTypeFromDB
+} from '@/lib/db/controller';
+import {getDivisionNameFromPath} from '../../shared/strings';
 
 export const defaultLeaveTypes: DefaultLeaveTypes[] = [
   DefaultLeaveTypes.SICK,
@@ -28,15 +35,8 @@ export const defaultLeaveTypes: DefaultLeaveTypes[] = [
 
 export const getServerSidePropsForCallOutForm = async (request: {req: Request}) => {
   try {
-    const path = request.req.url;
-
-    const words = path.split('/divisions/')[1].replace('-', ' ')?.split(' ');
-
-    for (let word of words) {
-      word = word.charAt(0).toUpperCase() + word.slice(1);
-    }
-
-    const division: DivisionAttributes | null = await getDivisionFromDB.byName(words?.join(' '));
+    const currentDivision = getDivisionNameFromPath(request.req.url);
+    const division: DivisionAttributes | null = await getDivisionFromDB.byName(currentDivision);
 
     const divisionEmployees: (EmployeeWithAssociations | null)[] =
       await getEmployeeFromDB.all.byDivision(division?.id ?? '');
@@ -56,10 +56,40 @@ export const getServerSidePropsForCallOutForm = async (request: {req: Request}) 
       }
     };
   } catch (error) {
+    console.error('Error in getServerSidePropsForCallOutForm', error);
     return {
       props: {
         employees: JSON.stringify([]),
         leaveTypes: JSON.stringify([])
+      }
+    };
+  }
+};
+
+export const getServerSidePropsForTwoWeekCallOutHistory = async (request: {req: Request}) => {
+  try {
+    const currentDivision = getDivisionNameFromPath(request.req.url);
+    const division: DivisionAttributes | null = await getDivisionFromDB.byName(currentDivision);
+
+    // get callOuts for the last two weeks
+    const callOuts: (CallOutWithAssociations | null)[] = (
+      (await getCallOutFromDB.all({
+        shift_date_range: [new Date(Date.now() - 12096e5), new Date(Date.now())]
+      })) ?? []
+    ).filter(callOut =>
+      callOut?.employee?.divisions?.map(div => div.id).includes(division?.id as string)
+    );
+
+    return {
+      props: {
+        callOuts: JSON.stringify(callOuts ?? [])
+      }
+    };
+  } catch (error) {
+    console.error('Error in getServerSidePropsForTwoWeekCallOutHistory', error);
+    return {
+      props: {
+        callOuts: JSON.stringify([])
       }
     };
   }

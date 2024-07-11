@@ -2,6 +2,8 @@ import {useIsMounted} from '@/hooks';
 import {dateTo_HH_MM_SS} from '@/lib/utils';
 import React, {useEffect, useState} from 'react';
 import {makeToast, ToastTypes} from '@/components';
+import {ApiData} from '@/pages/api/sign-up';
+import {CallOutWithAssociations} from '@/lib/db/models/Callout';
 
 export type DefaultCallOutFormData = {
   callDate: Date;
@@ -25,8 +27,8 @@ export const getDefaultCallOutFormData = (): DefaultCallOutFormData => {
     employeeName: '',
     leftEarlyMinutes: 0,
     lateArrivalMinutes: 0,
-    shiftTime: dateTo_HH_MM_SS(now),
-    callTime: dateTo_HH_MM_SS(now)
+    callTime: dateTo_HH_MM_SS(now),
+    shiftTime: dateTo_HH_MM_SS(now)
   };
 };
 
@@ -42,23 +44,31 @@ export type UseCallOutFormState = {
   ) => void;
 };
 
-export function useCallOutFormState() {
+export function useCallOutFormState(callback?: (data: CallOutWithAssociations) => void) {
   const isMounted = useIsMounted();
   const defaultFormData = getDefaultCallOutFormData();
   const [callTime, setCallTime] = useState<string>(dateTo_HH_MM_SS(new Date()));
   const [formData, setFormData] = useState<DefaultCallOutFormData>(defaultFormData);
   const [callTimeInterval, setCallTimeInterval] = useState<NodeJS.Timeout | null>(null);
 
+  const handleClearCallTimeInterval = () => {
+    if (callTimeInterval) {
+      clearInterval(callTimeInterval);
+      setCallTimeInterval(null);
+    }
+  };
+
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
+    handleClearCallTimeInterval();
     const {name, value} = e.target;
-    setFormData({...formData, [name]: value});
+    setFormData(prevFormData => ({...prevFormData, [name]: value}));
   };
 
   const handleCallTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
-    callTimeInterval && clearInterval(callTimeInterval);
+    handleClearCallTimeInterval();
     setCallTime(value);
   };
 
@@ -66,53 +76,94 @@ export function useCallOutFormState() {
     e.preventDefault();
     e.stopPropagation();
 
-    const result = await fetch('/api/employee-callout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        ...formData,
-        callTime
-      })
-    });
+    // validate form data before sending
+    const requiredFields = [
+      'employeeName',
+      'callDate',
+      'shiftDate',
+      'leaveType',
+      'comment',
+      'shiftTime',
+      'callTime'
+    ];
+    const missingFields = requiredFields.filter(
+      field => !formData[field as keyof DefaultCallOutFormData]
+    );
 
-    const data = await result.json();
-
-    if (!result.ok) {
+    if (missingFields.length) {
       makeToast({
         title: 'Error',
         type: ToastTypes.Error,
-        message: data.error,
-        timeOut: 7500
+        message: `Missing fields: ${missingFields
+          .map(field =>
+            field
+              .replace(/([A-Z])/g, ' $1')
+              .trim()
+              .split(' ')
+              .map(word => word[0].toUpperCase() + word.slice(1))
+              .join(' ')
+          )
+          .join(', ')}`
       });
-    } else {
-      makeToast({
-        title: 'Success',
-        type: ToastTypes.Success,
-        message: data.message
+      return;
+    }
+
+    try {
+      const result = await fetch('/api/employee-callout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          callTime
+        })
       });
 
-      setFormData(defaultFormData);
+      const data: ApiData<CallOutWithAssociations> = await result.json();
+
+      if (!result.ok) {
+        throw new Error(data.error);
+      } else {
+        makeToast({
+          title: 'Success',
+          type: ToastTypes.Success,
+          message: data.message ?? 'Callout Created Successfully'
+        });
+        setFormData(defaultFormData);
+        callback?.(data?.data as CallOutWithAssociations);
+      }
+    } catch (error) {
+      makeToast({
+        title: 'Error',
+        type: ToastTypes.Error,
+        message: String(error),
+        timeOut: 7500
+      });
     }
   };
 
-  useEffect(() => {
-    isMounted &&
+  const startCallTimeInterval = () => {
+    !callTimeInterval &&
       setCallTimeInterval(
         setInterval(() => {
           const now = new Date();
           setCallTime(dateTo_HH_MM_SS(now));
         }, 1000)
       );
+  };
+
+  useEffect(() => {
+    isMounted && startCallTimeInterval();
     return () => {
-      callTimeInterval && clearInterval(callTimeInterval);
+      handleClearCallTimeInterval();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
   const resetFormData = () => {
-    setFormData(getDefaultCallOutFormData());
+    setFormData(defaultFormData);
+    startCallTimeInterval();
   };
 
   return {

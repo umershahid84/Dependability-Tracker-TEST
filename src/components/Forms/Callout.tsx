@@ -1,7 +1,12 @@
 import React from 'react';
 import {dateTo_YYYY_MM_DD} from '@/lib/utils';
+import {trim} from '@/lib/utils/shared/strings';
 import {UseCallOutFormState, useCallOutFormState} from '@/hooks';
-import {LeaveTypeAttributes, EmployeeWithAssociations} from '@/lib/db/models/types';
+import {
+  LeaveTypeAttributes,
+  EmployeeWithAssociations,
+  CallOutWithAssociations
+} from '@/lib/db/models/types';
 
 function InputContainer({label, children}: {label: string; children: React.ReactNode}) {
   return (
@@ -12,29 +17,45 @@ function InputContainer({label, children}: {label: string; children: React.React
   );
 }
 
-export default function CallOutForm(props: {employees: string; leaveTypes: string}) {
+const styles = {
+  input: 'border p-2 rounded-md dark:bg-slate-800',
+  textArea: 'border rounded-md w-full dark:bg-slate-800',
+  div: 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full',
+  inputNumber: 'border p-[5.5px] rounded-md w-full dark:bg-slate-800',
+  buttonContainer: `flex flex-wrap flex-row justify-between items-center w-[80%] p-5`,
+  form: `flex flex-col justify-center items-center p-2 bg-gray-100 dark:bg-slate-900 dark:border
+   dark:border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base`,
+  submit: `rounded-md p-3 dark:bg-slate-950 dark:hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md`,
+  reset: `bg-red-600 dark:bg-slate-950 dark:hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white
+   drop-shadow-md`
+};
+
+export default function CallOutForm(props: {
+  employees: string;
+  leaveTypes: string;
+  callback?: (data: CallOutWithAssociations) => void;
+}) {
   const {
     formData,
     callTime,
+    resetFormData,
     onChangeHandler,
     handleFormSubmit,
     handleCallTimeChange
-  }: UseCallOutFormState = useCallOutFormState();
+  }: UseCallOutFormState = useCallOutFormState(props.callback);
 
   return (
-    <form
-      id="dependabilityForm"
-      className="flex flex-col justify-center items-center p-2  bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base">
-      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full ">
+    <form id="dependabilityForm" className={trim(styles.form)}>
+      <div className={styles.div}>
         <InputContainer label="Employee Name">
           <select
+            required
             id="employeeName"
             name="employeeName"
             title="Employee Name"
-            required
-            value={formData.employeeName}
+            className={styles.input}
             onChange={onChangeHandler}
-            className="border p-2 rounded-md dark:bg-slate-800">
+            value={trim(formData.employeeName)}>
             <option value="">Select Employee</option>
             {props.employees &&
               JSON.parse(props.employees).map((employee: EmployeeWithAssociations) => (
@@ -47,65 +68,65 @@ export default function CallOutForm(props: {employees: string; leaveTypes: strin
 
         <InputContainer label="Call Date">
           <input
+            required
             type="date"
             id="callDate"
             name="callDate"
             title="Call Date"
-            required
-            value={dateTo_YYYY_MM_DD(formData.callDate)}
+            className={styles.input}
             onChange={onChangeHandler}
-            className="border p-2 rounded-md dark:bg-slate-800"
+            value={dateTo_YYYY_MM_DD(formData.callDate)}
           />
         </InputContainer>
 
         <InputContainer label="Call Time">
           <input
+            required
             type="time"
             id="callTime"
             name="callTime"
             title="Call Time"
-            required
             value={callTime}
+            className={styles.input}
             onChange={handleCallTimeChange}
-            className="border p-2 rounded-md dark:bg-slate-800"
           />
         </InputContainer>
 
         <InputContainer label="Shift Date">
           <input
+            required
             type="date"
             id="shiftDate"
             name="shiftDate"
             title="Shift Date"
-            required
-            value={dateTo_YYYY_MM_DD(formData.shiftDate)}
+            className={styles.input}
             onChange={onChangeHandler}
-            className="border p-2 rounded-md dark:bg-slate-800"
+            value={dateTo_YYYY_MM_DD(formData.shiftDate)}
           />
         </InputContainer>
 
         <InputContainer label="Shift Time">
           <input
+            required
             type="time"
             id="shiftTime"
             name="shiftTime"
             title="Shift Time"
-            required
+            className={styles.input}
             value={formData.shiftTime}
             onChange={onChangeHandler}
-            className="border p-2 rounded-md dark:bg-slate-800"
           />
         </InputContainer>
 
         <InputContainer label="Leave Type">
           <select
+            required
             id="leaveType"
             name="leaveType"
             title="Leave Type"
-            required
+            className={styles.input}
             value={formData.leaveType}
-            onChange={onChangeHandler}
-            className="border p-2 rounded-md dark:bg-slate-800">
+            onChange={onChangeHandler}>
             <option value="">Select Leave Type</option>
             {props.leaveTypes &&
               JSON.parse(props.leaveTypes).map((leaveType: LeaveTypeAttributes) => (
@@ -118,60 +139,77 @@ export default function CallOutForm(props: {employees: string; leaveTypes: strin
 
         <InputContainer label="Arrived Late (Mins)">
           <input
+            min="0"
+            max="600"
+            step="1"
             type="number"
+            placeholder="Minutes"
             id="lateArrivalMinutes"
             name="lateArrivalMinutes"
-            min="0"
-            max="79"
-            step="1"
-            placeholder="Minutes"
-            value={formData.lateArrivalMinutes}
+            title="Arrived Late (Mins)"
             onChange={onChangeHandler}
-            className="border p-[5.5px] rounded-md w-full dark:bg-slate-800"
+            className={styles.inputNumber}
+            value={formData.lateArrivalMinutes}
+          />
+
+          <input
+            min="0"
+            max="600"
+            type="range"
+            name="lateArrivalMinutes"
+            title="Arrived Late (Mins)"
+            id="lateArrivalMinutesSlider"
+            onChange={onChangeHandler}
+            className={styles.inputNumber}
+            value={formData.lateArrivalMinutes}
           />
         </InputContainer>
 
         <InputContainer label="Left Early (Mins)">
           <input
+            min="0"
+            max="600"
+            step="1"
             type="number"
             id="leftEarlyMinutes"
-            name="leftEarlyMinutes"
-            min="0"
-            max="59"
-            step="1"
             placeholder="Minutes"
-            value={formData.leftEarlyMinutes}
+            name="leftEarlyMinutes"
+            title="Left Early (Mins)"
             onChange={onChangeHandler}
-            className="border p-[5.5px] rounded-md w-full dark:bg-slate-800"
+            className={styles.inputNumber}
+            value={formData.leftEarlyMinutes}
+          />
+
+          <input
+            min="0"
+            max="600"
+            type="range"
+            name="leftEarlyMinutes"
+            title="Left Early (Mins)"
+            id="leftEarlyMinutesSlider"
+            onChange={onChangeHandler}
+            className={styles.inputNumber}
+            value={formData.leftEarlyMinutes}
           />
         </InputContainer>
       </div>
       <div className="w-full p-4">
         <InputContainer label="Comments">
           <textarea
+            rows={4}
+            required
             id="comment"
             name="comment"
             title="Comments"
-            rows={4}
             value={formData.comment}
             onChange={onChangeHandler}
-            className="border p- rounded-md w-full dark:bg-slate-800"
-            required></textarea>
+            className={styles.textArea}></textarea>
         </InputContainer>
       </div>
 
-      <div className="flex flex-wrap flex-row justify-between items-center w-[80%] p-5">
-        <input
-          type="button"
-          value="Submit"
-          onClick={handleFormSubmit}
-          className="bg-[var(--green)] rounded-md p-3 dark:bg-slate-950 dark:hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md"
-        />
-        <input
-          type="reset"
-          value="Reset"
-          className="bg-red-600 dark:bg-slate-950 dark:hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white drop-shadow-md"
-        />
+      <div className={styles.buttonContainer}>
+        <input type="button" value="Submit" onClick={handleFormSubmit} className={styles.submit} />
+        <input type="reset" value="Reset" className={trim(styles.reset)} onClick={resetFormData} />
       </div>
     </form>
   );

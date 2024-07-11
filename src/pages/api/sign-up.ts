@@ -1,15 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
 import type {NextApiResponse} from 'next';
-import {IJwtPayload, signJwtToken} from '@/auth';
+import {JwtPayload, signJwtToken} from '@/auth';
 import {getCreateCredentialsInviteFromDB} from '@/lib/db/controller';
 import {createLoginCredentialInDB} from '@/lib/db/controller/LoginCredential';
 import {LoginCredentialsWithAssociations} from '@/lib/db/models/LoginCredential';
 import {CreateCredentialsInviteWithAssociations} from '@/lib/db/models/CreateCredentialsInvite';
 
-export type ApiData = {
+export type ApiData<T = any> = {
   message?: string;
   error?: string;
+  data?: T;
 };
 
 // inviteToken, password, email
@@ -49,7 +50,7 @@ export default async function createLoginCredentialsApiHandler(
       throw new Error('Failed to create login credentials');
     }
 
-    const authToken: IJwtPayload = {
+    const authToken: JwtPayload = {
       email,
       supervisorId: existingInvite?.supervisor_info?.id as string,
       isAdmin: existingInvite?.supervisor_info?.is_admin as boolean,

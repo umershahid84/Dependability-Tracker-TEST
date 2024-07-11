@@ -1,4 +1,4 @@
-import {removeExtraWhiteSpaces} from '@/lib/utils/shared/strings';
+import {trim} from '@/lib/utils/shared/strings';
 
 export type SpinnerProps = {
   label?: string;
@@ -59,8 +59,8 @@ export default function Spinner(props: Readonly<SpinnerProps>): React.JSX.Elemen
         viewBox="0 0 100 101"
         xmlns="http://www.w3.org/2000/svg"
         className={`${width} ${height}${styles.svgDefaults} ${styles.spinnerFill(textColor)}`}>
-        <path d={removeExtraWhiteSpaces(svgPathData.p1)} fill="currentColor" />
-        <path d={removeExtraWhiteSpaces(svgPathData.p2)} fill="currentFill" />
+        <path d={trim(svgPathData.p1)} fill="currentColor" />
+        <path d={trim(svgPathData.p2)} fill="currentFill" />
       </svg>
       <span>{props.label ?? 'Loading...'}</span>
     </output>

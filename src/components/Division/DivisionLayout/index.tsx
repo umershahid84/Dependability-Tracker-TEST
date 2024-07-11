@@ -1,7 +1,7 @@
-import {Logo} from '../Logo';
-import NavBar from '../NavBar';
+import {Logo} from '../../Logo';
+import NavBar from '../../NavBar';
 import {Toaster} from '@/components';
-import {LogoutButton} from '../LogoutButton';
+import {LogoutButton} from '../../LogoutButton';
 import React, {PropsWithChildren} from 'react';
 
 const styles = {

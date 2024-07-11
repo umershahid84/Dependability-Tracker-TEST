@@ -2,7 +2,7 @@
 import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
-import {IJwtPayload, signJwtToken} from '@/auth';
+import {JwtPayload, signJwtToken} from '@/auth';
 import {getLoginCredentialFromDB} from '@/lib/db/controller/LoginCredential';
 import {LoginCredentialsWithAssociations} from '@/lib/db/models/LoginCredential';
 
@@ -35,7 +35,7 @@ export default async function supervisorLoginApiHandler(
   }
 
   try {
-    const authToken: IJwtPayload = {
+    const authToken: JwtPayload = {
       email: existingUser.email,
       supervisorId: existingUser.supervisor_info.id,
       isAdmin: existingUser.supervisor_info?.is_admin as boolean,
