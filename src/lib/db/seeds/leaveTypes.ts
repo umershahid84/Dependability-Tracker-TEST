@@ -1,23 +1,23 @@
 import {LeaveType, DefaultLeaveTypes} from '../models';
 
 const defaultLeaveTypes: DefaultLeaveTypes[] = [
-  DefaultLeaveTypes.FCA,
-  DefaultLeaveTypes.PTO,
-  DefaultLeaveTypes.FMLA,
   DefaultLeaveTypes.SICK,
+  DefaultLeaveTypes.FCA,
+  DefaultLeaveTypes.FMLA,
+  DefaultLeaveTypes.NO_CALL_NO_SHOW,
+  DefaultLeaveTypes.BEREAVEMENT,
+  DefaultLeaveTypes.LATE_ARRIVAL,
+  DefaultLeaveTypes.LEFT_EARLY,
   DefaultLeaveTypes.LWOP,
-  DefaultLeaveTypes.PHEL,
-  DefaultLeaveTypes.HOLIDAY,
   DefaultLeaveTypes.VACATION,
+  DefaultLeaveTypes.PERSONAL_HOLIDAY,
+  DefaultLeaveTypes.HOLIDAY,
+  DefaultLeaveTypes.PHEL,
   DefaultLeaveTypes.JURY_DUTY,
   DefaultLeaveTypes.MATERNITY,
   DefaultLeaveTypes.PATERNITY,
-  DefaultLeaveTypes.LEFT_EARLY,
-  DefaultLeaveTypes.BEREAVEMENT,
-  DefaultLeaveTypes.LATE_ARRIVAL,
-  DefaultLeaveTypes.NO_CALL_NO_SHOW,
-  DefaultLeaveTypes.PERSONAL_HOLIDAY,
-  DefaultLeaveTypes.HOLIDAY_OPTIONAL
+  DefaultLeaveTypes.MILITARY,
+  DefaultLeaveTypes.OTHER
 ];
 
 export default async function seedLeaveTypes() {

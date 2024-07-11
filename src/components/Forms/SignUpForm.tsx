@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
+import {useRouter, NextRouter} from 'next/router';
 import {useInputValidation, IUseValidators} from '../../hooks';
 import {FormInput, Form, FormAction, makeToast, ToastTypes} from '../../components';
 
@@ -17,6 +18,7 @@ export const defaultFormState: FormState = {
 };
 
 export default function SignUpForm(): React.JSX.Element {
+  const router: NextRouter = useRouter();
   const [inviteId, setInviteId] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -93,9 +95,9 @@ export default function SignUpForm(): React.JSX.Element {
 
         // reset the form and redirect to the dashboard
         setFormState(defaultFormState);
-        // setTimeout(() => {
-        //   window.location.href = '/dashboard';
-        // }, 800);
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 800);
       }
     } catch (error) {
       console.error(error);

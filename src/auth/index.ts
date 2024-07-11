@@ -1,3 +1,4 @@
+import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import jwt, {Algorithm} from 'jsonwebtoken';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
@@ -13,14 +14,50 @@ export type IJwtPayload = {
   supervisorId: string;
 };
 
-export const verifyJwtToken = (token: string): IJwtPayload | undefined => {
-  // we decode the token and return it if it is valid
-  const decoded: IJwtPayload = jwt.verify(token, SECRET, {
-    maxAge: EXPIRES_IN,
-    algorithms: [ALGORITHM]
-  }) as IJwtPayload;
+export type ClientSidePayload = {
+  username: string;
+  isAdmin: boolean;
+};
 
-  return decoded;
+export const verifyJwtToken = (token: string): IJwtPayload | undefined => {
+  try {
+    // we decode the token and return it if it is valid
+    const decoded: IJwtPayload = jwt.verify(token, SECRET, {
+      maxAge: EXPIRES_IN,
+      algorithms: [ALGORITHM]
+    }) as IJwtPayload;
+
+    return decoded;
+  } catch (error) {
+    // if the token is invalid, we return undefined
+    return undefined;
+  }
+};
+
+export type Redirect = {
+  redirect: {
+    destination: string;
+    permanent: boolean;
+  };
+};
+
+export const getTokenForServerSideProps = (request: {
+  req: Request;
+}): IJwtPayload | Redirect | undefined => {
+  const {req} = request;
+  const cookie = req.cookies['auth-token'];
+  const token = verifyJwtToken(cookie ?? '');
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false
+      }
+    };
+  }
+
+  return token;
 };
 
 export const getJwtToken = async (req: NextRequest): Promise<IJwtPayload | undefined> => {

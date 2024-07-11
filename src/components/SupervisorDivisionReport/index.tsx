@@ -1,0 +1,71 @@
+export function SupervisorDivisionReport() {
+  return (
+    <>
+      <h1 className="text-2xl font-semibold text-center mb-6">Reports</h1>
+
+      <div className="w-full flex flex-col justify-center items-center p-3 mt-6 gap-12 ">
+        <form
+          id="report-form"
+          className="w-full min-w-min max-w-3xl flex flex-col justify-start items-center bg-gray-100 dark:bg-slate-900 dark:border dark:border-slate-600 rounded-md">
+          <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-sm lg:text-base">
+            <div className="flex flex-col">
+              <label className="font-medium mb-1">Employee Name:</label>
+              <select
+                id="employeeName"
+                name="employeeName"
+                title="Employee Name"
+                className="border p-2 dark:bg-slate-800 rounded-md">
+                <option value="-1">Any</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="font-medium mb-1">Leave Type:</label>
+              <select
+                id="leaveType"
+                name="leaveType"
+                title="Leave Type"
+                className="border p-2 dark:bg-slate-800 rounded-md">
+                <option value="-1">Any</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="font-medium mb-1">Start Date:</label>
+              <input
+                type="date"
+                id="start-date"
+                name="start-date"
+                title="Start Date"
+                className="border p-2 dark:bg-slate-800 rounded-md"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="font-medium mb-1">End Date:</label>
+              <input
+                type="date"
+                id="end-date"
+                name="end-date"
+                title="End Date"
+                className="border p-2 dark:bg-slate-800 rounded-md"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            id="generate-report"
+            className="my-4 p-3 rounded-md bg-[var(--green)] text-white hover:scale-105 dark:bg-slate-950 dark:hover:bg-[var(--green)] drop-shadow-md">
+            Run Report
+          </button>
+        </form>
+
+        <div className="w-full overflow-x-auto">
+          <table
+            id="reports"
+            className="w-full  text-center border-collapse mb-6  text-xs md:text-sm lg:text-medium xl:text-base"></table>
+        </div>
+      </div>
+    </>
+  );
+}

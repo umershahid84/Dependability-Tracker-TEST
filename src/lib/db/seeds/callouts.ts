@@ -9,6 +9,33 @@ import {
 
 const numberOfCallouts = 365;
 
+function getRelevantComments(leaveType: DefaultLeaveTypes): string[] {
+  const leaveTypeToComments: {[key in DefaultLeaveTypes]: number[]} = {
+    [DefaultLeaveTypes.SICK]: [6, 15, 19, 24, 28, 31, 33, 38, 48],
+    [DefaultLeaveTypes.FCA]: [2, 11, 16, 17, 25],
+    [DefaultLeaveTypes.FMLA]: [7, 10, 18, 21, 36, 37],
+    [DefaultLeaveTypes.NO_CALL_NO_SHOW]: [],
+    [DefaultLeaveTypes.BEREAVEMENT]: [9, 11],
+    [DefaultLeaveTypes.LATE_ARRIVAL]: [12, 13, 45, 46],
+    [DefaultLeaveTypes.LEFT_EARLY]: [3, 13, 30, 35, 45, 46],
+    [DefaultLeaveTypes.LWOP]: [],
+    [DefaultLeaveTypes.VACATION]: [1, 5, 14, 22, 27, 29],
+    [DefaultLeaveTypes.PERSONAL_HOLIDAY]: [8, 17, 30],
+    [DefaultLeaveTypes.HOLIDAY]: [],
+    [DefaultLeaveTypes.HOLIDAY_OPTION]: [],
+    [DefaultLeaveTypes.PHEL]: [0, 4, 6, 20, 33, 38, 48],
+    [DefaultLeaveTypes.JURY_DUTY]: [44],
+    [DefaultLeaveTypes.MATERNITY]: [34, 32],
+    [DefaultLeaveTypes.PATERNITY]: [34],
+    [DefaultLeaveTypes.MILITARY]: [],
+    [DefaultLeaveTypes.OTHER]: []
+  };
+
+  const indices = leaveTypeToComments[leaveType];
+  return indices.map(index => supervisorComments[index]);
+}
+
+// Sample supervisorComments array
 const supervisorComments: string[] = [
   "Personal emergency that couldn't be postponed.",
   'Employee is dealing with a family illness.',
@@ -60,31 +87,6 @@ const supervisorComments: string[] = [
   'Employee needs to deal with a sudden insurance issue.',
   'Employee is having severe dental pain.'
 ];
-
-function getRelevantComments(leaveType: DefaultLeaveTypes): string[] {
-  const leaveTypeToComments: {[key in DefaultLeaveTypes]: number[]} = {
-    [DefaultLeaveTypes.SICK]: [6, 15, 19, 24, 28, 31, 33, 38, 48],
-    [DefaultLeaveTypes.HOLIDAY]: [],
-    [DefaultLeaveTypes.VACATION]: [],
-    [DefaultLeaveTypes.PTO]: [1, 5, 14, 22, 27, 29],
-    [DefaultLeaveTypes.JURY_DUTY]: [44],
-    [DefaultLeaveTypes.MATERNITY]: [34, 32],
-    [DefaultLeaveTypes.PATERNITY]: [34],
-    [DefaultLeaveTypes.LEFT_EARLY]: [3, 13, 30, 35, 45, 46],
-    [DefaultLeaveTypes.LWOP]: [],
-    [DefaultLeaveTypes.BEREAVEMENT]: [9, 11],
-    [DefaultLeaveTypes.LATE_ARRIVAL]: [12, 13, 45, 46],
-    [DefaultLeaveTypes.FCA]: [2, 11, 16, 17, 25],
-    [DefaultLeaveTypes.FMLA]: [7, 10, 18, 21, 36, 37],
-    [DefaultLeaveTypes.NO_CALL_NO_SHOW]: [],
-    [DefaultLeaveTypes.PHEL]: [0, 4, 6, 20, 33, 38, 48],
-    [DefaultLeaveTypes.PERSONAL_HOLIDAY]: [8, 17, 30],
-    [DefaultLeaveTypes.HOLIDAY_OPTIONAL]: []
-  };
-
-  const indices = leaveTypeToComments[leaveType];
-  return indices.map(index => supervisorComments[index]);
-}
 
 // Function to generate a random date within the past year
 function getRandomDateWithinPastYear(): Date {

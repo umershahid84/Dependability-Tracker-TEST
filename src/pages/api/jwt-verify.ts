@@ -3,6 +3,8 @@ import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
 import {IJwtPayload, verifyJwtToken} from '@/auth';
+import {getSupervisorFromDB} from '@/lib/db/controller';
+import {SupervisorWithAssociations} from '@/lib/db/models/Supervisor';
 
 // inviteToken, password, email
 
@@ -22,10 +24,17 @@ export default async function supervisorLoginApiHandler(
 
   const verifiedToken: IJwtPayload | undefined = verifyJwtToken(token);
 
-  console.log('Verified Token:', verifiedToken);
-
   if (!verifiedToken) {
     return res.status(401).json({error: 'Unauthorized request'});
+  }
+
+  // see if the user exists in the database
+  const existingUser: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
+    verifiedToken.supervisorId
+  );
+
+  if (!existingUser) {
+    res.redirect('/api/logout');
   }
 
   return res.status(200).json({token: verifiedToken});

@@ -55,7 +55,7 @@ const formatDateTime = (date: Date): string => {
   }).format(new Date(date));
 };
 
-export default function Toast(props: {
+export function Toast(props: {
   // NOSONAR
   id?: string;
   title?: string;
@@ -116,7 +116,11 @@ export default function Toast(props: {
           <h2 className={styles.heading}>
             <strong>{formatter.headingNormalizer(String(title))} !</strong>
           </h2>
-          <p className={styles.message}>{props.message}</p>
+
+          <pre>
+            <p className={styles.message}>{props.message}</p>
+          </pre>
+
           <p className={styles.timestamp}>{formatDateTime(new Date())}</p>
         </div>
       </section>

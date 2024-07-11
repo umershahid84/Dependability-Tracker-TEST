@@ -1,6 +1,6 @@
 'use client';
 import {uuid} from '../../lib/utils';
-import Toast, {ToastTypes} from '../Toast';
+import {Toast, ToastTypes} from '../Toast';
 import {useEffect, useState, useCallback} from 'react';
 
 export type IToastMessageContextType = {
@@ -51,7 +51,7 @@ const testToasts: Record<string, IToastMessageContextType> = {
   // }
 };
 
-export default function Toaster(): JSX.Element {
+export function Toaster(): JSX.Element {
   const [toasts, setToasts] = useState<Record<string, IToastMessageContextType>>(testToasts);
 
   const setToaster = useCallback((event: CustomEvent): void => {

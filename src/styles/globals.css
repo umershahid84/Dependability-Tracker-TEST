@@ -74,3 +74,13 @@ input:-o-autofill:active {
 .toast-error {
     box-shadow: 0 0 0 2px var(--error)!important;
 }
+
+
+.Text-outline {
+  /* text-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.9); */
+  text-shadow: 1px 1px 0 black ,
+    -1px -1px 0 black ,
+    1px -1px 0 black ,
+    -1px 1px 0 black !important;
+}
+

@@ -18,22 +18,23 @@ export interface LeaveTypeAttributes {
 
 export enum DefaultLeaveTypes {
   SICK = 'Sick',
+  FCA = 'FCA',
+  FMLA = 'FMLA',
+  NO_CALL_NO_SHOW = 'No Call-No Show',
+  BEREAVEMENT = 'Bereavement',
+  LATE_ARRIVAL = 'Tardiness',
+  LEFT_EARLY = 'Left Early',
+  LWOP = 'LWOP',
+  VACATION = 'PTO',
+  PERSONAL_HOLIDAY = 'Personal Holiday',
   HOLIDAY = 'Holiday',
-  VACATION = 'Vacation',
-  PTO = 'Paid Time Off',
+  HOLIDAY_OPTION = 'Holiday Opt.',
+  PHEL = 'PHEL',
   JURY_DUTY = 'Jury Duty',
   MATERNITY = 'Maternity',
   PATERNITY = 'Paternity',
-  LEFT_EARLY = 'Left Early',
-  LWOP = 'Leave Without Pay',
-  BEREAVEMENT = 'Bereavement',
-  LATE_ARRIVAL = 'Late Arrival',
-  FCA = 'Family Care Assistance',
-  FMLA = 'Family Medical Leave Act',
-  NO_CALL_NO_SHOW = 'No Call No Show',
-  PHEL = 'Paid Health Emergency Leave',
-  PERSONAL_HOLIDAY = 'Personal Holiday',
-  HOLIDAY_OPTIONAL = 'Optional Holiday'
+  MILITARY = 'Military',
+  OTHER = 'Others'
 }
 
 export interface LeaveTypeCreationAttributes

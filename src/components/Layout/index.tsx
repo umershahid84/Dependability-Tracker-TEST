@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Toaster from '@/components/Toaster';
+import {Toaster} from '@/components';
 import React, {PropsWithChildren} from 'react';
 import logo from '../../assets/images/seatac-dark.png';
 
@@ -12,21 +12,19 @@ const styles = {
 
 export const Layout = ({children}: PropsWithChildren) => {
   return (
-    <>
-      <div className={styles.body}>
-        <Toaster />
-        <Image
-          id="logo"
-          alt="SEA-TAC"
-          priority
-          className={styles.logo}
-          width={styles.imgWidth}
-          height={styles.imgHeight}
-          src={logo}
-        />
-        {/* Nav Goes Here */}
-        {children}
-      </div>
-    </>
+    <div className={styles.body}>
+      <Toaster />
+      <Image
+        id="logo"
+        alt="SEA-TAC"
+        priority
+        className={styles.logo}
+        width={styles.imgWidth}
+        height={styles.imgHeight}
+        src={logo}
+      />
+      {/* Nav Goes Here */}
+      {children}
+    </div>
   );
 };
