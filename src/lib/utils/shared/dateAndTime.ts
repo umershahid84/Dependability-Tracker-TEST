@@ -1,4 +1,4 @@
-export const dateToHH_MM_SS_sss = (date: Date | undefined): string => {
+export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
   if (!date) return '';
   const _date = new Date(date);
   const hours = _date.getHours();
@@ -13,7 +13,7 @@ export const dateToHH_MM_SS_sss = (date: Date | undefined): string => {
   return `${_hours}:${_minutes}:${_seconds}`;
 };
 
-export const dateToYYYY_MM_DD = (date: Date | undefined): string => {
+export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
   if (!date) return '';
   const _date = new Date(date);
   return _date.toISOString().split('T')[0];

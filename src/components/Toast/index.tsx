@@ -27,14 +27,15 @@ const styles = {
   successText: 'text-[var(--green)]',
   heading: 'text-xl font-light',
   toastIcon: 'w-6 h-6 mr-2 fill-current',
-  message: 'text-gray-300 text-base mt-2',
   timestamp: 'text-gray-400 text-xs mt-2',
-  body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-slate-800 
+  body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-slate-800
   relative p-2 rounded-r-[5px]`,
-  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 hover:text-red-500',
   article: `w-[450px] sm:w-[550px] rounded-[8px] flex flex-row 
   items-center justify-end`,
-  textContainer: 'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300'
+  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 hover:text-red-500',
+  textContainer: 'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300',
+  messageContainer: 'w-full flex flex-col items-start justify-center ml-2 text-gray-300',
+  message: 'text-gray-300 text-base mt-2 flex flex-wrap flex-row items-start justify-start'
 };
 
 const toastIcons = {
@@ -96,7 +97,6 @@ export function Toast(props: {
       clearTimeout(timer);
       setTimer(null);
     }
-    console.log('props', props);
     window.dispatchEvent(new CustomEvent('remove-toast', {detail: {id: props.id}}));
   };
 
@@ -117,9 +117,9 @@ export function Toast(props: {
             <strong>{formatter.headingNormalizer(String(title))} !</strong>
           </h2>
 
-          <pre>
+          <div className={styles.messageContainer}>
             <p className={styles.message}>{props.message}</p>
-          </pre>
+          </div>
 
           <p className={styles.timestamp}>{formatDateTime(new Date())}</p>
         </div>

@@ -1,12 +1,17 @@
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
+import type {NextApiResponse} from 'next';
 import jwt, {Algorithm} from 'jsonwebtoken';
+import type {ApiData} from '../pages/api/sign-up';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
 const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '24h';
 const SECRET: string = process.env.JWT_SECRET || '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
 const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) || ('HS256' as Algorithm);
 
+// TODO: Encrypt the JWT so it is unreadable by the client
+
+// the payload of the jwt token
 export type IJwtPayload = {
   email: string;
   username: string;
@@ -14,12 +19,14 @@ export type IJwtPayload = {
   supervisorId: string;
 };
 
+// details from the IJwtPayload that are exposed to the client
 export type ClientSidePayload = {
   username: string;
   isAdmin: boolean;
 };
 
-export const verifyJwtToken = (token: string): IJwtPayload | undefined => {
+// not to be used outside of the node environment uses the crypto module from node
+export const verifyJwtToken_RequiresNode = (token: string): IJwtPayload | undefined => {
   try {
     // we decode the token and return it if it is valid
     const decoded: IJwtPayload = jwt.verify(token, SECRET, {
@@ -41,12 +48,13 @@ export type Redirect = {
   };
 };
 
+// To be used in getServerSideProps to get the token and forward the user to the login page if the token is invalid
 export const getTokenForServerSideProps = (request: {
   req: Request;
 }): IJwtPayload | Redirect | undefined => {
   const {req} = request;
   const cookie = req.cookies['auth-token'];
-  const token = verifyJwtToken(cookie ?? '');
+  const token = verifyJwtToken_RequiresNode(cookie ?? '');
 
   if (!token) {
     return {
@@ -60,7 +68,27 @@ export const getTokenForServerSideProps = (request: {
   return token;
 };
 
-export const getJwtToken = async (req: NextRequest): Promise<IJwtPayload | undefined> => {
+// Can be used to validate the token in API calls
+export const getJwtTokenForAPI = (
+  req: Request,
+  res: NextApiResponse<ApiData>
+): undefined | IJwtPayload | Redirect => {
+  const token = getTokenForServerSideProps({req});
+
+  const hasRedirect = (token as Redirect)?.redirect;
+
+  if (!token || hasRedirect) {
+    res.status(401).json({error: 'Unauthorized request'});
+    return;
+  }
+
+  return token;
+};
+
+// To be used in the NextEdge Environment aka NextMiddleware
+export const getJwtTokenInEdgeEnvironments = async (
+  req: NextRequest
+): Promise<IJwtPayload | undefined> => {
   try {
     let cookies: RequestCookies = req.cookies ?? '';
 

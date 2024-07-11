@@ -19,9 +19,9 @@ const styles = {
 };
 
 const links: {href: string; text: string}[] = [
-  {href: '/public-parking', text: 'Public <br /> Parking'},
-  {href: '/employee-parking', text: 'Employee Parking'},
-  {href: '/ground-transportation', text: 'Ground Transportation'}
+  {href: '/divisions/public-parking', text: 'Public <br /> Parking'},
+  {href: '/divisions/employee-parking', text: 'Employee Parking'},
+  {href: '/divisions/ground-transportation', text: 'Ground Transportation'}
 ];
 const linkClasses: string = removeExtraWhiteSpaces(styles.link);
 

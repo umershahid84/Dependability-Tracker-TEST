@@ -1,11 +1,11 @@
-import {CallOut, DefaultLeaveTypes} from '../models';
-import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
 import {
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   CallOutCreationAttributes,
   SupervisorWithAssociations
 } from '../models/types';
+import {CallOut, DefaultLeaveTypes} from '../models';
+import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
 
 const numberOfCallouts = 365;
 

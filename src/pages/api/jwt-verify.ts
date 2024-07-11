@@ -2,8 +2,8 @@
 import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
-import {IJwtPayload, verifyJwtToken} from '@/auth';
 import {getSupervisorFromDB} from '@/lib/db/controller';
+import {IJwtPayload, verifyJwtToken_RequiresNode} from '@/auth';
 import {SupervisorWithAssociations} from '@/lib/db/models/Supervisor';
 
 // inviteToken, password, email
@@ -22,7 +22,7 @@ export default async function supervisorLoginApiHandler(
 
   //@ts-ignore
 
-  const verifiedToken: IJwtPayload | undefined = verifyJwtToken(token);
+  const verifiedToken: IJwtPayload | undefined = verifyJwtToken_RequiresNode(token);
 
   if (!verifiedToken) {
     return res.status(401).json({error: 'Unauthorized request'});

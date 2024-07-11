@@ -4,9 +4,9 @@ import {useRouter} from 'next/router';
 
 const basicLinks = [
   {href: '/dashboard', text: 'Home'},
-  {href: '/public-parking', text: 'Public Parking'},
-  {href: '/employee-parking', text: 'Employee Parking'},
-  {href: '/ground-transportation', text: 'Ground Transportation'}
+  {href: '/divisions/public-parking', text: 'Public Parking'},
+  {href: '/divisions/employee-parking', text: 'Employee Parking'},
+  {href: '/divisions/ground-transportation', text: 'Ground Transportation'}
 ];
 
 const linkClasses = `hover:scale-110 text-lg 
