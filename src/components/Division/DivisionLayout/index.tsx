@@ -1,6 +1,5 @@
 import {Logo} from '../../Logo';
 import NavBar from '../../NavBar';
-import {Toaster} from '@/components';
 import {LogoutButton} from '../../LogoutButton';
 import React, {PropsWithChildren} from 'react';
 
@@ -12,7 +11,6 @@ const styles = {
 export function DivisionLayout({children}: PropsWithChildren) {
   return (
     <div className={styles.body}>
-      <Toaster />
       <LogoutButton />
       <header className={styles.header}>
         <Logo />

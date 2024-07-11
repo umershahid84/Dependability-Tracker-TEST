@@ -1,6 +1,7 @@
 'use client';
 import {uuid} from '../../../lib/utils';
 import {Toast, ToastTypes} from '../Toast';
+import {trim} from '@/lib/utils/shared/strings';
 import {useEffect, useState, useCallback} from 'react';
 
 export type IToastMessageContextType = {
@@ -18,9 +19,9 @@ export type IToasterMessage = {
 export const makeToast = (props: IToastMessageContextType): void => {
   window.dispatchEvent(new CustomEvent('toast', {detail: props}));
 };
-
 const styles = {
-  toaster: 'absolute top-0 lef-60 z-50 w-auto flex flex-col items-center p-4 gap-6'
+  toaster: `absolute top-0 left-1/2 transform -translate-x-1/2 z-50 w-auto flex flex-col
+     items-center p-4 gap-6 transition-all duration-300 ease-in-out`
 };
 
 // test messages
@@ -90,7 +91,7 @@ export function Toaster(): JSX.Element {
   }, [setToaster, handleRemoveToast]);
 
   return (
-    <section className={styles.toaster}>
+    <section className={trim(styles.toaster)}>
       {Object.values(toasts).map(({id, title, type, message}, index) => (
         <Toast
           id={id}
