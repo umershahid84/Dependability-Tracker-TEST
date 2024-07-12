@@ -2,9 +2,9 @@
 import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
-import {JwtPayload, signJwtToken} from '@/auth';
-import {getLoginCredentialFromDB} from '@/lib/db/controller/LoginCredential';
-import {LoginCredentialsWithAssociations} from '@/lib/db/models/LoginCredential';
+import {JwtPayload, signJwtToken} from '../../auth';
+import {getLoginCredentialFromDB} from '../../lib/db/controller/LoginCredential';
+import {LoginCredentialsWithAssociations} from '../../lib/db/models/LoginCredential';
 
 // inviteToken, password, email
 

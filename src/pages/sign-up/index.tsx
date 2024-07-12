@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, SignUpForm} from '@/components';
+import {Layout, SignUpForm} from '../../components';
 
 const styles = {
   h1: 'text-3xl md:text-4xl font-bold  mb-2 text-center mt-16',

@@ -2,9 +2,9 @@
 import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
-import {getSupervisorFromDB} from '@/lib/db/controller';
-import {JwtPayload, verifyJwtToken_RequiresNode} from '@/auth';
-import {SupervisorWithAssociations} from '@/lib/db/models/Supervisor';
+import {getSupervisorFromDB} from '../../lib/db/controller';
+import {JwtPayload, verifyJwtToken_RequiresNode} from '../../auth';
+import {SupervisorWithAssociations} from '../../lib/db/models/Supervisor';
 
 // inviteToken, password, email
 

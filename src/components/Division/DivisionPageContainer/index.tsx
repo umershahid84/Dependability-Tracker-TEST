@@ -1,9 +1,15 @@
 import React from 'react';
-import {DivisionLayout} from '@/components';
+import {DivisionLayout} from '../../../components';
 
-export function DivisionPageContainer({children}: {children: React.ReactNode}) {
+export function DivisionPageContainer({
+  isAdmin,
+  children
+}: {
+  isAdmin: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <DivisionLayout>
+    <DivisionLayout isAdmin={isAdmin}>
       <div className="flex flex-col flex-wrap justify-center items-center gap-8">
         <h3 className="mt-8 text-2xl">
           <strong>Create CallOut</strong>

@@ -199,7 +199,7 @@ describe('Employee Controller', () => {
         ]);
 
         expect(employees).toBeInstanceOf(Array);
-        expect(employees.length).toBe(_employees.length);
+        expect((employees as EmployeeWithAssociations[]).length).toBe(_employees.length);
 
         expect.assertions(2);
       });

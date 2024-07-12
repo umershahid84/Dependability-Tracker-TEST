@@ -1,11 +1,11 @@
 // CRUD controller for the Supervisor Model
 import {SupervisorWithAssociations} from '../../models/Supervisor';
-import {populateEmployeeWithDivisions} from '../Employee/helpers';
+import {PaginationQueryParams, populateEmployeeWithDivisions} from '../Employee/helpers';
 import {getCreateCredentialsInviteFromDB} from '../CreateCredentialsInvite';
 import {CreateCredentialsInvite, Employee, LoginCredential} from '../../models';
 import {CreateCredentialsInviteWithAssociations} from '../..//models/CreateCredentialsInvite';
 
-export type SupervisorOptions = {
+export type SupervisorOptions = PaginationQueryParams & {
   showCredentials?: boolean;
   showCreateCredentialsInvite?: boolean;
 };

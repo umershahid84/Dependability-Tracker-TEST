@@ -1,8 +1,8 @@
 import React from 'react';
 import {Request} from 'express';
 import {InferGetServerSidePropsType} from 'next';
-import {DivisionLayout, DashboardLinks} from '@/components';
-import {getTokenForServerSideProps, JwtPayload, ClientSidePayload, Redirect} from '@/auth';
+import {DivisionLayout, DashboardLinks} from '../../components';
+import {getTokenForServerSideProps, JwtPayload, ClientSidePayload, Redirect} from '../../auth';
 
 const styles = {
   userGreetings: 'text-2xl font-bold text-center my-12',
@@ -27,7 +27,7 @@ export default function SupervisorLandingPage(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
   return (
-    <DivisionLayout>
+    <DivisionLayout isAdmin={props?.user?.isAdmin ?? false}>
       <SupervisorMain user={props.user}>
         <DashboardLinks />
       </SupervisorMain>

@@ -9,7 +9,8 @@ const jestConfig: JestConfigWithTsJest = {
     '^.+\\.tsx?$': 'ts-jest'
   },
   globalSetup: '<rootDir>/jest.setup.ts',
-  globalTeardown: '<rootDir>/jest.teardown.ts'
+  globalTeardown: '<rootDir>/jest.teardown.ts',
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '\\.tsx$']
 };
 
 export default jestConfig;

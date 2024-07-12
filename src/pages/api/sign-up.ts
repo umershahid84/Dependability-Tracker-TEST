@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
 import type {NextApiResponse} from 'next';
-import {JwtPayload, signJwtToken} from '@/auth';
-import {getCreateCredentialsInviteFromDB} from '@/lib/db/controller';
-import {createLoginCredentialInDB} from '@/lib/db/controller/LoginCredential';
-import {LoginCredentialsWithAssociations} from '@/lib/db/models/LoginCredential';
-import {CreateCredentialsInviteWithAssociations} from '@/lib/db/models/CreateCredentialsInvite';
+import {JwtPayload, signJwtToken} from '../../auth';
+import {getCreateCredentialsInviteFromDB} from '../../lib/db/controller';
+import {createLoginCredentialInDB} from '../../lib/db/controller/LoginCredential';
+import {LoginCredentialsWithAssociations} from '../../lib/db/models/LoginCredential';
+import {CreateCredentialsInviteWithAssociations} from '../../lib/db/models/CreateCredentialsInvite';
 
 export type ApiData<T = any> = {
   message?: string;

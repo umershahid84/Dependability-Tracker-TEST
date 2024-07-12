@@ -1,4 +1,5 @@
 export * from './isMounted';
+export * from './useEmployeeData';
 export * from './calloutFormState';
 export {default as useInputValidation} from './inputValidation';
 

@@ -1,16 +1,17 @@
+import {Request} from 'express';
 import {
   DivisionAttributes,
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   CallOutWithAssociations
-} from '@/lib/db/models/types';
-import {DefaultLeaveTypes} from '@/lib/db/models';
+} from '../../../../lib/db/models/types';
 import {
   getCallOutFromDB,
   getDivisionFromDB,
   getEmployeeFromDB,
   getLeaveTypeFromDB
-} from '@/lib/db/controller';
+} from '../../../../lib/db/controller';
+import {DefaultLeaveTypes} from '../../../../lib/db/models';
 import {getDivisionNameFromPath} from '../../shared/strings';
 
 export const defaultLeaveTypes: DefaultLeaveTypes[] = [

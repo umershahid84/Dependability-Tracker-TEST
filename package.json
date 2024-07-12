@@ -9,7 +9,7 @@
     "lint": "next lint",
     "seed": "ts-node ./src/lib/db/seeds/index.ts",
     "ts": "ts-node",
-    "test": "jest --detectOpenHandles"
+    "test": "node --env-file='.env.test' ./node_modules/.bin/jest --detectOpenHandles"
   },
   "nodemonConfig": {
     "ignore": [

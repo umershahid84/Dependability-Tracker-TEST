@@ -1,12 +1,12 @@
 import React from 'react';
-import {dateTo_YYYY_MM_DD} from '@/lib/utils';
-import {trim} from '@/lib/utils/shared/strings';
-import {UseCallOutFormState, useCallOutFormState} from '@/hooks';
+import {dateTo_YYYY_MM_DD} from '../../lib/utils';
+import {trim} from '../../lib/utils/shared/strings';
+import {UseCallOutFormState, useCallOutFormState} from '../../hooks';
 import {
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   CallOutWithAssociations
-} from '@/lib/db/models/types';
+} from '../../lib/db/models/types';
 
 function InputContainer({label, children}: {label: string; children: React.ReactNode}) {
   return (
@@ -18,15 +18,15 @@ function InputContainer({label, children}: {label: string; children: React.React
 }
 
 const styles = {
-  input: 'border p-2 rounded-md dark:bg-slate-800',
-  textArea: 'border rounded-md w-full dark:bg-slate-800',
+  input: 'border p-2 rounded-md bg-slate-800',
+  textArea: 'border rounded-md w-full bg-slate-800',
   div: 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full',
-  inputNumber: 'border p-[5.5px] rounded-md w-full dark:bg-slate-800',
+  inputNumber: 'border p-[5.5px] rounded-md w-full bg-slate-800',
   buttonContainer: `flex flex-wrap flex-row justify-between items-center w-[80%] p-5`,
-  form: `flex flex-col justify-center items-center p-2 bg-gray-100 dark:bg-slate-900 dark:border
-   dark:border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base`,
-  submit: `rounded-md p-3 dark:bg-slate-950 dark:hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md`,
-  reset: `bg-red-600 dark:bg-slate-950 dark:hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white
+  form: `flex flex-col justify-center items-center p-2 bg-slate-900 border
+   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base`,
+  submit: `rounded-md p-3 bg-slate-950 hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md`,
+  reset: `bg-slate-950 hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white
    drop-shadow-md`
 };
 

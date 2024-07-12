@@ -34,6 +34,7 @@ export interface EmployeeAttributes {
 export type EmployeeWithAssociations = {
   id: string;
   name: string;
+  role?: string;
   createdAt: Date;
   updatedAt: Date;
   divisions: DivisionAttributes[];
@@ -76,6 +77,7 @@ class Employee
   declare removeCallOut: HasManyRemoveAssociationMixin<CallOut, string>;
   declare removeCallOuts: HasManyRemoveAssociationsMixin<CallOut, string>;
 
+  declare role?: NonAttribute<string>;
   declare callOuts?: NonAttribute<CallOut[]>;
 
   // model associations

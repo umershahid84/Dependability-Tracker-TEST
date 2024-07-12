@@ -3,10 +3,14 @@
 import {
   EmployeeAttributes,
   EmployeeWithAssociations,
-  EmployeeCreationAttributes
+  EmployeeCreationAttributes,
+  SupervisorWithAssociations
 } from '../../models/types';
 import {
+  convertOptions,
+  ModelWithPagination,
   validateEmployeeName,
+  PaginationQueryParams,
   validateEmployeeDivisionIds,
   populateEmployeeWithDivisions
 } from './helpers';
@@ -64,14 +68,35 @@ export const getEmployeeFromDB = {
     }
   },
   all: (() => {
-    const _ = async (): Promise<EmployeeWithAssociations[]> => {
+    const _ = async (
+      options?: PaginationQueryParams
+    ): Promise<EmployeeWithAssociations[] | ModelWithPagination<EmployeeWithAssociations>> => {
+      const paginationOptions = options ?? {};
+
+      const convertedOptions = convertOptions(paginationOptions);
+
       try {
-        const employees = await Employee.findAll();
-        return await Promise.all(
-          employees.map(employee =>
-            populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
-          )
-        );
+        const employees = await Employee.findAll(convertedOptions);
+
+        if (!paginationOptions || Object.keys(convertedOptions).length === 1) {
+          return await Promise.all(
+            employees.map(employee =>
+              populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
+            )
+          );
+        } else {
+          return {
+            data: await Promise.all(
+              employees.map(employee =>
+                populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
+              )
+            ),
+
+            limit: paginationOptions.limit ? Number(paginationOptions.limit) : 0,
+            offset: paginationOptions.offset ? Number(paginationOptions.offset) : 0,
+            numRecords: (await Employee.count()) ?? 0
+          };
+        }
       } catch (error) {
         // istanbul ignore next
         throw new Error(`\n❌ Error fetching employees: ${error}`);
@@ -81,8 +106,8 @@ export const getEmployeeFromDB = {
     const byDivision = async (divisionId: string): Promise<EmployeeWithAssociations[]> => {
       try {
         const _employees: EmployeeWithAssociations[] = (
-          await employeeModelController.getEmployeeFromDB.all()
-        ).reduce((acc, employee) => {
+          (await employeeModelController.getEmployeeFromDB.all()) as EmployeeWithAssociations[]
+        ).reduce((acc: EmployeeWithAssociations[], employee: EmployeeWithAssociations) => {
           if (employee.divisions.map(division => division.id).includes(divisionId)) {
             acc.push(employee);
           }
@@ -96,8 +121,13 @@ export const getEmployeeFromDB = {
       }
     };
 
-    const nonSupervisors = async (): Promise<EmployeeWithAssociations[]> => {
-      const supervisors = await getSupervisorFromDB.all();
+    const nonSupervisors = async (
+      options?: PaginationQueryParams
+    ): Promise<EmployeeWithAssociations[]> => {
+      const paginationOptions = options ?? {};
+
+      const supervisors: SupervisorWithAssociations[] =
+        (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
       const supervisorIds = supervisors.map(supervisor => supervisor.supervisor_info.id);
 
       try {
@@ -228,3 +258,5 @@ export const employeeModelController = {
 };
 
 export default employeeModelController;
+
+export type {EmployeeWithAssociations, EmployeeAttributes, EmployeeCreationAttributes};

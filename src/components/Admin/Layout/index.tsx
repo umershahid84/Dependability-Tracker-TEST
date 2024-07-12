@@ -1,6 +1,6 @@
 import React from 'react';
 import {Logo} from '../../Logo';
-import DivisionNavBar from '../NavBar';
+import AdminNavBar from '../NavBar';
 import {LogoutButton} from '../../LogoutButton';
 
 const styles = {
@@ -8,19 +8,16 @@ const styles = {
   body: ' bg-slate-950 text-gray-200 flex min-h-full flex-col items-center justify-start p-5 '
 };
 
-export function DivisionLayout({
-  children,
-  isAdmin
-}: {
-  children: React.ReactNode;
-  isAdmin?: boolean;
-}) {
+export function AdminLayout({children, isAdmin}: {children: React.ReactNode; isAdmin?: boolean}) {
   return (
     <div className={styles.body}>
       <LogoutButton />
       <header className={styles.header}>
         <Logo />
-        <DivisionNavBar isAdmin={isAdmin} />
+        <h1 className="text-center text-3xl">
+          <strong>Admin Portal</strong>
+        </h1>
+        <AdminNavBar />
       </header>
       {children}
     </div>

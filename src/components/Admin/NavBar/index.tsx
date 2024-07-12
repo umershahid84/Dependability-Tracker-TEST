@@ -3,10 +3,9 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 
 const basicLinks = [
-  {href: '/dashboard', text: 'Home'},
-  {href: '/divisions/public-parking', text: 'Public Parking'},
-  {href: '/divisions/employee-parking', text: 'Employee Parking'},
-  {href: '/divisions/ground-transportation', text: 'Ground Transportation'}
+  {href: '/admin/dashboard', text: 'Home'},
+  {href: '/admin/employees', text: 'Employees'},
+  {href: '/admin/callouts', text: 'CallOuts'}
 ];
 
 const linkClasses = `hover:scale-110 text-lg 
@@ -14,7 +13,7 @@ const linkClasses = `hover:scale-110 text-lg
 
 const activeLinkClass = 'text-[var(--green)] text-lg underline underline-offset-8 text-center';
 
-function NavLinks() {
+function AdminNavLinks() {
   const router = useRouter();
   return (
     router.pathname !== '/dashboard' && (
@@ -32,10 +31,10 @@ function NavLinks() {
   );
 }
 
-export default function NavBar() {
+export default function AdminNavBar() {
   return (
     <nav className="w-full flex flex-wrap flex-row justify-center items-center gap-6 md:gap-16 ">
-      <NavLinks />
+      <AdminNavLinks />
     </nav>
   );
 }

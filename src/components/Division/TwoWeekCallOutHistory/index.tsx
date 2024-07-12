@@ -1,12 +1,12 @@
-import {getDate, getTime} from '@/lib/utils';
+import {getDate, getTime} from '../../../lib/utils';
 import {NextRouter, useRouter} from 'next/router';
-import {CallOutWithAssociations} from '@/lib/db/models/Callout';
-import {getDivisionNameFromPath, headingNormalizer} from '@/lib/utils/shared/strings';
+import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import {getDivisionNameFromPath, headingNormalizer} from '../../../lib/utils/shared/strings';
 
 const styles = {
-  headerTr: 'bg-gray-200 dark:bg-slate-900',
-  th: 'px-4 py-2 border dark:border-gray-600',
-  td: 'px-4 py-2 border dark:border-gray-600',
+  headerTr: 'bg-slate-900',
+  th: 'px-4 py-2 border border-gray-600',
+  td: 'px-4 py-2 border border-gray-600',
   h2: 'text-xl font-semibold my-2 text-center',
   div: 'w-full flex flex-col overflow-x-auto mx-auto',
   table: 'w-full table-auto text-left border-collapse mb-6 text-sm lg:text-base'

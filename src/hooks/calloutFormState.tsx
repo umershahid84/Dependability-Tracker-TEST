@@ -1,9 +1,9 @@
-import {useIsMounted} from '@/hooks';
-import {dateTo_HH_MM_SS} from '@/lib/utils';
+import {useIsMounted} from '../hooks';
+import {dateTo_HH_MM_SS} from '../lib/utils';
 import React, {useEffect, useState} from 'react';
-import {makeToast, ToastTypes} from '@/components';
-import {ApiData} from '@/pages/api/sign-up';
-import {CallOutWithAssociations} from '@/lib/db/models/Callout';
+import {makeToast, ToastTypes} from '../components';
+import {ApiData} from '../pages/api/sign-up';
+import {CallOutWithAssociations} from '../lib/db/models/Callout';
 
 export type DefaultCallOutFormData = {
   callDate: Date;

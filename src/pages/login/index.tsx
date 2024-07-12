@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, LoginForm} from '@/components';
+import {Layout, LoginForm} from '../../components';
 
 const styles = {
   main: 'flex min-h-screen flex-col items-center justify-start',

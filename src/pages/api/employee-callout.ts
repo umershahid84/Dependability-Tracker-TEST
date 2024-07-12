@@ -2,9 +2,9 @@
 import {Request} from 'express';
 import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
-import {getJwtTokenForAPI, JwtPayload} from '@/auth';
-import {createCallOutInDB} from '@/lib/db/controller';
-import {CallOutCreationAttributes, CallOutWithAssociations} from '@/lib/db/models/Callout';
+import {getJwtTokenForAPI, JwtPayload} from '../../auth';
+import {createCallOutInDB} from '../../lib/db/controller';
+import {CallOutCreationAttributes, CallOutWithAssociations} from '../../lib/db/models/Callout';
 
 // inviteToken, password, email
 

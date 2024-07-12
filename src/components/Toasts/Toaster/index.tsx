@@ -1,7 +1,7 @@
 'use client';
 import {uuid} from '../../../lib/utils';
 import {Toast, ToastTypes} from '../Toast';
-import {trim} from '@/lib/utils/shared/strings';
+import {trim} from '../../../lib/utils/shared/strings';
 import {useEffect, useState, useCallback} from 'react';
 
 export type IToastMessageContextType = {

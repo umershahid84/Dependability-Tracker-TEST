@@ -7,6 +7,7 @@ import {
 import {uuidV4Regex} from '../../../utils';
 import {Employee, Supervisor} from '../../models';
 import {SupervisorOptions, createSupervisorInclude, handleOptionalReturnValues} from './helpers';
+import {convertOptions, ModelWithPagination} from '../Employee/helpers';
 
 // (C)reate
 export const createSupervisorInDB = async (
@@ -42,7 +43,12 @@ export const getSupervisorFromDB = {
 
     return handleOptionalReturnValues(superV, options ?? {});
   },
-  all: async (options?: SupervisorOptions): Promise<SupervisorWithAssociations[]> => {
+  all: async (
+    options?: SupervisorOptions
+  ): Promise<SupervisorWithAssociations[] | ModelWithPagination<SupervisorWithAssociations>> => {
+    const paginationOptions = options ?? {};
+    const convertedPaginationOptions = convertOptions(paginationOptions);
+
     const supervisors: Promise<SupervisorWithAssociations | null>[] = (
       await Supervisor.findAll({
         include: [
@@ -51,7 +57,8 @@ export const getSupervisorFromDB = {
             as: 'supervisor_info'
           },
           ...createSupervisorInclude(options ?? {})
-        ]
+        ],
+        ...convertedPaginationOptions
       })
     ).map(async (supervisor: Supervisor) => {
       const superV: SupervisorWithAssociations | null = supervisor.get({
@@ -63,10 +70,26 @@ export const getSupervisorFromDB = {
 
       return handleOptionalReturnValues(superV, options ?? {});
     });
-    // istanbul ignore next
-    return (await Promise.all(supervisors)).filter(el => el !== null) ?? [];
+
+    const filtered = (await Promise.all(supervisors)).filter(el => el !== null);
+
+    if (Object.keys(convertedPaginationOptions).length === 1) {
+      return filtered;
+    } else {
+      return {
+        data: filtered,
+        limit: convertedPaginationOptions.limit ?? 0,
+        offset: convertedPaginationOptions.offset ?? 0,
+        numRecords: filtered.length
+      };
+    }
   },
-  admins: async (options?: SupervisorOptions): Promise<SupervisorWithAssociations[]> => {
+  admins: async (
+    options?: SupervisorOptions
+  ): Promise<SupervisorWithAssociations[] | ModelWithPagination<SupervisorWithAssociations>> => {
+    const paginationOptions = options ?? {};
+    const convertedPaginationOptions = convertOptions(paginationOptions);
+
     const supervisors: Promise<SupervisorWithAssociations | null>[] = (
       await Supervisor.findAll({
         where: {is_admin: true},
@@ -76,7 +99,8 @@ export const getSupervisorFromDB = {
             as: 'supervisor_info'
           },
           ...createSupervisorInclude(options ?? {})
-        ]
+        ],
+        ...convertedPaginationOptions
       })
     ).map(async (supervisor: Supervisor) => {
       const superV: SupervisorWithAssociations | null = supervisor.get({
@@ -88,8 +112,18 @@ export const getSupervisorFromDB = {
 
       return handleOptionalReturnValues(superV, options ?? {});
     });
-    // istanbul ignore next
-    return (await Promise.all(supervisors)).filter(el => el !== null) ?? [];
+    const filtered = (await Promise.all(supervisors)).filter(el => el !== null);
+
+    if (Object.keys(convertedPaginationOptions).length === 1) {
+      return filtered;
+    } else {
+      return {
+        data: filtered,
+        limit: convertedPaginationOptions.limit ?? 0,
+        offset: convertedPaginationOptions.offset ?? 0,
+        numRecords: filtered.length
+      };
+    }
   }
 };
 
