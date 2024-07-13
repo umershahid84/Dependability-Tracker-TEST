@@ -12,7 +12,7 @@ const styles = {
   flex: 'flex justify-between items-center p-2 cursor-pointer bg-slate-800 rounded-md'
 };
 
-export function EmployeeListItem({employee}: {employee: EmployeeWithAssociations}) {
+export function EmployeeListItem({employee}: Readonly<{employee: EmployeeWithAssociations}>) {
   const [show, setShow] = useState<boolean>(false);
 
   const toggleDetails = () => {

@@ -4,11 +4,12 @@ import CallOutForm from './Callout';
 import FormInput from './FormInput';
 import FormAction from './FormAction';
 import SignUpForm from './SignUpForm';
+import SortableFilterOption from './SortableFilterOption';
 
 export type {FormInputProps} from './FormInput';
 export type {FormActionProps} from './FormAction';
 
-export {Form, FormInput, FormAction, LoginForm, SignUpForm, CallOutForm};
+export {Form, FormInput, FormAction, LoginForm, SignUpForm, CallOutForm, SortableFilterOption};
 
 const Forms = {
   Form,
@@ -16,7 +17,8 @@ const Forms = {
   FormInput,
   SignUpForm,
   FormAction,
-  CallOutForm
+  CallOutForm,
+  SortableFilterOption
 };
 
 export default Forms;

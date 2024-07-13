@@ -18,7 +18,7 @@ describe('Login Credential Model Controller', () => {
         credential => credential.supervisor_id
       );
 
-      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins();
+      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins() as SupervisorWithAssociations[];
       const existingInviteSupers = (await CreateCredentialsInvite.findAll()).map(
         e => e.supervisor_id
       );
@@ -90,7 +90,7 @@ describe('Login Credential Model Controller', () => {
         credential => credential
       );
 
-      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins();
+      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins() as SupervisorWithAssociations[];
       const existingInviteSupers = (await CreateCredentialsInvite.findAll()).map(
         e => e.supervisor_id
       );
@@ -137,7 +137,7 @@ describe('Login Credential Model Controller', () => {
         e => e.supervisor_id
       );
 
-      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins();
+      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins() as SupervisorWithAssociations[];
 
       const supervisorWithoutCredentials: Supervisor | null = await Supervisor.findOne({
         where: {
@@ -181,7 +181,7 @@ describe('Login Credential Model Controller', () => {
         e => e.supervisor_id
       );
 
-      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins();
+      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins() as SupervisorWithAssociations[];
 
       const supervisorWithoutCredentials: Supervisor | null = await Supervisor.findOne({
         where: {

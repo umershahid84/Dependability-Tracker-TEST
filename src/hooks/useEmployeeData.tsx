@@ -22,7 +22,7 @@ export function useEmployeeData(queryParams?: PaginationQueryParams<EmployeeSort
 
   const fetchEmployees = async (queryParams?: PaginationQueryParams) => {
     try {
-      queryParams ?? defaultEmployeesQueryParams;
+      queryParams = queryParams ?? defaultEmployeesQueryParams;
 
       const response = await fetch(`/api/admin/employees?${new URLSearchParams(queryParams)}`);
       const data: ApiData<ModelWithPagination<EmployeeWithAssociations>> = await response.json();
@@ -33,9 +33,9 @@ export function useEmployeeData(queryParams?: PaginationQueryParams<EmployeeSort
       setEmployees(
         data.data ?? {
           data: [],
-          numRecords: 0,
           limit: 0,
-          offset: 0
+          offset: 0,
+          numRecords: 0
         }
       );
 

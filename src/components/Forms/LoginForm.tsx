@@ -1,25 +1,19 @@
 'use client';
 import Link from 'next/link';
-import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
+import {NextRouter, useRouter} from 'next/router';
+import {FormInput, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators} from '../../hooks';
-import {FormInput, Form, FormAction, makeToast, ToastTypes} from '../../components';
-
-interface FormState {
-  email: string;
-  password: string;
-}
-
-const defaultFormState: FormState = {email: '', password: ''};
+import {Login, LoginFormState, defaultLoginFormState} from '../../api';
 
 export default function LoginForm(): React.JSX.Element {
-  const router = useRouter();
+  const router: NextRouter = useRouter();
   const [hasError, setHasError] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean | null>(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<LoginFormState>(defaultLoginFormState);
 
   const validatedEmail: IUseValidators = useInputValidation({
     property: 'email',
@@ -35,7 +29,6 @@ export default function LoginForm(): React.JSX.Element {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const {value} = e.target;
     const name = e?.target?.getAttribute('id') ?? '';
-    // update the form state
     setFormState({...formState, [name]: value});
   };
 
@@ -43,41 +36,12 @@ export default function LoginForm(): React.JSX.Element {
     e.preventDefault();
     e.stopPropagation();
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formState)
-      });
-
-      if (!response.ok) {
-        throw new Error('Unauthorized request');
-      } else {
-        const data = await response.json();
-
-        makeToast({
-          title: 'Success',
-          type: ToastTypes.Success,
-          message: data.message
-        });
-
-        // reset the form and redirect to the dashboard
-        setFormState(defaultFormState);
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 800);
-      }
-    } catch (error) {
-      setHasError(true);
-      makeToast({
-        title: 'Error',
-        type: ToastTypes.Error,
-        message: 'There was an error logging into your account. Please try again.',
-        timeOut: 7500
-      });
-    }
+    await Login({
+      router,
+      formState,
+      setHasError,
+      setFormState
+    });
   };
 
   //  Component Effects
@@ -88,7 +52,7 @@ export default function LoginForm(): React.JSX.Element {
 
     return () => {
       setIsMounted(false);
-      setFormState(defaultFormState);
+      setFormState(defaultLoginFormState);
     };
   }, []);
 

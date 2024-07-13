@@ -5,9 +5,9 @@ import {trim} from '../../lib/utils/shared/strings';
 const styles = {
   div: `w-full flex flex-wrap flex-row justify-center items-center mt-8
         sm:mt-12 gap-8 sm:gap-12`,
-  link: `bg-slate-800 rounded-md p-10 hover:bg-black 
-        hover:bg-[var(--green)] text-white hover:scale-110 drop-shadow-md text-lg 
-        whitespace-normal w-48 text-center Text-outline`
+  link: `bg-slate-800 rounded-md p-10 hover:bg-[var(--green)] text-white
+         hover:scale-110 drop-shadow-md text-lg whitespace-normal w-48 
+         text-center Text-outline`
 };
 
 const links: {href: string; text: string}[] = [

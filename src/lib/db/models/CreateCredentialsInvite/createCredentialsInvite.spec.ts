@@ -1,8 +1,8 @@
 import {
-  createEmployeeInDB,
-  createSupervisorInDB,
   getDivisionFromDB,
-  getSupervisorFromDB
+  createEmployeeInDB,
+  getSupervisorFromDB,
+  createSupervisorInDB
 } from '../../controller';
 import {uuidV4Regex} from '../../../utils';
 import {SupervisorWithAssociations} from '../Supervisor';
@@ -15,7 +15,7 @@ describe('CreateCredentialsInvite', () => {
   });
 
   it('should create a create credentials invite', async () => {
-    const supervisors = await getSupervisorFromDB.all();
+    const supervisors = (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
     let admin = supervisors.find(supervisor => supervisor.is_admin === true);
 
     // if there are no admins, create a new one

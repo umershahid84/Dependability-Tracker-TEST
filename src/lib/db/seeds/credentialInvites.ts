@@ -1,11 +1,12 @@
 import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../controller';
+import { SupervisorWithAssociations } from '../models/Supervisor';
 
 const seedCredentialInvites = async () => {
   // find the admins
 
   try {
-    const admins = await getSupervisorFromDB.admins();
-    const supervisors = await getSupervisorFromDB.all();
+    const admins = await getSupervisorFromDB.admins() as SupervisorWithAssociations[] ;
+    const supervisors = await getSupervisorFromDB.all() as SupervisorWithAssociations[];
 
     // create login invites for each admin so they can create their own login credentials
     for (const supervisor of supervisors) {

@@ -11,7 +11,10 @@ const styles = {
   section: 'w-full max-w-2xl min-h-[75vh] flex flex-col justify-start items-center'
 };
 
-function SupervisorMain({children, user}: {children: React.ReactNode; user: ClientSidePayload}) {
+function SupervisorMain({
+  children,
+  user
+}: Readonly<{children: React.ReactNode; user: ClientSidePayload}>) {
   return (
     <main className={styles.main}>
       <h1 className={styles.h1}>EMPLOYEE DEPENDABILITY - DASHBOARD</h1>
@@ -24,7 +27,7 @@ function SupervisorMain({children, user}: {children: React.ReactNode; user: Clie
 }
 
 export default function SupervisorLandingPage(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
+  props: Readonly<InferGetServerSidePropsType<typeof getServerSideProps>>
 ) {
   return (
     <DivisionLayout isAdmin={props?.user?.isAdmin ?? false}>

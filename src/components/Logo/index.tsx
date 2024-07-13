@@ -4,7 +4,7 @@ import logo from '../../assets/images/seatac-dark.png';
 const styles = {
   imgWidth: 350,
   imgHeight: 100,
-  logo: 'w-[375px] h-auto',
+  logo: 'w-[375px] h-auto cursor-pointer',
   header: 'w-full h-auto flex flex-col gap-16',
   body: 'bg-slate-950 text-gray-200 flex min-h-full flex-col items-center justify-start p-5'
 };
@@ -16,7 +16,7 @@ export type LogoProps = {
   className?: string;
 };
 
-export function Logo(props: LogoProps) {
+export function Logo(props: Readonly<LogoProps>) {
   const {className, width, height, src} = props;
   return (
     <Image
@@ -27,6 +27,7 @@ export function Logo(props: LogoProps) {
       width={width ?? styles.imgWidth}
       height={height ?? styles.imgHeight}
       className={className ?? styles.logo}
+      onClick={() => (window.location.href = '/')}
     />
   );
 }

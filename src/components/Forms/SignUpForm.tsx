@@ -2,20 +2,9 @@
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
+import {FormInput, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators} from '../../hooks';
-import {FormInput, Form, FormAction, makeToast, ToastTypes} from '../../components';
-
-export type FormState = {
-  password: string | null;
-  email: string | null;
-  confirmPassword: string | null;
-};
-
-export const defaultFormState: FormState = {
-  email: '',
-  password: '',
-  confirmPassword: ''
-};
+import {SignUp, defaultSignUpFormState, SignUpFormState} from '../../api';
 
 export default function SignUpForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
@@ -26,7 +15,7 @@ export default function SignUpForm(): React.JSX.Element {
   const [isMounted, setIsMounted] = useState<boolean | null>(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<SignUpFormState>(defaultSignUpFormState);
   const [verifiedPasswordErrors, setVerifiedPasswordErrors] = useState<string[]>([]);
 
   // Create validators for each field
@@ -63,46 +52,14 @@ export default function SignUpForm(): React.JSX.Element {
     e.preventDefault();
     e.stopPropagation();
 
-    try {
-      const response = await fetch('/api/sign-up', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formState.email,
-          password: formState.password,
-          inviteToken: token,
-          inviteId: inviteId
-        })
-      });
-
-      if (!response.ok) {
-        makeToast({
-          title: 'Error',
-          type: ToastTypes.Error,
-          message: 'There was an error creating your account. Please try again.',
-          timeOut: 7500
-        });
-      } else {
-        const data = await response.json();
-
-        makeToast({
-          title: 'Success',
-          type: ToastTypes.Success,
-          message: data.message
-        });
-
-        // reset the form and redirect to the dashboard
-        setFormState(defaultFormState);
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 800);
-      }
-    } catch (error) {
-      console.error(error);
-      setHasError(true);
-    }
+    await SignUp({
+      router,
+      formState,
+      setHasError,
+      setFormState,
+      token: token as string,
+      inviteId: inviteId as string
+    });
   };
 
   //  Component Effects
@@ -122,7 +79,7 @@ export default function SignUpForm(): React.JSX.Element {
       setToken(null);
       setInviteId(null);
       setIsMounted(false);
-      setFormState(defaultFormState);
+      setFormState(defaultSignUpFormState);
     };
   }, []);
 

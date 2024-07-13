@@ -1,19 +1,23 @@
+import {uuidV4Regex} from '../../../utils';
+import {getSupervisorFromDB} from '../Supervisor';
+import {CreateCredentialsInviteModelController} from './index';
+import {CreateCredentialsInvite, LoginCredential} from '../../models';
 import {
+  SupervisorWithAssociations,
   CreateCredentialsInviteWithAssociations,
   CreateCredentialsInviteCreationAttributes
 } from '../../models/types';
-import {uuidV4Regex} from '../../../utils';
-import {LoginCredential} from '../../models';
-import {getSupervisorFromDB} from '../Supervisor';
-import {CreateCredentialsInviteModelController} from './index';
 
 describe('CreateCredentialsInviteModelController', () => {
   let createdCredentialsInvite: CreateCredentialsInviteWithAssociations | null = null;
   describe('createCreateCredentialsInviteInDB', () => {
     it('should create a new CreateCredentialsInvite in the database', async () => {
-      const admins = await getSupervisorFromDB.admins();
-      const supervisors = await getSupervisorFromDB.all();
-      const existingInvites = await LoginCredential.findAll();
+      const [existingInvites, admins, supervisors] = await Promise.all([
+        CreateCredentialsInvite.findAll(),
+        getSupervisorFromDB.admins() as Promise<SupervisorWithAssociations[]>,
+        getSupervisorFromDB.all() as Promise<SupervisorWithAssociations[]>
+      ]);
+
       const existingSupervisorsWithInvites = existingInvites.map(invite => invite.supervisor_id);
 
       // get a radom admin and supervisor (supervisor cant be an admin)
@@ -160,7 +164,9 @@ describe('CreateCredentialsInviteModelController', () => {
     });
 
     it('should throw an error if the created_by is not an admin', async () => {
-      const supervisors = (await getSupervisorFromDB.all()).filter(s => !s.is_admin);
+      const supervisors = (
+        (await getSupervisorFromDB.all()) as SupervisorWithAssociations[]
+      ).filter(s => !s.is_admin);
       const supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
 
       const props: CreateCredentialsInviteCreationAttributes = {
@@ -184,7 +190,9 @@ describe('CreateCredentialsInviteModelController', () => {
 
     it('should throw an error if the supervisor already has login credentials', async () => {
       // find a non-admin supervisor
-      const non_admin_supervisors = (await getSupervisorFromDB.all()).filter(s => !s.is_admin);
+      const non_admin_supervisors = (
+        (await getSupervisorFromDB.all()) as SupervisorWithAssociations[]
+      ).filter(s => !s.is_admin);
       const existingAdmin = createdCredentialsInvite?.created_by.id ?? '';
       const supervisor = non_admin_supervisors.find(s => s.id !== existingAdmin);
 

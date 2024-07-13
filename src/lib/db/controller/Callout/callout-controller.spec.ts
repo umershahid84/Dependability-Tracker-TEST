@@ -21,11 +21,12 @@ const getTestData = async (): Promise<{
   leaveType: LeaveTypeAttributes;
   newDate: Date;
 }> => {
-  const [supervisors, leaveTypes, nonSupervisors] = await Promise.all([
+  const [supervisors, leaveTypes, nonSupervisors]:
+  [SupervisorWithAssociations[], LeaveTypeAttributes[], EmployeeWithAssociations[]] = await Promise.all([
     getSupervisorFromDB.all(),
     getLeaveTypeFromDB.all(),
     getEmployeeFromDB.all.nonSupervisors()
-  ]);
+  ]) as [SupervisorWithAssociations[], LeaveTypeAttributes[], EmployeeWithAssociations[]];
 
   // get a random supervisor and employee
   const leaveType = leaveTypes[Math.floor(Math.random() * leaveTypes.length)];

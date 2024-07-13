@@ -3,18 +3,18 @@ import {EmployeeWithAssociations} from '../../../lib/db/controller';
 
 const styles = {
   infoContainer: 'ml-2',
-  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md`,
   edit: 'px-2 py-1 bg-slate-400 hover:bg-amber-500 text-white rounded mr-2',
-  delete: 'px-2 py-1 bg-slate-400 hover:bg-red-500 text-white rounded mr-2'
+  delete: 'px-2 py-1 bg-slate-400 hover:bg-red-500 text-white rounded mr-2',
+  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md`
 };
 
 export function EmployeeListItemAccordion({
   show,
   employee
-}: {
+}: Readonly<{
   show: boolean;
   employee: EmployeeWithAssociations;
-}) {
+}>) {
   return (
     show && (
       <div className={trim(styles.div)}>

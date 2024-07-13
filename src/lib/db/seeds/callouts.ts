@@ -118,7 +118,7 @@ function getRandomTime(date: Date): Date {
 const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
   try {
     const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
-    const supervisors: SupervisorWithAssociations[] = await getSupervisorFromDB.all();
+    const supervisors: SupervisorWithAssociations[] = await getSupervisorFromDB.all() as SupervisorWithAssociations[];
     const employees: EmployeeWithAssociations[] = await getEmployeeFromDB.all.nonSupervisors();
 
     const iterations: number = numOfSeeds ?? numberOfCallouts;

@@ -39,6 +39,7 @@ export default function Loading(props: Readonly<LoadingProps>): JSX.Element {
   useEffect(() => {
     updateLoader();
     return () => clearTimeouts();
+    // eslint-disable-next-line
   }, []);
 
   return <Spinner textColor={spinnerColor} label={props.label} />;

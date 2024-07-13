@@ -222,7 +222,7 @@ describe('Supervisor controller', () => {
 
     describe('all', () => {
       it('Should get all supervisors', async () => {
-        const result = await supervisorModelController.getSupervisorFromDB.all();
+        const result = await supervisorModelController.getSupervisorFromDB.all() as SupervisorWithAssociations[];
         const supervisors = await Supervisor.findAll().then(supervisors => supervisors);
 
         expect(result).toBeDefined();
@@ -245,7 +245,7 @@ describe('Supervisor controller', () => {
       it('Should return the login_credentials if requested', async () => {
         const result = await supervisorModelController.getSupervisorFromDB.all({
           showCredentials: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -266,7 +266,7 @@ describe('Supervisor controller', () => {
       it('Should return the create_credentials_invite if requested', async () => {
         const result = await supervisorModelController.getSupervisorFromDB.all({
           showCreateCredentialsInvite: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -289,7 +289,7 @@ describe('Supervisor controller', () => {
         const result = await supervisorModelController.getSupervisorFromDB.all({
           showCredentials: true,
           showCreateCredentialsInvite: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -311,10 +311,10 @@ describe('Supervisor controller', () => {
 
     describe('admins', () => {
       it('Should get all supervisors who are admins', async () => {
-        const result = await supervisorModelController.getSupervisorFromDB.admins();
+        const result = await supervisorModelController.getSupervisorFromDB.admins() as SupervisorWithAssociations[];
         const supervisors = await Supervisor.findAll({
           where: {is_admin: true}
-        }).then(supervisors => supervisors);
+        }) 
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -340,7 +340,7 @@ describe('Supervisor controller', () => {
       it('Should return the login_credentials if requested', async () => {
         const result = await supervisorModelController.getSupervisorFromDB.admins({
           showCredentials: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -365,7 +365,7 @@ describe('Supervisor controller', () => {
       it('Should return the create_credentials_invite if requested', async () => {
         const result = await supervisorModelController.getSupervisorFromDB.admins({
           showCreateCredentialsInvite: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);
@@ -392,7 +392,7 @@ describe('Supervisor controller', () => {
         const result = await supervisorModelController.getSupervisorFromDB.admins({
           showCredentials: true,
           showCreateCredentialsInvite: true
-        });
+        }) as SupervisorWithAssociations[];
 
         expect(result).toBeDefined();
         expect(result).toBeInstanceOf(Array);

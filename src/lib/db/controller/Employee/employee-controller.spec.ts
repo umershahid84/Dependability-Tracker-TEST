@@ -4,6 +4,7 @@ import {employeeModelController} from './index';
 import {Division, Employee} from '../../models';
 import {getSupervisorFromDB} from '../Supervisor';
 import {EmployeeWithAssociations} from '../../models/Employee';
+import { SupervisorWithAssociations } from '../../models/Supervisor';
 
 describe('Employee Controller', () => {
   // CRUD: Create
@@ -254,9 +255,9 @@ describe('Employee Controller', () => {
 
       describe('nonSupervisors', () => {
         it('should get all non-supervisors', async () => {
-          const supervisorIds = await getSupervisorFromDB
-            .all()
-            .then(supervisors => supervisors.map(supervisor => supervisor.supervisor_info.id));
+          const supervisorIds = ( await getSupervisorFromDB
+            .all() as SupervisorWithAssociations[])
+            .map(supervisor => supervisor.supervisor_info.id);
 
           const [nonSupervisors, _nonSupers] = await Promise.all([
             Employee.findAll({

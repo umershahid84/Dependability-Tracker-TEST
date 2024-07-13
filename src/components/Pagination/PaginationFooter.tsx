@@ -1,0 +1,44 @@
+export type PaginationFooterProps = {
+  currentPage: number;
+  numberOfPages: number;
+  handlePageIncrement: (e: React.SyntheticEvent) => void;
+  handlePageDecrement: (e: React.SyntheticEvent) => void;
+};
+
+const styles = {
+  text: `text-gray-300`,
+  button: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700`,
+  buttonContainer: `w-full h-auto  flex flex-wrap flex-row justify-between items-center`,
+  buttonDisabled: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700 cursor-not-allowed`
+};
+
+export function PaginationFooter({
+  currentPage,
+  numberOfPages,
+  handlePageIncrement,
+  handlePageDecrement
+}: Readonly<PaginationFooterProps>): React.JSX.Element {
+  return (
+    <div className={styles.buttonContainer}>
+      <button
+        type="button"
+        disabled={currentPage === 1}
+        className={currentPage === 1 ? styles.buttonDisabled : styles.button}
+        onClick={handlePageDecrement}>
+        Previous
+      </button>
+
+      <p className="text-gray-300">
+        Page {currentPage} of {numberOfPages}
+      </p>
+
+      <button
+        type="button"
+        onClick={handlePageIncrement}
+        disabled={currentPage === numberOfPages}
+        className={currentPage === numberOfPages ? styles.buttonDisabled : styles.button}>
+        Next
+      </button>
+    </div>
+  );
+}

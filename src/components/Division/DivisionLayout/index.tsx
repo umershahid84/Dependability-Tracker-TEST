@@ -1,28 +1,32 @@
 import React from 'react';
-import {Logo} from '../../Logo';
-import DivisionNavBar from '../NavBar';
-import {LogoutButton} from '../../LogoutButton';
+import {NavBar, NavLinks} from '../../NavBar';
+import {SupervisorLayout} from '../../SupervisorLayout';
 
-const styles = {
-  header: 'w-full h-auto flex flex-col gap-8',
-  body: ' bg-slate-950 text-gray-200 flex min-h-full flex-col items-center justify-start p-5 '
-};
+const supervisorLinks: NavLinks = [
+  {href: '/dashboard', text: 'Home'},
+  {href: '/divisions/public-parking', text: 'Public Parking'},
+  {href: '/divisions/employee-parking', text: 'Employee Parking'},
+  {href: '/divisions/ground-transportation', text: 'Ground Transportation'}
+];
+
+const adminLinks: NavLinks = [{href: '/admin/dashboard', text: 'Admin Home'}];
 
 export function DivisionLayout({
   children,
   isAdmin
-}: {
-  children: React.ReactNode;
+}: Readonly<{
   isAdmin?: boolean;
-}) {
+  children: React.ReactNode;
+}>) {
   return (
-    <div className={styles.body}>
-      <LogoutButton />
-      <header className={styles.header}>
-        <Logo />
-        <DivisionNavBar isAdmin={isAdmin} />
-      </header>
+    <SupervisorLayout>
+      <NavBar
+        hideOnPath="/dashboard"
+        showSecondary={isAdmin}
+        secondaryLinks={adminLinks}
+        navLinks={supervisorLinks}
+      />
       {children}
-    </div>
+    </SupervisorLayout>
   );
 }
