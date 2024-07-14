@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
-import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
+import type {ApiData} from '../../lib/apiController';
 
 // inviteToken, password, email
 

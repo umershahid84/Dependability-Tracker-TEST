@@ -42,10 +42,11 @@ export const Login = async ({
       });
 
       // reset the form and redirect to the dashboard
-      setFormState(defaultLoginFormState);
+
       setTimeout(() => {
         router.push('/dashboard');
-      }, 800);
+        setFormState(defaultLoginFormState);
+      }, 250);
     }
   } catch (error) {
     setHasError(true);

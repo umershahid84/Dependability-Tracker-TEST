@@ -25,7 +25,7 @@ export const SpinnerFillMap = {
 
 const styles = {
   output: `w-auto flex flex-row justify-start items-center gap-4`,
-  svgDefaults: 'animate-spin text-gray-600',
+  svgDefaults: 'animate-spin text-gray-600 print:text-black',
   spinnerFill: (textColor: string): string =>
     SpinnerFillMap[textColor as keyof typeof SpinnerFillMap]
 };

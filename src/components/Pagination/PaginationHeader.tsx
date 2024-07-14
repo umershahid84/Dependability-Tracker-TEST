@@ -9,9 +9,9 @@ export type PaginationHeaderProps = {
 };
 
 const styles = {
-  text: `text-gray-300`,
+  text: `text-gray-300 print:text-black`,
   button: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700`,
-  buttonContainer: `w-auto flex flex-row justify-between items-center gap-8`,
+  buttonContainer: `w-auto flex flex-row justify-between items-center gap-8 hide-on-print`,
   header: `w-full h-auto flex flex-wrap flex-row justify-between items-center cursor-pointer`,
   buttonDisabled: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700 cursor-not-allowed`
 };
@@ -31,7 +31,7 @@ export function PaginationHeader({
         Showing {showing} to {ending} of {totalNumberOfRecords ?? 0} records
       </p>
 
-      <p className={styles.text}>
+      <p className={styles.text + ' hide-on-print'}>
         Page {currentPage} of {numberOfPages}
       </p>
 

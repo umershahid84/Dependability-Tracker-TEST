@@ -1,12 +1,13 @@
-import Image from 'next/image';
+import {useIsMounted} from '../../hooks';
+import {useEffect, useState} from 'react';
+import Image, {StaticImageData} from 'next/image';
 import logo from '../../assets/images/seatac-dark.png';
+import logoOnPrint from '../../assets/images/seatac.png';
 
 const styles = {
   imgWidth: 350,
   imgHeight: 100,
-  logo: 'w-[375px] h-auto cursor-pointer',
-  header: 'w-full h-auto flex flex-col gap-16',
-  body: 'bg-slate-950 text-gray-200 flex min-h-full flex-col items-center justify-start p-5'
+  logo: 'w-[375px] print:w-[300px] h-auto cursor-pointer print:text-black print:mx-auto'
 };
 
 export type LogoProps = {
@@ -17,13 +18,34 @@ export type LogoProps = {
 };
 
 export function Logo(props: Readonly<LogoProps>) {
+  const isMounded: boolean = useIsMounted();
   const {className, width, height, src} = props;
+  const [logoSrc, setLogoSrc] = useState<StaticImageData | string>(src ?? logo);
+
+  useEffect(() => {
+    const handleOnPrint = () => {
+      setLogoSrc(logoOnPrint);
+    };
+    const handleAfterPrint = () => {
+      setLogoSrc(logo);
+    };
+    if (isMounded) {
+      window.addEventListener('beforeprint', handleOnPrint);
+      window.addEventListener('afterprint', handleAfterPrint);
+    }
+
+    return () => {
+      if (isMounded) {
+        window.removeEventListener('beforeprint', handleOnPrint);
+        window.removeEventListener('afterprint', handleAfterPrint);
+      }
+    };
+  }, [isMounded]);
   return (
     <Image
       priority
-      id="logo"
       alt="SEA-TAC"
-      src={src ?? logo}
+      src={logoSrc}
       width={width ?? styles.imgWidth}
       height={height ?? styles.imgHeight}
       className={className ?? styles.logo}

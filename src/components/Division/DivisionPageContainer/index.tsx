@@ -4,10 +4,10 @@ import {DivisionLayout} from '../../../components';
 export function DivisionPageContainer({
   isAdmin,
   children
-}: {
+}: Readonly<{
   isAdmin: boolean;
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <DivisionLayout isAdmin={isAdmin}>
       <div className="flex flex-col flex-wrap justify-center items-center gap-8">

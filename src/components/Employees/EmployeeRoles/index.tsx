@@ -13,7 +13,7 @@ const getRoleClass = (role: string) => {
   }
 };
 
-export function EmployeeRoles({roles}: {roles: string[]}) {
+export function EmployeeRoles({roles}: Readonly<{roles: string[]}>) {
   return (
     <>
       {roles.map(role => (

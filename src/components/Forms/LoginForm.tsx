@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {NextRouter, useRouter} from 'next/router';
 import {FormInput, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators} from '../../hooks';
-import {Login, LoginFormState, defaultLoginFormState} from '../../api';
+import {Login, LoginFormState, defaultLoginFormState} from '../../client-api';
 
 export default function LoginForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
@@ -32,7 +32,7 @@ export default function LoginForm(): React.JSX.Element {
     setFormState({...formState, [name]: value});
   };
 
-  const handleLogin = async (e: Event): Promise<void> => {
+  const handleLogin = async (e: React.SyntheticEvent): Promise<void> => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -137,17 +137,18 @@ export default function LoginForm(): React.JSX.Element {
       <FormAction
         label="Login"
         type="login"
-        isValid={isFormValid ?? false}
         hasError={hasError}
         onAction={handleLogin}
+        isValid={isFormValid ?? false}
       />
 
-      <p className="mt-4 mb-2">
+      {/* TODO: Convert to a forgot password */}
+      {/* <p className="mt-4 mb-2">
         Don&apos;t have an account?{' '}
         <Link href={'./sign-up'} className="text-blue-500 hover:text-[var(--green)]">
           Sign up here.
         </Link>
-      </p>
+      </p> */}
     </Form>
   ) : (
     <></>

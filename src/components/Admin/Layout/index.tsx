@@ -1,4 +1,5 @@
 import React from 'react';
+import {ModalViewer} from '../../ Modal';
 import {NavBar, NavLinks} from '../../NavBar';
 import {SupervisorLayout} from '../../SupervisorLayout';
 
@@ -9,19 +10,19 @@ const adminLinks: NavLinks = [
 ];
 const supervisorLinks: NavLinks = [{href: '/dashboard', text: 'Supervisor Home'}];
 
-export function AdminLayout({
-  isAdmin,
-  children
-}: Readonly<{children: React.ReactNode; isAdmin?: boolean}>) {
+export function AdminLayout({children}: Readonly<{children?: React.ReactNode}>) {
   return (
-    <SupervisorLayout title="Admin Portal">
-      <NavBar
-        showSecondary={true}
-        navLinks={adminLinks}
-        hideOnPath="/dashboard"
-        secondaryLinks={supervisorLinks}
-      />
-      {children}
-    </SupervisorLayout>
+    <>
+      <ModalViewer />
+      <SupervisorLayout title="Admin Portal">
+        <NavBar
+          showSecondary={true}
+          navLinks={adminLinks}
+          hideOnPath="/dashboard"
+          secondaryLinks={supervisorLinks}
+        />
+        {children}
+      </SupervisorLayout>
+    </>
   );
 }

@@ -1,14 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
-import type {ApiData} from './sign-up';
+
 import type {NextApiResponse} from 'next';
+import type {ApiData} from '../../lib/apiController';
 import {getJwtTokenForAPI, JwtPayload} from '../../auth';
 import {createCallOutInDB} from '../../lib/db/controller';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../lib/db/models/Callout';
 
 // inviteToken, password, email
 
-export default async function employeeCalloutApiHandler(
+export default async function employeeCalloutApiHandler( //NOSONAR
   req: Request,
   res: NextApiResponse<ApiData<CallOutWithAssociations>>
 ) {
@@ -102,6 +103,6 @@ export default async function employeeCalloutApiHandler(
 
 export const config = {
   api: {
-    externalResolver: true
+    bodyParser: true
   }
 };

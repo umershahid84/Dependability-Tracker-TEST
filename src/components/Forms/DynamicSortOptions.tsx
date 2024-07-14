@@ -1,10 +1,12 @@
+import {DynamicOptions} from './DynamicOptions';
+
 export const employeeListStyles = {
-  label: 'text-gray-300',
+  label: 'text-gray-300 print:text-black',
   sortableOption: 'flex items-center space-x-4',
-  select: 'px-2 py-1  bg-slate-900 text-gray-100 rounded-md cursor-pointer'
+  select: 'px-2 py-1  bg-slate-900 text-gray-100 print:text-black rounded-md cursor-pointer'
 };
 
-export function SortableFilterOption({
+export function DynamicSortOptions({
   name,
   label,
   title,
@@ -28,14 +30,10 @@ export function SortableFilterOption({
         name={name}
         onChange={onSortChange}
         value={currentSort}>
-        {sortOptions.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
+        <DynamicOptions dynamicOptions={sortOptions} />
       </select>{' '}
     </div>
   );
 }
 
-export default SortableFilterOption;
+export default DynamicSortOptions;

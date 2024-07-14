@@ -8,7 +8,8 @@ import {useState} from 'react';
 import {ListHeader} from './ListHeader';
 import {ListsContainer} from './ListContainer';
 import {useEmployeeData} from '../../../hooks';
-import {SortableFilterOption} from '../../Forms';
+import {DynamicSortOptions} from '../../Forms';
+import {ModalAction, ModalType} from '../../ Modal';
 import {EmployeeListItem} from '../EmployeeListItem';
 import {PaginationContainer} from '../../Pagination/Container';
 import {EmployeeWithAssociations} from '../../../lib/db/controller/Employee';
@@ -39,11 +40,22 @@ export function EmployeeList() {
     setQueryParams(currentQueryParams);
   };
 
+  const handleAddEmployeeClick = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    window.dispatchEvent(
+      new CustomEvent('modalEvent', {
+        detail: {action: ModalAction.OPEN, type: ModalType.ADD_EMPLOYEE, payload: {test: 'test'}}
+      })
+    );
+  };
+
   return (
     <ListsContainer>
       <ListHeader title="Employees">
         <span className={employeeListStyles.span}>
-          <SortableFilterOption
+          <DynamicSortOptions
             label="Sort By:"
             name="sortBy"
             sortOptions={employeeSortOptions}
@@ -52,7 +64,7 @@ export function EmployeeList() {
             title="Sort the employees by the selected option."
           />
 
-          <SortableFilterOption
+          <DynamicSortOptions
             label="Limit:"
             name="limit"
             sortOptions={employeeLimitOptions}
@@ -62,7 +74,10 @@ export function EmployeeList() {
           />
         </span>
 
-        <button type="button" className={employeeListStyles.addEmployeeBtn}>
+        <button
+          type="button"
+          className={employeeListStyles.addEmployeeBtn}
+          onClick={handleAddEmployeeClick}>
           + Add Employee
         </button>
       </ListHeader>

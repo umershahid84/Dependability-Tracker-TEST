@@ -1,75 +1,45 @@
-import {useIsMounted} from '../hooks';
-import {dateTo_HH_MM_SS} from '../lib/utils';
 import React, {useEffect, useState} from 'react';
 import {makeToast, ToastTypes} from '../components';
-import {ApiData} from '../pages/api/sign-up';
 import {CallOutWithAssociations} from '../lib/db/models/Callout';
-
-export type DefaultCallOutFormData = {
-  callDate: Date;
-  callTime: string;
-  comment: string;
-  shiftDate: Date;
-  shiftTime: string;
-  leaveType: string;
-  employeeName: string;
-  leftEarlyMinutes: number;
-  lateArrivalMinutes: number;
-};
-
-export const getDefaultCallOutFormData = (): DefaultCallOutFormData => {
-  const now = new Date();
-  return {
-    comment: '',
-    leaveType: '',
-    callDate: now,
-    shiftDate: now,
-    employeeName: '',
-    leftEarlyMinutes: 0,
-    lateArrivalMinutes: 0,
-    callTime: dateTo_HH_MM_SS(now),
-    shiftTime: dateTo_HH_MM_SS(now)
-  };
-};
+import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../hooks';
+import {EmployeeCallOut, DefaultCallOutFormData, getDefaultCallOutFormData} from '../client-api';
 
 export type UseCallOutFormState = {
   callTime: string;
+  shiftTime: string;
   formData: DefaultCallOutFormData;
   resetFormData: () => void;
   handleFormSubmit: (e: React.SyntheticEvent) => Promise<void>;
   handleCallTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleShiftTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setFormData: React.Dispatch<React.SetStateAction<DefaultCallOutFormData>>;
   onChangeHandler: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
 };
 
-export function useCallOutFormState(callback?: (data: CallOutWithAssociations) => void) {
+export function useCallOutFormState(
+  callback?: (data: CallOutWithAssociations) => void
+): UseCallOutFormState {
   const isMounted = useIsMounted();
-  const defaultFormData = getDefaultCallOutFormData();
-  const [callTime, setCallTime] = useState<string>(dateTo_HH_MM_SS(new Date()));
+  const incrementingCallTime: UseIncrementingTime = useIncrementingTime();
+  const incrementingShiftTime: UseIncrementingTime = useIncrementingTime();
+  const defaultFormData: DefaultCallOutFormData = getDefaultCallOutFormData();
   const [formData, setFormData] = useState<DefaultCallOutFormData>(defaultFormData);
-  const [callTimeInterval, setCallTimeInterval] = useState<NodeJS.Timeout | null>(null);
 
-  const handleClearCallTimeInterval = () => {
-    if (callTimeInterval) {
-      clearInterval(callTimeInterval);
-      setCallTimeInterval(null);
-    }
-  };
+  const callTime: string = incrementingCallTime.time;
+  const clearCallTimeInterval = incrementingCallTime.clearTimeInterval;
+
+  const shiftTime: string = incrementingShiftTime.time;
+  const clearShiftTimeInterval = incrementingShiftTime.clearTimeInterval;
 
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    handleClearCallTimeInterval();
+    clearCallTimeInterval();
+    clearShiftTimeInterval();
     const {name, value} = e.target;
     setFormData(prevFormData => ({...prevFormData, [name]: value}));
-  };
-
-  const handleCallTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    handleClearCallTimeInterval();
-    setCallTime(value);
   };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {
@@ -78,14 +48,15 @@ export function useCallOutFormState(callback?: (data: CallOutWithAssociations) =
 
     // validate form data before sending
     const requiredFields = [
-      'employeeName',
+      'comment',
       'callDate',
+      'callTime',
       'shiftDate',
       'leaveType',
-      'comment',
       'shiftTime',
-      'callTime'
+      'employeeName'
     ];
+
     const missingFields = requiredFields.filter(
       field => !formData[field as keyof DefaultCallOutFormData]
     );
@@ -108,71 +79,37 @@ export function useCallOutFormState(callback?: (data: CallOutWithAssociations) =
       return;
     }
 
-    try {
-      const result = await fetch('/api/employee-callout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...formData,
-          callTime
-        })
-      });
-
-      const data: ApiData<CallOutWithAssociations> = await result.json();
-
-      if (!result.ok) {
-        throw new Error(data.error);
-      } else {
-        makeToast({
-          title: 'Success',
-          type: ToastTypes.Success,
-          message: data.message ?? 'Callout Created Successfully'
-        });
-        setFormData(defaultFormData);
-        callback?.(data?.data as CallOutWithAssociations);
-      }
-    } catch (error) {
-      makeToast({
-        title: 'Error',
-        type: ToastTypes.Error,
-        message: String(error),
-        timeOut: 7500
-      });
-    }
-  };
-
-  const startCallTimeInterval = () => {
-    !callTimeInterval &&
-      setCallTimeInterval(
-        setInterval(() => {
-          const now = new Date();
-          setCallTime(dateTo_HH_MM_SS(now));
-        }, 1000)
-      );
+    await EmployeeCallOut({
+      callback,
+      formData,
+      callTime,
+      shiftTime,
+      setFormData,
+      defaultFormData
+    });
   };
 
   useEffect(() => {
-    isMounted && startCallTimeInterval();
     return () => {
-      handleClearCallTimeInterval();
+      clearCallTimeInterval();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
   const resetFormData = () => {
     setFormData(defaultFormData);
-    startCallTimeInterval();
+    clearCallTimeInterval();
   };
 
   return {
     formData,
     callTime,
+    shiftTime,
     setFormData,
     resetFormData,
     onChangeHandler,
     handleFormSubmit,
-    handleCallTimeChange
+    handleCallTimeChange: incrementingCallTime.handleTimeChange,
+    handleShiftTimeChange: incrementingShiftTime.handleTimeChange
   };
 }

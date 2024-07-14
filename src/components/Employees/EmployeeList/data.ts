@@ -1,11 +1,14 @@
+import {trim} from '../../../lib/utils/shared/strings';
+
 export const employeeListStyles = {
   h1: 'w-auto text-xl font-semibold whitespace-nowrap',
   section: 'w-full flex flex-col items-center justify-center gap-4',
   span: 'w-full flex flex-wrap flex-row gap-4 justify-center items-center',
   div: 'w-full flex flex-col md:flex-row justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6',
-  addEmployeeBtn: `px-4 py-2 bg-[var(--green)] flex flex-row flex-wrap text-center items-center hover:bg-black 
+  addEmployeeBtn:
+    trim(`px-4 py-2 bg-[var(--green)] flex flex-row flex-wrap text-center items-center hover:bg-black 
   text-white rounded-md text-sm w-26 md:w-auto  md:whitespace-nowrap md:text-base absolute top-[51px] right-1
-   md:relative md:top-0 md:right-0`
+   md:relative md:top-0 md:right-0 hide-on-print`)
 };
 
 export type EmployeeSortBy = 'name' | 'isAdmin' | 'isSupervisor' | 'isEmployee';

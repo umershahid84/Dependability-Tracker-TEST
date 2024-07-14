@@ -2,7 +2,7 @@ import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
 import jwt, {Algorithm} from 'jsonwebtoken';
-import type {ApiData} from '../pages/api/sign-up';
+import type {ApiData} from '../lib/apiController';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
 const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '24h';

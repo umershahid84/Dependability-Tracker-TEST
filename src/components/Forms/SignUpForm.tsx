@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
 import {FormInput, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators} from '../../hooks';
-import {SignUp, defaultSignUpFormState, SignUpFormState} from '../../api';
+import {SignUp, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
 export default function SignUpForm(): React.JSX.Element {
   const router: NextRouter = useRouter();

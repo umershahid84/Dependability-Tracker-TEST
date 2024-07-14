@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
-import type {ApiData} from './sign-up';
 import type {NextApiResponse} from 'next';
 import {JwtPayload, signJwtToken} from '../../auth';
+import type {ApiData} from '../../lib/apiController';
 import {getLoginCredentialFromDB} from '../../lib/db/controller/LoginCredential';
 import {LoginCredentialsWithAssociations} from '../../lib/db/models/LoginCredential';
 
@@ -54,9 +54,3 @@ export default async function supervisorLoginApiHandler(
     return res.status(500).json({error: 'Internal server error'});
   }
 }
-
-export const config = {
-  api: {
-    externalResolver: true
-  }
-};

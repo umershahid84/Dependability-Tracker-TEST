@@ -9,9 +9,10 @@ export function SupervisorDivisionReport() {
           className="w-full min-w-min max-w-3xl flex flex-col justify-start items-center bg-slate-900 border border-slate-600 rounded-md">
           <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-sm lg:text-base">
             <div className="flex flex-col">
-              <label className="font-medium mb-1">Employee Name:</label>
+              <label htmlFor="employeeName" className="font-medium mb-1">
+                Employee Name:
+              </label>
               <select
-                id="employeeName"
                 name="employeeName"
                 title="Employee Name"
                 className="border p-2 bg-slate-800 rounded-md">
@@ -20,9 +21,10 @@ export function SupervisorDivisionReport() {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium mb-1">Leave Type:</label>
+              <label htmlFor="leaveType" className="font-medium mb-1">
+                Leave Type:
+              </label>
               <select
-                id="leaveType"
                 name="leaveType"
                 title="Leave Type"
                 className="border p-2 bg-slate-800 rounded-md">
@@ -31,10 +33,11 @@ export function SupervisorDivisionReport() {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium mb-1">Start Date:</label>
+              <label htmlFor="start-date" className="font-medium mb-1">
+                Start Date:
+              </label>
               <input
                 type="date"
-                id="start-date"
                 name="start-date"
                 title="Start Date"
                 className="border p-2 bg-slate-800 rounded-md"
@@ -42,10 +45,11 @@ export function SupervisorDivisionReport() {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium mb-1">End Date:</label>
+              <label htmlFor="end-date" className="font-medium mb-1">
+                End Date:
+              </label>
               <input
                 type="date"
-                id="end-date"
                 name="end-date"
                 title="End Date"
                 className="border p-2 bg-slate-800 rounded-md"
@@ -59,12 +63,6 @@ export function SupervisorDivisionReport() {
             Run Report
           </button>
         </form>
-
-        <div className="w-full overflow-x-auto">
-          <table
-            id="reports"
-            className="w-full  text-center border-collapse mb-6  text-xs md:text-sm lg:text-medium xl:text-base"></table>
-        </div>
       </div>
     </>
   );

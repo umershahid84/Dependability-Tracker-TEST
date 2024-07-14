@@ -41,3 +41,4 @@ cert/
 certs/
 
 package-lock.json
+.hintrc

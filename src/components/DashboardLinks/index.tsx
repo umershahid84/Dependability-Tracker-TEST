@@ -21,8 +21,8 @@ const linkClasses: string = trim(styles.link);
 export function DashboardLinks() {
   return (
     <div className={trim(styles.div)}>
-      {links.map((link, index) => (
-        <Link key={index} href={link.href} className={linkClasses}>
+      {links.map(link => (
+        <Link key={link.href} href={link.href} className={linkClasses}>
           <strong dangerouslySetInnerHTML={{__html: link.text}} />
         </Link>
       ))}

@@ -27,15 +27,18 @@ const styles = {
   successText: 'text-[var(--green)]',
   heading: 'text-xl font-light',
   toastIcon: 'w-6 h-6 mr-2 fill-current',
-  timestamp: 'text-gray-400 text-xs mt-2',
+  timestamp: 'text-gray-400 print:text-black text-xs mt-2',
   body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-slate-800
   relative p-2 rounded-r-[5px]`,
   article: `w-[450px] sm:w-[550px] rounded-[8px] flex flex-row 
   items-center justify-end`,
-  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 hover:text-red-500',
-  textContainer: 'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300',
-  messageContainer: 'w-full flex flex-col items-start justify-center ml-2 text-gray-300',
-  message: 'text-gray-300 text-base mt-2 flex flex-wrap flex-row items-start justify-start'
+  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 print:text-black hover:text-red-500',
+  textContainer:
+    'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300 print:text-black',
+  messageContainer:
+    'w-full flex flex-col items-start justify-center ml-2 text-gray-300 print:text-black',
+  message:
+    'text-gray-300 print:text-black text-base mt-2 flex flex-wrap flex-row items-start justify-start'
 };
 
 const toastIcons = {

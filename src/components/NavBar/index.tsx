@@ -3,11 +3,12 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {trim} from '../../lib/utils/shared/strings';
 
-const navClasses = `w-full flex flex-wrap flex-row justify-center items-center gap-6 md:gap-16`;
-const linkClasses = `hover:scale-110 text-lg text-gray-300 text-center rounded-md text-center`;
+const navClasses = trim(`w-full flex flex-wrap flex-row justify-center items-center gap-6 md:gap-16 
+                    hide-on-print`);
+const linkClasses = `hover:scale-110 text-lg text-gray-300 print:text-black text-center rounded-md text-center`;
 const activeLinkClass = 'text-[var(--green)] text-lg underline underline-offset-8 text-center';
-const adminClassName = `absolute top-28 sm:top-2 right-[155px] p-3 rounded-md text-xl
-                        hover:bg-[var(--green)] Text-outline bg-slate-700`;
+const adminClassName = trim(`absolute top-28 sm:top-2 right-[155px] p-3 rounded-md text-xl
+                        hover:bg-[var(--green)] Text-outline bg-slate-700 hide-on-print`);
 
 export type NavLinks = {href: string; text: string}[];
 
@@ -33,7 +34,7 @@ function SecondaryLinks({links}: Readonly<{links: NavLinks}>) {
   return (
     <>
       {links.map(link => (
-        <Link key={link.href} href={link.href} className={trim(adminClassName)}>
+        <Link key={link.href} href={link.href} className={adminClassName}>
           {link.text}
         </Link>
       ))}

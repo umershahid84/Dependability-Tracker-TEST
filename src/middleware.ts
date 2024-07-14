@@ -15,19 +15,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
-  // handle redirects for remaining supervisor and admin paths
-  for (const path of adminPaths) {
-    if (request.nextUrl.pathname.startsWith(path)) {
-      return adminOnly(authToken, request);
-    }
-  }
   for (const path of supervisorPaths) {
     if (request.nextUrl.pathname.startsWith(path)) {
       return supervisorOnly(authToken, request);
     }
   }
 
-  return NextResponse.next();
+  // handle redirects for remaining supervisor and admin paths
+  for (const path of adminPaths) {
+    if (request.nextUrl.pathname.startsWith(path)) {
+      return adminOnly(authToken, request);
+    }
+  }
 }
 
 export const config = {
@@ -39,9 +38,14 @@ export const config = {
     {source: '/admin/dashboard'},
     {source: '/admin/employees'},
     {source: '/api/admin/employees'},
+    {source: '/api/admin/divisions'},
     {source: '/ground-transportation'},
     {source: '/divisions/public-parking'},
     {source: '/divisions/employee-parking'},
     {source: '/divisions/employee-parking'}
-  ]
+  ],
+  api: {
+    externalResolver: true,
+    bodyParser: true
+  }
 };

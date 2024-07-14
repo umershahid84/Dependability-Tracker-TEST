@@ -1,5 +1,5 @@
-import {getDate, getTime} from '../../../lib/utils';
 import {NextRouter, useRouter} from 'next/router';
+import {getDate, getTime, getTimeNoSeconds} from '../../../lib/utils';
 import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {getDivisionNameFromPath, headingNormalizer} from '../../../lib/utils/shared/strings';
 
@@ -22,7 +22,7 @@ const headings = [
   'Comments'
 ];
 
-export function TwoWeekCallOutHistory({callOuts}: {callOuts: CallOutWithAssociations[]}) {
+export function TwoWeekCallOutHistory({callOuts}: Readonly<{callOuts: CallOutWithAssociations[]}>) {
   const router: NextRouter = useRouter();
 
   const renderCell = (value: string) => <td className={styles.td}>{value}</td>;
@@ -42,13 +42,13 @@ export function TwoWeekCallOutHistory({callOuts}: {callOuts: CallOutWithAssociat
           <tr className={styles.headerTr}>{headings.map(heading => renderHead(heading))}</tr>
         </thead>
         <tbody id="dependabilityData">
-          {callOuts.map(callOut => (
+          {callOuts?.map(callOut => (
             <tr key={callOut.id}>
               {renderCell(callOut.employee?.name)}
               {renderCell(getDate(callOut.callout_date))}
               {renderCell(getTime(callOut.callout_date))}
               {renderCell(getDate(callOut.shift_date))}
-              {renderCell(getTime(callOut.shift_date))}
+              {renderCell(getTimeNoSeconds(callOut.shift_time))}
               {renderCell(callOut.leaveType?.reason)}
               {renderCell(callOut.supervisor_comments)}
             </tr>

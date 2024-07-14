@@ -1,19 +1,20 @@
 'use client';
 import Loading from '../Loading';
 import {useEffect, useState} from 'react';
+import {trim} from '../../lib/utils/shared/strings';
 
 export type FormActionProps = {
   type: string;
   label?: string;
   isValid: boolean;
   hasError?: boolean;
-  onAction?: (event: Event) => void;
+  onAction?: (event: React.SyntheticEvent) => void;
 };
 
 const defaultStyles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
-  defaultButton:
-    'min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md hover:bg-[var(--green)] hover:text-white ',
+  defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md 
+                  hover:bg-[var(--green)] hover:text-white`),
   disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
 };
 
@@ -43,7 +44,7 @@ export default function FormAction(props: Readonly<FormActionProps>): React.JSX.
     // eslint-disable-next-line
   }, [isValid]);
 
-  const actionWrapper = (event: Event): void => {
+  const actionWrapper = (event: React.SyntheticEvent): void => {
     event.preventDefault();
     event.stopPropagation();
 

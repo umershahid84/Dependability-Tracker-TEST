@@ -5,7 +5,8 @@ export const adminPaths: string[] = [
   '/admin/dashboard',
   '/admin/employees',
   '/admin/callouts',
-  '/api/admin/employees'
+  '/api/admin/employees',
+  '/api/admin/divisions'
 ];
 
 export const adminOnly = (authToken: JwtPayload | undefined, request: NextRequest) => {

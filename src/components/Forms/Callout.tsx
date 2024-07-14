@@ -7,11 +7,16 @@ import {
   EmployeeWithAssociations,
   CallOutWithAssociations
 } from '../../lib/db/models/types';
+import {FormLabel} from './Label';
 
-function InputContainer({label, children}: {label: string; children: React.ReactNode}) {
+function InputContainer({
+  label,
+  children,
+  htmlFor
+}: Readonly<{label: string; children: React.ReactNode; htmlFor: string}>) {
   return (
     <div className="flex flex-col w-full">
-      <label className="font-medium mb-1">{label}</label>
+      <FormLabel label={label} htmlFor={htmlFor} className={'font-medium mb-1'} />
       {children}
     </div>
   );
@@ -30,27 +35,30 @@ const styles = {
    drop-shadow-md`
 };
 
-export default function CallOutForm(props: {
-  employees: string;
-  leaveTypes: string;
-  callback?: (data: CallOutWithAssociations) => void;
-}) {
+export default function CallOutForm(
+  props: Readonly<{
+    employees: string;
+    leaveTypes: string;
+    callback?: (data: CallOutWithAssociations) => void;
+  }>
+) {
   const {
     formData,
     callTime,
+    shiftTime,
     resetFormData,
     onChangeHandler,
     handleFormSubmit,
-    handleCallTimeChange
+    handleCallTimeChange,
+    handleShiftTimeChange
   }: UseCallOutFormState = useCallOutFormState(props.callback);
 
   return (
     <form id="dependabilityForm" className={trim(styles.form)}>
       <div className={styles.div}>
-        <InputContainer label="Employee Name">
+        <InputContainer label="Employee Name" htmlFor="employeeName">
           <select
             required
-            id="employeeName"
             name="employeeName"
             title="Employee Name"
             className={styles.input}
@@ -66,11 +74,10 @@ export default function CallOutForm(props: {
           </select>
         </InputContainer>
 
-        <InputContainer label="Call Date">
+        <InputContainer label="Call Date" htmlFor="callDate">
           <input
             required
             type="date"
-            id="callDate"
             name="callDate"
             title="Call Date"
             className={styles.input}
@@ -79,11 +86,10 @@ export default function CallOutForm(props: {
           />
         </InputContainer>
 
-        <InputContainer label="Call Time">
+        <InputContainer label="Call Time" htmlFor="callTime">
           <input
             required
             type="time"
-            id="callTime"
             name="callTime"
             title="Call Time"
             value={callTime}
@@ -92,11 +98,10 @@ export default function CallOutForm(props: {
           />
         </InputContainer>
 
-        <InputContainer label="Shift Date">
+        <InputContainer label="Shift Date" htmlFor="shiftDate">
           <input
             required
             type="date"
-            id="shiftDate"
             name="shiftDate"
             title="Shift Date"
             className={styles.input}
@@ -105,23 +110,21 @@ export default function CallOutForm(props: {
           />
         </InputContainer>
 
-        <InputContainer label="Shift Time">
+        <InputContainer label="Shift Time" htmlFor="shiftTime">
           <input
             required
             type="time"
-            id="shiftTime"
             name="shiftTime"
             title="Shift Time"
+            value={shiftTime}
             className={styles.input}
-            value={formData.shiftTime}
-            onChange={onChangeHandler}
+            onChange={handleShiftTimeChange}
           />
         </InputContainer>
 
-        <InputContainer label="Leave Type">
+        <InputContainer label="Leave Type" htmlFor="leaveType">
           <select
             required
-            id="leaveType"
             name="leaveType"
             title="Leave Type"
             className={styles.input}
@@ -137,14 +140,13 @@ export default function CallOutForm(props: {
           </select>
         </InputContainer>
 
-        <InputContainer label="Arrived Late (Mins)">
+        <InputContainer label="Arrived Late (Mins)" htmlFor="lateArrivalMinutes">
           <input
             min="0"
             max="600"
             step="1"
             type="number"
             placeholder="Minutes"
-            id="lateArrivalMinutes"
             name="lateArrivalMinutes"
             title="Arrived Late (Mins)"
             onChange={onChangeHandler}
@@ -158,20 +160,18 @@ export default function CallOutForm(props: {
             type="range"
             name="lateArrivalMinutes"
             title="Arrived Late (Mins)"
-            id="lateArrivalMinutesSlider"
             onChange={onChangeHandler}
             className={styles.inputNumber}
             value={formData.lateArrivalMinutes}
           />
         </InputContainer>
 
-        <InputContainer label="Left Early (Mins)">
+        <InputContainer label="Left Early (Mins)" htmlFor="leftEarlyMinutes">
           <input
             min="0"
             max="600"
             step="1"
             type="number"
-            id="leftEarlyMinutes"
             placeholder="Minutes"
             name="leftEarlyMinutes"
             title="Left Early (Mins)"
@@ -186,7 +186,6 @@ export default function CallOutForm(props: {
             type="range"
             name="leftEarlyMinutes"
             title="Left Early (Mins)"
-            id="leftEarlyMinutesSlider"
             onChange={onChangeHandler}
             className={styles.inputNumber}
             value={formData.leftEarlyMinutes}
@@ -194,11 +193,10 @@ export default function CallOutForm(props: {
         </InputContainer>
       </div>
       <div className="w-full p-4">
-        <InputContainer label="Comments">
+        <InputContainer label="Comments" htmlFor="comment">
           <textarea
             rows={4}
             required
-            id="comment"
             name="comment"
             title="Comments"
             value={formData.comment}

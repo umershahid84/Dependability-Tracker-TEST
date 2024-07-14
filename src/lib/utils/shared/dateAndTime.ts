@@ -26,3 +26,8 @@ export const getDate = (date: Date): string => {
 export const getTime = (date: Date): string => {
   return new Date(date).toLocaleTimeString();
 };
+
+export const getTimeNoSeconds = (date: Date): string => {
+  date = new Date(date);
+  return `${date.toLocaleTimeString().slice(0, 5)} ${date.toLocaleTimeString().split(' ')[1]}`;
+};

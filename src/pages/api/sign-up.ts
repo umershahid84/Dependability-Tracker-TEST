@@ -2,16 +2,11 @@
 import {Request} from 'express';
 import type {NextApiResponse} from 'next';
 import {JwtPayload, signJwtToken} from '../../auth';
+import type {ApiData} from '../../lib/apiController';
 import {getCreateCredentialsInviteFromDB} from '../../lib/db/controller';
 import {createLoginCredentialInDB} from '../../lib/db/controller/LoginCredential';
 import {LoginCredentialsWithAssociations} from '../../lib/db/models/LoginCredential';
 import {CreateCredentialsInviteWithAssociations} from '../../lib/db/models/CreateCredentialsInvite';
-
-export type ApiData<T = any> = {
-  message?: string;
-  error?: string;
-  data?: T;
-};
 
 // inviteToken, password, email
 
@@ -73,6 +68,6 @@ export default async function createLoginCredentialsApiHandler(
 
 export const config = {
   api: {
-    externalResolver: true
+    bodyParser: true
   }
 };
