@@ -1,4 +1,4 @@
-import {PropsWithChildren} from 'react';
+import React from 'react';
 import {trim} from '../../lib/utils/shared/strings';
 
 const styles = {
@@ -6,6 +6,16 @@ const styles = {
    rounded-md gap-2`
 };
 
-export default function Form({children}: Readonly<PropsWithChildren>): JSX.Element {
-  return <form className={trim(styles.form)}>{children}</form>;
+export default function Form({
+  children,
+  onEnter
+}: Readonly<{
+  children: React.ReactNode;
+  onEnter?: (event: React.KeyboardEvent<HTMLFormElement>) => void;
+}>): JSX.Element {
+  return (
+    <form onKeyDown={onEnter} className={trim(styles.form)}>
+      {children}
+    </form>
+  );
 }

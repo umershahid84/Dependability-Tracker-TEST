@@ -22,7 +22,7 @@ export const LogoutButton = ({className}: {className?: string}) => {
     isMounted && window.addEventListener('keydown', handleMetaShiftL);
 
     return () => {
-      !isMounted && window.removeEventListener('keydown', handleMetaShiftL);
+      window.removeEventListener('keydown', handleMetaShiftL);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);

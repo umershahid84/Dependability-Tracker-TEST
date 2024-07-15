@@ -1,5 +1,6 @@
 'use client';
-import {makeToast, ToastTypes} from '../components';
+import {ModalAction} from '../../components/ Modal';
+import {makeToast, ToastTypes} from '../../components';
 
 export type EmployeeFormData = {
   name: string;
@@ -24,14 +25,11 @@ export type CreateEmployeeData = {
 
 export type CreateEmployeeProps = {
   formData: EmployeeFormData;
-
-  setFormData: React.Dispatch<React.SetStateAction<EmployeeFormData>>;
 };
 
 export const CreateEmployee = async ({
-  formData,
-  setFormData
-}: Readonly<CreateEmployeeProps>): Promise<void> => {
+  formData
+}: Readonly<CreateEmployeeProps>): Promise<boolean> => {
   try {
     const employeeDivisions = formData.division.split(',');
 
@@ -43,19 +41,13 @@ export const CreateEmployee = async ({
       isSupervisor: formData.isSupervisor === '1'
     };
 
-    console.log('New Employee Data:', newEmployeeData);
-
-    const response = await fetch(`/api/admin/employees/create`, {
+    const response = await fetch(`/api/admin/employees`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({...newEmployeeData})
     });
-
-    const data = await response.json();
-
-    console.log('Response:', data);
 
     if (!response.ok) {
       throw new Error('Failed to create employee');
@@ -65,7 +57,8 @@ export const CreateEmployee = async ({
         type: ToastTypes.Success,
         message: 'Employee Created Successfully'
       });
-      setFormData(defaultEmployeeFormData);
+      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+      return true;
     }
   } catch (error) {
     console.error(error);
@@ -75,5 +68,6 @@ export const CreateEmployee = async ({
       message: String(error),
       timeOut: 7500
     });
+    return false;
   }
 };

@@ -12,6 +12,10 @@ export default async function supervisorLoginApiHandler(
   req: Request,
   res: NextApiResponse<ApiData>
 ) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({error: 'Method not allowed'});
+  }
+
   const {password, email} = req.body as {
     email: string;
     password: string;

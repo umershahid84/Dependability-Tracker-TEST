@@ -4,7 +4,7 @@ import {
   employeeSortOptions,
   employeeLimitOptions
 } from './data';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ListHeader} from './ListHeader';
 import {ListsContainer} from './ListContainer';
 import {useEmployeeData} from '../../../hooks';
@@ -31,7 +31,7 @@ export function EmployeeList() {
   const [queryParams, setQueryParams] = useState<PaginationQueryParams<EmployeeSortBy>>(
     defaultEmployeesQueryParams
   );
-  const {employees} = useEmployeeData(queryParams);
+  const {employees, refetch} = useEmployeeData(queryParams);
 
   const handleQueryParamChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const {name, value} = event.target;
@@ -46,10 +46,21 @@ export function EmployeeList() {
 
     window.dispatchEvent(
       new CustomEvent('modalEvent', {
-        detail: {action: ModalAction.OPEN, type: ModalType.ADD_EMPLOYEE, payload: {test: 'test'}}
+        detail: {action: ModalAction.OPEN, type: ModalType.ADD_EMPLOYEE, payload: null}
       })
     );
   };
+
+  useEffect(() => {
+    //@ts-ignore
+    window.addEventListener('employeeUpdated', async () => await refetch(queryParams));
+
+    return () => {
+      //@ts-ignore
+      window.removeEventListener('employeeUpdated', async () => await refetch(queryParams));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ListsContainer>

@@ -8,10 +8,14 @@ import {SupervisorWithAssociations} from '../../lib/db/models/Supervisor';
 
 // inviteToken, password, email
 
-export default async function supervisorLoginApiHandler(
+export default async function jwtVerificationApiHandler(
   req: Request,
   res: NextApiResponse<{token: JwtPayload} | ApiData>
 ) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({error: 'Method not allowed'});
+  }
+
   const {token} = req.body as {
     token: string;
   };
@@ -19,8 +23,6 @@ export default async function supervisorLoginApiHandler(
   if (!token) {
     return res.status(400).json({error: 'Missing required fields'});
   }
-
-  //@ts-ignore
 
   const verifiedToken: JwtPayload | undefined = verifyJwtToken_RequiresNode(token);
 

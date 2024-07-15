@@ -2,8 +2,8 @@ import {NextRouter} from 'next/router';
 import {makeToast, ToastTypes} from '../components';
 
 export type SignUpFormState = {
-  password: string | null;
   email: string | null;
+  password: string | null;
   confirmPassword: string | null;
 };
 
@@ -14,9 +14,9 @@ export const defaultSignUpFormState: SignUpFormState = {
 };
 
 export type SignUpProps = {
-  router: NextRouter;
   token: string;
   inviteId: string;
+  router: NextRouter;
   formState: SignUpFormState;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   setFormState: React.Dispatch<React.SetStateAction<SignUpFormState>>;
@@ -57,7 +57,8 @@ export const SignUp = async ({
       makeToast({
         title: 'Success',
         type: ToastTypes.Success,
-        message: data.message
+        message: data.message,
+        timeOut: 1500
       });
 
       // reset the form and redirect to the dashboard

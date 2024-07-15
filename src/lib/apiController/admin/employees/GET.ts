@@ -4,11 +4,11 @@ import {
   EmployeeWithAssociations
 } from '../../../db/controller';
 import {Request} from 'express';
+import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
 import type {NextApiResponse} from 'next';
 import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
 import {ModelWithPagination} from '../../../db/controller/Employee/helpers';
-import {NextRequest} from 'next/server';
 
 export default async function getEmployeesApiHandler(
   req: NextRequest & Request,

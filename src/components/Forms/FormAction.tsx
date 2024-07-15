@@ -4,7 +4,6 @@ import {useEffect, useState} from 'react';
 import {trim} from '../../lib/utils/shared/strings';
 
 export type FormActionProps = {
-  type: string;
   label?: string;
   isValid: boolean;
   hasError?: boolean;
@@ -45,9 +44,6 @@ export default function FormAction(props: Readonly<FormActionProps>): React.JSX.
   }, [isValid]);
 
   const actionWrapper = (event: React.SyntheticEvent): void => {
-    event.preventDefault();
-    event.stopPropagation();
-
     if (props.onAction) {
       setIsClicked(true);
       props.onAction(event);

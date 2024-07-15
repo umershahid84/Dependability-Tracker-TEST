@@ -7,7 +7,7 @@ import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
 import type {NextApiResponse} from 'next';
-import {CreateEmployeeData} from '../../../../client-api/create-employee';
+import {CreateEmployeeData} from '../../../../client-api';
 import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
 
 export default async function postEmployeesApiHandler(
@@ -23,6 +23,12 @@ export default async function postEmployeesApiHandler(
 
     if (!newEmployee) {
       return res.status(500).json({error: 'Error creating employee'});
+    }
+
+    if (body.isAdmin && !body.isSupervisor) {
+      return res
+        .status(400)
+        .json({error: 'Cannot create an admin employee without being a supervisor'});
     }
 
     if (body.isSupervisor) {

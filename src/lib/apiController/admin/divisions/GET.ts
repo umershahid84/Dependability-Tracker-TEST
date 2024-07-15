@@ -1,17 +1,17 @@
 import {Request} from 'express';
-import type {NextApiResponse} from 'next';
 import type {ApiData} from '../../index';
+import type {NextApiResponse} from 'next';
 import {getDivisionFromDB} from '../../../db/controller';
 import {DivisionAttributes} from '../../../db/models/types';
-import {getJwtTokenForAPI, JwtPayload, Redirect} from '../../../../auth';
+import {getJwtTokenForAPI, JwtPayload} from '../../../../auth';
 
 export default async function getDivisionsApiHandler(
   req: Request,
   res: NextApiResponse<ApiData<DivisionAttributes[]>>
 ) {
-  const token: JwtPayload | Redirect | undefined = getJwtTokenForAPI(req, res);
+  const token: JwtPayload | undefined = getJwtTokenForAPI(req, res);
 
-  if (!token || (token as Redirect)?.redirect) {
+  if (!token || !token.isAdmin) {
     return res.status(401).json({error: 'Unauthorized request'});
   }
 

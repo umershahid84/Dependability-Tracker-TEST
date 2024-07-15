@@ -1,17 +1,19 @@
 'use client';
 import {useEffect, useState} from 'react';
 
-export type FormInputProps = {
+export type FormInputWithErrorsProps = {
   id: string;
+  gap?: string;
   type: string;
   label: string;
   value: string;
   errors?: string[];
   required?: boolean;
   placeholder?: string;
+  autoComplete?: string;
   onBlur?: (event: Event) => void;
   onFocus?: (event: Event) => void;
-  onChange?: (event: Event) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setValidated?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -25,7 +27,9 @@ const defaultStyles = {
     'w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none focus:ring-[var(--green)]'
 };
 
-export default function FormInput(props: Readonly<FormInputProps>): React.JSX.Element {
+export default function FormInputWithErrors(
+  props: Readonly<FormInputWithErrorsProps>
+): React.JSX.Element {
   const [hasError, setHasError] = useState<boolean>(false);
   const [styles, setStyles] = useState<typeof defaultStyles>(defaultStyles);
 
@@ -65,7 +69,7 @@ export default function FormInput(props: Readonly<FormInputProps>): React.JSX.El
         </span>
       </span>
       {/* @ts-ignore */}
-      <input className={styles.input} tabIndex={0} {...props} />
+      <input {...props} tabIndex={0} className={styles.input + ' ' + props.gap ?? ''} />
     </div>
   );
 }

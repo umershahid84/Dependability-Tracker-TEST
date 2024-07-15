@@ -2,17 +2,17 @@
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
-import {FormInput, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators} from '../../hooks';
+import {FormInputWithErrors, Form, FormAction} from '../../components';
+import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
 import {SignUp, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
 export default function SignUpForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
-  const [inviteId, setInviteId] = useState<string | null>(null);
+  const isMounted: boolean = useIsMounted();
   const [token, setToken] = useState<string | null>(null);
   const [hasError, setHasError] = useState<boolean>(false);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
-  const [isMounted, setIsMounted] = useState<boolean | null>(false);
+  const [inviteId, setInviteId] = useState<string | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
   const [formState, setFormState] = useState<SignUpFormState>(defaultSignUpFormState);
@@ -48,9 +48,9 @@ export default function SignUpForm(): React.JSX.Element {
     setFormState({...formState, [name]: value});
   };
 
-  const handleSignUp = async (e: Event): Promise<void> => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSignUp = async (e: React.SyntheticEvent): Promise<void> => {
+    e?.preventDefault();
+    e?.stopPropagation();
 
     await SignUp({
       router,
@@ -62,29 +62,34 @@ export default function SignUpForm(): React.JSX.Element {
     });
   };
 
-  //  Component Effects
+  const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>): void => {
+    if (e.key === 'Enter' && isFormValid) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleSignUp(e);
+    }
+  };
 
-  // clean mounting and unmounting
+  // On Mount
   useEffect(() => {
-    setIsMounted(true);
-    const urlParams = new URLSearchParams(window.location.search);
-    const inviteId = urlParams.get('invite-id');
-    const token = urlParams.get('token');
+    if (isMounted) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const inviteId = urlParams.get('invite-id');
+      const token = urlParams.get('token');
 
-    if (inviteId && token) {
-      setInviteId(inviteId);
-      setToken(token);
+      if (inviteId && token) {
+        setInviteId(inviteId);
+        setToken(token);
+      }
     }
     return () => {
       setToken(null);
       setInviteId(null);
-      setIsMounted(false);
       setFormState(defaultSignUpFormState);
     };
-  }, []);
+  }, [isMounted]);
 
   // Field validation
-
   useEffect(() => {
     if (isMounted) {
       validatedEmail.validate();
@@ -149,8 +154,8 @@ export default function SignUpForm(): React.JSX.Element {
   }, [validatedPassword.error, validatedEmail.error]);
 
   return isMounted ? (
-    <Form>
-      <FormInput
+    <Form onEnter={handleEnter}>
+      <FormInputWithErrors
         label="Email"
         type="text"
         id="email"
@@ -164,7 +169,7 @@ export default function SignUpForm(): React.JSX.Element {
         onBlur={validatedEmail.validate}
         errors={emailErrors ?? []}
       />
-      <FormInput
+      <FormInputWithErrors
         label="Password"
         type="password"
         id="password"
@@ -178,7 +183,7 @@ export default function SignUpForm(): React.JSX.Element {
         onBlur={validatedPassword.validate}
         errors={passwordErrors ?? []}
       />
-      <FormInput
+      <FormInputWithErrors
         label="Confirm Password"
         type="password"
         id="confirmPassword"
@@ -194,7 +199,6 @@ export default function SignUpForm(): React.JSX.Element {
       />
       <FormAction
         label="Create Account"
-        type="signup"
         isValid={isFormValid ?? false}
         hasError={hasError}
         onAction={handleSignUp}

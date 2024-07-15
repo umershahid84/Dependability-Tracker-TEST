@@ -1,13 +1,13 @@
 import React from 'react';
+import {FormLabel} from './FormLabel';
 import {dateTo_YYYY_MM_DD} from '../../lib/utils';
 import {trim} from '../../lib/utils/shared/strings';
 import {UseCallOutFormState, useCallOutFormState} from '../../hooks';
 import {
   LeaveTypeAttributes,
-  EmployeeWithAssociations,
-  CallOutWithAssociations
+  CallOutWithAssociations,
+  EmployeeWithAssociations
 } from '../../lib/db/models/types';
-import {FormLabel} from './Label';
 
 function InputContainer({
   label,
@@ -29,7 +29,7 @@ const styles = {
   inputNumber: 'border p-[5.5px] rounded-md w-full bg-slate-800',
   buttonContainer: `flex flex-wrap flex-row justify-between items-center w-[80%] p-5`,
   form: `flex flex-col justify-center items-center p-2 bg-slate-900 border
-   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base`,
+   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print`,
   submit: `rounded-md p-3 bg-slate-950 hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md`,
   reset: `bg-slate-950 hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white
    drop-shadow-md`
@@ -53,8 +53,16 @@ export default function CallOutForm(
     handleShiftTimeChange
   }: UseCallOutFormState = useCallOutFormState(props.callback);
 
+  const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      handleFormSubmit(e);
+    }
+  };
+
   return (
-    <form id="dependabilityForm" className={trim(styles.form)}>
+    <form className={trim(styles.form)} onKeyDown={handleEnter}>
       <div className={styles.div}>
         <InputContainer label="Employee Name" htmlFor="employeeName">
           <select

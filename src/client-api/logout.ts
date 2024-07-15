@@ -13,7 +13,7 @@ export const Logout = async (router: NextRouter) => {
         title: 'Success',
         type: ToastTypes.Success,
         message: data.message,
-        timeOut: 7500
+        timeOut: 1500
       });
 
       setTimeout(() => {
@@ -25,7 +25,7 @@ export const Logout = async (router: NextRouter) => {
       title: 'Error',
       type: ToastTypes.Error,
       message: 'There was an error logging out of your account. Please try again.',
-      timeOut: 7500
+      timeOut: 2500
     });
   }
 };

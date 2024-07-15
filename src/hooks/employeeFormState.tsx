@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {EmployeeFormData} from '../client-api/create-employee';
+import {EmployeeFormData} from '../client-api';
 
 export const defaultEmployeeFormData: EmployeeFormData = {
   name: '',

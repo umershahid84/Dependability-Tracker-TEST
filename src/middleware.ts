@@ -37,12 +37,9 @@ export const config = {
     {source: '/admin/callouts'},
     {source: '/admin/dashboard'},
     {source: '/admin/employees'},
-    {source: '/api/admin/employees'},
-    {source: '/api/admin/divisions'},
-    {source: '/ground-transportation'},
     {source: '/divisions/public-parking'},
     {source: '/divisions/employee-parking'},
-    {source: '/divisions/employee-parking'}
+    {source: '/divisions/ground-transportation'}
   ],
   api: {
     externalResolver: true,

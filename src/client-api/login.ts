@@ -38,7 +38,8 @@ export const Login = async ({
       makeToast({
         title: 'Success',
         type: ToastTypes.Success,
-        message: data.message
+        message: data.message,
+        timeOut: 1500
       });
 
       // reset the form and redirect to the dashboard

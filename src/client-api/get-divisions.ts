@@ -1,9 +1,17 @@
 import {makeToast, ToastTypes} from '../components';
 
 export const getDivisions = async () => {
-  const response = await fetch('/api/admin/divisions');
+  try {
+    const response = await fetch('/api/admin/divisions');
 
-  if (!response.ok) {
+    if (!response.ok) {
+      throw new Error('Failed to fetch divisions');
+    }
+
+    const {data} = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
     makeToast({
       type: ToastTypes.Error,
       title: 'Error',
@@ -11,7 +19,4 @@ export const getDivisions = async () => {
     });
     return [];
   }
-
-  const {data} = await response.json();
-  return data;
 };

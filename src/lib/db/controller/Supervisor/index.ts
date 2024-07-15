@@ -5,7 +5,7 @@ import {
   SupervisorCreationAttributes
 } from '../../models/Supervisor';
 import {uuidV4Regex} from '../../../utils';
-import {Employee, Supervisor} from '../../models';
+import {CreateCredentialsInvite, Employee, LoginCredential, Supervisor} from '../../models';
 import {SupervisorOptions, createSupervisorInclude, handleOptionalReturnValues} from './helpers';
 import {convertOptions, ModelWithPagination} from '../Employee/helpers';
 
@@ -124,6 +124,28 @@ export const getSupervisorFromDB = {
         numRecords: filtered.length
       };
     }
+  },
+  byEmployeeId: async (
+    employeeId: string,
+    options?: SupervisorOptions
+  ): Promise<SupervisorWithAssociations | null> => {
+    const superV: SupervisorWithAssociations | null = ((
+      await Supervisor.findOne({
+        where: {employee_id: employeeId},
+        include: [
+          {
+            model: Employee,
+            as: 'supervisor_info'
+          },
+          ...createSupervisorInclude(options ?? {})
+        ]
+      })
+    )?.get({plain: true}) ?? null) as SupervisorWithAssociations | null;
+
+    // istanbul ignore next
+    if (!superV) return null;
+
+    return handleOptionalReturnValues(superV, options ?? {});
   }
 };
 
@@ -147,11 +169,16 @@ export const updateSupervisorInDB = {
 };
 
 // (D)elete
+// Does not delete the employee associated with the supervisor
 export const deleteSupervisorFromDB = async (id: string): Promise<boolean> => {
   if (!id) throw new Error('ID is required');
   if (!uuidV4Regex.test(id)) throw new Error('Invalid ID');
   try {
     const deleted: number = await Supervisor.destroy({where: {id}});
+    // delete any credentials or credential invites associated with the supervisor id
+    await LoginCredential.destroy({where: {supervisor_id: id}});
+    await CreateCredentialsInvite.destroy({where: {supervisor_id: id}});
+
     return deleted > 0;
   } catch (error) {
     // istanbul ignore next

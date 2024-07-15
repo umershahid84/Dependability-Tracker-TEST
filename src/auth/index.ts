@@ -72,7 +72,7 @@ export const getTokenForServerSideProps = (request: {
 export const getJwtTokenForAPI = (
   req: Request,
   res: NextApiResponse<ApiData>
-): undefined | JwtPayload | Redirect => {
+): undefined | JwtPayload => {
   const token = getTokenForServerSideProps({req});
 
   const hasRedirect = (token as Redirect)?.redirect;
@@ -82,7 +82,7 @@ export const getJwtTokenForAPI = (
     return;
   }
 
-  return token;
+  return token as JwtPayload;
 };
 
 // To be used in the NextEdge Environment aka NextMiddleware

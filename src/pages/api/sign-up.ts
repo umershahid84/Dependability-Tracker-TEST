@@ -14,6 +14,10 @@ export default async function createLoginCredentialsApiHandler(
   req: Request,
   res: NextApiResponse<ApiData>
 ) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({error: 'Method not allowed'});
+  }
+
   const {inviteToken, password, email, inviteId} = req.body as {
     email: string;
     inviteId: string;
@@ -38,7 +42,7 @@ export default async function createLoginCredentialsApiHandler(
         email,
         password,
         invite_token: inviteToken,
-        supervisor_id: existingInvite?.supervisor_info?.id as string
+        supervisor_id: existingInvite?.supervisor_info?.id
       });
 
     if (!createdLoginCredentials) {
@@ -47,9 +51,9 @@ export default async function createLoginCredentialsApiHandler(
 
     const authToken: JwtPayload = {
       email,
-      supervisorId: existingInvite?.supervisor_info?.id as string,
-      isAdmin: existingInvite?.supervisor_info?.is_admin as boolean,
-      username: existingInvite?.supervisor_info?.supervisor_info?.name as string
+      supervisorId: existingInvite?.supervisor_info?.id,
+      isAdmin: existingInvite?.supervisor_info?.is_admin,
+      username: existingInvite?.supervisor_info?.supervisor_info?.name
     };
 
     const signedToken = signJwtToken(authToken);

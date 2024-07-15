@@ -1,7 +1,6 @@
 import React from 'react';
-import {FormLabel} from '../Label';
-import {useIsMounted} from '../../../hooks';
-import {EmployeeFormData} from '../../../client-api/create-employee';
+import {FormLabel} from '../FormLabel';
+import {EmployeeFormData} from '../../../client-api';
 import {DynamicOptions, DynamicOption} from '../DynamicOptions';
 import {DivisionAttributes} from '../../../lib/db/models/Division';
 
@@ -41,12 +40,10 @@ export function EmployeeCrudFromModalLayout({
   divisions,
   divisionOptions
 }: Readonly<EmployeeCrudFormModalLayoutProps>): React.ReactElement {
-  const isMounted: boolean = useIsMounted();
-
   return (
     <>
       <h2 className={styles.h2}>{title}</h2>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={e => e.preventDefault()}>
         <FormLabelContainer>
           <FormLabel label="Employee Name" htmlFor="name" />
           <input

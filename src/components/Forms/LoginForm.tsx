@@ -1,15 +1,14 @@
 'use client';
-import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import {NextRouter, useRouter} from 'next/router';
-import {FormInput, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators} from '../../hooks';
+import {FormInputWithErrors, Form, FormAction} from '../../components';
+import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
 import {Login, LoginFormState, defaultLoginFormState} from '../../client-api';
 
 export default function LoginForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
+  const isMounted: boolean = useIsMounted();
   const [hasError, setHasError] = useState<boolean>(false);
-  const [isMounted, setIsMounted] = useState<boolean | null>(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
@@ -33,8 +32,8 @@ export default function LoginForm(): React.JSX.Element {
   };
 
   const handleLogin = async (e: React.SyntheticEvent): Promise<void> => {
-    e.preventDefault();
-    e.stopPropagation();
+    e?.preventDefault();
+    e?.stopPropagation();
 
     await Login({
       router,
@@ -44,17 +43,13 @@ export default function LoginForm(): React.JSX.Element {
     });
   };
 
-  //  Component Effects
-
-  // clean mounting and unmounting
-  useEffect(() => {
-    setIsMounted(true);
-
-    return () => {
-      setIsMounted(false);
-      setFormState(defaultLoginFormState);
-    };
-  }, []);
+  const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>): void => {
+    if (e.key === 'Enter' && isFormValid) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleLogin(e);
+    }
+  };
 
   // Field validation
   useEffect(() => {
@@ -105,8 +100,8 @@ export default function LoginForm(): React.JSX.Element {
   }, [validatedPassword.error, validatedEmail.error]);
 
   return isMounted ? (
-    <Form>
-      <FormInput
+    <Form onEnter={handleEnter}>
+      <FormInputWithErrors
         label="Email"
         type="text"
         id="email"
@@ -120,7 +115,7 @@ export default function LoginForm(): React.JSX.Element {
         errors={usernameErrors ?? []}
       />
 
-      <FormInput
+      <FormInputWithErrors
         label="Password"
         type="password"
         id="password"
@@ -136,19 +131,10 @@ export default function LoginForm(): React.JSX.Element {
 
       <FormAction
         label="Login"
-        type="login"
         hasError={hasError}
         onAction={handleLogin}
         isValid={isFormValid ?? false}
       />
-
-      {/* TODO: Convert to a forgot password */}
-      {/* <p className="mt-4 mb-2">
-        Don&apos;t have an account?{' '}
-        <Link href={'./sign-up'} className="text-blue-500 hover:text-[var(--green)]">
-          Sign up here.
-        </Link>
-      </p> */}
     </Form>
   ) : (
     <></>

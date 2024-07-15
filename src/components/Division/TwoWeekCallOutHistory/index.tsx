@@ -37,11 +37,11 @@ export function TwoWeekCallOutHistory({callOuts}: Readonly<{callOuts: CallOutWit
       <h2 className={styles.h2}>
         Two Week Callout History For {headingNormalizer(getDivisionNameFromPath(router.pathname))}
       </h2>
-      <table id="dependabilityTable" className={styles.table}>
+      <table className={styles.table}>
         <thead>
           <tr className={styles.headerTr}>{headings.map(heading => renderHead(heading))}</tr>
         </thead>
-        <tbody id="dependabilityData">
+        <tbody>
           {callOuts?.map(callOut => (
             <tr key={callOut.id}>
               {renderCell(callOut.employee?.name)}

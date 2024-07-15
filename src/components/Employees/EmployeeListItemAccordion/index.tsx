@@ -1,3 +1,4 @@
+import {ModalAction, ModalType} from '../../ Modal';
 import {trim} from '../../../lib/utils/shared/strings';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 
@@ -16,6 +17,31 @@ export function EmployeeListItemAccordion({
   show: boolean;
   employee: EmployeeWithAssociations;
 }>) {
+  const handleOnClick = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // get the button name
+    const buttonName = e.target as HTMLButtonElement;
+
+    // if the button name is edit
+    if (buttonName.textContent === 'Edit') {
+      window.dispatchEvent(
+        new CustomEvent('modalEvent', {
+          detail: {action: ModalAction.OPEN, type: ModalType.EDIT_EMPLOYEE, payload: employee}
+        })
+      );
+    }
+    // if the button name is delete
+    if (buttonName.textContent === 'Delete') {
+      window.dispatchEvent(
+        new CustomEvent('modalEvent', {
+          detail: {action: ModalAction.OPEN, type: ModalType.DELETE_EMPLOYEE, payload: employee}
+        })
+      );
+    }
+  };
+
   return (
     show && (
       <div className={trim(styles.div)}>
@@ -33,7 +59,7 @@ export function EmployeeListItemAccordion({
             {employee.divisions.map(division => division.name).join(', ')}
           </p>
         </div>
-        <div className={styles.hideOnPrint}>
+        <div className={styles.hideOnPrint} onClick={handleOnClick}>
           <button type="button" className={styles.edit}>
             Edit
           </button>

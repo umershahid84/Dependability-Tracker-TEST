@@ -29,5 +29,22 @@ export const getTime = (date: Date): string => {
 
 export const getTimeNoSeconds = (date: Date): string => {
   date = new Date(date);
-  return `${date.toLocaleTimeString().slice(0, 5)} ${date.toLocaleTimeString().split(' ')[1]}`;
+  let dateString = `${date.toLocaleTimeString().slice(0, 5)} ${
+    date.toLocaleTimeString().split(' ')[1]
+  }`;
+
+  let numberOfColons = dateString.split(':').length - 1;
+
+  if (numberOfColons === 2) {
+    const timeOfDay = dateString.split(' ')[1]?.trim();
+    let [time] = dateString.split(timeOfDay);
+    time = time.trim();
+
+    if (time.endsWith(':')) {
+      time = time.slice(0, -1);
+    }
+    return `${time.trim()} ${timeOfDay.trim()}`;
+  }
+
+  return dateString;
 };

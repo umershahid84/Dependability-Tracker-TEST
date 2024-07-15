@@ -3,6 +3,7 @@ import {uuid} from '../../../lib/utils';
 import {Toast, ToastTypes} from '../Toast';
 import {trim} from '../../../lib/utils/shared/strings';
 import {useEffect, useState, useCallback} from 'react';
+import {useIsMounted} from '../../../hooks';
 
 export type IToastMessageContextType = {
   id?: string;
@@ -53,6 +54,7 @@ const testToasts: Record<string, IToastMessageContextType> = {
 };
 
 export function Toaster(): JSX.Element {
+  const isMounted: boolean = useIsMounted();
   const [toasts, setToasts] = useState<Record<string, IToastMessageContextType>>(testToasts);
 
   const setToaster = useCallback((event: CustomEvent): void => {
@@ -77,10 +79,11 @@ export function Toaster(): JSX.Element {
       toast: setToaster,
       'remove-toast': handleRemoveToast
     };
-
-    for (const [key, value] of Object.entries(eventHandlers)) {
-      // @ts-ignore
-      window.addEventListener(key, value);
+    if (isMounted) {
+      for (const [key, value] of Object.entries(eventHandlers)) {
+        // @ts-ignore
+        window.addEventListener(key, value);
+      }
     }
     return () => {
       for (const [key, value] of Object.entries(eventHandlers)) {
@@ -88,7 +91,8 @@ export function Toaster(): JSX.Element {
         window.removeEventListener(key, value);
       }
     };
-  }, [setToaster, handleRemoveToast]);
+    // eslint-disable-next-line
+  }, [isMounted]);
 
   return (
     <section className={trim(styles.toaster)}>

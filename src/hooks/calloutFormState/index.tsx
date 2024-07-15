@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {makeToast, ToastTypes} from '../components';
-import {CallOutWithAssociations} from '../lib/db/models/Callout';
-import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../hooks';
-import {EmployeeCallOut, DefaultCallOutFormData, getDefaultCallOutFormData} from '../client-api';
+import {validateEmployeeCallOut} from './helpers';
+import {makeToast, ToastTypes} from '../../components';
+import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
+import {EmployeeCallOut, DefaultCallOutFormData, getDefaultCallOutFormData} from '../../client-api';
 
 export type UseCallOutFormState = {
   callTime: string;
@@ -28,16 +29,13 @@ export function useCallOutFormState(
   const [formData, setFormData] = useState<DefaultCallOutFormData>(defaultFormData);
 
   const callTime: string = incrementingCallTime.time;
-  const clearCallTimeInterval = incrementingCallTime.clearTimeInterval;
-
   const shiftTime: string = incrementingShiftTime.time;
-  const clearShiftTimeInterval = incrementingShiftTime.clearTimeInterval;
 
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    clearCallTimeInterval();
-    clearShiftTimeInterval();
+    incrementingCallTime.clearTimeInterval();
+    incrementingShiftTime.clearTimeInterval();
     const {name, value} = e.target;
     setFormData(prevFormData => ({...prevFormData, [name]: value}));
   };
@@ -46,59 +44,40 @@ export function useCallOutFormState(
     e.preventDefault();
     e.stopPropagation();
 
-    // validate form data before sending
-    const requiredFields = [
-      'comment',
-      'callDate',
-      'callTime',
-      'shiftDate',
-      'leaveType',
-      'shiftTime',
-      'employeeName'
-    ];
-
-    const missingFields = requiredFields.filter(
-      field => !formData[field as keyof DefaultCallOutFormData]
-    );
-
-    if (missingFields.length) {
-      makeToast({
-        title: 'Error',
-        type: ToastTypes.Error,
-        message: `Missing fields: ${missingFields
-          .map(field =>
-            field
-              .replace(/([A-Z])/g, ' $1')
-              .trim()
-              .split(' ')
-              .map(word => word[0].toUpperCase() + word.slice(1))
-              .join(' ')
-          )
-          .join(', ')}`
-      });
+    const formValidated = validateEmployeeCallOut(formData);
+    if (!formValidated) {
       return;
     }
 
-    await EmployeeCallOut({
-      callback,
-      formData,
-      callTime,
-      shiftTime,
-      setFormData,
-      defaultFormData
-    });
+    try {
+      await EmployeeCallOut({
+        callback,
+        formData,
+        callTime,
+        shiftTime,
+        setFormData,
+        defaultFormData
+      });
+    } catch (error) {
+      makeToast({
+        type: ToastTypes.Error,
+        title: 'Error',
+        message: String(error)
+      });
+    }
   };
 
   useEffect(() => {
     return () => {
-      clearCallTimeInterval();
+      incrementingCallTime.clearTimeInterval();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
   const resetFormData = () => {
     setFormData(defaultFormData);
-    clearCallTimeInterval();
+    incrementingCallTime.resetTime();
+    incrementingShiftTime.resetTime();
   };
 
   return {

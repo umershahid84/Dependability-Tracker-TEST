@@ -48,6 +48,7 @@ export function useIncrementingTime(): UseIncrementingTime {
   }, [isMounted]);
 
   const resetTime = () => {
+    handleClearCallTimeInterval();
     startTimeInterval();
   };
 

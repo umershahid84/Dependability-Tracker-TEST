@@ -16,7 +16,14 @@ import {
 } from './helpers';
 import {Op} from 'sequelize';
 import {Employee} from '../../models';
-import {getSupervisorFromDB} from '../Supervisor';
+import {getDivisionFromDB} from '../Division';
+import {EmployeeFormData} from '../../../../client-api';
+import {
+  getSupervisorFromDB,
+  updateSupervisorInDB,
+  createSupervisorInDB,
+  deleteSupervisorFromDB
+} from '../Supervisor';
 
 // (C)reate
 export const createEmployeeInDB = async (
@@ -236,6 +243,94 @@ export const updateEmployeeInDB = {
       // istanbul ignore next
       throw new Error(`\n❌ Error updating employee: ${error}`);
     }
+  },
+  withEmployeeData: async (
+    employeeId: string,
+    withEmployeeData: EmployeeFormData
+  ): Promise<number | null> => {
+    validateEmployeeName(withEmployeeData.name);
+    validateEmployeeDivisionIds(withEmployeeData.division.split(','));
+
+    try {
+      const employee = await Employee.findByPk(employeeId);
+      if (!employee) {
+        throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
+      }
+
+      if (withEmployeeData.isAdmin || withEmployeeData.isSupervisor) {
+        const divisionIds = (await getDivisionFromDB.all()).map(division => division.id);
+
+        // if the division ids do not equal all the division ids in the database then throw an error
+        if (!withEmployeeData.division.split(',').every(id => divisionIds.includes(id.trim()))) {
+          throw new Error(
+            `\n❌ Invalid division ID provided. Supervisors and Admins must belong to all divisions.`
+          );
+        }
+      }
+
+      // Update the employee here
+      const updatedEmployee = await Employee.update(
+        {
+          name: withEmployeeData.name,
+          division_ids: withEmployeeData.division.split(',').map(id => id.trim())
+        },
+        {where: {id: employeeId}}
+      );
+
+      //if the admin is set to zero ensure that if a supervisor exists, they are not an admin
+      if (withEmployeeData.isAdmin === '0') {
+        const supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+        if (supervisor && supervisor.is_admin) {
+          await updateSupervisorInDB.setAdminStatus(supervisor.id, false);
+        }
+      }
+
+      //if the admin is set to one ensure that if a supervisor exists, they are an admin
+      // creates a supervisor if one does not exist and sets them as an admin
+      if (withEmployeeData.isAdmin === '1') {
+        let supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+
+        if (!supervisor) {
+          supervisor = await createSupervisorInDB({
+            employee_id: employeeId,
+            is_admin: true
+          });
+        }
+
+        if (supervisor && !supervisor.is_admin) {
+          await updateSupervisorInDB.setAdminStatus(supervisor.id, true);
+        }
+      }
+
+      //if the supervisor is set to zero ensure that if a supervisor exists, they are deleted
+      if (withEmployeeData.isSupervisor === '0') {
+        const supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+        if (supervisor) {
+          await deleteSupervisorFromDB(supervisor.id);
+        }
+      }
+
+      //if the supervisor is set to one ensure that if a supervisor exists, they are created
+      if (withEmployeeData.isSupervisor === '1') {
+        const supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+        if (!supervisor) {
+          await createSupervisorInDB({
+            employee_id: employeeId,
+            is_admin: withEmployeeData.isAdmin === '1'
+          });
+        }
+      }
+
+      // istanbul ignore next
+      if (updatedEmployee[0] === 0) {
+        throw new Error(`\n❌ Error updating employee: ${employeeId}`);
+      }
+
+      return updatedEmployee[0];
+    } catch (error) {
+      // istanbul ignore next
+      throw new Error(`\n❌ Error updating employee: ${error}`);
+    }
   }
 };
 
@@ -243,6 +338,12 @@ export const updateEmployeeInDB = {
 export const deleteEmployeeFromDB = async (employeeId: string): Promise<number | null> => {
   try {
     const deletedEmployee = await Employee.destroy({where: {id: employeeId}});
+
+    // look for a supervisor and delete them if they exist
+    const supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+    if (supervisor) {
+      await deleteSupervisorFromDB(supervisor.id);
+    }
     return deletedEmployee;
   } catch (error) {
     // istanbul ignore next
