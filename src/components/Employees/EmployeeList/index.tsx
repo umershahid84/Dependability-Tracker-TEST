@@ -4,22 +4,30 @@ import {
   employeeSortOptions,
   employeeLimitOptions
 } from './data';
-import {useEffect, useState} from 'react';
-import {ListHeader} from './ListHeader';
-import {ListsContainer} from './ListContainer';
-import {useEmployeeData} from '../../../hooks';
+import {useEffect} from 'react';
 import {DynamicSortOptions} from '../../Forms';
 import {ModalAction, ModalType} from '../../ Modal';
 import {EmployeeListItem} from '../EmployeeListItem';
+import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
-import {EmployeeWithAssociations} from '../../../lib/db/controller/Employee';
-import {PaginationQueryParams} from '../../../lib/db/controller/Employee/helpers';
+import {useEmployeeData, useQueryParams} from '../../../hooks';
+import {PaginationQueryParams, EmployeeWithAssociations} from '../../../lib/db/controller';
 
 function RenderList({data}: {data: EmployeeWithAssociations[]}) {
   return data?.map((employee: EmployeeWithAssociations) => (
     <EmployeeListItem key={employee.id} employee={employee} />
   ));
 }
+const handleAddEmployeeClick = (e: React.SyntheticEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  window.dispatchEvent(
+    new CustomEvent('modalEvent', {
+      detail: {action: ModalAction.OPEN, type: ModalType.ADD_EMPLOYEE, payload: null}
+    })
+  );
+};
 
 export const defaultEmployeesQueryParams: PaginationQueryParams<EmployeeSortBy> = {
   limit: '5',
@@ -28,28 +36,10 @@ export const defaultEmployeesQueryParams: PaginationQueryParams<EmployeeSortBy> 
 };
 
 export function EmployeeList() {
-  const [queryParams, setQueryParams] = useState<PaginationQueryParams<EmployeeSortBy>>(
+  const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<EmployeeSortBy>(
     defaultEmployeesQueryParams
   );
   const {employees, refetch} = useEmployeeData(queryParams);
-
-  const handleQueryParamChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    const {name, value} = event.target;
-    const currentQueryParams = {...queryParams, [name]: value};
-
-    setQueryParams(currentQueryParams);
-  };
-
-  const handleAddEmployeeClick = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    window.dispatchEvent(
-      new CustomEvent('modalEvent', {
-        detail: {action: ModalAction.OPEN, type: ModalType.ADD_EMPLOYEE, payload: null}
-      })
-    );
-  };
 
   useEffect(() => {
     //@ts-ignore
@@ -63,8 +53,8 @@ export function EmployeeList() {
   }, []);
 
   return (
-    <ListsContainer>
-      <ListHeader title="Employees">
+    <ModelList>
+      <ModelListHeader title="Employees">
         <span className={employeeListStyles.span}>
           <DynamicSortOptions
             label="Sort By:"
@@ -91,14 +81,14 @@ export function EmployeeList() {
           onClick={handleAddEmployeeClick}>
           + Add Employee
         </button>
-      </ListHeader>
+      </ModelListHeader>
 
       <PaginationContainer
         data={employees}
         RenderList={RenderList}
-        setQueryParams={setQueryParams}
         queryParams={queryParams}
+        setQueryParams={setQueryParams}
       />
-    </ListsContainer>
+    </ModelList>
   );
 }

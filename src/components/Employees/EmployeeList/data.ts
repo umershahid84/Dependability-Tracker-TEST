@@ -2,7 +2,7 @@ import {trim} from '../../../lib/utils/shared/strings';
 
 export const employeeListStyles = {
   h1: 'w-auto text-xl font-semibold whitespace-nowrap',
-  section: 'w-full flex flex-col items-center justify-center gap-4',
+  section: 'w-full flex flex-col items-center justify-center gap-4 ',
   span: 'w-full flex flex-wrap flex-row gap-4 justify-center items-center',
   div: 'w-full flex flex-col md:flex-row justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6',
   addEmployeeBtn:
@@ -11,7 +11,7 @@ export const employeeListStyles = {
    md:relative md:top-0 md:right-0 hide-on-print`)
 };
 
-export type EmployeeSortBy = 'name' | 'isAdmin' | 'isSupervisor' | 'isEmployee';
+export type EmployeeSortBy = 'name' | 'isAdmin' | 'isSupervisor' | 'isEmployee' | 'isNonSupervisor';
 
 export const employeeLimitOptions = [
   {
@@ -64,5 +64,9 @@ export const employeeSortOptions = [
   {
     value: 'isEmployee',
     text: 'Employees'
+  },
+  {
+    value: 'isNonSupervisor',
+    text: 'Non-Supervisors'
   }
 ];

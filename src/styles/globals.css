@@ -79,16 +79,9 @@ input:-o-autofill:active {
 }
 
 @media print {
-  .toggle-container-print {
-    page-break-inside: avoid;
-    margin-top: 25px;
-    border: 1px solid black;
-    width: 95%;
-  }
-
   .details-print {
     display: block !important; /* Ensure details are visible when printing */
-    border-color: black !important;
+    /* border-color: black !important; */
     page-break-inside: avoid;
   }
 

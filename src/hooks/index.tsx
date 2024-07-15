@@ -1,5 +1,6 @@
 export * from './isMounted';
 export * from './useDivisions';
+export * from './useQueryParams';
 export * from './useEmployeeData';
 export * from './calloutFormState';
 export * from './incrementingTime';

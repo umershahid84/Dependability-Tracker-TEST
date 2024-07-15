@@ -8,6 +8,7 @@ export * from './Layout';
 export * from './Loading';
 export * from './Spinner';
 export * from './Division';
+export * from './ModelList';
 export * from './Employees';
 export * from './Pagination';
 export * from './LogoutButton';

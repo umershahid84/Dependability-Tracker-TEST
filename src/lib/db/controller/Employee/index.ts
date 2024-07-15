@@ -8,22 +8,22 @@ import {
 } from '../../models/types';
 import {
   convertOptions,
-  ModelWithPagination,
   validateEmployeeName,
-  PaginationQueryParams,
   validateEmployeeDivisionIds,
   populateEmployeeWithDivisions
 } from './helpers';
-import {Op} from 'sequelize';
-import {Employee} from '../../models';
-import {getDivisionFromDB} from '../Division';
-import {EmployeeFormData} from '../../../../client-api';
 import {
   getSupervisorFromDB,
   updateSupervisorInDB,
   createSupervisorInDB,
   deleteSupervisorFromDB
 } from '../Supervisor';
+import {Op} from 'sequelize';
+import {Employee} from '../../models';
+import {getDivisionFromDB} from '../Division';
+import {EmployeeFormData} from '../../../../client-api';
+import {ModelWithPagination, PaginationQueryParams} from '..';
+import {get} from 'http';
 
 // (C)reate
 export const createEmployeeInDB = async (
@@ -130,8 +130,10 @@ export const getEmployeeFromDB = {
 
     const nonSupervisors = async (
       options?: PaginationQueryParams
-    ): Promise<EmployeeWithAssociations[]> => {
+    ): Promise<EmployeeWithAssociations[] | ModelWithPagination<EmployeeWithAssociations>> => {
       const paginationOptions = options ?? {};
+
+      const convertedOptions = convertOptions(paginationOptions);
 
       const supervisors: SupervisorWithAssociations[] =
         (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
@@ -143,14 +145,28 @@ export const getEmployeeFromDB = {
             id: {
               [Op.notIn]: supervisorIds
             }
-          }
+          },
+          ...convertedOptions
         });
 
-        return await Promise.all(
+        const employeesToReturn = await Promise.all(
           employees.map(employee =>
             populateEmployeeWithDivisions(employee.get({plain: true}) as EmployeeAttributes)
           )
         );
+        if (!paginationOptions || Object.keys(convertedOptions).length === 1) {
+          return employeesToReturn;
+        } else {
+          return {
+            data: employeesToReturn,
+            limit: paginationOptions.limit ? Number(paginationOptions.limit) : 0,
+            offset: paginationOptions.offset ? Number(paginationOptions.offset) : 0,
+            numRecords:
+              (
+                (await getEmployeeFromDB.all.nonSupervisors()) as unknown as SupervisorWithAssociations[]
+              ).length ?? 0
+          };
+        }
       } catch (error) {
         // istanbul ignore next
         throw new Error(`\n❌ Error fetching employees: ${error}`);

@@ -1,8 +1,11 @@
+import {
+  ModelWithPagination,
+  PaginationQueryParams,
+  EmployeeWithAssociations
+} from '../lib/db/controller';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {ApiData} from '../lib/apiController';
-import {EmployeeWithAssociations} from '../lib/db/controller/Employee';
-import {ModelWithPagination, PaginationQueryParams} from '../lib/db/controller/Employee/helpers';
 import {EmployeeSortBy, ToastTypes, defaultEmployeesQueryParams, makeToast} from '../components';
 
 export type UseEmployeeData = {

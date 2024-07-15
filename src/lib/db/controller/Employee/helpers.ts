@@ -2,27 +2,9 @@
 // CRUD: Create, Read, Update, Delete
 import {Order} from 'sequelize';
 import {uuidV4Regex} from '../../../utils';
+import {PaginationQueryParams} from '../index';
 import {Employee, Division} from '../../models';
 import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '../../models/types';
-
-export type PaginationQueryParams<T = any> = {
-  sortBy?: T;
-  limit?: string;
-  offset?: string;
-};
-
-export type ModelWithPagination<T> = {
-  limit: number;
-  offset: number;
-  numRecords: number;
-  data: T[];
-};
-// export type EmployeesWithPagination = {
-//   employees: EmployeeWithAssociations[];
-//   limit: number;
-//   offset: number;
-//   numRecords: number;
-// };
 
 export const convertOptions = (
   options: PaginationQueryParams
