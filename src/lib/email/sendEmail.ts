@@ -6,7 +6,7 @@ export type SMTP_Config = {
   secure: boolean;
   auth: {
     user: string;
-    pass: string;
+    pass?: string;
   };
 };
 
@@ -23,16 +23,22 @@ export const smtpConfig: SMTP_Config = {
   port: parseInt(process.env.EMAIL_PORT as string),
   secure: process.env.EMAIL_SECURE === 'true',
   auth: {
-    user: process.env.EMAIL_USER as string,
-    pass: process.env.EMAIL_PASS as string
+    user: process.env.EMAIL_USER as string
   }
 };
 
-export const createTransporter = (): Transporter =>
-  nodemailer.createTransport(smtpConfig, {
+export const createTransporter = (): Transporter => {
+  const hasEmailPass = process.env.EMAIL_PASS;
+
+  if (hasEmailPass) {
+    smtpConfig.auth.pass = process.env.EMAIL_PASS;
+  }
+
+  return nodemailer.createTransport(smtpConfig, {
     debug: true,
     logger: true
   });
+};
 
 // validateField checks if a field is missing or has the wrong type
 export const validateField = (

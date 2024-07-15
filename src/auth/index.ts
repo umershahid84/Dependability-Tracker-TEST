@@ -5,9 +5,9 @@ import jwt, {Algorithm} from 'jsonwebtoken';
 import type {ApiData} from '../lib/apiController';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
-const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '24h';
-const SECRET: string = process.env.JWT_SECRET || '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
-const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) || ('HS256' as Algorithm);
+const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
+const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
+const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) ?? ('HS256' as Algorithm);
 
 // TODO: Encrypt the JWT so it is unreadable by the client
 
@@ -33,9 +33,10 @@ export const verifyJwtToken_RequiresNode = (token: string): JwtPayload | undefin
       maxAge: EXPIRES_IN,
       algorithms: [ALGORITHM]
     }) as JwtPayload;
-
+    console.log(decoded);
     return decoded;
   } catch (error) {
+    console.error('Error in verifyJwtToken_RequiresNode', error);
     // if the token is invalid, we return undefined
     return undefined;
   }
