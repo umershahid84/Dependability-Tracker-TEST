@@ -1,4 +1,3 @@
-import e from 'express';
 import React from 'react';
 
 const styles = {
@@ -10,9 +9,10 @@ const styles = {
 
 export type ModalProps = {
   children: React.ReactNode;
+  modalClassName?: string;
   setShowModal: (show: boolean) => void;
 };
-export function Modal({children, setShowModal}: Readonly<ModalProps>) {
+export function Modal({children, modalClassName, setShowModal}: Readonly<ModalProps>) {
   const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -21,7 +21,7 @@ export function Modal({children, setShowModal}: Readonly<ModalProps>) {
 
   return (
     <div className={styles.div}>
-      <div className={styles.innerDiv}>
+      <div className={modalClassName ?? styles.innerDiv}>
         <button type="button" onClick={handleOnClick} className={styles.button}>
           &times;
         </button>

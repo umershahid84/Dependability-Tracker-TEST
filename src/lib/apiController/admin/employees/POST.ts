@@ -7,7 +7,8 @@ import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
 import type {NextApiResponse} from 'next';
-import {CreateEmployeeData} from '../../../../client-api';
+import {validateAddEmployeeForm} from './helpers';
+import {EmployeeFormData} from '../../../../client-api';
 import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
 
 export default async function postEmployeesApiHandler(
@@ -15,10 +16,12 @@ export default async function postEmployeesApiHandler(
   res: NextApiResponse<ApiData<EmployeeWithAssociations>>
 ) {
   try {
-    const {body} = req as {body: CreateEmployeeData};
+    const {body} = req as {body: EmployeeFormData};
+    await validateAddEmployeeForm(body);
+
     const newEmployee: EmployeeWithAssociations | null = await createEmployeeInDB({
       name: body.name,
-      division_ids: body.division_ids
+      division_ids: body.division.split(',')
     });
 
     if (!newEmployee) {
@@ -34,7 +37,7 @@ export default async function postEmployeesApiHandler(
     if (body.isSupervisor) {
       const supervisor: SupervisorWithAssociations | null = await createSupervisorInDB({
         employee_id: newEmployee.id,
-        is_admin: body.isAdmin
+        is_admin: body.isAdmin === '1'
       });
 
       if (!supervisor) {

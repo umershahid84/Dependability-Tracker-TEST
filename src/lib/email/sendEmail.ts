@@ -8,6 +8,9 @@ export type SMTP_Config = {
     user: string;
     pass?: string;
   };
+  tls?: {
+    rejectUnauthorized?: boolean;
+  };
 };
 
 export type Email = {
@@ -24,7 +27,8 @@ export const smtpConfig: SMTP_Config = {
   secure: process.env.EMAIL_SECURE === 'true',
   auth: {
     user: process.env.EMAIL_USER as string
-  }
+  },
+  tls: {rejectUnauthorized: false}
 };
 
 export const createTransporter = (): Transporter => {

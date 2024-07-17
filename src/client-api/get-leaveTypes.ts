@@ -1,0 +1,22 @@
+import {makeToast, ToastTypes} from '../components';
+
+export const getLeaveTypes = async () => {
+  try {
+    const response = await fetch('/api/admin/leave-types');
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Leave Types');
+    }
+
+    const {data} = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    makeToast({
+      type: ToastTypes.Error,
+      title: 'Error',
+      message: 'Failed to fetch Leave Types'
+    });
+    return [];
+  }
+};

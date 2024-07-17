@@ -3,7 +3,7 @@ import {Logo} from '../Logo';
 import {LogoutButton} from '../LogoutButton';
 
 const styles = {
-  title: 'text-center text-3xl hide-on-print',
+  title: 'text-center text-3xl hide-on-print mt-16 sm:mt-0',
   header: 'w-full h-auto flex flex-col gap-8',
   body: 'bg-slate-950 text-gray-200 print:text-black flex min-h-full flex-col items-center justify-start p-5 '
 };

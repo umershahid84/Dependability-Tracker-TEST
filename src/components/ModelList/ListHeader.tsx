@@ -4,7 +4,7 @@ const defaultStyles = {
 };
 
 export type ModelListHeaderProps = {
-  title: string;
+  title?: string;
   titleClassName?: string;
   children: React.ReactNode;
   containerClassName?: string;
@@ -18,7 +18,7 @@ export function ModelListHeader({
 }: Readonly<ModelListHeaderProps>) {
   return (
     <div className={containerClassName ?? defaultStyles.div}>
-      <h1 className={titleClassName ?? defaultStyles.h1}>{title}</h1>
+      {title && <h1 className={titleClassName ?? defaultStyles.h1}>{title}</h1>}
       {children}
     </div>
   );

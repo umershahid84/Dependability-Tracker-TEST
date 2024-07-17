@@ -7,13 +7,14 @@ import {
 import {
   validateCallOutProps,
   EditableCalloutProps,
-  GetCallAllCalloutOptions,
+  GetAllCallOutOptions,
   buildEditableCalloutProps,
   buildCalloutAllQueryOptions,
   populateCallOutAssociations
 } from './helpers';
 import {CallOut} from '../../models';
 import {uuidV4Regex} from '../../../utils';
+import {ModelWithPagination, PaginationQueryParams, convertOptions} from '..';
 
 // (C)reate
 export const createCallOutInDB = async (
@@ -40,19 +41,39 @@ export const getCallOutFromDB = {
     return callout ? await populateCallOutAssociations(callout) : null;
   },
   // Methods to get more than one callout
-  all: async (options?: GetCallAllCalloutOptions): Promise<CallOutWithAssociations[]> => {
+  all: async (
+    options?: GetAllCallOutOptions,
+    paginationOptions?: PaginationQueryParams
+  ): Promise<CallOutWithAssociations[] | ModelWithPagination<CallOutWithAssociations>> => {
     const where = options ? buildCalloutAllQueryOptions(options) : {};
+    const pageOptions = paginationOptions ?? {};
+
+    const convertedOptions = convertOptions(pageOptions);
+
     try {
-      const callouts: CallOutAttributes[] = (
+      const callOuts: CallOutAttributes[] = (
         await CallOut.findAll({
-          where: {...where}
+          where: {...where},
+          limit: convertedOptions.limit,
+          offset: convertedOptions.offset,
+          order: convertedOptions.order
         })
       )?.map(callout => callout.get({plain: true}));
 
-      return (
-        (await Promise.all(callouts.map(populateCallOutAssociations))).filter(el => el !== null) ??
-        []
-      );
+      const _callOuts =
+        (await Promise.all(callOuts.map(populateCallOutAssociations))).filter(el => el !== null) ??
+        [];
+
+      if (!paginationOptions || Object.keys(paginationOptions).length === 1) {
+        return _callOuts;
+      } else {
+        return {
+          limit: convertedOptions.limit ?? 0,
+          offset: convertedOptions.offset ?? 0,
+          numRecords: _callOuts.length,
+          data: _callOuts ?? []
+        };
+      }
     } catch (error) {
       // istanbul ignore next
       throw new Error(`\n❌ Error fetching callouts: ${String(error)}`);

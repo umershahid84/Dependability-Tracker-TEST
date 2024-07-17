@@ -33,7 +33,7 @@ export const verifyJwtToken_RequiresNode = (token: string): JwtPayload | undefin
       maxAge: EXPIRES_IN,
       algorithms: [ALGORITHM]
     }) as JwtPayload;
-    console.log(decoded);
+
     return decoded;
   } catch (error) {
     console.error('Error in verifyJwtToken_RequiresNode', error);

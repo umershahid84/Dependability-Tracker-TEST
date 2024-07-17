@@ -12,23 +12,24 @@ import {getLeaveTypeFromDB} from '../LeaveType';
 import {getSupervisorFromDB} from '../Supervisor';
 
 // all the options that can be used to get callouts
-export type GetCallAllCalloutOptions = {
+export type GetAllCallOutOptions = {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   shift_date?: Date;
-  shift_time?: Date;
+  shift_time?: string;
   callout_date?: Date;
-  callout_time?: Date;
+  callout_time?: string;
   employee_id?: string;
   supervisor_id?: string;
   leave_type_id?: string;
   shift_date_range?: [Date, Date];
-  shift_time_range?: [Date, Date];
+  created_at_range?: [Date, Date];
   left_early_mins?: number | null;
   arrived_late_mins?: number | null;
   callout_date_range?: [Date, Date];
-  callout_time_range?: [Date, Date];
+  shift_time_range?: [string, string];
+  callout_time_range?: [string, string];
   left_early_mins_range?: [number, number];
   arrived_late_mins_range?: [number, number];
 };
@@ -113,19 +114,19 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
     throw new Error('No properties to update');
   }
 
-  if (props.shift_date && !(props.shift_date instanceof Date)) {
+  if (props.shift_date && !(new Date(props.shift_date) instanceof Date)) {
     throw new Error('Invalid shift_date');
   }
 
-  if (props.shift_time && !(props.shift_time instanceof Date)) {
+  if (props.shift_time && !(new Date(props.shift_time) instanceof Date)) {
     throw new Error('Invalid shift_time');
   }
 
-  if (props.callout_date && !(props.callout_date instanceof Date)) {
+  if (props.callout_date && !(new Date(props.callout_date) instanceof Date)) {
     throw new Error('Invalid callout_date');
   }
 
-  if (props.callout_time && !(props.callout_time instanceof Date)) {
+  if (props.callout_time && !(new Date(props.callout_time) instanceof Date)) {
     throw new Error('Invalid callout_time');
   }
 
@@ -159,7 +160,7 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
 };
 
 // validate the options and build the where clause
-export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) => {
+export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
   const where: any = {};
 
   // if the id is provided and it is a valid uuid v4
@@ -168,28 +169,34 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
     where.id = options.id;
   }
   if (options.createdAt) {
-    if (options.createdAt instanceof Date === false) throw new Error('Invalid createdAt');
-    where.createdAt = options.createdAt;
+    const createdAt = new Date(options.createdAt);
+    if (isNaN(createdAt.getTime())) throw new Error('Invalid createdAt');
+    where.createdAt = createdAt;
   }
   if (options.updatedAt) {
-    if (options.updatedAt instanceof Date === false) throw new Error('Invalid updatedAt');
-    where.updatedAt = options.updatedAt;
+    const updatedAt = new Date(options.updatedAt);
+    if (isNaN(updatedAt.getTime())) throw new Error('Invalid updatedAt');
+    where.updatedAt = updatedAt;
   }
   if (options.shift_date) {
-    if (options.shift_date instanceof Date === false) throw new Error('Invalid shift_date');
-    where.shift_date = options.shift_date;
+    const shiftDate = new Date(options.shift_date);
+    if (isNaN(shiftDate.getTime())) throw new Error('Invalid shift_date');
+    where.shift_date = shiftDate;
   }
   if (options.shift_time) {
-    if (options.shift_time instanceof Date === false) throw new Error('Invalid shift_time');
-    where.shift_time = options.shift_time;
+    const shiftTime = new Date(options.shift_time);
+    if (isNaN(shiftTime.getTime())) throw new Error('Invalid shift_time');
+    where.shift_time = shiftTime;
   }
   if (options.callout_date) {
-    if (options.callout_date instanceof Date === false) throw new Error('Invalid callout_date');
-    where.callout_date = options.callout_date;
+    const calloutDate = new Date(options.callout_date);
+    if (isNaN(calloutDate.getTime())) throw new Error('Invalid callout_date');
+    where.callout_date = calloutDate;
   }
   if (options.callout_time) {
-    if (options.callout_time instanceof Date === false) throw new Error('Invalid callout_time');
-    where.callout_time = options.callout_time;
+    const calloutTime = new Date(options.callout_time);
+    if (isNaN(calloutTime.getTime())) throw new Error('Invalid callout_time');
+    where.callout_time = calloutTime;
   }
   if (options.employee_id) {
     if (!uuidV4Regex.test(options.employee_id)) throw new Error('Invalid employee_id');
@@ -203,23 +210,62 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
     if (!uuidV4Regex.test(options.leave_type_id)) throw new Error('Invalid leave_type_id');
     where.leave_type_id = options.leave_type_id;
   }
+  if (options.created_at_range) {
+    if (options.created_at_range.length !== 2) throw new Error('Invalid created_at_range');
+    // istanbul ignore next
+    if (
+      !options.created_at_range.every(el => {
+        const date = new Date(el);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid created_at_range');
+        }
+        return true;
+      })
+    ) {
+      throw new Error('Invalid created_at_range');
+    }
+
+    // only attach if no other date ranges are provided
+    // call date, shift date,
+
+    where.createdAt = {
+      [Op.between]: options.created_at_range.map(el => new Date(el))
+    };
+  }
   if (options.shift_date_range) {
     if (options.shift_date_range.length !== 2) throw new Error('Invalid shift_date_range');
     // istanbul ignore next
-    if (!options.shift_date_range.every(el => el instanceof Date))
+    if (
+      !options.shift_date_range.every(el => {
+        const date = new Date(el);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid shift_date_range');
+        }
+        return true;
+      })
+    ) {
       throw new Error('Invalid shift_date_range');
-
+    }
     where.shift_date = {
-      [Op.between]: options.shift_date_range
+      [Op.between]: options.shift_date_range.map(el => new Date(el))
     };
   }
   if (options.shift_time_range) {
     if (options.shift_time_range.length !== 2) throw new Error('Invalid shift_time_range');
     // istanbul ignore next
-    if (!options.shift_time_range.every(el => el instanceof Date))
+    if (
+      !options.shift_time_range.every(el => {
+        const date = new Date(el);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid shift_time_range');
+        }
+        return true;
+      })
+    ) {
       throw new Error('Invalid shift_time_range');
+    }
     where.shift_time = {
-      [Op.between]: options.shift_time_range
+      [Op.between]: options.shift_time_range.map(el => new Date(el))
     };
   }
   if (options.left_early_mins) {
@@ -233,21 +279,43 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
   if (options.callout_date_range) {
     if (options.callout_date_range.length !== 2) throw new Error('Invalid callout_date_range');
     // istanbul ignore next
-    if (!options.callout_date_range.every(el => el instanceof Date))
+    if (
+      !options.callout_date_range.every(el => {
+        const date = new Date(el);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid callout_date_range');
+        }
+        return true;
+      })
+    ) {
       throw new Error('Invalid callout_date_range');
+    }
     where.callout_date = {
-      [Op.between]: options.callout_date_range
+      [Op.between]: options.callout_date_range.map(el => new Date(el))
     };
   }
   if (options.callout_time_range) {
     // istanbul ignore next
     if (options.callout_time_range.length !== 2) throw new Error('Invalid callout_time_range');
     // istanbul ignore next
-    if (!options.callout_time_range.every(el => el instanceof Date))
-      throw new Error('Invalid callout_time_range');
-    where.callout_time = {
-      [Op.between]: options.callout_time_range
-    };
+    if (options.callout_time_range) {
+      if (options.callout_time_range.length !== 2) throw new Error('Invalid callout_time_range');
+      // istanbul ignore next
+      if (
+        !options.callout_time_range.every(el => {
+          const date = new Date(el);
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid callout_time_range');
+          }
+          return true;
+        })
+      ) {
+        throw new Error('Invalid callout_time_range');
+      }
+      where.callout_time = {
+        [Op.between]: options.callout_time_range.map(el => new Date(el))
+      };
+    }
   }
   if (options.left_early_mins_range) {
     if (options.left_early_mins_range.length !== 2)
@@ -261,7 +329,7 @@ export const buildCalloutAllQueryOptions = (options: GetCallAllCalloutOptions) =
     // istanbul ignore next
     if (options.left_early_mins_range[0] < 0 ?? options.left_early_mins_range[1] < 0)
       throw new Error('Invalid left_early_mins_range');
-
+    console.log('\n\n', options.left_early_mins_range);
     where.left_early_mins = {
       [Op.between]: options.left_early_mins_range
     };

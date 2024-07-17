@@ -6,7 +6,7 @@ import {
 } from '../../models/Supervisor';
 import {ModelWithPagination} from '..';
 import {uuidV4Regex} from '../../../utils';
-import {convertOptions} from '../Employee/helpers';
+import {convertOptions} from '../';
 import {CreateCredentialsInvite, Employee, LoginCredential, Supervisor} from '../../models';
 import {SupervisorOptions, createSupervisorInclude, handleOptionalReturnValues} from './helpers';
 

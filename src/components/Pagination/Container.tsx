@@ -7,7 +7,7 @@ export type PaginationContainerProps = {
   data: any;
   queryParams: any;
   setQueryParams: any;
-  RenderList: ({data}: {data: PaginationContainerProps['data']}) => React.JSX.Element[];
+  RenderList: ({data}: Readonly<{data: any}>) => React.JSX.Element[];
 };
 
 export function PaginationContainer({

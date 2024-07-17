@@ -1,4 +1,8 @@
-import {AdminLayout} from '../../../components';
+import {AdminLayout, CallOutsList} from '../../../components';
 export default function AdminCallOutsPage() {
-  return <AdminLayout />;
+  return (
+    <AdminLayout>
+      <CallOutsList />
+    </AdminLayout>
+  );
 }

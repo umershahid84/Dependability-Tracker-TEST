@@ -7,7 +7,6 @@ import {
   SupervisorWithAssociations
 } from '../../models/types';
 import {
-  convertOptions,
   validateEmployeeName,
   validateEmployeeDivisionIds,
   populateEmployeeWithDivisions
@@ -22,8 +21,7 @@ import {Op} from 'sequelize';
 import {Employee} from '../../models';
 import {getDivisionFromDB} from '../Division';
 import {EmployeeFormData} from '../../../../client-api';
-import {ModelWithPagination, PaginationQueryParams} from '..';
-import {get} from 'http';
+import {ModelWithPagination, PaginationQueryParams, convertOptions} from '..';
 
 // (C)reate
 export const createEmployeeInDB = async (

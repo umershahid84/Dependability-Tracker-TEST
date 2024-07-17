@@ -1,5 +1,5 @@
-import {makeToast, ToastTypes} from '../../Toasts';
-import {UseEmployeeFormState} from '../../../hooks/employeeFormState';
+import {EmployeeFormData} from '../../../../client-api';
+import {getDivisionFromDB} from '../../../db/controller';
 
 export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   {
@@ -12,12 +12,13 @@ export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   }
 ];
 
-export const validateAddEmployeeForm = (
-  formData: UseEmployeeFormState['formData'],
-  divisionIds: string[]
-): [boolean, string[]] => {
+export const validateAddEmployeeForm = async (
+  formData: EmployeeFormData
+): Promise<[boolean, string[]]> => {
   const missingFields: string[] = [];
-  let validated = true;
+
+  const divisions = await getDivisionFromDB.all();
+  const divisionIds = divisions.map(({id}) => id.toString());
 
   requiredFieldsEmployeeFields.forEach(field => {
     if (!formData[field.key as keyof typeof formData]) {
@@ -26,6 +27,7 @@ export const validateAddEmployeeForm = (
   });
 
   try {
+    let validated = true;
     if (missingFields.length) {
       validated = false;
       throw new Error(`The following fields are required: ${missingFields.join(', ')}`);
@@ -45,13 +47,9 @@ export const validateAddEmployeeForm = (
       validated = false;
       throw new Error('Admins must be supervisors');
     }
-  } catch (error) {
-    makeToast({
-      type: ToastTypes.Error,
-      title: 'Error',
-      message: String(error)
-    });
-  }
 
-  return [validated, missingFields];
+    return [validated, missingFields];
+  } catch (error) {
+    throw new Error(String(error));
+  }
 };

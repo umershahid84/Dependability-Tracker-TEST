@@ -31,22 +31,12 @@ export const CreateEmployee = async ({
   formData
 }: Readonly<CreateEmployeeProps>): Promise<boolean> => {
   try {
-    const employeeDivisions = formData.division.split(',');
-
-    // convert the 1 or 0 to a boolean value
-    const newEmployeeData: CreateEmployeeData = {
-      name: formData.name,
-      division_ids: employeeDivisions,
-      isAdmin: formData.isAdmin === '1',
-      isSupervisor: formData.isSupervisor === '1'
-    };
-
     const response = await fetch(`/api/admin/employees`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({...newEmployeeData})
+      body: JSON.stringify({...formData})
     });
 
     if (!response.ok) {

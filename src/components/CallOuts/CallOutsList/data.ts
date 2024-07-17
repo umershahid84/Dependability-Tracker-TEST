@@ -2,6 +2,46 @@ import {employeeLimitOptions} from '../../Employees';
 
 export const callOutLimitOptions = employeeLimitOptions;
 
+export type CallOutSortBy =
+  | 'leaveType'
+  | 'employeeName'
+  | 'callDate'
+  | 'shiftDate'
+  | 'createdBy'
+  | 'arrivedLate'
+  | 'leftEarly';
+
+export const callOutSortBy: {value: CallOutSortBy; text: string}[] = [
+  {
+    value: 'leaveType',
+    text: 'Leave Type'
+  },
+  {
+    value: 'employeeName',
+    text: 'Employee Name'
+  },
+  {
+    value: 'callDate',
+    text: 'Call Date'
+  },
+  {
+    value: 'shiftDate',
+    text: 'Shift Date'
+  },
+  {
+    value: 'createdBy',
+    text: 'Created By'
+  },
+  {
+    value: 'arrivedLate',
+    text: 'Arrived Late'
+  },
+  {
+    value: 'leftEarly',
+    text: 'Left Early'
+  }
+];
+
 export const showLastOptions: {value: string; text: string}[] = [
   {
     value: '7',

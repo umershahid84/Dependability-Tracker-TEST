@@ -1,13 +1,13 @@
-import React from 'react';
-import {FormLabel} from './FormLabel';
-import {dateTo_YYYY_MM_DD} from '../../lib/utils';
-import {trim} from '../../lib/utils/shared/strings';
-import {UseCallOutFormState, useCallOutFormState} from '../../hooks';
 import {
   LeaveTypeAttributes,
   CallOutWithAssociations,
   EmployeeWithAssociations
 } from '../../lib/db/models/types';
+import React from 'react';
+import {FormLabel} from './FormLabel';
+import {dateTo_YYYY_MM_DD} from '../../lib/utils';
+import {trim} from '../../lib/utils/shared/strings';
+import {UseCallOutFormState, useCallOutFormState} from '../../hooks';
 
 function InputContainer({
   label,
@@ -35,7 +35,7 @@ const styles = {
    drop-shadow-md`
 };
 
-export default function CallOutForm(
+export default function CreateCallOutForm(
   props: Readonly<{
     employees: string;
     leaveTypes: string;

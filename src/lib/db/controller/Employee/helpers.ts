@@ -1,40 +1,8 @@
 // CRUD Controller for the Employee Table
 // CRUD: Create, Read, Update, Delete
-import {Order} from 'sequelize';
 import {uuidV4Regex} from '../../../utils';
-import {PaginationQueryParams} from '../index';
 import {Employee, Division} from '../../models';
 import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '../../models/types';
-
-export const convertOptions = (
-  options: PaginationQueryParams
-): {sortBy?: string; limit?: number; offset?: number; order: Order} => {
-  const convertedOptions = {
-    order: [['createdAt', 'DESC']]
-  } as {
-    sortBy?: string;
-    limit?: number;
-    offset?: number;
-    order: Order;
-  };
-
-  if (options.sortBy) {
-    convertedOptions.sortBy = options.sortBy;
-    if (options.sortBy === 'name') {
-      convertedOptions.order = [['name', 'ASC']];
-    }
-  }
-
-  if (options.limit) {
-    convertedOptions.limit = Number(options.limit);
-  }
-
-  if (options.offset) {
-    convertedOptions.offset = Number(options.offset);
-  }
-
-  return convertedOptions;
-};
 
 /**
  * This is a hack really. There is a way to properly associate the Employee and Division models

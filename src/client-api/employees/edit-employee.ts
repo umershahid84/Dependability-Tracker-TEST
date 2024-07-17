@@ -1,7 +1,7 @@
 'use client';
 import {EmployeeFormData} from './create-employee';
-import {makeToast, ToastTypes} from '../../components';
 import {ModalAction} from '../../components/ Modal';
+import {makeToast, ToastTypes} from '../../components';
 
 export type EditEmployeeProps = {
   formData: EmployeeFormData;
@@ -22,8 +22,6 @@ export const EditEmployee = async ({
         isSupervisor: formData.isSupervisor
       }
     };
-
-    console.log('\n\nUPDATING EMPLOYEE DATA:', updateEmployeeData, '\n\n');
 
     const response = await fetch(`/api/admin/employees`, {
       method: 'PUT',

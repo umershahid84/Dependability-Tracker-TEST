@@ -13,8 +13,15 @@ const styles = {
   button: 'bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600'
 };
 
-function FormLabelContainer({children}: Readonly<{children: React.ReactNode}>): React.ReactElement {
-  return <div className="w-full flex flex-col justify-start items-start">{children}</div>;
+export function FormLabelContainer({
+  children,
+  addClasses
+}: Readonly<{children: React.ReactNode; addClasses?: string}>): React.ReactElement {
+  return (
+    <div className={'w-full flex flex-col justify-start items-start' + ' ' + (addClasses ?? '')}>
+      {children}
+    </div>
+  );
 }
 
 function RadioDivider({children}: Readonly<{children: React.ReactNode}>): React.ReactElement {

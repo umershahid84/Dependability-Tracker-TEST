@@ -6,7 +6,7 @@ import {DivisionAttributes} from '../lib/db/models/Division';
 export type UseDivisions = {
   isLoading: boolean;
   error: string | null;
-  refetch: () => void;
+  refetch: () => Promise<void>;
   divisions: DivisionAttributes[] | null;
 };
 

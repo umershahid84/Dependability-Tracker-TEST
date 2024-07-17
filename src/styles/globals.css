@@ -78,6 +78,11 @@ input:-o-autofill:active {
   text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black !important;
 }
 
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 @media print {
   .details-print {
     display: block !important; /* Ensure details are visible when printing */

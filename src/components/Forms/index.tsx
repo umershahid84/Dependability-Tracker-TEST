@@ -1,10 +1,9 @@
 import Form from './Form';
-import {FormLabel} from './FormLabel';
 import LoginForm from './LoginForm';
-import CallOutForm from './Callout';
+import {FormLabel} from './FormLabel';
 import FormAction from './FormAction';
 import SignUpForm from './SignUpForm';
-
+import CreateCallOutForm from './CreateCallOut';
 import {DynamicOptions} from './DynamicOptions';
 import {AddEmployeeForm} from './EmployeeModal';
 import DynamicSortOptions from './DynamicSortOptions';
@@ -14,6 +13,7 @@ export type {FormActionProps} from './FormAction';
 export type {FormInputWithErrorsProps} from './FormInputWithErrors';
 
 export * from './EmployeeModal';
+export * from './CallOutsModal';
 
 export {
   Form,
@@ -21,9 +21,9 @@ export {
   LoginForm,
   FormAction,
   SignUpForm,
-  CallOutForm,
   DynamicOptions,
   AddEmployeeForm,
+  CreateCallOutForm,
   DynamicSortOptions,
   FormInputWithErrors
 };
@@ -34,9 +34,10 @@ const Forms = {
   LoginForm,
   SignUpForm,
   FormAction,
-  CallOutForm,
+
   DynamicOptions,
   AddEmployeeForm,
+  CreateCallOutForm,
   DynamicSortOptions,
   FormInputWithErrors
 };

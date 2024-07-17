@@ -1,6 +1,5 @@
 import {DynamicOption} from '../DynamicOptions';
 import React, {useEffect, useState} from 'react';
-import {validateAddEmployeeForm} from './helpers';
 import EmployeeCrudFromModalLayout from './FormLayout';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 import {UseDivisions, useDivisions, useIsMounted} from '../../../hooks';
@@ -26,15 +25,6 @@ export function AddOrEditEmployeeForm({type, onSubmit, employeeData}: AddOrEditE
     e.stopPropagation();
 
     let successful = false;
-
-    const [validated] = validateAddEmployeeForm(
-      formData,
-      divisions?.map(({id}) => id.toString()) ?? []
-    );
-
-    if (!validated) {
-      return;
-    }
 
     if (type === 'Add Employee') {
       successful = await onSubmit({
