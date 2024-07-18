@@ -17,7 +17,7 @@ import LeaveType, {LeaveTypeAttributes} from '../LeaveType';
 /**
  * Represents the attributes of a CallOut model.
  */
-export interface CallOutAttributes {
+export type CallOutAttributes = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -31,7 +31,7 @@ export interface CallOutAttributes {
   supervisor_comments: string;
   left_early_mins: number | null;
   arrived_late_mins: number | null;
-}
+};
 
 /**
  * Represents the creation attributes of a CallOut model.

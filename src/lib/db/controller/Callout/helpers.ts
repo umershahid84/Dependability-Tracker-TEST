@@ -2,11 +2,16 @@ import {Op} from 'sequelize';
 import {
   CallOutAttributes,
   CallOutWithAssociations,
-  CallOutCreationAttributes,
-  EmployeeWithAssociations
+  EmployeeWithAssociations,
+  CallOutCreationAttributes
 } from '../../../db/models/types';
 import {CallOut} from '../../models';
-import {uuidV4Regex} from '../../../utils';
+import {
+  uuidV4Regex,
+  addTimeToDate,
+  normalizeToEndOfDayUTC,
+  normalizeToStartOfDayUTC
+} from '../../../utils';
 import {getEmployeeFromDB} from '../Employee';
 import {getLeaveTypeFromDB} from '../LeaveType';
 import {getSupervisorFromDB} from '../Supervisor';
@@ -25,11 +30,12 @@ export type GetAllCallOutOptions = {
   leave_type_id?: string;
   shift_date_range?: [Date, Date];
   created_at_range?: [Date, Date];
-  left_early_mins?: number | null;
-  arrived_late_mins?: number | null;
+  updated_at_range?: [Date, Date];
   callout_date_range?: [Date, Date];
   shift_time_range?: [string, string];
   callout_time_range?: [string, string];
+  left_early_mins?: number | '-1' | null;
+  arrived_late_mins?: number | '-1' | null;
   left_early_mins_range?: [number, number];
   arrived_late_mins_range?: [number, number];
 };
@@ -47,6 +53,113 @@ export type EditableCalloutProps = {
   arrived_late_mins?: number | null;
 };
 
+const buildWhereConditionsForTimeRange = (
+  range: [string, string],
+  options: GetAllCallOutOptions
+): {[Op.between]: Date[]}[] => {
+  const betweenDates: Date[][] = [];
+  const data: Date[] = buildCorrectTimeQuery(range[0], options) as Date[];
+  const data2: Date[] = buildCorrectTimeQuery(range[1], options) as Date[];
+
+  for (const date of data) {
+    const range = [date, data2[data.indexOf(date)]];
+    betweenDates.push(range);
+  }
+
+  const whereConditions = betweenDates.map(el => {
+    return {
+      [Op.between]: el
+    };
+  });
+
+  return whereConditions;
+};
+
+const buildWhereConditionsForDateRange = (range: [Date, Date]): Date[] => {
+  return [normalizeToStartOfDayUTC(new Date(range[0])), normalizeToEndOfDayUTC(new Date(range[1]))];
+};
+
+type DateRangeAttributes =
+  | 'created_at_range'
+  | 'updated_at_range'
+  | 'shift_date_range'
+  | 'callout_date_range';
+
+const buildTimeQueryForDateRange = (
+  time: string,
+  props: GetAllCallOutOptions,
+  attribute: DateRangeAttributes
+) => {
+  const timeRange: Date[] = [];
+  const [start, end] = props[attribute] as [Date, Date];
+
+  let startDateTime = new Date(start);
+  startDateTime = addTimeToDate(startDateTime, time);
+
+  let endDateTime = new Date(end);
+  endDateTime = addTimeToDate(endDateTime, time);
+
+  let d = new Date(startDateTime);
+
+  for (d; d <= endDateTime; d.setDate(d.getDate() + 1)) {
+    timeRange.push(new Date(d));
+  }
+
+  return timeRange;
+};
+
+// When searching times are in the format of HH:MM:SS
+// We need to attach the time to a date and create a new datetime object to
+// query against the database. This function will build the correct time query
+// depending on the options provided
+const buildCorrectTimeQuery = (
+  time: string,
+  props: GetAllCallOutOptions
+): Date | Date[] | undefined => {
+  let dateTime: Date | Date[] | undefined = undefined;
+
+  if (props.updatedAt) {
+    // add the time which is in the format of HH:MM:SS to the date
+    dateTime = new Date(props.updatedAt);
+    // add the time to the date
+    dateTime = addTimeToDate(dateTime, time);
+    return dateTime;
+  }
+
+  if (props.created_at_range) {
+    return buildTimeQueryForDateRange(time, props, 'created_at_range');
+  }
+
+  if (props.updated_at_range) {
+    return buildTimeQueryForDateRange(time, props, 'updated_at_range');
+  }
+
+  if (props.shift_date_range) {
+    return buildTimeQueryForDateRange(time, props, 'shift_date_range');
+  }
+
+  if (props.callout_date_range) {
+    return buildTimeQueryForDateRange(time, props, 'callout_date_range');
+  }
+
+  if (props.shift_date_range) {
+    return buildTimeQueryForDateRange(time, props, 'shift_date_range');
+  }
+
+  if (props.shift_date) {
+    dateTime = new Date(props.shift_date);
+    dateTime = addTimeToDate(dateTime, time);
+    return dateTime;
+  }
+
+  if (props.callout_date) {
+    dateTime = new Date(props.callout_date);
+    dateTime = addTimeToDate(dateTime, time);
+    return dateTime;
+  }
+
+  return dateTime;
+};
 /**
  * Adjusts the properties of a callout to be updated so that the date/time properties are updated accordingly
  * @param forId - the id of the callout to be updated
@@ -63,12 +176,24 @@ export const buildEditableCalloutProps = async (
   if (withProps.shift_date && !withProps.shift_time) {
     // need to grab the existing time and add it to the new date
     const existingTime = new Date(existingCallout?.shift_time as Date);
-    withProps.shift_time = new Date(withProps.shift_date);
-    withProps.shift_time.setHours(existingTime.getHours());
-    withProps.shift_time.setMinutes(existingTime.getMinutes());
-    withProps.shift_time.setSeconds(existingTime.getSeconds());
-    withProps.shift_time.setMilliseconds(existingTime.getMilliseconds());
+    const hours = existingTime.getHours();
+    const minutes = existingTime.getMinutes();
+    const seconds = existingTime.getSeconds();
+    const milliseconds = existingTime.getMilliseconds();
+
+    const year = withProps.shift_date.getFullYear();
+    const month = withProps.shift_date.getMonth();
+    const day = withProps.shift_date.getDate();
+
+    withProps.shift_time = new Date(year, month, day, hours, minutes, seconds, milliseconds);
     withProps.shift_date = new Date(withProps.shift_time);
+
+    // withProps.shift_time = new Date(withProps.shift_date);
+    // withProps.shift_time.setHours(existingTime.getHours());
+    // withProps.shift_time.setMinutes(existingTime.getMinutes());
+    // withProps.shift_time.setSeconds(existingTime.getSeconds());
+    // withProps.shift_time.setMilliseconds(existingTime.getMilliseconds());
+    // withProps.shift_date = new Date(withProps.shift_time);
   }
 
   if (withProps.shift_time) {
@@ -80,11 +205,23 @@ export const buildEditableCalloutProps = async (
 
   if (withProps.callout_date && !withProps.callout_time) {
     const existingTime = new Date(existingCallout?.callout_time as Date);
-    withProps.callout_time = new Date(withProps.callout_date);
-    withProps.callout_time.setHours(existingTime.getHours());
-    withProps.callout_time.setMinutes(existingTime.getMinutes());
-    withProps.callout_time.setSeconds(existingTime.getSeconds());
-    withProps.callout_time.setMilliseconds(existingTime.getMilliseconds());
+    // withProps.callout_time = new Date(withProps.callout_date);
+    // withProps.callout_time.setHours(existingTime.getHours());
+    // withProps.callout_time.setMinutes(existingTime.getMinutes());
+    // withProps.callout_time.setSeconds(existingTime.getSeconds());
+    // withProps.callout_time.setMilliseconds(existingTime.getMilliseconds());
+    // withProps.callout_date = new Date(withProps.callout_time);
+
+    const hours = existingTime.getHours();
+    const minutes = existingTime.getMinutes();
+    const seconds = existingTime.getSeconds();
+    const milliseconds = existingTime.getMilliseconds();
+
+    const year = withProps.callout_date.getFullYear();
+    const month = withProps.callout_date.getMonth();
+    const day = withProps.callout_date.getDate();
+
+    withProps.callout_time = new Date(year, month, day, hours, minutes, seconds, milliseconds);
     withProps.callout_date = new Date(withProps.callout_time);
   }
 
@@ -181,22 +318,38 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
   if (options.shift_date) {
     const shiftDate = new Date(options.shift_date);
     if (isNaN(shiftDate.getTime())) throw new Error('Invalid shift_date');
-    where.shift_date = shiftDate;
-  }
-  if (options.shift_time) {
-    const shiftTime = new Date(options.shift_time);
-    if (isNaN(shiftTime.getTime())) throw new Error('Invalid shift_time');
-    where.shift_time = shiftTime;
+
+    const startOfDay = normalizeToStartOfDayUTC(shiftDate);
+    const endOfDay = normalizeToEndOfDayUTC(shiftDate);
+
+    where.shift_date = {[Op.between]: [startOfDay, endOfDay]};
   }
   if (options.callout_date) {
     const calloutDate = new Date(options.callout_date);
     if (isNaN(calloutDate.getTime())) throw new Error('Invalid callout_date');
-    where.callout_date = calloutDate;
+
+    const startOfDay = normalizeToStartOfDayUTC(calloutDate);
+    const endOfDay = normalizeToEndOfDayUTC(calloutDate);
+
+    where.callout_date = {[Op.between]: [startOfDay, endOfDay]};
+  }
+
+  if (options.shift_time) {
+    if (typeof options.shift_time !== 'string') throw new Error('Invalid shift_time');
+    const whereConditions = buildWhereConditionsForTimeRange(
+      [options.shift_time, `${options.shift_time}:59`],
+      options
+    );
+    where.shift_time = {[Op.or]: whereConditions};
   }
   if (options.callout_time) {
-    const calloutTime = new Date(options.callout_time);
-    if (isNaN(calloutTime.getTime())) throw new Error('Invalid callout_time');
-    where.callout_time = calloutTime;
+    if (typeof options.callout_time != 'string') throw new Error('Invalid callout_time');
+
+    const whereConditions = buildWhereConditionsForTimeRange(
+      [options.callout_time, `${options.callout_time}:59`],
+      options
+    );
+    where.callout_time = {[Op.or]: whereConditions};
   }
   if (options.employee_id) {
     if (!uuidV4Regex.test(options.employee_id)) throw new Error('Invalid employee_id');
@@ -209,6 +362,25 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
   if (options.leave_type_id) {
     if (!uuidV4Regex.test(options.leave_type_id)) throw new Error('Invalid leave_type_id');
     where.leave_type_id = options.leave_type_id;
+  }
+  if (options.updated_at_range) {
+    if (options.updated_at_range.length !== 2) throw new Error('Invalid updated_at_range');
+    // istanbul ignore next
+    if (
+      !options.updated_at_range.every(el => {
+        const date = new Date(el);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid updated_at_range');
+        }
+        return true;
+      })
+    ) {
+      throw new Error('Invalid updated_at_range');
+    }
+
+    where.updatedAt = {
+      [Op.between]: buildWhereConditionsForDateRange(options.updated_at_range)
+    };
   }
   if (options.created_at_range) {
     if (options.created_at_range.length !== 2) throw new Error('Invalid created_at_range');
@@ -225,11 +397,8 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
       throw new Error('Invalid created_at_range');
     }
 
-    // only attach if no other date ranges are provided
-    // call date, shift date,
-
     where.createdAt = {
-      [Op.between]: options.created_at_range.map(el => new Date(el))
+      [Op.between]: buildWhereConditionsForDateRange(options.created_at_range)
     };
   }
   if (options.shift_date_range) {
@@ -247,7 +416,7 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
       throw new Error('Invalid shift_date_range');
     }
     where.shift_date = {
-      [Op.between]: options.shift_date_range.map(el => new Date(el))
+      [Op.between]: buildWhereConditionsForDateRange(options.shift_date_range)
     };
   }
   if (options.shift_time_range) {
@@ -255,8 +424,7 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
     // istanbul ignore next
     if (
       !options.shift_time_range.every(el => {
-        const date = new Date(el);
-        if (isNaN(date.getTime())) {
+        if (typeof el !== 'string') {
           throw new Error('Invalid shift_time_range');
         }
         return true;
@@ -264,17 +432,24 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
     ) {
       throw new Error('Invalid shift_time_range');
     }
+
+    const whereConditions: {
+      [Op.between]: Date[];
+    }[] = buildWhereConditionsForTimeRange(options.shift_time_range, options);
+
     where.shift_time = {
-      [Op.between]: options.shift_time_range.map(el => new Date(el))
+      [Op.or]: whereConditions
     };
   }
   if (options.left_early_mins) {
-    if (typeof options.left_early_mins !== 'number') throw new Error('Invalid left_early_mins');
-    where.left_early_mins = options.left_early_mins;
+    const leftEarlyMins = Number(options.left_early_mins);
+    if (isNaN(leftEarlyMins)) throw new Error('Invalid left_early_mins');
+    where.left_early_mins = leftEarlyMins > 0 ? leftEarlyMins : {[Op.gt]: 0};
   }
   if (options.arrived_late_mins) {
-    if (typeof options.arrived_late_mins !== 'number') throw new Error('Invalid arrived_late_mins');
-    where.arrived_late_mins = options.arrived_late_mins;
+    const arrivedLateMins = Number(options.arrived_late_mins);
+    if (isNaN(arrivedLateMins)) throw new Error('Invalid arrived_late_mins');
+    where.arrived_late_mins = arrivedLateMins > 0 ? arrivedLateMins : {[Op.gt]: 0};
   }
   if (options.callout_date_range) {
     if (options.callout_date_range.length !== 2) throw new Error('Invalid callout_date_range');
@@ -291,20 +466,17 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
       throw new Error('Invalid callout_date_range');
     }
     where.callout_date = {
-      [Op.between]: options.callout_date_range.map(el => new Date(el))
+      [Op.between]: buildWhereConditionsForDateRange(options.callout_date_range)
     };
   }
   if (options.callout_time_range) {
-    // istanbul ignore next
-    if (options.callout_time_range.length !== 2) throw new Error('Invalid callout_time_range');
     // istanbul ignore next
     if (options.callout_time_range) {
       if (options.callout_time_range.length !== 2) throw new Error('Invalid callout_time_range');
       // istanbul ignore next
       if (
         !options.callout_time_range.every(el => {
-          const date = new Date(el);
-          if (isNaN(date.getTime())) {
+          if (typeof el !== 'string') {
             throw new Error('Invalid callout_time_range');
           }
           return true;
@@ -312,8 +484,13 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
       ) {
         throw new Error('Invalid callout_time_range');
       }
+
+      const whereConditions: {
+        [Op.between]: Date[];
+      }[] = buildWhereConditionsForTimeRange(options.callout_time_range, options);
+
       where.callout_time = {
-        [Op.between]: options.callout_time_range.map(el => new Date(el))
+        [Op.or]: whereConditions
       };
     }
   }
@@ -329,7 +506,6 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
     // istanbul ignore next
     if (options.left_early_mins_range[0] < 0 ?? options.left_early_mins_range[1] < 0)
       throw new Error('Invalid left_early_mins_range');
-    console.log('\n\n', options.left_early_mins_range);
     where.left_early_mins = {
       [Op.between]: options.left_early_mins_range
     };

@@ -4,7 +4,7 @@ import {employeeModelController} from './index';
 import {Division, Employee} from '../../models';
 import {getSupervisorFromDB} from '../Supervisor';
 import {EmployeeWithAssociations} from '../../models/Employee';
-import { SupervisorWithAssociations } from '../../models/Supervisor';
+import {SupervisorWithAssociations} from '../../models/Supervisor';
 
 describe('Employee Controller', () => {
   // CRUD: Create
@@ -255,9 +255,9 @@ describe('Employee Controller', () => {
 
       describe('nonSupervisors', () => {
         it('should get all non-supervisors', async () => {
-          const supervisorIds = ( await getSupervisorFromDB
-            .all() as SupervisorWithAssociations[])
-            .map(supervisor => supervisor.supervisor_info.id);
+          const supervisorIds = (
+            (await getSupervisorFromDB.all()) as SupervisorWithAssociations[]
+          ).map(supervisor => supervisor.supervisor_info.id);
 
           const [nonSupervisors, _nonSupers] = await Promise.all([
             Employee.findAll({
@@ -266,8 +266,8 @@ describe('Employee Controller', () => {
                   [Op.notIn]: supervisorIds
                 }
               }
-            }),
-            employeeModelController.getEmployeeFromDB.all.nonSupervisors()
+            }) as unknown as EmployeeWithAssociations[],
+            employeeModelController.getEmployeeFromDB.all.nonSupervisors() as unknown as EmployeeWithAssociations[]
           ]);
 
           expect(nonSupervisors).toBeInstanceOf(Array);

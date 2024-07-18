@@ -5,11 +5,13 @@ export * from './useDivisions';
 export * from './useLeaveTypes';
 export * from './useQueryParams';
 export * from './useCallOutData';
+export * from './useNumberRange';
 export * from './useEmployeeData';
 export * from './calloutFormState';
 export * from './incrementingTime';
 export * from './useDateRangeOptions';
 export * from './useTimeRangeOptions';
+export * from './useNumberRangeOptions';
 
 export {default as useInputValidation} from './inputValidation';
 

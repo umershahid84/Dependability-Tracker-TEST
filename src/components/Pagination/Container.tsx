@@ -6,6 +6,7 @@ import {PaginationFooter} from './PaginationFooter';
 export type PaginationContainerProps = {
   data: any;
   queryParams: any;
+  searchParams?: any;
   setQueryParams: any;
   RenderList: ({data}: Readonly<{data: any}>) => React.JSX.Element[];
 };
@@ -72,7 +73,7 @@ export function PaginationContainer({
     }
 
     //eslint-disable-next-line
-  }, [data]);
+  }, [data, queryParams]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4 mt-4">

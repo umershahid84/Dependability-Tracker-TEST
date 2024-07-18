@@ -21,12 +21,15 @@ const getTestData = async (): Promise<{
   leaveType: LeaveTypeAttributes;
   newDate: Date;
 }> => {
-  const [supervisors, leaveTypes, nonSupervisors]:
-  [SupervisorWithAssociations[], LeaveTypeAttributes[], EmployeeWithAssociations[]] = await Promise.all([
+  const [supervisors, leaveTypes, nonSupervisors]: [
+    SupervisorWithAssociations[],
+    LeaveTypeAttributes[],
+    EmployeeWithAssociations[]
+  ] = (await Promise.all([
     getSupervisorFromDB.all(),
     getLeaveTypeFromDB.all(),
     getEmployeeFromDB.all.nonSupervisors()
-  ]) as [SupervisorWithAssociations[], LeaveTypeAttributes[], EmployeeWithAssociations[]];
+  ])) as [SupervisorWithAssociations[], LeaveTypeAttributes[], EmployeeWithAssociations[]];
 
   // get a random supervisor and employee
   const leaveType = leaveTypes[Math.floor(Math.random() * leaveTypes.length)];
@@ -699,7 +702,8 @@ describe('Callout Model Controller', () => {
 
     describe('all', () => {
       it('should get all callouts', async () => {
-        existingCallouts = await calloutModelController.getCallOutFromDB.all();
+        existingCallouts =
+          (await calloutModelController.getCallOutFromDB.all()) as CallOutWithAssociations[];
 
         expect(existingCallouts).toBeTruthy();
         // we delete a few callouts so depending on when exactly this test runs, there may be more or less callouts
@@ -732,7 +736,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({id: callout.id});
+            (await calloutModelController.getCallOutFromDB.all({
+              id: callout.id
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBe(1);
@@ -755,9 +761,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               createdAt: callout.createdAt
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -780,9 +786,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               updatedAt: callout.updatedAt
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -805,9 +811,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               shift_date: callout.shift_date
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -830,9 +836,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
-              shift_time: callout.shift_time
-            });
+            (await calloutModelController.getCallOutFromDB.all({
+              shift_time: callout.shift_time.toISOString()
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -840,10 +846,10 @@ describe('Callout Model Controller', () => {
           expect.assertions(2);
         });
 
-        it('should throw an error if the shift time is not a date', async () => {
+        it('should throw an error if the shift time is not a string', async () => {
           try {
             // @ts-expect-error - testing bad input
-            await calloutModelController.getCallOutFromDB.all({shift_time: 'invalid'});
+            await calloutModelController.getCallOutFromDB.all({shift_time: 5});
           } catch (error) {
             expect(String(error)).toBeDefined();
           }
@@ -855,9 +861,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
-              callout_date: callout.callout_date
-            });
+            (await calloutModelController.getCallOutFromDB.all({
+              callout_date: callout.callout_date as Date
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -880,9 +886,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
-              callout_time: callout.callout_time
-            });
+            (await calloutModelController.getCallOutFromDB.all({
+              callout_time: callout.callout_time.toISOString()
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -890,10 +896,10 @@ describe('Callout Model Controller', () => {
           expect.assertions(2);
         });
 
-        it('should throw an error if the callout time is not a date', async () => {
+        it('should throw an error if the callout time is not a string', async () => {
           try {
             // @ts-expect-error - testing bad input
-            await calloutModelController.getCallOutFromDB.all({callout_time: 'invalid'});
+            await calloutModelController.getCallOutFromDB.all({callout_time: 0});
           } catch (error) {
             expect(String(error)).toBeDefined();
           }
@@ -905,9 +911,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               employee_id: callout.employee.id
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -929,9 +935,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               supervisor_id: callout.supervisor.id
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -953,9 +959,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               leave_type_id: callout.leaveType.id
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -983,9 +989,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               shift_date_range: [shiftDates[0], shiftDates[1]]
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1032,9 +1038,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
-              shift_time_range: [shiftTimes[0], shiftTimes[1]]
-            });
+            (await calloutModelController.getCallOutFromDB.all({
+              shift_time_range: [shiftTimes[0].toISOString(), shiftTimes[1].toISOString()]
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1081,9 +1087,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               callout_date_range: [calloutDates[0], calloutDates[1]]
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1130,9 +1136,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
-              callout_time_range: [calloutTimes[0], calloutTimes[1]]
-            });
+            (await calloutModelController.getCallOutFromDB.all({
+              callout_time_range: [calloutTimes[0].toISOString(), calloutTimes[1].toISOString()]
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1173,9 +1179,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               left_early_mins: callout.left_early_mins
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1196,9 +1202,9 @@ describe('Callout Model Controller', () => {
           const callout = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               arrived_late_mins: callout.arrived_late_mins
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1225,9 +1231,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               arrived_late_mins_range: [arrivedLateMins[0] ?? 0, arrivedLateMins[1] ?? 0]
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1276,9 +1282,9 @@ describe('Callout Model Controller', () => {
           );
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               left_early_mins_range: [leftEarlyMins[0] ?? 0, leftEarlyMins[1] ?? 0]
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(1);
@@ -1324,9 +1330,9 @@ describe('Callout Model Controller', () => {
           const leaveType = leaveTypes[Math.floor(Math.random() * leaveTypes.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               leave_type_id: leaveType.id
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
 
@@ -1351,10 +1357,10 @@ describe('Callout Model Controller', () => {
           const callout1 = existingCallouts[Math.floor(Math.random() * existingCallouts.length)];
 
           const callouts: CallOutWithAssociations[] =
-            await calloutModelController.getCallOutFromDB.all({
+            (await calloutModelController.getCallOutFromDB.all({
               arrived_late_mins_range: [0, 120],
               employee_id: callout1.employee.id
-            });
+            })) as CallOutWithAssociations[];
 
           expect(callouts).toBeTruthy();
           expect(callouts.length).toBeGreaterThanOrEqual(0);

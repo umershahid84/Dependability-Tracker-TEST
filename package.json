@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts",
     "build": "next build",
-    "start": "concurrently \"ts-node ./src/scripts/removeExpired.ts\" \"next start\"",
+    "start": "next start",
     "lint": "next lint",
-    "seed": "ts-node ./src/lib/db/seeds/index.ts",
+    "seed": "ts-node ./src/scripts/seed.ts",
     "ts": "ts-node",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles"
   },

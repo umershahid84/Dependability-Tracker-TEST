@@ -4,9 +4,9 @@ import {
   SupervisorWithAssociations,
   SupervisorCreationAttributes
 } from '../../models/Supervisor';
+import {convertOptions} from '../';
 import {ModelWithPagination} from '..';
 import {uuidV4Regex} from '../../../utils';
-import {convertOptions} from '../';
 import {CreateCredentialsInvite, Employee, LoginCredential, Supervisor} from '../../models';
 import {SupervisorOptions, createSupervisorInclude, handleOptionalReturnValues} from './helpers';
 

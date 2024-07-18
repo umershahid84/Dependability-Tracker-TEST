@@ -41,10 +41,10 @@ export function useCallOutsData(
         ...queryParams
       };
 
-      const hasDateAlready = //@ts-ignore
-        dbSearchParams?.shift_date !== undefined || //@ts-ignore
-        dbSearchParams?.callout_date !== undefined || //@ts-ignore
-        dbSearchParams?.shift_date_range !== undefined || //@ts-ignore
+      const hasDateAlready =
+        dbSearchParams?.shift_date !== undefined ||
+        dbSearchParams?.callout_date !== undefined ||
+        dbSearchParams?.shift_date_range !== undefined ||
         dbSearchParams?.callout_date_range !== undefined;
 
       // add the last x days to the search params if a date range has not already been set
@@ -56,7 +56,7 @@ export function useCallOutsData(
 
         dbSearchParams = {
           ...dbSearchParams,
-          createdAtRange: [start, end]
+          created_at_range: [start, end]
         } as GetAllCallOutOptions;
       }
 

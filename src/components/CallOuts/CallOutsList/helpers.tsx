@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {CallOutSortBy} from './data';
 import {NextRouter} from 'next/router';
 import {CallOutsListItem} from './CallOutsListItem';
@@ -58,8 +58,10 @@ export type UseDbSearchParamsFormState = {
   handleSearchParamsChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 };
 
-export const useDbSearchParamsFormState = () => {
-  const [searchParams, setSearchParams] = useState<GetAllCallOutOptions>(dbSearchParams);
+export const useDbSearchParamsFormState = (defaultParams?: GetAllCallOutOptions) => {
+  const [searchParams, setSearchParams] = useState<GetAllCallOutOptions>(
+    defaultParams ?? dbSearchParams
+  );
 
   const handleSearchParamsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setSearchParams({
@@ -67,6 +69,12 @@ export const useDbSearchParamsFormState = () => {
       [e.target.name]: e.target.value === '' ? undefined : e.target.value
     });
   };
+
+  useEffect(() => {
+    if (defaultParams) {
+      setSearchParams(defaultParams);
+    }
+  }, [defaultParams]);
 
   return {searchParams, setSearchParams, handleSearchParamsChange};
 };

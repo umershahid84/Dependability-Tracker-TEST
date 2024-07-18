@@ -48,6 +48,8 @@ export const getCallOutFromDB = {
     const where = options ? buildCalloutAllQueryOptions(options) : {};
     const pageOptions = paginationOptions ?? {};
 
+    console.log('\n\nWHERE:\n', where);
+
     const convertedOptions = convertOptions(pageOptions);
 
     try {
@@ -68,10 +70,10 @@ export const getCallOutFromDB = {
         return _callOuts;
       } else {
         return {
+          data: _callOuts ?? [],
           limit: convertedOptions.limit ?? 0,
           offset: convertedOptions.offset ?? 0,
-          numRecords: _callOuts.length,
-          data: _callOuts ?? []
+          numRecords: await CallOut.count({where: {...where}})
         };
       }
     } catch (error) {

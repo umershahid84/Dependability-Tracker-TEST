@@ -1,6 +1,6 @@
-import {getJwtTokenInEdgeEnvironments} from './auth';
 import {NextResponse, NextRequest} from 'next/server';
 import {adminPaths, adminOnly} from './middleware/admins';
+import {getJwtTokenInEdgeEnvironments} from './client-api/auth';
 import {supervisorOnly, supervisorPaths} from './middleware/supervisor';
 
 export async function middleware(request: NextRequest) {

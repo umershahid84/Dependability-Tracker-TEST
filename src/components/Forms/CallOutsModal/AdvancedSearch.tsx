@@ -5,26 +5,25 @@ import {
 } from '../../../lib/db/models/types';
 import {FormLabel} from '../FormLabel';
 import {ModalAction} from '../../ Modal';
-import {useEffect, useState} from 'react';
+import {use, useEffect, useState} from 'react';
 import {useIsMounted} from '../../../hooks';
 import {
+  dbSearchParams,
   useDbSearchParamsFormState,
   UseDbSearchParamsFormState
 } from '../../CallOuts/CallOutsList/helpers';
 import {ApiData} from '../../../lib/apiController';
 import {FormLabelContainer} from '../EmployeeModal/FormLayout';
-import {LeftEarlyOptions} from './AdvancedSearchOptions/LeftEarlyOptions';
-import {ArrivedLateOptions} from './AdvancedSearchOptions/ArrivedLateOptions';
-import {TimeRangeOptions, TimeRangeOptionsVariants} from './AdvancedSearchOptions';
-import {DateRangeOptions, DateRangeOptionsVariants} from './AdvancedSearchOptions/DateRangeOptions';
+import {RangeOptions, RangeOptionsVariant} from './AdvancedSearchOptions';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4 text-center mt-2',
   form: 'grid grid-cols-2 gap-y-4 gap-x-12 w-full p-3',
-  buttonContainer: 'w-full flex flex-col justify-center items-center mt-6',
+  buttonContainer: 'w-full flex flex-col justify-center items-center mt-6 gap-4',
   input: 'border p-2 rounded-md w-full bg-slate-800 text-gray-300',
   inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-slate-800',
-  button: 'bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 w-full h-10'
+  submitButton: 'bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 w-full h-10',
+  clearButton: 'bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 w-full h-10'
 };
 
 export type CallOutsAdvancedSearchProps = {
@@ -45,10 +44,10 @@ export function CallOutsAdvancedSearch({
   dbSearchParamsFormState
 }: Readonly<CallOutsAdvancedSearchProps>) {
   const isMounted: boolean = useIsMounted();
+  const [clearRanges, setClearRanges] = useState<boolean>(false);
   const [supervisors, setSupervisors] = useState<SupervisorWithAssociations[]>([]);
-
   const {searchParams, setSearchParams, handleSearchParamsChange}: UseDbSearchParamsFormState =
-    useDbSearchParamsFormState();
+    useDbSearchParamsFormState(dbSearchParamsFormState.searchParams);
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -58,11 +57,27 @@ export function CallOutsAdvancedSearch({
     window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
   };
 
+  const clearForm = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSearchParams({...dbSearchParams});
+    dbSearchParamsFormState.setSearchParams({...dbSearchParams});
+    setClearRanges(true);
+  };
+
   useEffect(() => {
     if (isMounted) {
       getAllSupervisors().then(setSupervisors);
     }
   }, [isMounted]);
+
+  useEffect(() => {
+    if (clearRanges) {
+      setClearRanges(false);
+    }
+  }, [clearRanges]);
+
+  const hasParams = Object.values(searchParams).some(value => value !== undefined);
 
   return (
     <>
@@ -80,6 +95,7 @@ export function CallOutsAdvancedSearch({
             <option value="">Any</option>
           </select>
         </FormLabelContainer>
+
         <FormLabelContainer>
           <FormLabel label="Employee Name" htmlFor="employee_id" />
           <select
@@ -134,38 +150,27 @@ export function CallOutsAdvancedSearch({
           </select>
         </FormLabelContainer>
 
-        <DateRangeOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-          variant={DateRangeOptionsVariants.CALL_DATE}
-        />
-
-        <DateRangeOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-          variant={DateRangeOptionsVariants.SHIFT_DATE}
-        />
-
-        <TimeRangeOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-          variant={TimeRangeOptionsVariants.CALL_TIME}
-        />
-
-        <TimeRangeOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-          variant={TimeRangeOptionsVariants.SHIFT_TIME}
-        />
-
-        <LeftEarlyOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-        />
-
-        <ArrivedLateOptions
-          dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-        />
+        {Object.values(RangeOptionsVariant).map((variant: RangeOptionsVariant) => (
+          <RangeOptions
+            key={variant}
+            variant={variant}
+            clearRangeOptions={clearRanges}
+            originalParams={dbSearchParamsFormState}
+            dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
+          />
+        ))}
       </form>
       <div className={styles.buttonContainer}>
-        <button type="button" className={styles.button} onClick={onSubmit}>
+        <button type="button" className={styles.submitButton} onClick={onSubmit}>
           Search
         </button>
+
+        {/* only display the button if a search param has been provided */}
+        {hasParams && (
+          <button type="button" className={styles.clearButton} onClick={clearForm}>
+            Clear
+          </button>
+        )}
       </div>
     </>
   );

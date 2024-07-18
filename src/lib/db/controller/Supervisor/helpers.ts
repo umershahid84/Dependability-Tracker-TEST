@@ -1,6 +1,7 @@
 // CRUD controller for the Supervisor Model
+import {PaginationQueryParams} from '../';
+import {populateEmployeeWithDivisions} from '../Employee/helpers';
 import {SupervisorWithAssociations} from '../../models/Supervisor';
-import {PaginationQueryParams, populateEmployeeWithDivisions} from '../Employee/helpers';
 import {getCreateCredentialsInviteFromDB} from '../CreateCredentialsInvite';
 import {CreateCredentialsInvite, Employee, LoginCredential} from '../../models';
 import {CreateCredentialsInviteWithAssociations} from '../..//models/CreateCredentialsInvite';

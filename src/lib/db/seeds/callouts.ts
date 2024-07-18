@@ -1,9 +1,12 @@
+import 'dotenv/config';
+
 import {
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   CallOutCreationAttributes,
   SupervisorWithAssociations
 } from '../models/types';
+import sequelize from '../connection';
 import {CallOut, DefaultLeaveTypes} from '../models';
 import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
 
@@ -99,7 +102,10 @@ function getRandomDateWithinPastYear(): Date {
 
 // Function to generate a shift date that is on or after the callout date
 function getRelevantShiftDate(calloutDate: Date): Date {
-  const daysDifference = Math.floor(Math.random() * 7); // Shift date within 0 to 7 days after callout
+  let daysDifference = 0; // Shift date within 0 to 7 days after callout
+  while (daysDifference === 0) {
+    daysDifference = Math.floor(Math.random() * 8);
+  }
   const shiftDate = new Date(calloutDate);
   shiftDate.setDate(calloutDate.getDate() + daysDifference);
   return shiftDate;
@@ -108,18 +114,27 @@ function getRelevantShiftDate(calloutDate: Date): Date {
 // Function to generate a random time within reasonable working hours (8 AM to 6 PM)
 function getRandomTime(date: Date): Date {
   const time = new Date(date);
+  const year = time.getFullYear();
+  const month = time.getMonth();
+  const day = time.getDate();
   const hour = Math.floor(Math.random() * 10) + 8; // Hour between 8 AM and 6 PM
   const minute = Math.floor(Math.random() * 60);
-  time.setHours(hour, minute, 0, 0);
-  return time;
+  const seconds = Math.floor(Math.random() * 60);
+  const milliseconds = Math.floor(Math.random() * 1000);
+
+  return new Date(year, month, day, hour, minute, seconds, milliseconds);
 }
 
 // Function to seed callouts
-const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
+const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
+  console.log(`\n🌱 Seeding ${numOfSeeds} callOuts...`);
+  await sequelize.sync({force: false});
   try {
     const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
-    const supervisors: SupervisorWithAssociations[] = await getSupervisorFromDB.all() as SupervisorWithAssociations[];
-    const employees: EmployeeWithAssociations[] = await getEmployeeFromDB.all.nonSupervisors();
+    const supervisors: SupervisorWithAssociations[] =
+      (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
+    const employees: EmployeeWithAssociations[] =
+      (await getEmployeeFromDB.all.nonSupervisors()) as EmployeeWithAssociations[];
 
     const iterations: number = numOfSeeds ?? numberOfCallouts;
 
@@ -135,13 +150,16 @@ const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
       const comment: string | undefined =
         relevantComments[Math.floor(Math.random() * relevantComments.length)];
 
-      const calloutDate: Date = getRandomDateWithinPastYear();
-      const calloutTime: Date = getRandomTime(calloutDate);
-      const shiftDate: Date = getRelevantShiftDate(calloutDate);
-      const shiftTime: Date =
-        shiftDate.getTime() === calloutDate.getTime()
-          ? new Date(calloutTime.getTime() + Math.random() * 36000000)
-          : getRandomTime(shiftDate); // shiftTime either later on the same day or a new random time on shiftDate
+      let calloutDate: Date = getRandomDateWithinPastYear();
+      const calloutTime: Date = getRandomTime(calloutDate); // Callout time is the same as callout date
+
+      calloutDate = calloutTime; // Callout date is the same as callout time
+
+      let shiftDate: Date = getRelevantShiftDate(calloutDate);
+
+      const shiftTime: Date = getRandomTime(shiftDate);
+
+      shiftDate = shiftTime; // Shift date is the same as shift time
 
       const callout: CallOutCreationAttributes = {
         shift_time: shiftTime,
@@ -151,6 +169,8 @@ const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
         callout_time: calloutTime,
         leave_type_id: leaveType.id,
         supervisor_id: supervisor.id,
+        createdAt: calloutDate,
+        updatedAt: calloutDate,
         supervisor_comments: comment ?? 'No comments',
         left_early_mins: Math.floor(Math.random() * 60),
         arrived_late_mins: Math.floor(Math.random() * 60)
@@ -164,4 +184,9 @@ const seedCallouts = async (numOfSeeds?: number): Promise<void> => {
   }
 };
 
-export default seedCallouts;
+if (require.main === module) {
+  const number = process.argv[2] ? parseInt(process.argv[2], 10) : 20;
+  seedCallOuts(number);
+}
+
+export default seedCallOuts;

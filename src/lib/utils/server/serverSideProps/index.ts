@@ -1,16 +1,16 @@
 import {Request} from 'express';
 import {
-  DivisionAttributes,
-  LeaveTypeAttributes,
-  EmployeeWithAssociations,
-  CallOutWithAssociations
-} from '../../../../lib/db/models/types';
-import {
   getCallOutFromDB,
   getDivisionFromDB,
   getEmployeeFromDB,
   getLeaveTypeFromDB
 } from '../../../../lib/db/controller';
+import {
+  DivisionAttributes,
+  LeaveTypeAttributes,
+  EmployeeWithAssociations,
+  CallOutWithAssociations
+} from '../../../../lib/db/models/types';
 import {DefaultLeaveTypes} from '../../../../lib/db/models';
 import {getDivisionNameFromPath} from '../../shared/strings';
 
@@ -74,9 +74,9 @@ export const getServerSidePropsForTwoWeekCallOutHistory = async (request: {req: 
 
     // get callOuts for the last two weeks
     const callOuts: (CallOutWithAssociations | null)[] = (
-      (await getCallOutFromDB.all({
+      ((await getCallOutFromDB.all({
         shift_date_range: [new Date(Date.now() - 12096e5), new Date(Date.now())]
-      })) ?? []
+      })) as CallOutWithAssociations[]) ?? []
     ).filter(callOut =>
       callOut?.employee?.divisions?.map(div => div.id).includes(division?.id as string)
     );

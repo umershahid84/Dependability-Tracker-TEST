@@ -1,9 +1,8 @@
 import {Request} from 'express';
-import {NextRequest} from 'next/server';
+
 import type {NextApiResponse} from 'next';
 import jwt, {Algorithm} from 'jsonwebtoken';
 import type {ApiData} from '../lib/apiController';
-import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
 const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
 const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
@@ -84,36 +83,6 @@ export const getJwtTokenForAPI = (
   }
 
   return token as JwtPayload;
-};
-
-// To be used in the NextEdge Environment aka NextMiddleware
-export const getJwtTokenInEdgeEnvironments = async (
-  req: NextRequest
-): Promise<JwtPayload | undefined> => {
-  try {
-    let cookies: RequestCookies = req.cookies ?? '';
-
-    let _token: string | undefined = cookies.get('auth-token')?.value ?? '';
-
-    if (!_token || _token === '') {
-      return undefined;
-    }
-
-    const apiResponse = await fetch(new URL('/api/jwt-verify', req.url).toString(), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({token: _token})
-    });
-
-    const {token} = (await apiResponse.json()) ?? {};
-
-    return token;
-  } catch (error) {
-    console.error('Error in jwtMiddleware', error);
-    return undefined;
-  }
 };
 
 export const signJwtToken = (payload: JwtPayload): string => {

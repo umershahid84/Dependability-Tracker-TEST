@@ -7,6 +7,7 @@ export type TimeRange = {
 
 export type UseTimeRange = {
   timeRange: TimeRange;
+  setTimeRange: React.Dispatch<React.SetStateAction<TimeRange>>;
   handleTimeRangeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -23,5 +24,5 @@ export function useTimeRange() {
     });
   };
 
-  return {timeRange, handleTimeRangeChange};
+  return {timeRange, setTimeRange, handleTimeRangeChange};
 }

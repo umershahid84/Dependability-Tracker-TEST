@@ -7,6 +7,7 @@ export type DateRange = {
 
 export type UseDateRange = {
   dateRange: DateRange;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
   handleDateRangeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -23,5 +24,5 @@ export function useDateRange(): UseDateRange {
     });
   };
 
-  return {dateRange, handleDateRangeChange};
+  return {dateRange, setDateRange, handleDateRangeChange};
 }

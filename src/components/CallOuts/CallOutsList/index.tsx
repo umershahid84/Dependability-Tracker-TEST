@@ -5,6 +5,7 @@ import {
   UseCallOutsData,
   useCallOutsData
 } from '../../../hooks';
+import {useState} from 'react';
 import {
   defaultStyles,
   RenderCallOutsList,
@@ -12,11 +13,10 @@ import {
   UseDbSearchParamsFormState,
   useDbSearchParamsFormState
 } from './helpers';
-import {useState} from 'react';
-import {DynamicSortOptions} from '../../Forms';
 import {ModalAction, ModalType} from '../../ Modal';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
+import {ActiveSearchParams, DynamicSortOptions} from '../../Forms';
 import {callOutLimitOptions, callOutSortBy, CallOutSortBy, showLastOptions} from './data';
 
 const getEmployees = async () => {
@@ -49,7 +49,6 @@ export function CallOutsList() {
       return;
     }
     setShowLast(Number(e.target.value));
-    // show all the callOuts in for the selected number of days
   };
 
   const handleAdvancedSearchOnClick = async (e: React.SyntheticEvent) => {
@@ -106,9 +105,14 @@ export function CallOutsList() {
         </span>
       </ModelListHeader>
 
+      <ActiveSearchParams
+        dbSearchParams={{searchParams, setSearchParams, handleSearchParamsChange}}
+      />
+
       <PaginationContainer
         data={callOuts}
         queryParams={queryParams}
+        searchParams={searchParams}
         //@ts-ignore
         RenderList={RenderCallOutsList}
         setQueryParams={setQueryParams}

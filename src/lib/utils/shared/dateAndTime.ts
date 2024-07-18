@@ -48,3 +48,25 @@ export const getTimeNoSeconds = (date: Date): string => {
 
   return dateString;
 };
+
+// Function to normalize date to the beginning of the day in UTC
+export const normalizeToStartOfDayUTC = (date: Date) => {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+};
+
+// Function to normalize date to the end of the day in UTC
+export const normalizeToEndOfDayUTC = (date: Date) => {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)
+  );
+};
+
+export const addTimeToDate = (date: Date, time: string) => {
+  const [hours, minutes, seconds] = time.split(':');
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+
+  date = new Date(year, month, day, Number(hours), Number(minutes), Number(seconds ?? 0), 0);
+  return date;
+};

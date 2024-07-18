@@ -25,11 +25,11 @@ export function DynamicSortOptions({
     <div className={employeeListStyles.sortableOption}>
       <label className={employeeListStyles.label}>{label}</label>
       <select
-        title={title}
-        className={employeeListStyles.select}
         name={name}
+        title={title}
+        value={currentSort}
         onChange={onSortChange}
-        value={currentSort}>
+        className={employeeListStyles.select}>
         <DynamicOptions dynamicOptions={sortOptions} />
       </select>{' '}
     </div>

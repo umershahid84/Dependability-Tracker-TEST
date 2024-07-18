@@ -5,10 +5,10 @@ import {getDate, getTime, getTimeNoSeconds} from '../../../../lib/utils';
 import {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
 
 const styles = {
-  calloutHeader: 'ml-2  w-3/4 flex flex-col justify-center p-2',
+  calloutHeader: 'ml-2 w-3/4 flex flex-col justify-center p-2',
   span: 'w-auto p-1 flex flex-row justify-between gap-3 mt-2 ',
   div: 'rounded-md employee drop-shadow-md toggle-container w-full',
-  flex: 'flex justify-between items-center p-2 cursor-pointer bg-slate-800 hide-on-print rounded-md',
+  flex: 'flex justify-between items-center  cursor-pointer bg-slate-800 hide-on-print rounded-md',
   button: 'toggle-details px-2 py-1 bg-slate-400 hover:bg-[var(--green)] text-white rounded mr-2 '
 };
 
@@ -41,7 +41,8 @@ export function CallOutsListItem({callOut}: Readonly<{callOut: CallOutWithAssoci
         window.removeEventListener('afterprint', handleAfterPrint);
       };
     }
-  }, [isMounted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted, callOut]);
 
   return (
     <div className={styles.div}>

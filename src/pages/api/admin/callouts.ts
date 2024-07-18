@@ -9,7 +9,6 @@ export default async function handler(req: NextRequest & Request, res: NextApiRe
   getJwtTokenForAPI(req, res);
 
   if (req.method === 'GET') {
-    console.log('\n\nGET request to /api/admin/callouts');
     return getCallOutsApiHandler(req, res);
   }
   return res.status(405).json({error: 'Method not allowed'});
