@@ -67,13 +67,20 @@ export const getCallOutFromDB = {
         [];
 
       if (!paginationOptions || Object.keys(paginationOptions).length === 1) {
+        console.log('RETURNING NON-PAGINATED CALLOUTS');
+        console.log(_callOuts.length);
         return _callOuts;
       } else {
+        console.log('RETURNING PAGINATED CALLOUTS');
+        console.log('Num Records:', _callOuts.length, callOuts.length);
+
+        const totalRecords = await CallOut.count({where: {...where}});
+        console.log('Total Records:', totalRecords);
         return {
           data: _callOuts ?? [],
           limit: convertedOptions.limit ?? 0,
           offset: convertedOptions.offset ?? 0,
-          numRecords: await CallOut.count({where: {...where}})
+          numRecords: totalRecords
         };
       }
     } catch (error) {

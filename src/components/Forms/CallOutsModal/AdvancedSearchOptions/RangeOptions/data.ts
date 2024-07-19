@@ -1,4 +1,6 @@
 import {dateTo_YYYY_MM_DD} from '../../../../../lib/utils';
+import {UseRangeOptionsStateMap} from './useRangeOptionsVariantMap';
+import type {GetAllCallOutOptions} from '../../../../../lib/db/controller/Callout/helpers';
 
 export enum RangeOptionsVariant {
   CALL_DATE = 'callout_date_range',
@@ -30,8 +32,12 @@ export const rangeOptionsStyles = {
 };
 
 export type RangeOptionsProps = {
-  variant: RangeOptionsVariant;
   clearRangeOptions: boolean;
+  variant: RangeOptionsVariant;
+  searchParams: GetAllCallOutOptions;
+  stateOptionsVariantMap: UseRangeOptionsStateMap;
+  setSearchParams: React.Dispatch<React.SetStateAction<GetAllCallOutOptions>>;
+  handleSearchParamsChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 };
 
 export const rangeOptionsVariantMap = {

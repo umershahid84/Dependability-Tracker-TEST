@@ -70,3 +70,9 @@ export const addTimeToDate = (date: Date, time: string) => {
   date = new Date(year, month, day, Number(hours), Number(minutes), Number(seconds ?? 0), 0);
   return date;
 };
+
+export const formatTimeWithAmPm = (time: string): string => {
+  const [hours, minutes] = time.split(':');
+  const amOrPm = parseInt(hours) > 12 ? 'pm' : 'am';
+  return `${parseInt(hours) % 12}:${minutes} ${amOrPm}`;
+};

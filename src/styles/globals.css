@@ -74,7 +74,10 @@ input:-o-autofill:active {
 }
 
 .Text-outline {
-  /* text-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.9); */
+  text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black !important;
+}
+
+.Text-outline-hover:hover {
   text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black !important;
 }
 

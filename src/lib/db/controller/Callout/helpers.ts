@@ -24,6 +24,7 @@ export type GetAllCallOutOptions = {
   shift_date?: Date;
   shift_time?: string;
   callout_date?: Date;
+  division_id?: string;
   callout_time?: string;
   employee_id?: string;
   supervisor_id?: string;

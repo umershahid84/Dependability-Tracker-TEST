@@ -2,8 +2,6 @@ import {Modal} from './Modal';
 import React, {useEffect} from 'react';
 import {useIsMounted} from '../../hooks';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
-import {LeaveTypeAttributes} from '../../lib/db/models/LeaveType';
-import {UseDbSearchParamsFormState} from '../CallOuts/CallOutsList/helpers';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
 import {AddEmployeeForm, CallOutsAdvancedSearch, EditEmployeeForm} from '../Forms';
 
@@ -34,11 +32,7 @@ function RenderModalBody({
   data
 }: Readonly<{
   type: ModalType;
-  data?: {dbSearchParams?: UseDbSearchParamsFormState} & {
-    employees?: EmployeeWithAssociations[];
-  } & {
-    leaveTypes?: LeaveTypeAttributes[];
-  };
+  data: any;
 }>) {
   switch (type) {
     case ModalType.ADD_EMPLOYEE:

@@ -9,7 +9,7 @@ const styles = {
   span: 'w-auto p-1 flex flex-row justify-between gap-3 mt-2 ',
   div: 'rounded-md employee drop-shadow-md toggle-container w-full',
   flex: 'flex justify-between items-center  cursor-pointer bg-slate-800 hide-on-print rounded-md',
-  button: 'toggle-details px-2 py-1 bg-slate-400 hover:bg-[var(--green)] text-white rounded mr-2 '
+  button: 'toggle-details px-2 py-1 bg-slate-700 hover:bg-[var(--green)] text-white rounded mr-2 '
 };
 
 export function CallOutsListItem({callOut}: Readonly<{callOut: CallOutWithAssociations}>) {

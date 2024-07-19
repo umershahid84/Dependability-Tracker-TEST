@@ -177,9 +177,9 @@ const employeeSeeds = [
 // Seeding function
 const seedEmployees = async () => {
   // get the division ids
-  const divisionIds = await Division.findAll().then(divisions =>
-    divisions.map(division => division.id)
-  );
+  const divisions = await Division.findAll();
+  const divisionIds = divisions.map(division => division.id);
+  const publicParkingId = divisions.find(division => division.name === 'Public Parking')?.id;
 
   // on ids 1-16, replace the division_ids with the divisionIds array
   employeeSeeds.forEach(employee => {
@@ -187,7 +187,7 @@ const seedEmployees = async () => {
       employee.division_ids = divisionIds;
     } else {
       // assign the first division id to the rest of the employees
-      employee.division_ids = divisionIds.slice(0, 1);
+      employee.division_ids = [publicParkingId as string];
     }
 
     employee.id = uuid();

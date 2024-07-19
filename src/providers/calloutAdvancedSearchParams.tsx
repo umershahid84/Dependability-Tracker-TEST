@@ -14,7 +14,7 @@ import {LeaveTypeAttributes} from '../lib/db/models/LeaveType';
 import {SupervisorWithAssociations} from '../lib/db/models/Supervisor';
 import {GetAllCallOutOptions} from '../lib/db/controller/Callout/helpers';
 import {dbSearchParams} from '../components/CallOuts/CallOutsList/helpers';
-import {useState, createContext, Context, useContext, PropsWithChildren, useEffect} from 'react';
+import {Context, useContext, useState, createContext, PropsWithChildren, useEffect} from 'react';
 
 export type CallOutAdvancedSearchContext = {
   executeSearch: boolean;
@@ -34,14 +34,20 @@ const CallOutAdvancedSearchContext: Context<CallOutAdvancedSearchContext> =
 const {Provider}: Context<CallOutAdvancedSearchContext> = CallOutAdvancedSearchContext;
 
 export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.JSX.Element => {
-  const [executeSearch, setExecuteSearch] = useState<boolean>(false);
-  const [searchParams, setSearchParams] = useState<GetAllCallOutOptions>(dbSearchParams);
-  const [showSelectedOptionsHeader, setShowSelectedOptionsHeader] = useState<boolean>(false);
-
   const {divisions}: UseDivisions = useDivisions();
   const {leaveTypes}: UseLeaveTypes = useLeaveTypes();
   const {employees}: UseGetEmployees = useGetEmployees();
   const {supervisors}: UseGetSupervisors = useGetSupervisors();
+  const [executeSearch, setExecuteSearch] = useState<boolean>(false);
+  const [employeesData, setEmployeesData] = useState<EmployeeWithAssociations[]>([]);
+  const [searchParams, setSearchParams] = useState<GetAllCallOutOptions>(dbSearchParams);
+  const [showSelectedOptionsHeader, setShowSelectedOptionsHeader] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (employees?.data) {
+      setEmployeesData(employees.data);
+    }
+  }, [employees]);
 
   const handleSearchParamsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setSearchParams({
@@ -59,6 +65,31 @@ export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.J
     }
   }, [showSelectedOptionsHeader, searchParams]);
 
+  useEffect(() => {
+    let filteredEmployees: EmployeeWithAssociations[] = [];
+    const supervisorEmployeeIds = supervisors?.map(supervisor => supervisor.supervisor_info.id);
+    // if the division search param is set, filter the employees by the selected division
+    // and exclude supervisors
+    if (searchParams.division_id) {
+      filteredEmployees =
+        employees?.data?.filter(
+          (employee: EmployeeWithAssociations) =>
+            employee.divisions.some(
+              division =>
+                division.id === searchParams.division_id &&
+                !supervisorEmployeeIds?.includes(employee.id)
+            ) ?? []
+        ) ?? [];
+    } else {
+      // if not just return non-supervisor employees
+      filteredEmployees =
+        employees?.data.filter((employee: EmployeeWithAssociations) => {
+          return !supervisorEmployeeIds?.includes(employee.id);
+        }) ?? [];
+    }
+    setEmployeesData(filteredEmployees ?? []);
+  }, [searchParams.division_id, employees?.data, supervisors]);
+
   return (
     <Provider
       value={{
@@ -70,7 +101,7 @@ export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.J
         divisions: divisions ?? [],
         leaveTypes: leaveTypes ?? [],
         supervisors: supervisors ?? [],
-        employees: employees?.data ?? []
+        employees: employeesData ?? []
       }}
       {...props}
     />

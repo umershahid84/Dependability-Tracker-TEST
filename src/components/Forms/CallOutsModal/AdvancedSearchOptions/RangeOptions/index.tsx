@@ -1,8 +1,6 @@
 import {useEffect} from 'react';
 import {FormLabel} from '../../../FormLabel';
-import {useRangeOptionsStateMap} from './useRangeOptionsVariantMap';
 import {FormLabelContainer} from '../../../EmployeeModal/FormLayout';
-import {useCallOutAdvancedSearchContext} from '../../../../../providers';
 import {RangeOptionsProps, rangeOptionsStyles, rangeOptionsVariantMap} from './data';
 import {UseDbSearchParamsFormState} from '../../../../CallOuts/CallOutsList/helpers';
 
@@ -20,11 +18,14 @@ const {
   dbSearchParam_NonRange
 } = rangeOptionsVariantMap;
 
-export function RangeOptions({variant, clearRangeOptions}: Readonly<RangeOptionsProps>) {
-  const {searchParams, setSearchParams, handleSearchParamsChange} =
-    useCallOutAdvancedSearchContext();
-  const stateOptionsVariantMap = useRangeOptionsStateMap();
-
+export function RangeOptions({
+  variant,
+  searchParams,
+  setSearchParams,
+  clearRangeOptions,
+  stateOptionsVariantMap,
+  handleSearchParamsChange
+}: Readonly<RangeOptionsProps>) {
   const startVal = stateOptionsVariantMap[variant].rangeValue.start;
   const endVal = stateOptionsVariantMap[variant].rangeValue.end;
 

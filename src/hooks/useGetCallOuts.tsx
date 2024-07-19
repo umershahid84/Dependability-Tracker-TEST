@@ -7,7 +7,10 @@ import {CallOutWithAssociations} from '../lib/db/models/Callout';
 import {CallOutSortBy} from '../components/CallOuts/CallOutsList/data';
 import {GetAllCallOutOptions} from '../lib/db/controller/Callout/helpers';
 import {ModelWithPagination, PaginationQueryParams} from '../lib/db/controller';
-import {defaultCallOutsQueryParams} from '../components/CallOuts/CallOutsList/helpers';
+import {
+  dbSearchParams,
+  defaultCallOutsQueryParams
+} from '../components/CallOuts/CallOutsList/helpers';
 import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../providers';
 
 export type UseGetCallOuts = {
@@ -77,7 +80,18 @@ export function useGetCallOuts({showLast, queryParams}: UseGetCallOutsProps): Us
       if (!response.ok) {
         throw new Error(data.error);
       }
+      if (searchParams?.division_id) {
+        // filter callOuts by division_id
 
+        if (data?.data?.data) {
+          data.data.data = data.data?.data.filter(callOut =>
+            callOut.employee.divisions.some(division => division.id === searchParams?.division_id)
+          );
+
+          // update the numRecords to reflect the filtered data
+          data.data.numRecords = data.data.data.length;
+        }
+      }
       setCallOuts(
         data.data ?? {
           data: [],
@@ -89,7 +103,6 @@ export function useGetCallOuts({showLast, queryParams}: UseGetCallOutsProps): Us
 
       setIsLoading(false);
       setExecuteSearch(false);
-      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
     } catch (error) {
       setError(String(error));
       setIsLoading(false);

@@ -12,7 +12,9 @@ export const seedDatabase = async () => {
     console.log('\n🌱 Seeding database...');
     await sequelize.sync({force: true});
     // run these concurrently
-    await Promise.all([seedDivisions(), seedLeaveTypes(), seedEmployees()]);
+    await Promise.all([seedDivisions(), seedLeaveTypes()]);
+    // cant seed employees until divisions are seeded
+    await seedEmployees();
     // cant seed supervisors until employees are seeded
     await seedSupervisors();
     console.log('✅ Database seeded');

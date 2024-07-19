@@ -11,6 +11,10 @@ export type PaginationContainerProps = {
   RenderList: ({data}: Readonly<{data: any}>) => React.JSX.Element[];
 };
 
+const figureOffset = (offset: number, numRecords: number): number => {
+  return numRecords === 0 ? 0 : offset + 1;
+};
+
 export function PaginationContainer({
   data,
   RenderList,
@@ -20,8 +24,9 @@ export function PaginationContainer({
   const [offset, setOffset] = useState<number>(0);
   const [ending, setEnding] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [showing, setShowing] = useState<number>(offset + 1);
+
   const [numberOfPages, setNumberOfPages] = useState<number>(1);
+  const [showing, setShowing] = useState<number>(figureOffset(offset, data?.numRecords ?? 0));
 
   const handlePageChange = (
     e: React.SyntheticEvent,
@@ -66,17 +71,17 @@ export function PaginationContainer({
       const _offset = limit * (_currentPage - 1);
 
       setOffset(_offset);
-      setShowing(_offset + 1);
-      setNumberOfPages(numPages);
       setCurrentPage(_currentPage);
       setEnding(_offset + data.data.length);
+      setNumberOfPages(numPages > 0 ? numPages : 1);
+      setShowing(figureOffset(_offset, data?.numRecords ?? 0));
     }
 
     //eslint-disable-next-line
   }, [data, queryParams]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 mt-4">
+    <div className="w-full h-full flex flex-col gap-4 mt-2">
       {!data ? (
         <Loading />
       ) : (

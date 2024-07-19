@@ -1,5 +1,4 @@
 import 'dotenv/config';
-
 import {
   LeaveTypeAttributes,
   EmployeeWithAssociations,
@@ -161,6 +160,19 @@ const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
 
       shiftDate = shiftTime; // Shift date is the same as shift time
 
+      let left_early_mins: number = 0;
+      let arrived_late_mins: number = 0;
+
+      if (
+        leaveTypeReason === DefaultLeaveTypes.LATE_ARRIVAL ||
+        leaveTypeReason === DefaultLeaveTypes.LEFT_EARLY
+      ) {
+        leaveTypeReason === DefaultLeaveTypes.LEFT_EARLY &&
+          (left_early_mins = Math.floor(Math.random() * 60));
+        leaveTypeReason === DefaultLeaveTypes.LATE_ARRIVAL &&
+          (arrived_late_mins = Math.floor(Math.random() * 60));
+      }
+
       const callout: CallOutCreationAttributes = {
         shift_time: shiftTime,
         shift_date: shiftDate,
@@ -172,8 +184,8 @@ const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
         createdAt: calloutDate,
         updatedAt: calloutDate,
         supervisor_comments: comment ?? 'No comments',
-        left_early_mins: Math.floor(Math.random() * 60),
-        arrived_late_mins: Math.floor(Math.random() * 60)
+        left_early_mins,
+        arrived_late_mins
       };
 
       await CallOut.create(callout);
