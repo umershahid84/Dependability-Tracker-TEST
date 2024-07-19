@@ -10,8 +10,8 @@ import {ModalAction, ModalType} from '../../ Modal';
 import {EmployeeListItem} from '../EmployeeListItem';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
-import {useEmployeeData, useQueryParams} from '../../../hooks';
 import {PaginationQueryParams, EmployeeWithAssociations} from '../../../lib/db/controller';
+import {UseGetEmployees, useGetEmployees, UseQueryParams, useQueryParams} from '../../../hooks';
 
 function RenderList({data}: {data: EmployeeWithAssociations[]}) {
   return data?.map((employee: EmployeeWithAssociations) => (
@@ -36,10 +36,9 @@ export const defaultEmployeesQueryParams: PaginationQueryParams<EmployeeSortBy> 
 };
 
 export function EmployeeList() {
-  const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<EmployeeSortBy>(
-    defaultEmployeesQueryParams
-  );
-  const {employees, refetch} = useEmployeeData(queryParams);
+  const {queryParams, setQueryParams, handleQueryParamChange}: UseQueryParams<EmployeeSortBy> =
+    useQueryParams<EmployeeSortBy>(defaultEmployeesQueryParams);
+  const {employees, refetch}: UseGetEmployees = useGetEmployees(queryParams);
 
   useEffect(() => {
     //@ts-ignore

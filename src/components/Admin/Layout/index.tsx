@@ -2,6 +2,7 @@ import React from 'react';
 import {ModalViewer} from '../../ Modal';
 import {NavBar, NavLinks} from '../../NavBar';
 import {SupervisorLayout} from '../../SupervisorLayout';
+import {CallOutAdvancedSearchProvider} from '../../../providers';
 
 const adminLinks: NavLinks = [
   {href: '/admin/dashboard', text: 'Home'},
@@ -12,7 +13,7 @@ const supervisorLinks: NavLinks = [{href: '/dashboard', text: 'Supervisor Home'}
 
 export function AdminLayout({children}: Readonly<{children?: React.ReactNode}>) {
   return (
-    <>
+    <CallOutAdvancedSearchProvider>
       <ModalViewer />
       <SupervisorLayout title="Admin Portal">
         <NavBar
@@ -23,6 +24,6 @@ export function AdminLayout({children}: Readonly<{children?: React.ReactNode}>) 
         />
         {children}
       </SupervisorLayout>
-    </>
+    </CallOutAdvancedSearchProvider>
   );
 }

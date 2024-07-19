@@ -1,6 +1,4 @@
 import {dateTo_YYYY_MM_DD} from '../../../../../lib/utils';
-import {UseDbSearchParamsFormState} from '../../../../CallOuts/CallOutsList/helpers';
-import {UseRangeOptionsStateMap, useRangeOptionsStateMap} from './useRangeOptionsVariantMap';
 
 export enum RangeOptionsVariant {
   CALL_DATE = 'callout_date_range',
@@ -34,8 +32,6 @@ export const rangeOptionsStyles = {
 export type RangeOptionsProps = {
   variant: RangeOptionsVariant;
   clearRangeOptions: boolean;
-  originalParams: UseDbSearchParamsFormState;
-  dbSearchParamsFormState: UseDbSearchParamsFormState;
 };
 
 export const rangeOptionsVariantMap = {

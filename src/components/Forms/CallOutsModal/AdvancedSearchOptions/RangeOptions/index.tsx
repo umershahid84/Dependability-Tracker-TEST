@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {FormLabel} from '../../../FormLabel';
 import {useRangeOptionsStateMap} from './useRangeOptionsVariantMap';
 import {FormLabelContainer} from '../../../EmployeeModal/FormLayout';
+import {useCallOutAdvancedSearchContext} from '../../../../../providers';
 import {RangeOptionsProps, rangeOptionsStyles, rangeOptionsVariantMap} from './data';
 import {UseDbSearchParamsFormState} from '../../../../CallOuts/CallOutsList/helpers';
 
@@ -19,24 +20,19 @@ const {
   dbSearchParam_NonRange
 } = rangeOptionsVariantMap;
 
-export function RangeOptions({
-  variant,
-  originalParams,
-  clearRangeOptions,
-  dbSearchParamsFormState
-}: Readonly<RangeOptionsProps>) {
-  const stateOptionsVariantMap = useRangeOptionsStateMap(originalParams);
+export function RangeOptions({variant, clearRangeOptions}: Readonly<RangeOptionsProps>) {
+  const {searchParams, setSearchParams, handleSearchParamsChange} =
+    useCallOutAdvancedSearchContext();
+  const stateOptionsVariantMap = useRangeOptionsStateMap();
 
-  // clears the Advanced Search Options and the originalParams
-  // we use two different states to keep track of the search params rather than one source of truth
-  // this allows the user to make changes to the advanced search options without affecting the originalParams until
-  // they click the search button. On Clear immediately clears the search params and the originalParams and will
-  // refetch data from the server.
+  const startVal = stateOptionsVariantMap[variant].rangeValue.start;
+  const endVal = stateOptionsVariantMap[variant].rangeValue.end;
+
   const handleOnClear = () => {
     stateOptionsVariantMap[variant].setOptionValue(null);
     stateOptionsVariantMap[variant].setRangeValue({});
 
-    originalParams.setSearchParams(prev => {
+    setSearchParams(prev => {
       return {
         ...prev,
         [dbSearchParamsName[variant]]: undefined,
@@ -51,7 +47,7 @@ export function RangeOptions({
       stateOptionsVariantMap[variant].rangeValue.start &&
       stateOptionsVariantMap[variant].rangeValue.end
     ) {
-      dbSearchParamsFormState.handleSearchParamsChange({
+      handleSearchParamsChange({
         target: {
           name: dbSearchParamsName[variant],
           value: [
@@ -62,7 +58,7 @@ export function RangeOptions({
       } as unknown as React.ChangeEvent<HTMLInputElement>);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateOptionsVariantMap[variant].rangeValue]);
+  }, [startVal, endVal]);
 
   useEffect(() => {
     if (clearRangeOptions) {
@@ -108,13 +104,13 @@ export function RangeOptions({
                 type={inputType[variant]}
                 name={dbSearchParam_NonRange[variant]}
                 value={valueFormatter[variant](
-                  (dbSearchParamsFormState.searchParams[
+                  (searchParams[
                     dbSearchParam_NonRange[
                       variant
                     ] as keyof UseDbSearchParamsFormState['searchParams']
                   ] as any) ?? ''
                 )}
-                onChange={dbSearchParamsFormState.handleSearchParamsChange}
+                onChange={handleSearchParamsChange}
               />
             </div>
           ) : (

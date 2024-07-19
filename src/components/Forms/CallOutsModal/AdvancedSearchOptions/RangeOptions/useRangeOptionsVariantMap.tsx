@@ -13,7 +13,7 @@ import {
   useNumberRangeOptions
 } from '../../../../../hooks';
 import {useEffect, Dispatch, SetStateAction} from 'react';
-import {UseDbSearchParamsFormState} from '../../../../CallOuts/CallOutsList/helpers';
+import {useCallOutAdvancedSearchContext} from '../../../../../providers';
 
 export type UseRangeOptionsStateMap = {
   callout_time_range: {
@@ -66,9 +66,9 @@ export type UseRangeOptionsStateMap = {
   };
 };
 
-export function useRangeOptionsStateMap(
-  searchParams?: UseDbSearchParamsFormState
-): UseRangeOptionsStateMap {
+export function useRangeOptionsStateMap(): UseRangeOptionsStateMap {
+  const {searchParams} = useCallOutAdvancedSearchContext();
+
   const callOutTimeRange = useTimeRange();
   const shiftTimeRange = useTimeRange();
   const callOutDateRange = useDateRange();
@@ -136,7 +136,7 @@ export function useRangeOptionsStateMap(
 
   // sets the existing search params to the state on component mount
   useEffect(() => {
-    const params = searchParams?.searchParams;
+    const params = searchParams;
 
     if (params) {
       if (params.arrived_late_mins) {
@@ -237,7 +237,7 @@ export function useRangeOptionsStateMap(
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams?.searchParams]);
+  }, [searchParams]);
 
   return stateOptionsVariantMap as UseRangeOptionsStateMap;
 }

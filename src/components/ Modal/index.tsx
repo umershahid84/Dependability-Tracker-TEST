@@ -48,13 +48,7 @@ function RenderModalBody({
     case ModalType.DELETE_EMPLOYEE:
       return <DeleteEmployeeForm employeeData={data as EmployeeWithAssociations} />;
     case ModalType.ADVANCED_CALLOUT_SEARCH:
-      return (
-        <CallOutsAdvancedSearch
-          leaveTypes={data?.leaveTypes as LeaveTypeAttributes[]}
-          employees={data?.employees as EmployeeWithAssociations[]}
-          dbSearchParamsFormState={data?.dbSearchParams as UseDbSearchParamsFormState}
-        />
-      );
+      return <CallOutsAdvancedSearch />;
     default:
       return <></>;
   }

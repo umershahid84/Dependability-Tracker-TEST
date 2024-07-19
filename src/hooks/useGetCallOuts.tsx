@@ -1,14 +1,16 @@
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {ApiData} from '../lib/apiController';
+import {ModalAction} from '../components/ Modal';
 import {ToastTypes, makeToast} from '../components';
 import {CallOutWithAssociations} from '../lib/db/models/Callout';
 import {CallOutSortBy} from '../components/CallOuts/CallOutsList/data';
 import {GetAllCallOutOptions} from '../lib/db/controller/Callout/helpers';
 import {ModelWithPagination, PaginationQueryParams} from '../lib/db/controller';
 import {defaultCallOutsQueryParams} from '../components/CallOuts/CallOutsList/helpers';
+import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../providers';
 
-export type UseCallOutsData = {
+export type UseGetCallOuts = {
   isLoading: boolean;
   error: string | null;
   callOuts: ModelWithPagination<CallOutWithAssociations> | null;
@@ -18,21 +20,24 @@ export type UseCallOutsData = {
   >;
 };
 
-export function useCallOutsData(
-  queryParams?: PaginationQueryParams<CallOutSortBy>,
-  dbSearchParams?: GetAllCallOutOptions,
-  showLast?: number | null
-): UseCallOutsData {
+export type UseGetCallOutsProps = {
+  showLast?: number | null;
+  queryParams?: PaginationQueryParams<CallOutSortBy>;
+};
+
+export function useGetCallOuts({showLast, queryParams}: UseGetCallOutsProps): UseGetCallOuts {
   const isMounted = useIsMounted();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [callOuts, setCallOuts] = useState<ModelWithPagination<CallOutWithAssociations> | null>(
     null
   );
+  const {executeSearch, searchParams, setExecuteSearch}: CallOutAdvancedSearchContext =
+    useCallOutAdvancedSearchContext();
 
   const fetchCallOuts = async (
     queryParams?: PaginationQueryParams<CallOutSortBy>,
-    dbSearchParams?: GetAllCallOutOptions
+    searchParams?: GetAllCallOutOptions
   ) => {
     try {
       queryParams = queryParams ?? {...defaultCallOutsQueryParams};
@@ -42,10 +47,10 @@ export function useCallOutsData(
       };
 
       const hasDateAlready =
-        dbSearchParams?.shift_date !== undefined ||
-        dbSearchParams?.callout_date !== undefined ||
-        dbSearchParams?.shift_date_range !== undefined ||
-        dbSearchParams?.callout_date_range !== undefined;
+        searchParams?.shift_date !== undefined ||
+        searchParams?.callout_date !== undefined ||
+        searchParams?.shift_date_range !== undefined ||
+        searchParams?.callout_date_range !== undefined;
 
       // add the last x days to the search params if a date range has not already been set
       if (showLast && !hasDateAlready) {
@@ -54,16 +59,16 @@ export function useCallOutsData(
 
         const end = new Date();
 
-        dbSearchParams = {
-          ...dbSearchParams,
+        searchParams = {
+          ...searchParams,
           created_at_range: [start, end]
         } as GetAllCallOutOptions;
       }
 
-      if (dbSearchParams) {
+      if (searchParams) {
         params = {
           ...params,
-          callOutSearchOptions: JSON.stringify(dbSearchParams)
+          callOutSearchOptions: JSON.stringify(searchParams)
         } as PaginationQueryParams<CallOutSortBy> & {callOutSearchOptions?: string};
       }
 
@@ -83,6 +88,8 @@ export function useCallOutsData(
       );
 
       setIsLoading(false);
+      setExecuteSearch(false);
+      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
     } catch (error) {
       setError(String(error));
       setIsLoading(false);
@@ -90,18 +97,18 @@ export function useCallOutsData(
   };
 
   useEffect(() => {
-    if (isMounted) {
+    if (isMounted && executeSearch) {
       (async () => {
         setIsLoading(true);
         try {
-          await fetchCallOuts(queryParams, dbSearchParams);
+          await fetchCallOuts(queryParams, searchParams);
         } catch (error) {
           setError(String(error));
         }
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMounted, queryParams, dbSearchParams, showLast]);
+  }, [isMounted, executeSearch]);
 
   useEffect(() => {
     if (error) {

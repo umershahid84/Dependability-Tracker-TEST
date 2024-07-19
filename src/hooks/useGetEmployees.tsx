@@ -6,16 +6,18 @@ import {
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {ApiData} from '../lib/apiController';
-import {EmployeeSortBy, ToastTypes, defaultEmployeesQueryParams, makeToast} from '../components';
+import {EmployeeSortBy, ToastTypes, makeToast} from '../components';
 
-export type UseEmployeeData = {
+export type UseGetEmployees = {
   isLoading: boolean;
   error: string | null;
   employees: ModelWithPagination<EmployeeWithAssociations> | null;
-  refetch: (queryParams?: PaginationQueryParams<EmployeeSortBy>) => void;
+  refetch: (queryParams?: PaginationQueryParams<EmployeeSortBy>) => Promise<void>;
 };
 
-export function useEmployeeData(queryParams?: PaginationQueryParams<EmployeeSortBy>) {
+export function useGetEmployees(
+  queryParams?: PaginationQueryParams<EmployeeSortBy>
+): UseGetEmployees {
   const isMounted = useIsMounted();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -25,16 +27,29 @@ export function useEmployeeData(queryParams?: PaginationQueryParams<EmployeeSort
 
   const fetchEmployees = async (queryParams?: PaginationQueryParams) => {
     try {
-      queryParams = queryParams ?? defaultEmployeesQueryParams;
+      const response = queryParams
+        ? await fetch(`/api/admin/employees?${new URLSearchParams(queryParams)}`)
+        : await fetch('/api/admin/employees');
 
-      const response = await fetch(`/api/admin/employees?${new URLSearchParams(queryParams)}`);
-      const data: ApiData<ModelWithPagination<EmployeeWithAssociations>> = await response.json();
+      const data: ApiData<
+        ModelWithPagination<EmployeeWithAssociations> | EmployeeWithAssociations[]
+      > = await response.json();
+
       if (!response.ok) {
         throw new Error(data.error);
       }
 
+      const employees = Array.isArray(data.data)
+        ? {
+            data: data.data,
+            numRecords: data.data.length,
+            offset: queryParams?.offset ? Number(queryParams.offset) : 0,
+            limit: queryParams?.limit ? Number(queryParams.limit) : data.data.length
+          }
+        : data.data;
+
       setEmployees(
-        data.data ?? {
+        employees ?? {
           data: [],
           limit: 0,
           offset: 0,

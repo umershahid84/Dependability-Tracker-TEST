@@ -1,42 +1,42 @@
 import {
+  useIsMounted,
   UseLeaveTypes,
   useLeaveTypes,
   useQueryParams,
-  UseCallOutsData,
-  useCallOutsData
+  UseGetCallOuts,
+  useGetCallOuts
 } from '../../../hooks';
-import {useState} from 'react';
-import {
-  defaultStyles,
-  RenderCallOutsList,
-  defaultCallOutsQueryParams,
-  UseDbSearchParamsFormState,
-  useDbSearchParamsFormState
-} from './helpers';
+import {useEffect, useState} from 'react';
 import {ModalAction, ModalType} from '../../ Modal';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
 import {ActiveSearchParams, DynamicSortOptions} from '../../Forms';
+import {defaultStyles, RenderCallOutsList, defaultCallOutsQueryParams} from './helpers';
 import {callOutLimitOptions, callOutSortBy, CallOutSortBy, showLastOptions} from './data';
+import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../providers';
 
-const getEmployees = async () => {
-  const response = await fetch('/api/admin/employees');
-  const data = await response.json();
-  return data?.data?.data ?? [];
-};
+// const getEmployees = async () => {
+//   const response = await fetch('/api/admin/employees');
+//   const data = await response.json();
+//   return data?.data?.data ?? [];
+// };
 
 export function CallOutsList() {
-  const {leaveTypes}: UseLeaveTypes = useLeaveTypes();
+  const isMounted: boolean = useIsMounted();
   const [showLast, setShowLast] = useState<number | null>(14);
   const [sortBy, setSortBy] = useState<CallOutSortBy>('leaveType');
 
-  const {searchParams, setSearchParams, handleSearchParamsChange}: UseDbSearchParamsFormState =
-    useDbSearchParamsFormState();
+  const {searchParams, setExecuteSearch}: CallOutAdvancedSearchContext =
+    useCallOutAdvancedSearchContext();
+
   const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<CallOutSortBy>(
     defaultCallOutsQueryParams
   );
 
-  const {callOuts}: UseCallOutsData = useCallOutsData(queryParams, searchParams, showLast);
+  const {callOuts}: UseGetCallOuts = useGetCallOuts({
+    showLast,
+    queryParams
+  });
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value as CallOutSortBy);
@@ -49,6 +49,12 @@ export function CallOutsList() {
       return;
     }
     setShowLast(Number(e.target.value));
+    setExecuteSearch(true);
+  };
+
+  const queryParamsChangeWrapper = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    handleQueryParamChange(e);
+    setExecuteSearch(true);
   };
 
   const handleAdvancedSearchOnClick = async (e: React.SyntheticEvent) => {
@@ -58,15 +64,19 @@ export function CallOutsList() {
           action: ModalAction.OPEN,
           type: ModalType.ADVANCED_CALLOUT_SEARCH,
           payload: {
-            dbSearchParams: {searchParams, setSearchParams, handleSearchParamsChange},
-            employees: await getEmployees(),
-            leaveTypes,
             modalClasses: 'bg-gray-800 p-8 rounded-md shadow-lg relative w-auto '
           }
         }
       })
     );
   };
+
+  useEffect(() => {
+    if (isMounted) {
+      setExecuteSearch(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted]);
 
   return (
     <ModelList>
@@ -94,7 +104,7 @@ export function CallOutsList() {
             label="Limit:"
             name="limit"
             sortOptions={callOutLimitOptions}
-            onSortChange={handleQueryParamChange}
+            onSortChange={queryParamsChangeWrapper}
             currentSort={String(queryParams.limit ?? 5)}
             title="Limit the number of CallOuts displayed."
           />
@@ -105,9 +115,7 @@ export function CallOutsList() {
         </span>
       </ModelListHeader>
 
-      <ActiveSearchParams
-        dbSearchParams={{searchParams, setSearchParams, handleSearchParamsChange}}
-      />
+      <ActiveSearchParams />
 
       <PaginationContainer
         data={callOuts}

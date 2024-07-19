@@ -1,75 +1,54 @@
 import {
+  DivisionAttributes,
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   SupervisorWithAssociations
 } from '../../../lib/db/models/types';
 import {FormLabel} from '../FormLabel';
-import {ModalAction} from '../../ Modal';
-import {use, useEffect, useState} from 'react';
-import {useIsMounted} from '../../../hooks';
-import {
-  dbSearchParams,
-  useDbSearchParamsFormState,
-  UseDbSearchParamsFormState
-} from '../../CallOuts/CallOutsList/helpers';
-import {ApiData} from '../../../lib/apiController';
+import {useEffect, useState} from 'react';
 import {FormLabelContainer} from '../EmployeeModal/FormLayout';
+import {dbSearchParams} from '../../CallOuts/CallOutsList/helpers';
 import {RangeOptions, RangeOptionsVariant} from './AdvancedSearchOptions';
+import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../providers';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4 text-center mt-2',
   form: 'grid grid-cols-2 gap-y-4 gap-x-12 w-full p-3',
-  buttonContainer: 'w-full flex flex-col justify-center items-center mt-6 gap-4',
+
   input: 'border p-2 rounded-md w-full bg-slate-800 text-gray-300',
   inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-slate-800',
+  buttonContainer: 'w-full flex flex-col justify-center items-center mt-6 gap-4',
   submitButton: 'bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 w-full h-10',
   clearButton: 'bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 w-full h-10'
 };
 
-export type CallOutsAdvancedSearchProps = {
-  leaveTypes: LeaveTypeAttributes[];
-  employees: EmployeeWithAssociations[];
-  dbSearchParamsFormState: UseDbSearchParamsFormState;
-};
-
-const getAllSupervisors = async (): Promise<SupervisorWithAssociations[]> => {
-  const response = await fetch('/api/admin/supervisors');
-  const data: ApiData<SupervisorWithAssociations[]> = await response.json();
-  return data?.data ?? [];
-};
-
-export function CallOutsAdvancedSearch({
-  employees,
-  leaveTypes,
-  dbSearchParamsFormState
-}: Readonly<CallOutsAdvancedSearchProps>) {
-  const isMounted: boolean = useIsMounted();
+export function CallOutsAdvancedSearch() {
   const [clearRanges, setClearRanges] = useState<boolean>(false);
-  const [supervisors, setSupervisors] = useState<SupervisorWithAssociations[]>([]);
-  const {searchParams, setSearchParams, handleSearchParamsChange}: UseDbSearchParamsFormState =
-    useDbSearchParamsFormState(dbSearchParamsFormState.searchParams);
+
+  const {
+    divisions,
+    employees,
+    leaveTypes,
+    supervisors,
+    searchParams,
+    setSearchParams,
+    setExecuteSearch,
+    handleSearchParamsChange
+  }: CallOutAdvancedSearchContext = useCallOutAdvancedSearchContext();
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    dbSearchParamsFormState.setSearchParams(searchParams);
-    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+    setExecuteSearch(true);
   };
 
   const clearForm = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSearchParams({...dbSearchParams});
-    dbSearchParamsFormState.setSearchParams({...dbSearchParams});
     setClearRanges(true);
+    setSearchParams({...dbSearchParams});
+    setExecuteSearch(true);
   };
-
-  useEffect(() => {
-    if (isMounted) {
-      getAllSupervisors().then(setSupervisors);
-    }
-  }, [isMounted]);
 
   useEffect(() => {
     if (clearRanges) {
@@ -93,6 +72,11 @@ export function CallOutsAdvancedSearch({
             className={styles.input}>
             <option value="">Select Division</option>
             <option value="">Any</option>
+            {divisions?.map((division: DivisionAttributes) => (
+              <option key={division.id} value={division.id}>
+                {division.name}
+              </option>
+            ))}
           </select>
         </FormLabelContainer>
 
@@ -151,13 +135,7 @@ export function CallOutsAdvancedSearch({
         </FormLabelContainer>
 
         {Object.values(RangeOptionsVariant).map((variant: RangeOptionsVariant) => (
-          <RangeOptions
-            key={variant}
-            variant={variant}
-            clearRangeOptions={clearRanges}
-            originalParams={dbSearchParamsFormState}
-            dbSearchParamsFormState={{searchParams, setSearchParams, handleSearchParamsChange}}
-          />
+          <RangeOptions key={variant} variant={variant} clearRangeOptions={clearRanges} />
         ))}
       </form>
       <div className={styles.buttonContainer}>
