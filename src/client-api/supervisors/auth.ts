@@ -1,5 +1,5 @@
-import type {JwtPayload} from '../auth';
 import {NextRequest} from 'next/server';
+import type {JwtPayload} from '../../auth';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
 // To be used in the NextEdge Environment aka NextMiddleware

@@ -1,5 +1,5 @@
 import {NextRouter} from 'next/router';
-import {makeToast, ToastTypes} from '../components';
+import {makeToast, ToastTypes} from '../../components';
 
 export type LoginFormState = {
   email: string;

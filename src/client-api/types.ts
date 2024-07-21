@@ -1,1 +1,1 @@
-export type * from './login';
+export type * from './supervisors/login';

@@ -1,7 +1,8 @@
-import {Logout} from '../../client-api';
 import React, {useEffect} from 'react';
 import {useIsMounted} from '../../hooks';
 import {NextRouter, useRouter} from 'next/router';
+import {ClientAPI, Logout} from '../../client-api';
+
 import {trim} from '../../lib/utils/shared/strings';
 
 const styles = {
@@ -30,7 +31,7 @@ export const LogoutButton = ({className}: {className?: string}) => {
   return (
     <button
       type="button"
-      onClick={() => Logout(router)}
+      onClick={async () => await ClientAPI.Supervisors.Logout(router)}
       className={`${className ?? trim(styles.logout)} hide-on-print`}>
       Logout
     </button>

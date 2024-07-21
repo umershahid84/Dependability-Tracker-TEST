@@ -3,9 +3,9 @@ import {
   PaginationQueryParams,
   EmployeeWithAssociations
 } from '../lib/db/controller';
+import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
-import {ApiData} from '../lib/apiController';
 import {EmployeeSortBy, ToastTypes, makeToast} from '../components';
 
 export type UseGetEmployees = {
@@ -27,17 +27,7 @@ export function useGetEmployees(
 
   const fetchEmployees = async (queryParams?: PaginationQueryParams) => {
     try {
-      const response = queryParams
-        ? await fetch(`/api/admin/employees?${new URLSearchParams(queryParams)}`)
-        : await fetch('/api/admin/employees');
-
-      const data: ApiData<
-        ModelWithPagination<EmployeeWithAssociations> | EmployeeWithAssociations[]
-      > = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error);
-      }
+      const data = await ClientAPI.Employees.Read(queryParams);
 
       const employees = Array.isArray(data.data)
         ? {

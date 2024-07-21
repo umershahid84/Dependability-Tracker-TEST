@@ -1,6 +1,7 @@
 import {
   defaultStyles,
   dbSearchParams,
+  handleSortChange,
   RenderCallOutsList,
   defaultCallOutsQueryParams
 } from './helpers';
@@ -10,32 +11,46 @@ import {ModalAction, ModalType} from '../../ Modal';
 import {ActiveSearchParams} from '../ActiveSearchParams';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
+import {ModelWithPagination} from '../../../lib/db/controller';
+import {CallOutWithAssociations} from '../../../lib/db/models/types';
 import {callOutLimitOptions, callOutSortBy, CallOutSortBy, showLastOptions} from './data';
 import {useIsMounted, useQueryParams, UseGetCallOuts, useGetCallOuts} from '../../../hooks';
 import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../providers';
 
+const styles = {
+  modalClasses: 'bg-gray-800 p-8 rounded-md shadow-lg relative w-auto ',
+  button: 'hover:underline hover:underline-offset-4',
+  clearSearchButton: 'text-cyan-500 hover:text-red-500 hover:underline hover:underline-offset-4',
+  containerClassName:
+    'w-full flex flex-col justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6 relative'
+};
+
 export function CallOutsList() {
   const isMounted: boolean = useIsMounted();
   const [showLast, setShowLast] = useState<number | null>(14);
-  const [sortBy, setSortBy] = useState<CallOutSortBy>('leaveType');
+  const [calloutData, setCalloutData] =
+    useState<ModelWithPagination<CallOutWithAssociations> | null>(null);
+  const [sortBy, setSortBy] = useState<CallOutSortBy>('createdAt');
 
-  const {searchParams, setExecuteSearch, setSearchParams}: CallOutAdvancedSearchContext =
-    useCallOutAdvancedSearchContext();
+  const {
+    leaveTypes,
+    searchParams,
+    setSearchParams,
+    setExecuteSearch
+  }: CallOutAdvancedSearchContext = useCallOutAdvancedSearchContext();
 
   const hasParams = Object.values(searchParams).some(value => value !== undefined);
-
   const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<CallOutSortBy>(
     defaultCallOutsQueryParams
   );
-
   const {callOuts}: UseGetCallOuts = useGetCallOuts({
     showLast,
     queryParams
   });
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortBy(e.target.value as CallOutSortBy);
-    // sort the callOuts by the selected option
+  const executeSearch = () => setExecuteSearch(true);
+  const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    callOuts && handleSortChange({e, callOuts, setSortBy, setCallOuts: setCalloutData, leaveTypes});
   };
 
   const handleShowLastChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -45,12 +60,12 @@ export function CallOutsList() {
       setShowLast(Number(e.target.value));
     }
 
-    setExecuteSearch(true);
+    executeSearch();
   };
 
   const queryParamsChangeWrapper = (e: React.ChangeEvent<HTMLSelectElement>) => {
     handleQueryParamChange(e);
-    setExecuteSearch(true);
+    executeSearch();
   };
 
   const handleClearSearch = (e: React.SyntheticEvent) => {
@@ -58,7 +73,7 @@ export function CallOutsList() {
     e.stopPropagation();
 
     setSearchParams({...dbSearchParams});
-    setExecuteSearch(true);
+    executeSearch();
   };
 
   const handleAdvancedSearchOnClick = async (e: React.SyntheticEvent) => {
@@ -77,21 +92,27 @@ export function CallOutsList() {
 
   useEffect(() => {
     if (isMounted) {
-      setExecuteSearch(true);
+      executeSearch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
+  useEffect(() => {
+    callOuts?.data &&
+      handleOnSortChange({target: {value: sortBy}} as React.ChangeEvent<HTMLSelectElement>);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callOuts?.data]);
+
   return (
     <ModelList>
-      <ModelListHeader containerClassName="w-full flex flex-col justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6 relative">
+      <ModelListHeader containerClassName={styles.containerClassName}>
         <span className={defaultStyles.span}>
           <DynamicSortOptions
             label="Sort By:"
             name="sortBy"
             sortOptions={callOutSortBy}
-            onSortChange={handleSortChange}
-            currentSort={sortBy}
+            onSortChange={handleOnSortChange}
+            currentSort={sortBy as string}
             title="Sort the CallOuts by the selected option."
           />
 
@@ -115,19 +136,13 @@ export function CallOutsList() {
 
           <span>
             🔎{' '}
-            <button
-              className="hover:underline hover:underline-offset-4"
-              type="button"
-              onClick={handleAdvancedSearchOnClick}>
+            <button className={styles.button} type="button" onClick={handleAdvancedSearchOnClick}>
               Advanced Search
             </button>
           </span>
 
           {hasParams && (
-            <button
-              className="text-cyan-500 hover:text-red-500 hover:underline hover:underline-offset-4"
-              type="button"
-              onClick={handleClearSearch}>
+            <button className={styles.clearSearchButton} type="button" onClick={handleClearSearch}>
               Clear Search
             </button>
           )}
@@ -137,12 +152,12 @@ export function CallOutsList() {
       <ActiveSearchParams />
 
       <PaginationContainer
-        data={callOuts}
+        data={calloutData}
         queryParams={queryParams}
         searchParams={searchParams}
         //@ts-ignore
-        RenderList={RenderCallOutsList}
         setQueryParams={setQueryParams}
+        RenderList={RenderCallOutsList}
       />
     </ModelList>
   );

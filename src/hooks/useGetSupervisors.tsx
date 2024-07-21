@@ -1,3 +1,4 @@
+import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import type {ApiData} from '../lib/apiController';
@@ -10,16 +11,6 @@ export type UseGetSupervisors = {
   supervisors: SupervisorWithAssociations[] | null;
 };
 
-const getSupervisors = async (): Promise<SupervisorWithAssociations[]> => {
-  const response = await fetch('/api/admin/supervisors');
-
-  const data: ApiData<SupervisorWithAssociations[]> = await response.json();
-  if (!response.ok) {
-    console.error('ERROR GETTING SUPERVISORS for useGetSupervisors Hook:\n', data.error);
-  }
-  return data?.data ?? [];
-};
-
 export function useGetSupervisors(): UseGetSupervisors {
   const isMounted = useIsMounted();
   const [error, setError] = useState<string | null>(null);
@@ -28,8 +19,8 @@ export function useGetSupervisors(): UseGetSupervisors {
 
   const fetchSupervisors = async () => {
     try {
-      const data: SupervisorWithAssociations[] = await getSupervisors();
-      setSupervisors(data ?? []);
+      const data: ApiData<SupervisorWithAssociations[]> = await ClientAPI.Supervisors.Read();
+      setSupervisors(data?.data ?? []);
       setIsLoading(false);
     } catch (error) {
       setError(String(error));

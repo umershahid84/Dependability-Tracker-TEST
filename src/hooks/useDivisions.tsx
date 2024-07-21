@@ -1,6 +1,6 @@
+import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
-import {getDivisions} from '../client-api';
 import {DivisionAttributes} from '../lib/db/models/Division';
 
 export type UseDivisions = {
@@ -18,7 +18,7 @@ export function useDivisions(): UseDivisions {
 
   const fetchDivisions = async () => {
     try {
-      const _divisions: DivisionAttributes[] = await getDivisions();
+      const _divisions: DivisionAttributes[] = await ClientAPI.Divisions.Read();
 
       setDivisions(_divisions ?? []);
       setIsLoading(false);

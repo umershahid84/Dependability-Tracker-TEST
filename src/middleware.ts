@@ -1,8 +1,9 @@
 import {NextResponse, NextRequest} from 'next/server';
 import {adminPaths, adminOnly} from './middleware/admins';
-import {getJwtTokenInEdgeEnvironments} from './client-api/auth';
+import {getJwtTokenInEdgeEnvironments} from './client-api/supervisors/auth';
 import {supervisorOnly, supervisorPaths} from './middleware/supervisor';
 
+// works on client-side only, does not work for the api routes
 export async function middleware(request: NextRequest) {
   const authToken = await getJwtTokenInEdgeEnvironments(request);
 

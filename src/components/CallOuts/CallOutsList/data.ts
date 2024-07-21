@@ -9,7 +9,9 @@ export type CallOutSortBy =
   | 'shiftDate'
   | 'createdBy'
   | 'arrivedLate'
-  | 'leftEarly';
+  | 'leftEarly'
+  | 'createdAt'
+  | 'updatedAt';
 
 export const callOutSortBy: {value: CallOutSortBy; text: string}[] = [
   {
@@ -39,6 +41,14 @@ export const callOutSortBy: {value: CallOutSortBy; text: string}[] = [
   {
     value: 'leftEarly',
     text: 'Left Early'
+  },
+  {
+    value: 'createdAt',
+    text: 'Created At'
+  },
+  {
+    value: 'updatedAt',
+    text: 'Updated At'
   }
 ];
 

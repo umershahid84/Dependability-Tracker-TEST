@@ -15,10 +15,10 @@ export const getServerSideProps = async (request: {req: Request}) => {
 
   return {
     props: {
+      isAdmin,
       callOuts: props2.props.callOuts,
       employees: props1.props.employees,
-      leaveTypes: props1.props.leaveTypes,
-      isAdmin
+      leaveTypes: props1.props.leaveTypes
     }
   };
 };

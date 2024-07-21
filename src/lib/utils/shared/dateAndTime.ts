@@ -76,3 +76,5 @@ export const formatTimeWithAmPm = (time: string): string => {
   const amOrPm = parseInt(hours) > 12 ? 'pm' : 'am';
   return `${parseInt(hours) % 12}:${minutes} ${amOrPm}`;
 };
+
+export const makeDate = (date: Date | string) => new Date(date);

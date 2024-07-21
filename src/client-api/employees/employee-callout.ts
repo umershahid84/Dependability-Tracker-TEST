@@ -1,6 +1,5 @@
 import {dateTo_HH_MM_SS} from '../../lib/utils';
 import {ApiData} from '../../lib/apiController';
-import {makeToast, ToastTypes} from '../../components';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 
 export type DefaultCallOutFormData = {
@@ -34,19 +33,13 @@ export type EmployeeCallOutProps = {
   callTime: string;
   shiftTime: string;
   formData: DefaultCallOutFormData;
-  defaultFormData: DefaultCallOutFormData;
-  callback?: (data: CallOutWithAssociations) => void;
-  setFormData: React.Dispatch<React.SetStateAction<DefaultCallOutFormData>>;
 };
 
-export const EmployeeCallOut = async ({
-  callback,
+export const CreateEmployeeCallOut = async ({
   callTime,
   formData,
-  shiftTime,
-  setFormData,
-  defaultFormData
-}: EmployeeCallOutProps) => {
+  shiftTime
+}: EmployeeCallOutProps): Promise<ApiData<CallOutWithAssociations>> => {
   try {
     const result = await fetch('/api/employee-callout', {
       method: 'POST',
@@ -65,20 +58,11 @@ export const EmployeeCallOut = async ({
     if (!result.ok) {
       throw new Error(data.error);
     } else {
-      makeToast({
-        title: 'Success',
-        type: ToastTypes.Success,
-        message: data.message ?? 'Callout Created Successfully'
-      });
-      setFormData(defaultFormData);
-      callback?.(data?.data as CallOutWithAssociations);
+      return data;
     }
   } catch (error) {
-    makeToast({
-      title: 'Error',
-      type: ToastTypes.Error,
-      message: String(error),
-      timeOut: 7500
-    });
+    return {
+      error: String(error)
+    };
   }
 };

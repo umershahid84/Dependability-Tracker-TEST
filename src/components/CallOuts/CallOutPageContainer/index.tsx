@@ -12,7 +12,7 @@ export function CallOutPageContainer(
 ) {
   const [callOuts, setCallOuts] = useState<CallOutWithAssociations[]>(JSON.parse(props.callOuts));
   const addCallout = (callOut: CallOutWithAssociations) => {
-    setCallOuts([...callOuts, callOut]);
+    setCallOuts([callOut, ...callOuts]);
   };
   return (
     <DivisionPageContainer isAdmin={props.isAdmin ?? false}>

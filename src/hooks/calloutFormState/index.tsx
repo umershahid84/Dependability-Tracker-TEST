@@ -3,7 +3,7 @@ import {validateEmployeeCallOut} from './helpers';
 import {makeToast, ToastTypes} from '../../components';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
-import {EmployeeCallOut, DefaultCallOutFormData, getDefaultCallOutFormData} from '../../client-api';
+import {ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData} from '../../client-api';
 
 export type UseCallOutFormState = {
   callTime: string;
@@ -50,14 +50,19 @@ export function useCallOutFormState(
     }
 
     try {
-      await EmployeeCallOut({
-        callback,
+      const data = await ClientAPI.Employees.CallOuts.Create({
         formData,
         callTime,
-        shiftTime,
-        setFormData,
-        defaultFormData
+        shiftTime
       });
+
+      makeToast({
+        title: 'Success',
+        type: ToastTypes.Success,
+        message: data.message ?? 'Callout Created Successfully'
+      });
+      setFormData(defaultFormData);
+      callback?.(data?.data as CallOutWithAssociations);
     } catch (error) {
       makeToast({
         type: ToastTypes.Error,

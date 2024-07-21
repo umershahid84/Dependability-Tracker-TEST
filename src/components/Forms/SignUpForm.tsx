@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
-import {SignUp, defaultSignUpFormState, SignUpFormState} from '../../client-api';
+import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
 export default function SignUpForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
@@ -52,7 +52,7 @@ export default function SignUpForm(): React.JSX.Element {
     e?.preventDefault();
     e?.stopPropagation();
 
-    await SignUp({
+    await ClientAPI.Supervisors.SignUp({
       router,
       formState,
       setHasError,

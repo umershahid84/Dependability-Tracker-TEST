@@ -1,9 +1,9 @@
+import React from 'react';
 import {
   LeaveTypeAttributes,
   CallOutWithAssociations,
   EmployeeWithAssociations
 } from '../../lib/db/models/types';
-import React from 'react';
 import {FormLabel} from './FormLabel';
 import {dateTo_YYYY_MM_DD} from '../../lib/utils';
 import {trim} from '../../lib/utils/shared/strings';

@@ -1,11 +1,12 @@
-import {useEffect, useState} from 'react';
-import {CallOutSortBy} from './data';
+import {CallOutSortBy} from '../data';
 import {NextRouter} from 'next/router';
-import {CallOutsListItem} from './CallOutsListItem';
-import {trim} from '../../../lib/utils/shared/strings';
-import {PaginationQueryParams} from '../../../lib/db/controller';
-import {CallOutWithAssociations} from '../../../lib/db/models/types';
-import type {GetAllCallOutOptions} from '../../../lib/db/controller/Callout/helpers';
+import {sortCallOutsBy} from './sortCallOutsBy';
+import {CallOutsListItem} from '../CallOutsListItem';
+import {trim} from '../../../../lib/utils/shared/strings';
+import {useEffect, useState, SetStateAction} from 'react';
+import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
+import {ModelWithPagination, PaginationQueryParams} from '../../../../lib/db/controller';
+import {CallOutWithAssociations, LeaveTypeAttributes} from '../../../../lib/db/models/types';
 
 export const defaultStyles = {
   span: 'w-auto flex flex-wrap flex-row gap-4 justify-start sm:justify-center items-center',
@@ -77,4 +78,27 @@ export const useDbSearchParamsFormState = (defaultParams?: GetAllCallOutOptions)
   }, [defaultParams]);
 
   return {searchParams, setSearchParams, handleSearchParamsChange};
+};
+
+export type HandleSortOnChangeProps = {
+  leaveTypes: LeaveTypeAttributes[];
+  e: React.ChangeEvent<HTMLSelectElement>;
+  callOuts: ModelWithPagination<CallOutWithAssociations>;
+  setSortBy: React.Dispatch<SetStateAction<CallOutSortBy>>;
+  setCallOuts: React.Dispatch<
+    React.SetStateAction<ModelWithPagination<CallOutWithAssociations> | null>
+  >;
+};
+
+export const handleSortChange = ({
+  e,
+  callOuts,
+  setSortBy,
+  leaveTypes,
+  setCallOuts
+}: HandleSortOnChangeProps) => {
+  const sort = e.target.value as CallOutSortBy;
+  setSortBy(sort);
+
+  return sortCallOutsBy({sort, callOuts, setCallOuts, leaveTypes});
 };
