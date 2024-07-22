@@ -1,5 +1,4 @@
-// import {ModalAction, ModalType} from '../../../ Modal';
-
+import {ModalAction, ModalType} from '../../../ Modal';
 import {trim} from '../../../../lib/utils/shared/strings';
 import {getDate, getTime, getTimeNoSeconds} from '../../../../lib/utils';
 import {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
@@ -7,6 +6,7 @@ import {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
 const styles = {
   superComments: 'ml-4 ',
   container: 'w-full flex flex-col justify-start gap-4 relative',
+  modalClasses: 'bg-gray-800 rounded-md shadow-lg relative w-auto',
   edit: 'px-2 py-1 bg-slate-900 hover:bg-amber-500 text-white rounded ',
   delete: 'px-2 py-1 bg-slate-900 hover:bg-red-500 text-white rounded ',
   infoContainer: 'ml-4 w-5/6 grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2',
@@ -17,28 +17,39 @@ const styles = {
   div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md details-print`
 };
 
-export function CallOutsListItemAccordion({
-  show,
-  callOut
-}: Readonly<{
+export type CallOutsListItemProps = {
   show: boolean;
   callOut: CallOutWithAssociations;
-}>) {
+  onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
+};
+
+export function CallOutsListItemAccordion({
+  show,
+  callOut,
+  onModalEditCallBack
+}: Readonly<CallOutsListItemProps>) {
   const handleOnClick = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     // get the button name
     const buttonName = e.target as HTMLButtonElement;
-    //NOSONAR
-    // // if the button name is edit
-    // if (buttonName.textContent === 'Edit') {
-    //   window.dispatchEvent(
-    //     new CustomEvent('modalEvent', {
-    //       detail: {action: ModalAction.OPEN, type: ModalType.EDIT_EMPLOYEE, payload: employee}
-    //     })
-    //   );
-    // }
+
+    if (buttonName.textContent === 'Edit') {
+      window.dispatchEvent(
+        new CustomEvent('modalEvent', {
+          detail: {
+            action: ModalAction.OPEN,
+            type: ModalType.EDIT_CALL_OUT,
+            payload: {
+              callOut,
+              onModalEditCallBack,
+              modalClasses: styles.modalClasses
+            }
+          }
+        })
+      );
+    }
     // // if the button name is delete
     // if (buttonName.textContent === 'Delete') {
     //   window.dispatchEvent(

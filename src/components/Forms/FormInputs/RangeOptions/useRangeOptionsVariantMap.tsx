@@ -11,9 +11,9 @@ import {
   useDateRangeOptions,
   useTimeRangeOptions,
   useNumberRangeOptions
-} from '../../../../../hooks';
+} from '../../../../hooks';
 import {useEffect, Dispatch, SetStateAction} from 'react';
-import {useCallOutAdvancedSearchContext} from '../../../../../providers';
+import {useCallOutAdvancedSearchContext} from '../../../../providers';
 
 export type UseRangeOptionsStateMap = {
   callout_time_range: {

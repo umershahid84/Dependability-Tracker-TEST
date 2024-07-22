@@ -46,6 +46,7 @@ export function Logo(props: Readonly<LogoProps>) {
       priority
       alt="SEA-TAC"
       src={logoSrc}
+      placeholder="blur"
       width={width ?? styles.imgWidth}
       height={height ?? styles.imgHeight}
       className={className ?? styles.logo}

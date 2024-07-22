@@ -19,7 +19,7 @@ export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boole
 
   // find the id of the Leave Type Tardiness
   const missingLeftEarlyOrLateArrival =
-    formData.lateArrivalMinutes == 0 || formData.leftEarlyMinutes == 0;
+    formData.lateArrivalMinutes == 0 && formData.leftEarlyMinutes == 0;
 
   const selectLeaveTypeEl = document.querySelector<HTMLSelectElement>('select[name="leaveType"]');
   const leaveTypeOptions =
@@ -44,6 +44,18 @@ export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boole
       );
     }
 
+    // make sure the shift date is not before the call date
+    // find the difference between the shift date and call date
+    const callDate = new Date(formData.callDate);
+    const shiftDate = new Date(formData.shiftDate);
+
+    const dayDifference = shiftDate.getDate() - callDate.getDate();
+    const monthDifference = shiftDate.getMonth() - callDate.getMonth();
+    const yearDifference = shiftDate.getFullYear() - callDate.getFullYear();
+
+    if (yearDifference < 0 || monthDifference < 0 || dayDifference < 0) {
+      throw new Error('Shift Date cannot be before the Call Date');
+    }
     // if leave type is Left Early, check if left early minutes are missing
     if (
       !missingFields.includes('leaveType') &&

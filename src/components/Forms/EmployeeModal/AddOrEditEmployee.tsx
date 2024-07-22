@@ -1,4 +1,4 @@
-import {DynamicOption} from '../DynamicOptions';
+import {DynamicOption} from '../FormInputs/DynamicOptions';
 import React, {useEffect, useState} from 'react';
 import EmployeeCrudFromModalLayout from './FormLayout';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';

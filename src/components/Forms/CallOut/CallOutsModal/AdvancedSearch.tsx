@@ -3,19 +3,25 @@ import {
   LeaveTypeAttributes,
   EmployeeWithAssociations,
   SupervisorWithAssociations
-} from '../../../lib/db/models/types';
-import {FormLabel} from '../FormLabel';
-import {ModalAction} from '../../ Modal';
+} from '../../../../lib/db/models/types';
 import {useEffect, useState} from 'react';
-import {FormLabelContainer} from '../EmployeeModal/FormLayout';
-import {dbSearchParams} from '../../CallOuts/CallOutsList/helpers';
+import {ModalAction} from '../../../ Modal';
+import {FormLabel} from '../../FormInputs/FormLabel';
+import {RangeOptions} from '../../FormInputs/RangeOptions';
 import {
   UseRangeOptionsStateMap,
   useRangeOptionsStateMap
-} from './AdvancedSearchOptions/RangeOptions/useRangeOptionsVariantMap';
-import {RangeOptions, RangeOptionsVariant} from './AdvancedSearchOptions';
-import type {GetAllCallOutOptions} from '../../../lib/db/controller/Callout/helpers';
-import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../providers';
+} from '../../FormInputs/RangeOptions/useRangeOptionsVariantMap';
+import {SelectDivision} from '../../FormInputs/SelectDivision';
+import {FormLabelContainer} from '../../EmployeeModal/FormLayout';
+import {dbSearchParams} from '../../../CallOuts/CallOutsList/helpers';
+import {RangeOptionsVariant} from '../../FormInputs/RangeOptions/data';
+import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
+
+import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
+
+import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
+import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../../providers';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4 text-center mt-2',
@@ -100,59 +106,29 @@ export function CallOutsAdvancedSearch() {
     <>
       <h2 className={styles.h2}>Advanced Search Options</h2>
       <form className={styles.form} onSubmit={e => e.preventDefault()}>
-        <FormLabelContainer>
-          <FormLabel label="Divisions" htmlFor="division_id" />
-          <select
-            name="division_id"
-            title="Division"
-            value={searchParamsCopy.employee_id ?? ''}
-            onChange={handleSearchParamsCopyChange}
-            className={styles.input}>
-            <option value="">Select Division</option>
-            <option value="">Any</option>
-            {divisions?.map((division: DivisionAttributes) => (
-              <option key={division.id} value={division.id}>
-                {division.name}
-              </option>
-            ))}
-          </select>
-        </FormLabelContainer>
+        <SelectDivision
+          divisions={divisions}
+          value={searchParamsCopy.employee_id ?? ''}
+          onChangeHandler={handleSearchParamsCopyChange}
+        />
 
-        <FormLabelContainer>
-          <FormLabel label="Employee Name" htmlFor="employee_id" />
-          <select
-            name="employee_id"
-            title="Employee Name"
-            value={searchParamsCopy.employee_id ?? ''}
-            onChange={handleSearchParamsCopyChange}
-            className={styles.input}>
-            <option value="">Select Employee</option>
-            <option value="">Any</option>
-            {employees?.map((employee: EmployeeWithAssociations) => (
-              <option key={employee.id} value={employee.id}>
-                {employee.name}
-              </option>
-            ))}
-          </select>
-        </FormLabelContainer>
+        <SelectEmployeeName
+          name="employee_id"
+          title="Employee Name"
+          employees={employees}
+          className={styles.input}
+          onChangeHandler={handleSearchParamsCopyChange}
+          employeeName={searchParamsCopy.employee_id as string}
+        />
 
-        <FormLabelContainer>
-          <FormLabel label="Leave Type" htmlFor="leave_type_id" />
-          <select
-            name="leave_type_id"
-            title="Leave Type"
-            value={searchParamsCopy.leave_type_id ?? ''}
-            onChange={handleSearchParamsCopyChange}
-            className={styles.input}>
-            <option value="">Select Leave Type</option>
-            <option value="">Any</option>
-            {leaveTypes?.map((leaveType: LeaveTypeAttributes) => (
-              <option key={leaveType.id} value={leaveType.id}>
-                {leaveType.reason}
-              </option>
-            ))}
-          </select>
-        </FormLabelContainer>
+        <SelectLeaveTypeReason
+          title="Leave Type"
+          name="leave_type_id"
+          className={styles.input}
+          leaveTypes={leaveTypes}
+          onChangeHandler={handleSearchParamsCopyChange}
+          leaveType={searchParamsCopy.leave_type_id ?? ''}
+        />
 
         <FormLabelContainer>
           <FormLabel label="Supervisor Name" htmlFor="supervisor_id" />

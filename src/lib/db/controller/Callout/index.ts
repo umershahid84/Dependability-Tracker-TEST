@@ -57,8 +57,8 @@ export const getCallOutFromDB = {
         await CallOut.findAll({
           where: {...where},
           limit: convertedOptions.limit,
-          offset: convertedOptions.offset,
-          order: convertedOptions.order
+          order: convertedOptions.order,
+          offset: convertedOptions.offset
         })
       )?.map(callout => callout.get({plain: true}));
 

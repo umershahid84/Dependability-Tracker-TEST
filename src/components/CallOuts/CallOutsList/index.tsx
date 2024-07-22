@@ -43,10 +43,29 @@ export function CallOutsList() {
   const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<CallOutSortBy>(
     defaultCallOutsQueryParams
   );
+
   const {callOuts}: UseGetCallOuts = useGetCallOuts({
     showLast,
     queryParams
   });
+
+  const onModalEditCallBack = (callout: CallOutWithAssociations) => {
+    // find the callout in the callouts array and update it
+    const updatedCallOuts: CallOutWithAssociations[] =
+      calloutData?.data.map(callOut => {
+        if (callOut.id === callout.id) {
+          return callout;
+        }
+        return callOut;
+      }) ?? [];
+
+    setCalloutData({
+      ...(callOuts as ModelWithPagination<CallOutWithAssociations>),
+      data: updatedCallOuts
+    });
+
+    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+  };
 
   const executeSearch = () => setExecuteSearch(true);
   const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,7 +78,6 @@ export function CallOutsList() {
     } else {
       setShowLast(Number(e.target.value));
     }
-
     executeSearch();
   };
 
@@ -88,6 +106,11 @@ export function CallOutsList() {
         }
       })
     );
+  };
+
+  const handleSetQueryParams = (params: any) => {
+    setQueryParams(params);
+    executeSearch();
   };
 
   useEffect(() => {
@@ -156,8 +179,9 @@ export function CallOutsList() {
         queryParams={queryParams}
         searchParams={searchParams}
         //@ts-ignore
-        setQueryParams={setQueryParams}
-        RenderList={RenderCallOutsList}
+        setQueryParams={handleSetQueryParams}
+        RenderList={RenderCallOutsList as any}
+        onModalEditCallBack={onModalEditCallBack}
       />
     </ModelList>
   );

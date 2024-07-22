@@ -1,5 +1,6 @@
 import {getDivisions} from './get-divisions';
 import {getLeaveTypes} from './get-leaveTypes';
+import {EditCallOut, GetCallOuts} from './callouts';
 import {GetSupervisors, Login, Logout, SignUp, getJwtTokenInEdgeEnvironments} from './supervisors';
 
 import {
@@ -9,7 +10,6 @@ import {
   DeleteEmployee,
   CreateEmployeeCallOut
 } from './employees';
-import {GetCallOuts} from './callouts';
 
 export * from './employees';
 export * from './supervisors';
@@ -28,7 +28,7 @@ export const ClientAPI = {
   },
   Divisions: {Read: getDivisions},
   LeaveTypes: {Read: getLeaveTypes},
-  CallOuts: {Create: CreateEmployeeCallOut, Read: GetCallOuts},
+  CallOuts: {Create: CreateEmployeeCallOut, Read: GetCallOuts, Update: EditCallOut},
   Supervisors: {
     Login,
     Logout,

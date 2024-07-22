@@ -2,13 +2,21 @@ import Loading from '../Loading';
 import {useEffect, useState} from 'react';
 import {PaginationHeader} from './PaginationHeader';
 import {PaginationFooter} from './PaginationFooter';
+import {RenderCallOutsListProps} from '../CallOuts/CallOutsList/helpers';
 
 export type PaginationContainerProps = {
   data: any;
   queryParams: any;
   searchParams?: any;
   setQueryParams: any;
-  RenderList: ({data}: Readonly<{data: any}>) => React.JSX.Element[];
+  onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
+  RenderList: ({
+    data,
+    onModalEditCallBack
+  }: {
+    data: any;
+    onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
+  }) => React.JSX.Element[];
 };
 
 const figureOffset = (offset: number, numRecords: number): number => {
@@ -19,12 +27,12 @@ export function PaginationContainer({
   data,
   RenderList,
   queryParams,
-  setQueryParams
+  setQueryParams,
+  onModalEditCallBack
 }: Readonly<PaginationContainerProps>): React.JSX.Element {
   const [offset, setOffset] = useState<number>(0);
   const [ending, setEnding] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const [numberOfPages, setNumberOfPages] = useState<number>(1);
   const [showing, setShowing] = useState<number>(figureOffset(offset, data?.numRecords ?? 0));
 
@@ -96,7 +104,7 @@ export function PaginationContainer({
             handlePageDecrement={handlePageDecrement}
           />
 
-          <RenderList data={data?.data ?? []} />
+          <RenderList data={data?.data ?? []} onModalEditCallBack={onModalEditCallBack} />
 
           <PaginationFooter
             currentPage={currentPage}

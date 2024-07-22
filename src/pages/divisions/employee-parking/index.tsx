@@ -22,12 +22,14 @@ export const getServerSideProps = async (request: {req: Request}) => {
     }
   };
 };
-export default function EmployeeParkingPage(props: {
-  isAdmin: boolean;
-  callOuts: string;
-  employees: string;
-  leaveTypes: string;
-}) {
+export default function EmployeeParkingPage(
+  props: Readonly<{
+    isAdmin: boolean;
+    callOuts: string;
+    employees: string;
+    leaveTypes: string;
+  }>
+) {
   return (
     <CallOutPageContainer
       isAdmin={props.isAdmin}

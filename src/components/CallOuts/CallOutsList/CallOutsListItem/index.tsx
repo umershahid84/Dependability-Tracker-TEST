@@ -12,7 +12,12 @@ const styles = {
   button: 'toggle-details px-2 py-1 bg-slate-700 hover:bg-[var(--green)] text-white rounded mr-2 '
 };
 
-export function CallOutsListItem({callOut}: Readonly<{callOut: CallOutWithAssociations}>) {
+export type CallOutsListItemProps = {
+  callOut: CallOutWithAssociations;
+  onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
+};
+
+export function CallOutsListItem({callOut, onModalEditCallBack}: Readonly<CallOutsListItemProps>) {
   const isMounted: boolean = useIsMounted();
   const [show, setShow] = useState<boolean>(false);
 
@@ -69,7 +74,11 @@ export function CallOutsListItem({callOut}: Readonly<{callOut: CallOutWithAssoci
         </div>
       </div>
 
-      <CallOutsListItemAccordion callOut={callOut} show={show} />
+      <CallOutsListItemAccordion
+        show={show}
+        callOut={callOut}
+        onModalEditCallBack={onModalEditCallBack}
+      />
     </div>
   );
 }

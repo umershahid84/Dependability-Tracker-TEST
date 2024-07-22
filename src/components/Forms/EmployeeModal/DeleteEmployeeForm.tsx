@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useIsMounted} from '../../../hooks';
 import {DeleteEmployee} from '../../../client-api';
 import {trim} from '../../../lib/utils/shared/strings';
-import FormInputWithErrors from '../FormInputWithErrors';
+import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 
 export type AddOrEditEmployeeFormProps = {

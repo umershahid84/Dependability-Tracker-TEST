@@ -1,7 +1,7 @@
 import React from 'react';
-import {FormLabel} from '../FormLabel';
+import {FormLabel} from '../FormInputs/FormLabel';
 import {EmployeeFormData} from '../../../client-api';
-import {DynamicOptions, DynamicOption} from '../DynamicOptions';
+import {DynamicOptions, DynamicOption} from '../FormInputs/DynamicOptions';
 import {DivisionAttributes} from '../../../lib/db/models/Division';
 
 const styles = {

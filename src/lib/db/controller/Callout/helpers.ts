@@ -1,17 +1,17 @@
 import {Op} from 'sequelize';
 import {
+  uuidV4Regex,
+  addTimeToDate,
+  normalizeToEndOfDayUTC,
+  normalizeToStartOfDayUTC
+} from '../../../utils';
+import {
   CallOutAttributes,
   CallOutWithAssociations,
   EmployeeWithAssociations,
   CallOutCreationAttributes
 } from '../../../db/models/types';
 import {CallOut} from '../../models';
-import {
-  uuidV4Regex,
-  addTimeToDate,
-  normalizeToEndOfDayUTC,
-  normalizeToStartOfDayUTC
-} from '../../../utils';
 import {getEmployeeFromDB} from '../Employee';
 import {getLeaveTypeFromDB} from '../LeaveType';
 import {getSupervisorFromDB} from '../Supervisor';
@@ -286,12 +286,26 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
   }
   // istanbul ignore next
   if (props.left_early_mins && typeof props.left_early_mins !== 'number') {
-    throw new Error('Invalid left_early_mins');
+    try {
+      props.left_early_mins = Number(props.left_early_mins);
+      if (isNaN(props.left_early_mins)) {
+        throw new Error('Invalid left_early_mins');
+      }
+    } catch (error) {
+      throw new Error('Invalid left_early_mins');
+    }
   }
 
   // istanbul ignore next
   if (props.arrived_late_mins && typeof props.arrived_late_mins !== 'number') {
-    throw new Error('Invalid arrived_late_mins');
+    try {
+      props.arrived_late_mins = Number(props.arrived_late_mins);
+      if (isNaN(props.arrived_late_mins)) {
+        throw new Error('Invalid arrived_late_mins');
+      }
+    } catch (error) {
+      throw new Error('Invalid arrived_late_mins');
+    }
   }
 
   return true;

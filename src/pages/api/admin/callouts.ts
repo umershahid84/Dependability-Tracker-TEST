@@ -2,21 +2,25 @@
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
-import {getJwtTokenForAPI} from '../../../auth';
-import {getCallOutsApiHandler} from '../../../lib/apiController';
+import {getJwtTokenForAPI, JwtPayload} from '../../../auth';
+import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib/apiController';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  getJwtTokenForAPI(req, res);
+  const token: JwtPayload | undefined = getJwtTokenForAPI(req, res);
 
   if (req.method === 'GET') {
     return getCallOutsApiHandler(req, res);
+  }
+
+  if (req.method === 'PUT') {
+    return editEmployeeCallOutApiHandler(req, res, token);
   }
   return res.status(405).json({error: 'Method not allowed'});
 }
 
 export const config = {
   api: {
-    externalResolver: true,
-    bodyParser: true
+    bodyParser: true,
+    externalResolver: true
   }
 };

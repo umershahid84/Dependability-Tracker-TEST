@@ -1,13 +1,21 @@
+import {
+  AddEmployeeForm,
+  EditCallOutModal,
+  EditEmployeeForm,
+  CallOutsAdvancedSearch
+} from '../Forms';
 import {Modal} from './Modal';
 import React, {useEffect} from 'react';
 import {useIsMounted} from '../../hooks';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
+import type {CallOutWithAssociations} from '../../lib/db/models/types';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
-import {AddEmployeeForm, CallOutsAdvancedSearch, EditEmployeeForm} from '../Forms';
 
 export enum ModalType {
   ADD_EMPLOYEE = 'Add Employee',
+  EDIT_CALL_OUT = 'Edit Call Out',
   EDIT_EMPLOYEE = 'Edit Employee',
+  DELETE_CALL_OUT = 'Delete Call Out',
   DELETE_EMPLOYEE = 'Delete Employee',
   ADVANCED_CALLOUT_SEARCH = 'Advanced CallOut Search'
 }
@@ -43,6 +51,17 @@ function RenderModalBody({
       return <DeleteEmployeeForm employeeData={data as EmployeeWithAssociations} />;
     case ModalType.ADVANCED_CALLOUT_SEARCH:
       return <CallOutsAdvancedSearch />;
+    case ModalType.EDIT_CALL_OUT:
+      return (
+        <EditCallOutModal
+          callOutData={data?.callOut as CallOutWithAssociations}
+          onModalEditCallBack={
+            data?.onModalEditCallBack as (callOut: CallOutWithAssociations) => void
+          }
+        />
+      );
+    case ModalType.DELETE_CALL_OUT:
+      return <></>;
     default:
       return <></>;
   }
@@ -51,7 +70,6 @@ function RenderModalBody({
 export function ModalViewer(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [data, setData] = React.useState<any>(null);
-
   const [type, setType] = React.useState<ModalType | null>(null);
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [modalClasses, setModalClasses] = React.useState<string | null>(null);

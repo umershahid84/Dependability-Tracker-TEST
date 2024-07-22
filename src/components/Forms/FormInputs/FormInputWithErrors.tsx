@@ -13,8 +13,8 @@ export type FormInputWithErrorsProps = {
   autoComplete?: string;
   onBlur?: (event: Event) => void;
   onFocus?: (event: Event) => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setValidated?: React.Dispatch<React.SetStateAction<boolean>>;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const defaultStyles = {

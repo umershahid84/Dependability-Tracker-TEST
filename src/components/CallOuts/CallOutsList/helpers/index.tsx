@@ -14,9 +14,17 @@ export const defaultStyles = {
   text-white rounded-md text-sm w-26  hide-on-print`)
 };
 
-export function RenderCallOutsList({data}: Readonly<{data: CallOutWithAssociations[]}>) {
+export type RenderCallOutsListProps = {
+  data: CallOutWithAssociations[];
+  onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
+};
+export function RenderCallOutsList({data, onModalEditCallBack}: Readonly<RenderCallOutsListProps>) {
   return data?.map((callOut: CallOutWithAssociations) => (
-    <CallOutsListItem key={callOut.id} callOut={callOut} />
+    <CallOutsListItem
+      key={callOut.id}
+      callOut={callOut}
+      onModalEditCallBack={onModalEditCallBack}
+    />
   ));
 }
 
@@ -38,14 +46,13 @@ export const dbSearchParams: GetAllCallOutOptions = {
   createdAt: undefined,
   shift_date: undefined,
   shift_time: undefined,
-  callout_date: undefined,
-  callout_time: undefined,
   employee_id: undefined,
+  callout_date: undefined,
   supervisor_id: undefined,
   leave_type_id: undefined,
+  left_early_mins: undefined,
   shift_date_range: undefined,
   shift_time_range: undefined,
-  left_early_mins: undefined,
   arrived_late_mins: undefined,
   callout_date_range: undefined,
   callout_time_range: undefined,

@@ -1,9 +1,9 @@
+import React from 'react';
+import {Request} from 'express';
 import {
   getServerSidePropsForCallOutForm,
   getServerSidePropsForTwoWeekCallOutHistory
 } from '../../../lib/utils/server';
-import React from 'react';
-import {Request} from 'express';
 import {CallOutPageContainer} from '../../../components';
 import {getTokenForServerSideProps, JwtPayload, Redirect} from '../../../auth';
 
@@ -16,20 +16,22 @@ export const getServerSideProps = async (request: {req: Request}) => {
 
   return {
     props: {
+      isAdmin,
       callOuts: props2.props.callOuts,
       employees: props1.props.employees,
-      leaveTypes: props1.props.leaveTypes,
-      isAdmin
+      leaveTypes: props1.props.leaveTypes
     }
   };
 };
 
-export default function GroundTransportationParkingPage(props: {
-  isAdmin: boolean;
-  callOuts: string;
-  employees: string;
-  leaveTypes: string;
-}) {
+export default function GroundTransportationParkingPage(
+  props: Readonly<{
+    isAdmin: boolean;
+    callOuts: string;
+    employees: string;
+    leaveTypes: string;
+  }>
+) {
   return (
     <CallOutPageContainer
       isAdmin={props.isAdmin}

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
+import {CreateCallOutForm} from '../../Forms/';
 import {CallOutWithAssociations} from '../../../lib/db/models/types';
-import {CreateCallOutForm, DivisionPageContainer, TwoWeekCallOutHistory} from '../../../components';
+import {DivisionPageContainer, TwoWeekCallOutHistory} from '../../Division';
 
 export function CallOutPageContainer(
   props: Readonly<{
@@ -18,8 +19,8 @@ export function CallOutPageContainer(
     <DivisionPageContainer isAdmin={props.isAdmin ?? false}>
       <CreateCallOutForm
         callback={addCallout}
-        employees={props.employees}
-        leaveTypes={props.leaveTypes}
+        employees={JSON.parse(props.employees)}
+        leaveTypes={JSON.parse(props.leaveTypes)}
       />
       <TwoWeekCallOutHistory callOuts={callOuts} />
     </DivisionPageContainer>
