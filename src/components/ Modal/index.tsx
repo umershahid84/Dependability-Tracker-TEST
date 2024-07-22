@@ -8,6 +8,7 @@ import {Modal} from './Modal';
 import React, {useEffect} from 'react';
 import {useIsMounted} from '../../hooks';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
+import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
 import type {CallOutWithAssociations} from '../../lib/db/models/types';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
 
@@ -49,6 +50,7 @@ function RenderModalBody({
       return <EditEmployeeForm employeeData={data as EmployeeWithAssociations} />;
     case ModalType.DELETE_EMPLOYEE:
       return <DeleteEmployeeForm employeeData={data as EmployeeWithAssociations} />;
+
     case ModalType.ADVANCED_CALLOUT_SEARCH:
       return <CallOutsAdvancedSearch />;
     case ModalType.EDIT_CALL_OUT:
@@ -61,7 +63,13 @@ function RenderModalBody({
         />
       );
     case ModalType.DELETE_CALL_OUT:
-      return <></>;
+      return (
+        <DeleteCallOutForm
+          onModalDeleteCallBack={data?.onModalDeleteCallBack as (callOutId: string) => void}
+          callOutData={data.callOut as CallOutWithAssociations}
+        />
+      );
+
     default:
       return <></>;
   }

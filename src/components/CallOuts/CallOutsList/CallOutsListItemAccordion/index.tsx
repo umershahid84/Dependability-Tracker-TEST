@@ -20,13 +20,15 @@ const styles = {
 export type CallOutsListItemProps = {
   show: boolean;
   callOut: CallOutWithAssociations;
+  onModalDeleteCallBack: (callOutId: string) => void;
   onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
 };
 
 export function CallOutsListItemAccordion({
   show,
   callOut,
-  onModalEditCallBack
+  onModalEditCallBack,
+  onModalDeleteCallBack
 }: Readonly<CallOutsListItemProps>) {
   const handleOnClick = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -50,14 +52,21 @@ export function CallOutsListItemAccordion({
         })
       );
     }
-    // // if the button name is delete
-    // if (buttonName.textContent === 'Delete') {
-    //   window.dispatchEvent(
-    //     new CustomEvent('modalEvent', {
-    //       detail: {action: ModalAction.OPEN, type: ModalType.DELETE_EMPLOYEE, payload: employee}
-    //     })
-    //   );
-    // }
+    // if the button name is delete
+    if (buttonName.textContent === 'Delete') {
+      window.dispatchEvent(
+        new CustomEvent('modalEvent', {
+          detail: {
+            action: ModalAction.OPEN,
+            type: ModalType.DELETE_CALL_OUT,
+            payload: {
+              callOut,
+              onModalDeleteCallBack
+            }
+          }
+        })
+      );
+    }
   };
   return (
     show && (

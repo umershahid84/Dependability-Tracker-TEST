@@ -16,14 +16,21 @@ export const defaultStyles = {
 
 export type RenderCallOutsListProps = {
   data: CallOutWithAssociations[];
+  onModalDeleteCallBack: (callOutId: string) => void;
   onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
 };
-export function RenderCallOutsList({data, onModalEditCallBack}: Readonly<RenderCallOutsListProps>) {
+
+export function RenderCallOutsList({
+  data,
+  onModalDeleteCallBack,
+  onModalEditCallBack
+}: Readonly<RenderCallOutsListProps>) {
   return data?.map((callOut: CallOutWithAssociations) => (
     <CallOutsListItem
       key={callOut.id}
       callOut={callOut}
       onModalEditCallBack={onModalEditCallBack}
+      onModalDeleteCallBack={onModalDeleteCallBack}
     />
   ));
 }

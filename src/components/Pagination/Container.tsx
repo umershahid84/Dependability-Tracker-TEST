@@ -9,12 +9,15 @@ export type PaginationContainerProps = {
   queryParams: any;
   searchParams?: any;
   setQueryParams: any;
+  onModalDeleteCallBack?: RenderCallOutsListProps['onModalDeleteCallBack'];
   onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
   RenderList: ({
     data,
-    onModalEditCallBack
+    onModalEditCallBack,
+    onModalDeleteCallBack
   }: {
     data: any;
+    onModalDeleteCallBack?: (calloutId: string) => void;
     onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
   }) => React.JSX.Element[];
 };
@@ -28,7 +31,8 @@ export function PaginationContainer({
   RenderList,
   queryParams,
   setQueryParams,
-  onModalEditCallBack
+  onModalEditCallBack,
+  onModalDeleteCallBack
 }: Readonly<PaginationContainerProps>): React.JSX.Element {
   const [offset, setOffset] = useState<number>(0);
   const [ending, setEnding] = useState<number>(0);
@@ -104,7 +108,11 @@ export function PaginationContainer({
             handlePageDecrement={handlePageDecrement}
           />
 
-          <RenderList data={data?.data ?? []} onModalEditCallBack={onModalEditCallBack} />
+          <RenderList
+            data={data?.data ?? []}
+            onModalEditCallBack={onModalEditCallBack}
+            onModalDeleteCallBack={onModalDeleteCallBack}
+          />
 
           <PaginationFooter
             currentPage={currentPage}

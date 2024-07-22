@@ -1,6 +1,6 @@
 import {getDivisions} from './get-divisions';
 import {getLeaveTypes} from './get-leaveTypes';
-import {EditCallOut, GetCallOuts} from './callouts';
+import {DeleteCallOut, EditCallOut, GetCallOuts} from './callouts';
 import {GetSupervisors, Login, Logout, SignUp, getJwtTokenInEdgeEnvironments} from './supervisors';
 
 import {
@@ -28,7 +28,12 @@ export const ClientAPI = {
   },
   Divisions: {Read: getDivisions},
   LeaveTypes: {Read: getLeaveTypes},
-  CallOuts: {Create: CreateEmployeeCallOut, Read: GetCallOuts, Update: EditCallOut},
+  CallOuts: {
+    Create: CreateEmployeeCallOut,
+    Read: GetCallOuts,
+    Update: EditCallOut,
+    Delete: DeleteCallOut
+  },
   Supervisors: {
     Login,
     Logout,

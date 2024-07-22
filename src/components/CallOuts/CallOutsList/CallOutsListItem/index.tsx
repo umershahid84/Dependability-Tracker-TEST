@@ -14,10 +14,15 @@ const styles = {
 
 export type CallOutsListItemProps = {
   callOut: CallOutWithAssociations;
+  onModalDeleteCallBack: (callOutId: string) => void;
   onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
 };
 
-export function CallOutsListItem({callOut, onModalEditCallBack}: Readonly<CallOutsListItemProps>) {
+export function CallOutsListItem({
+  callOut,
+  onModalEditCallBack,
+  onModalDeleteCallBack
+}: Readonly<CallOutsListItemProps>) {
   const isMounted: boolean = useIsMounted();
   const [show, setShow] = useState<boolean>(false);
 
@@ -78,6 +83,7 @@ export function CallOutsListItem({callOut, onModalEditCallBack}: Readonly<CallOu
         show={show}
         callOut={callOut}
         onModalEditCallBack={onModalEditCallBack}
+        onModalDeleteCallBack={onModalDeleteCallBack}
       />
     </div>
   );

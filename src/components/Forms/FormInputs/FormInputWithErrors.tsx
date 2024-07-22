@@ -8,6 +8,7 @@ export type FormInputWithErrorsProps = {
   label: string;
   value: string;
   errors?: string[];
+  className?: string;
   required?: boolean;
   placeholder?: string;
   autoComplete?: string;
@@ -69,7 +70,11 @@ export default function FormInputWithErrors(
         </span>
       </span>
       {/* @ts-ignore */}
-      <input {...props} tabIndex={0} className={styles.input + ' ' + props.gap ?? ''} />
+      <input
+        {...props}
+        tabIndex={0}
+        className={(props?.className ?? styles.input) + ' ' + props.gap ?? ''}
+      />
     </div>
   );
 }

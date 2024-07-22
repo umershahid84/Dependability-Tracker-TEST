@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useIsMounted} from '../../../hooks';
-import {DeleteEmployee} from '../../../client-api';
+import {ClientAPI} from '../../../client-api';
 import {trim} from '../../../lib/utils/shared/strings';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
@@ -36,7 +36,7 @@ export function DeleteEmployeeForm({employeeData}: AddOrEditEmployeeFormProps) {
       setErrors([]);
     }
 
-    const didDelete: boolean = await DeleteEmployee({id: employeeData?.id});
+    const didDelete: boolean = await ClientAPI.Employees.Delete({id: employeeData?.id});
 
     setInputValue('');
     if (didDelete) {
@@ -52,6 +52,7 @@ export function DeleteEmployeeForm({employeeData}: AddOrEditEmployeeFormProps) {
       <h2 className="text-lg text-center text-red-600 font-bold">Delete Employee</h2>
       <FormInputWithErrors
         type="text"
+        errors={errors}
         value={inputValue}
         id="deleteEmployee"
         onChange={handleInputChange}

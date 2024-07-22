@@ -67,6 +67,19 @@ export function CallOutsList() {
     window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
   };
 
+  const onModalDeleteCallBack = (calloutId: string) => {
+    // filter out the callout that was deleted
+    const updatedCallOuts: CallOutWithAssociations[] =
+      calloutData?.data.filter(callOut => callOut.id !== calloutId) ?? [];
+
+    setCalloutData({
+      ...(callOuts as ModelWithPagination<CallOutWithAssociations>),
+      data: updatedCallOuts
+    });
+
+    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+  };
+
   const executeSearch = () => setExecuteSearch(true);
   const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     callOuts && handleSortChange({e, callOuts, setSortBy, setCallOuts: setCalloutData, leaveTypes});
@@ -182,6 +195,7 @@ export function CallOutsList() {
         setQueryParams={handleSetQueryParams}
         RenderList={RenderCallOutsList as any}
         onModalEditCallBack={onModalEditCallBack}
+        onModalDeleteCallBack={onModalDeleteCallBack}
       />
     </ModelList>
   );
