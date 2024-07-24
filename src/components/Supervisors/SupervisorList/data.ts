@@ -28,7 +28,7 @@ export const supervisorsSortOptions = [
   },
   {
     value: 'isAdmin',
-    text: 'Is Admin'
+    text: 'Admin'
   },
   {
     value: 'createdAt',

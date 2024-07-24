@@ -55,11 +55,11 @@ export const employeeSortOptions = [
   },
   {
     value: 'isAdmin',
-    text: 'Is Admin'
+    text: 'Admin'
   },
   {
     value: 'isSupervisor',
-    text: 'Is Supervisor'
+    text: 'Supervisor'
   },
   {
     value: 'isEmployee',

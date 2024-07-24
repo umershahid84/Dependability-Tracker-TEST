@@ -82,7 +82,7 @@ export function EmployeeCrudFromModalLayout({
         </FormLabelContainer>
 
         <FormLabelContainer>
-          <FormLabel label="Is Admin?" htmlFor="isAdmin" />
+          <FormLabel label="Admin?" htmlFor="isAdmin" />
           <RadioDivider>
             <FormLabel label="Yes" htmlFor="isAdmin" />
             {/* <label className="flex items-center"> */}
@@ -110,7 +110,7 @@ export function EmployeeCrudFromModalLayout({
           </RadioDivider>
         </FormLabelContainer>
         <FormLabelContainer>
-          <FormLabel label="Is Supervisor?" htmlFor="isSupervisor" />
+          <FormLabel label="Supervisor?" htmlFor="isSupervisor" />
           <RadioDivider>
             <FormLabel label="Yes" htmlFor="isSupervisor" />
             <input
