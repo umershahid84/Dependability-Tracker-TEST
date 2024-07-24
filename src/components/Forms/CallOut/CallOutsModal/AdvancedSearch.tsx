@@ -1,25 +1,21 @@
+import {useEffect, useState} from 'react';
+import {ModalAction} from '../../../ Modal';
 import {
-  DivisionAttributes,
-  LeaveTypeAttributes,
   EmployeeWithAssociations,
   SupervisorWithAssociations
 } from '../../../../lib/db/models/types';
-import {useEffect, useState} from 'react';
-import {ModalAction} from '../../../ Modal';
 import {FormLabel} from '../../FormInputs/FormLabel';
 import {RangeOptions} from '../../FormInputs/RangeOptions';
+import {SelectDivision} from '../../FormInputs/SelectDivision';
 import {
   UseRangeOptionsStateMap,
   useRangeOptionsStateMap
 } from '../../FormInputs/RangeOptions/useRangeOptionsVariantMap';
-import {SelectDivision} from '../../FormInputs/SelectDivision';
 import {FormLabelContainer} from '../../EmployeeModal/FormLayout';
 import {dbSearchParams} from '../../../CallOuts/CallOutsList/helpers';
 import {RangeOptionsVariant} from '../../FormInputs/RangeOptions/data';
 import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
-
 import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
-
 import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
 import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../../providers';
 
@@ -30,15 +26,14 @@ const styles = {
   inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-slate-800',
   buttonContainer:
     'w-full flex flex-col justify-center items-center mt-6 gap-4 transition-all  duration-300',
-  clearButton:
-    'border-2 border-gray-300 text-gray-300  hover:border-red-600 rounded-md py-2 px-4 hover:bg-red-700 w-[95%] hover:w-[98%] h-10 ',
-  submitButton:
-    'border-2 border-[var(--green)] text-[var(--green)] hover:text-gray-300 rounded-md rounded-md py-2 px-4 hover:bg-[var(--green)] w-[95%] hover:w-[98%] Text-outline-hover h-10'
+  clearButton: `border-2 border-gray-300 text-gray-300 hover:border-red-600 rounded-md py-2 px-4
+     hover:bg-red-700 w-[95%] hover:w-[98%] h-10 `,
+  submitButton: `border-2 border-[var(--green)] text-[var(--green)] hover:text-gray-300 rounded-md rounded-md
+     py-2 px-4 hover:bg-[var(--green)] w-[95%] hover:w-[98%] Text-outline-hover h-10`
 };
 
 export function CallOutsAdvancedSearch() {
   const [clearRanges, setClearRanges] = useState<boolean>(false);
-
   const stateOptionsVariantMap: UseRangeOptionsStateMap = useRangeOptionsStateMap();
   const {
     divisions,
@@ -49,14 +44,13 @@ export function CallOutsAdvancedSearch() {
     setSearchParams,
     setExecuteSearch
   }: CallOutAdvancedSearchContext = useCallOutAdvancedSearchContext();
-
+  const [employeesData, setEmployeesData] = useState<EmployeeWithAssociations[]>(employees);
   const [searchParamsCopy, setSearchParamsCopy] = useState<GetAllCallOutOptions>({
     ...searchParams
   });
 
   const copyHasParams = Object.values(searchParamsCopy).some(value => value !== undefined);
   const searchParamsHasParams = Object.values(searchParams).some(value => value !== undefined);
-
   const hasParams = copyHasParams || searchParamsHasParams;
 
   const onSubmit = (e: React.SyntheticEvent) => {
@@ -102,20 +96,51 @@ export function CallOutsAdvancedSearch() {
     }
   }, [clearRanges]);
 
+  useEffect(() => {
+    setEmployeesData(employees ?? []);
+  }, [employees]);
+
+  useEffect(() => {
+    let filteredEmployees: EmployeeWithAssociations[] = [];
+
+    const supervisorEmployeeIds = supervisors?.map(supervisor => supervisor.supervisor_info.id);
+
+    // if the division search param is set, filter the employees by the selected division
+    // and exclude supervisors
+    if (searchParamsCopy.division_id) {
+      filteredEmployees =
+        employees?.filter(
+          (employee: EmployeeWithAssociations) =>
+            employee.divisions.some(
+              division =>
+                division.id === searchParamsCopy.division_id &&
+                !supervisorEmployeeIds?.includes(employee.id)
+            ) ?? []
+        ) ?? [];
+    } else {
+      // if not just return non-supervisor employees
+      filteredEmployees =
+        employees?.filter((employee: EmployeeWithAssociations) => {
+          return !supervisorEmployeeIds?.includes(employee.id);
+        }) ?? [];
+    }
+    setEmployeesData(filteredEmployees ?? []);
+  }, [searchParamsCopy.division_id, supervisors, employees]);
+
   return (
     <>
       <h2 className={styles.h2}>Advanced Search Options</h2>
       <form className={styles.form} onSubmit={e => e.preventDefault()}>
         <SelectDivision
           divisions={divisions}
-          value={searchParamsCopy.employee_id ?? ''}
+          value={searchParamsCopy.division_id ?? ''}
           onChangeHandler={handleSearchParamsCopyChange}
         />
 
         <SelectEmployeeName
           name="employee_id"
           title="Employee Name"
-          employees={employees}
+          employees={employeesData}
           className={styles.input}
           onChangeHandler={handleSearchParamsCopyChange}
           employeeName={searchParamsCopy.employee_id as string}

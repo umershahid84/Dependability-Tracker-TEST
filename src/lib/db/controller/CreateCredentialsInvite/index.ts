@@ -1,7 +1,8 @@
 import {
   SupervisorWithAssociations,
   CreateCredentialsInviteWithAssociations,
-  CreateCredentialsInviteCreationAttributes
+  CreateCredentialsInviteCreationAttributes,
+  UpdateCredentialsInviteCreationAttributes
 } from '../../models/types';
 import {getSupervisorFromDB} from '../Supervisor';
 import {CreateCredentialsInvite} from '../../models';
@@ -23,6 +24,7 @@ export const createCreateCredentialsInviteInDB = async (
       ? {
           supervisor_info: supervisor,
           id: createCredentialsInvite.id,
+          email: createCredentialsInvite.email,
           created_by: {...admin, is_admin: true},
           createdAt: createCredentialsInvite.createdAt,
           updatedAt: createCredentialsInvite.updatedAt,
@@ -62,6 +64,7 @@ export const getCreateCredentialsInviteFromDB = async (props: {
 
     return {
       id: createCredentialsInvite.id,
+      email: createCredentialsInvite.email,
       createdAt: createCredentialsInvite.createdAt,
       updatedAt: createCredentialsInvite.updatedAt,
       expires_at: createCredentialsInvite.expires_at,
@@ -76,9 +79,40 @@ export const getCreateCredentialsInviteFromDB = async (props: {
   }
 };
 
+// (U)pdate
+export const updateCreateCredentialsInviteInDB = async (props: {
+  id?: string;
+  supervisor_id?: string;
+  updateData: UpdateCredentialsInviteCreationAttributes;
+}): Promise<CreateCredentialsInviteWithAssociations | null> => {
+  const where = {};
+  if (props.id) Object.assign(where, {id: props.id});
+  if (props.supervisor_id) Object.assign(where, {supervisor_id: props.supervisor_id});
+
+  const {updateData} = props;
+
+  try {
+    const [rowsAffected] = await CreateCredentialsInvite.update(updateData, {where});
+
+    if (rowsAffected === 0) return null;
+
+    const createCredentialsInvite = await getCreateCredentialsInviteFromDB({
+      supervisor_id: props.supervisor_id
+    });
+    if (!createCredentialsInvite) return null;
+
+    return createCredentialsInvite;
+    // istanbul ignore next
+  } catch (error) {
+    // istanbul ignore next
+    throw new Error(`\n❌ Error updating createCredentialsInvite: ${String(error)}`);
+  }
+};
+
 export const CreateCredentialsInviteModelController = {
   createCreateCredentialsInviteInDB,
-  getCreateCredentialsInviteFromDB
+  getCreateCredentialsInviteFromDB,
+  updateCreateCredentialsInviteInDB
 };
 
 export default CreateCredentialsInviteModelController;

@@ -2,8 +2,8 @@ import {
   SupervisorWithAssociations,
   CreateCredentialsInviteCreationAttributes
 } from '../../models/types';
-import {LoginCredential} from '../../models';
 import {uuidV4Regex} from '../../../utils';
+import {LoginCredential} from '../../models';
 import {getSupervisorFromDB} from '../Supervisor';
 
 export const validateCreateCredentialsInviteProps = async (

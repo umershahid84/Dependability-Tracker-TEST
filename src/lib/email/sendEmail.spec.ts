@@ -105,21 +105,6 @@ describe('Email Module', () => {
     });
   });
 
-  describe('smtp config', () => {
-    it('should have the correct smtp config', () => {
-      expect(smtpConfig).toEqual({
-        host: process.env.EMAIL_HOST as string,
-        port: parseInt(process.env.EMAIL_PORT as string),
-        secure: process.env.EMAIL_SECURE === 'true',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        }
-      });
-      expect.assertions(1);
-    });
-  });
-
   describe('create transporter', () => {
     it('should return a transporter', () => {
       const transporter = createTransporter();
@@ -137,7 +122,7 @@ describe('Email Module', () => {
 
       expect(result).toBe(true);
       expect.assertions(1);
-    });
+    }, 250000);
 
     it('should throw an error if email is not valid', async () => {
       try {

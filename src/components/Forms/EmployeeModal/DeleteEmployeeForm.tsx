@@ -16,7 +16,7 @@ const styles = {
   disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
 };
 
-export function DeleteEmployeeForm({employeeData}: AddOrEditEmployeeFormProps) {
+export function DeleteEmployeeForm({employeeData}: Readonly<AddOrEditEmployeeFormProps>) {
   const isMounted: boolean = useIsMounted();
   const [inputValue, setInputValue] = useState('');
   const [errors, setErrors] = useState<string[]>([]);

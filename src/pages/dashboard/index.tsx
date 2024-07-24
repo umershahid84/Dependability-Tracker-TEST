@@ -39,7 +39,7 @@ export default function SupervisorLandingPage(
 }
 
 export const getServerSideProps = async (request: {req: Request}) => {
-  const token: JwtPayload | Redirect | undefined = getTokenForServerSideProps(request);
+  const token: JwtPayload | Redirect | undefined = await getTokenForServerSideProps(request);
 
   const isAdmin = token && 'isAdmin' in token ? token.isAdmin : false;
   const username = token && 'username' in token ? token.username : '';

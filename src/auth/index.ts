@@ -1,8 +1,8 @@
 import {Request} from 'express';
-
 import type {NextApiResponse} from 'next';
 import jwt, {Algorithm} from 'jsonwebtoken';
 import type {ApiData} from '../lib/apiController';
+import {getLoginCredentialFromDB} from '../lib/db/controller/LoginCredential';
 
 const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
 const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
@@ -25,7 +25,9 @@ export type ClientSidePayload = {
 };
 
 // not to be used outside of the node environment uses the crypto module from node
-export const verifyJwtToken_RequiresNode = (token: string): JwtPayload | undefined => {
+export const verifyJwtToken_RequiresNode = async (
+  token: string
+): Promise<JwtPayload | undefined> => {
   try {
     // we decode the token and return it if it is valid
     const decoded: JwtPayload = jwt.verify(token, SECRET, {
@@ -33,9 +35,18 @@ export const verifyJwtToken_RequiresNode = (token: string): JwtPayload | undefin
       algorithms: [ALGORITHM]
     }) as JwtPayload;
 
+    // ensure that there are login credentials for the supposed supervisor
+    const hasCredentials = await getLoginCredentialFromDB.byEmail(decoded.email);
+
+    if (!hasCredentials) {
+      throw new Error('Unauthorized');
+    }
+
     return decoded;
   } catch (error) {
-    console.error('Error in verifyJwtToken_RequiresNode', error);
+    if (!String(error).includes('Unauthorized')) {
+      console.error('Error in verifyJwtToken_RequiresNode', error);
+    }
     // if the token is invalid, we return undefined
     return undefined;
   }
@@ -49,12 +60,12 @@ export type Redirect = {
 };
 
 // To be used in getServerSideProps to get the token and forward the user to the login page if the token is invalid
-export const getTokenForServerSideProps = (request: {
+export const getTokenForServerSideProps = async (request: {
   req: Request;
-}): JwtPayload | Redirect | undefined => {
+}): Promise<JwtPayload | Redirect | undefined> => {
   const {req} = request;
   const cookie = req.cookies['auth-token'];
-  const token = verifyJwtToken_RequiresNode(cookie ?? '');
+  const token = await verifyJwtToken_RequiresNode(cookie ?? '');
 
   if (!token) {
     return {
@@ -69,11 +80,11 @@ export const getTokenForServerSideProps = (request: {
 };
 
 // Can be used to validate the token in API calls
-export const getJwtTokenForAPI = (
+export const getJwtTokenForAPI = async (
   req: Request,
   res: NextApiResponse<ApiData>
-): undefined | JwtPayload => {
-  const token = getTokenForServerSideProps({req});
+): Promise<undefined | JwtPayload> => {
+  const token = await getTokenForServerSideProps({req});
 
   const hasRedirect = (token as Redirect)?.redirect;
 
@@ -83,6 +94,18 @@ export const getJwtTokenForAPI = (
   }
 
   return token as JwtPayload;
+};
+
+export const enforceAdminOnly = async (
+  req: Request,
+  res: NextApiResponse
+): Promise<undefined | JwtPayload | void> => {
+  const token = await getJwtTokenForAPI(req, res);
+  if (!token?.isAdmin) {
+    return res.status(401).json({error: 'Unauthorized request'});
+  } else {
+    return token;
+  }
 };
 
 export const signJwtToken = (payload: JwtPayload): string => {

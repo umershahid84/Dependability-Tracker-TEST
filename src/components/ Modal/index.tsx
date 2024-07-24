@@ -11,13 +11,21 @@ import {EmployeeWithAssociations} from '../../lib/db/controller';
 import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
 import type {CallOutWithAssociations} from '../../lib/db/models/types';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
+import {
+  CreateCredentialInviteAndEmailItToSupervisor,
+  ResendCreateCredentialInviteByEmail,
+  ResetSupervisorPassword
+} from '../Forms/Supervisors';
 
 export enum ModalType {
   ADD_EMPLOYEE = 'Add Employee',
   EDIT_CALL_OUT = 'Edit Call Out',
   EDIT_EMPLOYEE = 'Edit Employee',
+  RESEND_INVITE = 'Resend Invite',
+  RESET_PASSWORD = 'Reset Password',
   DELETE_CALL_OUT = 'Delete Call Out',
   DELETE_EMPLOYEE = 'Delete Employee',
+  CREATE_AND_SEND_INVITE = 'Create and Send Invite',
   ADVANCED_CALLOUT_SEARCH = 'Advanced CallOut Search'
 }
 
@@ -70,6 +78,14 @@ function RenderModalBody({
         />
       );
 
+    case ModalType.RESET_PASSWORD:
+      return <ResetSupervisorPassword supervisorId={data.supervisorId} />;
+
+    case ModalType.CREATE_AND_SEND_INVITE:
+      return <CreateCredentialInviteAndEmailItToSupervisor supervisorId={data.supervisorId} />;
+
+    case ModalType.RESEND_INVITE:
+      return <ResendCreateCredentialInviteByEmail supervisorId={data.supervisorId} />;
     default:
       return <></>;
   }

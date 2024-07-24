@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts",
+    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

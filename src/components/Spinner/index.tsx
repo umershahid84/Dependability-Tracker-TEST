@@ -58,7 +58,9 @@ export default function Spinner(props: Readonly<SpinnerProps>): React.JSX.Elemen
         aria-hidden="true"
         viewBox="0 0 100 101"
         xmlns="http://www.w3.org/2000/svg"
-        className={`${width} ${height}${styles.svgDefaults} ${styles.spinnerFill(textColor)}`}>
+        className={`${width} ${height}${styles.svgDefaults} animate-spin ${styles.spinnerFill(
+          textColor
+        )}`}>
         <path d={trim(svgPathData.p1)} fill="currentColor" />
         <path d={trim(svgPathData.p2)} fill="currentFill" />
       </svg>

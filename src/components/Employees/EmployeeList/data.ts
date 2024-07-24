@@ -10,7 +10,7 @@ export const employeeListStyles = {
   text-white rounded-md text-sm w-26 md:w-auto  md:whitespace-nowrap md:text-base absolute top-[51px] right-1
    md:relative md:top-0 md:right-0 hide-on-print`)
 };
-
+export type EmployeeLimit = '5' | '10' | '15' | '20' | '25' | '50' | '100' | '-1';
 export type EmployeeSortBy = 'name' | 'isAdmin' | 'isSupervisor' | 'isEmployee' | 'isNonSupervisor';
 
 export const employeeLimitOptions = [

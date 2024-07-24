@@ -11,7 +11,7 @@ export default async function employeeCalloutSupervisorsApiHandler( //NOSONAR
   req: Request,
   res: NextApiResponse<ApiData<CallOutWithAssociations>>
 ) {
-  const token = getJwtTokenForAPI(req, res);
+  const token = await getJwtTokenForAPI(req, res);
 
   if (!token) {
     return;

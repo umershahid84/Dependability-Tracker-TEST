@@ -13,7 +13,7 @@ export type FormActionProps = {
 const defaultStyles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
   defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md 
-                  hover:bg-[var(--green)] hover:text-white`),
+                  hover:bg-[var(--green)] focus:bg-[var(--green)] hover:text-white`),
   disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
 };
 

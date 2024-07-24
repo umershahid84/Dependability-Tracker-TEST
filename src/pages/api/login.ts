@@ -42,8 +42,8 @@ export default async function supervisorLoginApiHandler(
     const authToken: JwtPayload = {
       email: existingUser.email,
       supervisorId: existingUser.supervisor_info.id,
-      isAdmin: existingUser.supervisor_info?.is_admin as boolean,
-      username: existingUser.supervisor_info?.supervisor_info.name as string
+      isAdmin: existingUser.supervisor_info?.is_admin,
+      username: existingUser.supervisor_info?.supervisor_info.name
     };
 
     const signedToken = signJwtToken(authToken);

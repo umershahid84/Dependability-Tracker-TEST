@@ -1,6 +1,7 @@
 export * from './Logo';
 export * from './Admin';
 export * from './Icons';
+export * from './ Modal';
 export * from './Forms';
 export * from './NavBar';
 export * from './Toasts';
@@ -12,6 +13,7 @@ export * from './Division';
 export * from './ModelList';
 export * from './Employees';
 export * from './Pagination';
+export * from './Supervisors';
 export * from './LogoutButton';
 export * from './DashboardLinks';
 export * from './SupervisorLayout';

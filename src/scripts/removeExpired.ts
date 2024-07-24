@@ -37,10 +37,16 @@ const removeExpired = async () => {
 if (require.main === module) {
   const [, , ...args] = process.argv;
 
-  // run every minute by default, expects an interval in milliseconds
-  const intervalInMs: number = parseInt(args[0], 10) ?? 60000;
+  // run every 5 minutes by default, expects an interval in milliseconds
+  const minutes = 5;
+  const intervalInMs = minutes * 60 * 1000;
+
+  const interval = args[0] ? parseInt(args[0], 10) : intervalInMs;
+
+  console.log(`\n🕰️ Running every ${interval / 1000 / 60} minutes`);
+
   removeExpired();
   setInterval(() => {
     removeExpired();
-  }, intervalInMs);
+  }, interval);
 }

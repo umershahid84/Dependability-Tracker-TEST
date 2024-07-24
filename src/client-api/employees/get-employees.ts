@@ -4,14 +4,17 @@ import {
   EmployeeWithAssociations
 } from '../../lib/db/controller';
 import {ApiData} from '../../lib/apiController';
+import {EmployeeSortBy} from '../../components';
 
 export const GetEmployees = async (
-  queryParams?: PaginationQueryParams
+  queryParams?: PaginationQueryParams<EmployeeSortBy>
 ): Promise<ApiData<ModelWithPagination<EmployeeWithAssociations> | EmployeeWithAssociations[]>> => {
   try {
-    const response = queryParams
-      ? await fetch(`/api/admin/employees?${new URLSearchParams(queryParams)}`)
-      : await fetch('/api/admin/employees');
+    const url = queryParams
+      ? `/api/admin/employees?${new URLSearchParams(queryParams)}`
+      : '/api/admin/employees';
+
+    const response = await fetch(url);
 
     const data: ApiData<
       ModelWithPagination<EmployeeWithAssociations> | EmployeeWithAssociations[]

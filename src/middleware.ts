@@ -38,6 +38,7 @@ export const config = {
     {source: '/admin/callouts'},
     {source: '/admin/dashboard'},
     {source: '/admin/employees'},
+    {source: '/admin/supervisors'},
     {source: '/divisions/public-parking'},
     {source: '/divisions/employee-parking'},
     {source: '/divisions/ground-transportation'}

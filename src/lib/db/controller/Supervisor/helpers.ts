@@ -33,7 +33,10 @@ export const createSupervisorInclude = (
   if (supervisorOptions.showCredentials) {
     include.push({
       model: LoginCredential,
-      as: 'login_credentials'
+      as: 'login_credentials',
+      // passwords are hashed but should not be accessible whe querying the supervisors
+      // passwords should only be accessible through the login credential model directly
+      attributes: {exclude: ['password']}
     });
   }
   if (supervisorOptions.showCreateCredentialsInvite) {

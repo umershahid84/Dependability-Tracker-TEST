@@ -34,11 +34,13 @@ export const smtpConfig: SMTP_Config = {
 export const createTransporter = (): Transporter => {
   const hasEmailPass = process.env.EMAIL_PASS;
 
+  const config = {...smtpConfig};
+
   if (hasEmailPass) {
-    smtpConfig.auth.pass = process.env.EMAIL_PASS;
+    config.auth['pass'] = process.env.EMAIL_PASS;
   }
 
-  return nodemailer.createTransport(smtpConfig, {
+  return nodemailer.createTransport(config, {
     debug: true,
     logger: true
   });
@@ -95,7 +97,7 @@ export const sendEmail = async (email: Email): Promise<boolean> => {
   try {
     const transporter = createTransporter();
     const transportResult = await transporter.sendMail(email);
-    console.log('Email sent: \n', transportResult);
+
     return true;
   } catch (error) {
     console.error(`sendEmail:: Error sending email: ${error}`);

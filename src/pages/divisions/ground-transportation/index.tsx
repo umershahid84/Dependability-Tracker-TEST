@@ -11,7 +11,7 @@ export const getServerSideProps = async (request: {req: Request}) => {
   const props1 = await getServerSidePropsForCallOutForm(request);
   const props2 = await getServerSidePropsForTwoWeekCallOutHistory(request);
 
-  const token: JwtPayload | Redirect | undefined = getTokenForServerSideProps(request);
+  const token: JwtPayload | Redirect | undefined = await getTokenForServerSideProps(request);
   const isAdmin = token && 'isAdmin' in token ? token.isAdmin : false;
 
   return {

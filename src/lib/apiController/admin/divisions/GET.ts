@@ -9,7 +9,7 @@ export default async function getDivisionsApiHandler(
   req: Request,
   res: NextApiResponse<ApiData<DivisionAttributes[]>>
 ) {
-  const token: JwtPayload | undefined = getJwtTokenForAPI(req, res);
+  const token: JwtPayload | undefined = await getJwtTokenForAPI(req, res);
 
   if (!token || !token.isAdmin) {
     return res.status(401).json({error: 'Unauthorized request'});

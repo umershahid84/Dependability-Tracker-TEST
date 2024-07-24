@@ -100,10 +100,6 @@ LoginCredential.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    is_default: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     supervisor_id: {

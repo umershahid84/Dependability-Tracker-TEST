@@ -7,7 +7,9 @@ export type EditEmployeeFormProps = {
   employeeData?: EmployeeWithAssociations;
 };
 
-export function EditEmployeeForm({employeeData}: EditEmployeeFormProps): React.ReactElement {
+export function EditEmployeeForm({
+  employeeData
+}: Readonly<EditEmployeeFormProps>): React.ReactElement {
   return (
     <AddOrEditEmployeeForm
       type="Edit Employee"

@@ -2,11 +2,11 @@
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
-import {getJwtTokenForAPI} from '../../../auth';
+import {enforceAdminOnly} from '../../../auth';
 import {getLeaveTypesApiHandler} from '../../../lib/apiController';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  getJwtTokenForAPI(req, res);
+  await enforceAdminOnly(req, res);
 
   if (req.method === 'GET') {
     console.log('\n\nGET request to /api/admin/leave-types');

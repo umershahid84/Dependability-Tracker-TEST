@@ -24,7 +24,7 @@ export default async function jwtVerificationApiHandler(
     return res.status(400).json({error: 'Missing required fields'});
   }
 
-  const verifiedToken: JwtPayload | undefined = verifyJwtToken_RequiresNode(token);
+  const verifiedToken: JwtPayload | undefined = await verifyJwtToken_RequiresNode(token);
 
   if (!verifiedToken) {
     return res.status(401).json({error: 'Unauthorized request'});

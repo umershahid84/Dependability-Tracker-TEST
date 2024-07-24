@@ -8,7 +8,6 @@ import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
 import type {NextApiResponse} from 'next';
 import {validateAddEmployeeForm} from './helpers';
-import {EmployeeFormData} from '../../../../client-api';
 import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
 
 export default async function postEmployeesApiHandler(
@@ -16,8 +15,14 @@ export default async function postEmployeesApiHandler(
   res: NextApiResponse<ApiData<EmployeeWithAssociations>>
 ) {
   try {
-    const {body} = req as {body: EmployeeFormData};
+    const {body} = req as {
+      body: any;
+    };
+
     await validateAddEmployeeForm(body);
+
+    body.isAdmin = body.isAdmin === '1';
+    body.isSupervisor = body.isSupervisor === '1';
 
     const newEmployee: EmployeeWithAssociations | null = await createEmployeeInDB({
       name: body.name,
@@ -47,7 +52,7 @@ export default async function postEmployeesApiHandler(
       }
     }
 
-    return res.status(200).json({data: newEmployee, message: 'Employee created successfully'});
+    return res.status(200).json({/*data: newEmployee,*/ message: 'Employee created successfully'});
   } catch (error) {
     console.error('Error creating employee:', error);
     return res.status(500).json({error: String(error)});

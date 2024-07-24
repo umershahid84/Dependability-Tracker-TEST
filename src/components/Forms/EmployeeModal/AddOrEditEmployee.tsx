@@ -12,7 +12,11 @@ export type AddOrEditEmployeeFormProps = {
   onSubmit: (props: CreateEmployeeProps | EditEmployeeProps) => Promise<boolean>;
 };
 
-export function AddOrEditEmployeeForm({type, onSubmit, employeeData}: AddOrEditEmployeeFormProps) {
+export function AddOrEditEmployeeForm({
+  type,
+  onSubmit,
+  employeeData
+}: Readonly<AddOrEditEmployeeFormProps>) {
   const isMounted: boolean = useIsMounted();
   const {divisions}: UseDivisions = useDivisions();
   const [divisionOptions, setDivisionOptions] = useState<DynamicOption['dynamicOptions']>([]);
@@ -27,6 +31,8 @@ export function AddOrEditEmployeeForm({type, onSubmit, employeeData}: AddOrEditE
     let successful = false;
 
     if (type === 'Add Employee') {
+      console.log('ADDING EMPLOYEE');
+      console.log(formData);
       successful = await onSubmit({
         formData
       });

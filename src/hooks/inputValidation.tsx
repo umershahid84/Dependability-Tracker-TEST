@@ -6,12 +6,12 @@ const noWhiteSpaces = 'Cannot contain white-space';
 export interface IValidationRules {
   password: {rule: (value: string) => boolean; message: string}[];
   email: {rule: (value: string) => boolean; message: string}[];
-  verifiedPassword: {rule: (given: string) => boolean; message: string}[];
+  confirmPassword: {rule: (given: string) => boolean; message: string}[];
   inviteToken: {rule: (value: string) => boolean; message: string}[];
 }
 
-export const doPasswordsMatch = (given: {password: string; verifiedPassword: string}): boolean =>
-  given.password === given.verifiedPassword;
+export const doPasswordsMatch = (given: {password: string; confirmPassword: string}): boolean =>
+  given.password === given.confirmPassword;
 
 const validationRules = {
   password: [
@@ -25,10 +25,9 @@ const validationRules = {
     {rule: validators.required, message: 'Required'}
   ],
 
-  verifiedPassword: [
+  confirmPassword: [
     {rule: validators.required, message: 'Required'},
     {rule: validators.has8Chars, message: 'Must be at least 8 characters'},
-    {rule: validators.hasNoWhiteSpace, message: noWhiteSpaces},
     {rule: doPasswordsMatch, message: 'Passwords do not match'}
   ],
 
@@ -39,7 +38,7 @@ const validationRules = {
 };
 
 export interface IValidatorProps {
-  value: string | {password: string; verifiedPassword: string};
+  value: string | {password: string; confirmPassword: string};
   property: keyof IValidationRules;
 }
 
@@ -66,7 +65,7 @@ export default function useValidators(props: IValidatorProps): {
     let _errors: IValidationError[] = [];
     for (const {rule, message} of rules) {
       //@ts-ignore
-      const didPass = rule(props.value as IValidatorProps['value']);
+      const didPass = rule(props.value);
 
       if (!didPass) {
         _errors.push({[props.property]: message});

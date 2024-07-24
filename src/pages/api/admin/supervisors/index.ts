@@ -2,19 +2,14 @@
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
-import {getJwtTokenForAPI} from '../../../auth';
-import {getSupervisorFromDB} from '../../../lib/db/controller';
-import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
+import {enforceAdminOnly} from '../../../../auth';
+import {getSupervisorsApiHandler} from '../../../../lib/apiController';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  getJwtTokenForAPI(req, res);
+  await enforceAdminOnly(req, res);
 
   if (req.method === 'GET') {
-    console.log('\n\nGET request to /api/admin/supervisors');
-    const supervisors: SupervisorWithAssociations[] =
-      (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
-
-    return res.status(200).json({data: supervisors});
+    return getSupervisorsApiHandler(req, res);
   }
   return res.status(405).json({error: 'Method not allowed'});
 }

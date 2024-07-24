@@ -36,6 +36,13 @@ export default async function createLoginCredentialsApiHandler(
     return res.status(401).json({error: 'Unauthorized request'});
   }
 
+  // check if the creds have an assigned email
+  const assignedEmail: string | undefined = existingInvite?.email;
+
+  if (assignedEmail && assignedEmail !== email) {
+    return res.status(401).json({error: 'Unauthorized request, must use assigned email address'});
+  }
+
   try {
     const createdLoginCredentials: LoginCredentialsWithAssociations | null =
       await createLoginCredentialInDB({

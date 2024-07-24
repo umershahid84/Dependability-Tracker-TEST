@@ -14,8 +14,9 @@ import Supervisor, {AdminSupervisor, SupervisorWithAssociations} from '../Superv
 
 export interface CreateCredentialsInviteAttributes {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  email?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   expires_at?: Date;
   created_by: string;
   invite_token: string;
@@ -24,6 +25,7 @@ export interface CreateCredentialsInviteAttributes {
 
 export type CreateCredentialsInviteWithAssociations = {
   id: string;
+  email?: string;
   createdAt: Date;
   updatedAt: Date;
   expires_at?: Date;
@@ -34,11 +36,22 @@ export type CreateCredentialsInviteWithAssociations = {
 
 export type CreateCredentialsInviteCreationAttributes = {
   id?: string;
+  email?: string;
   createdAt?: Date;
   updatedAt?: Date;
   expires_at?: Date;
   created_by: string;
   supervisor_id: string;
+};
+
+export type UpdateCredentialsInviteCreationAttributes = {
+  id?: string;
+  email?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  expires_at?: Date;
+  created_by?: string;
+  supervisor_id?: string;
 };
 
 class CreateCredentialsInvite
@@ -52,6 +65,7 @@ class CreateCredentialsInvite
 
   declare id: CreationOptional<string>;
   declare created_by: ForeignKey<string>;
+  declare email: CreationOptional<string>;
   declare expires_at: CreationOptional<Date>;
   declare supervisor_id: ForeignKey<string>;
   declare createdAt: CreationOptional<Date>;
@@ -87,6 +101,15 @@ CreateCredentialsInvite.init(
         key: 'id'
       }
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isEmail: true
+      },
+      unique: true,
+      defaultValue: null
+    },
     supervisor_id: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -105,6 +128,7 @@ CreateCredentialsInvite.init(
       unique: true,
       defaultValue: () => crypto.randomBytes(16).toString('hex')
     },
+
     expires_at: {
       type: DataTypes.DATE,
       allowNull: false,

@@ -65,31 +65,6 @@ export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.J
     }
   }, [showSelectedOptionsHeader, searchParams]);
 
-  useEffect(() => {
-    let filteredEmployees: EmployeeWithAssociations[] = [];
-    const supervisorEmployeeIds = supervisors?.map(supervisor => supervisor.supervisor_info.id);
-    // if the division search param is set, filter the employees by the selected division
-    // and exclude supervisors
-    if (searchParams.division_id) {
-      filteredEmployees =
-        employees?.data?.filter(
-          (employee: EmployeeWithAssociations) =>
-            employee.divisions.some(
-              division =>
-                division.id === searchParams.division_id &&
-                !supervisorEmployeeIds?.includes(employee.id)
-            ) ?? []
-        ) ?? [];
-    } else {
-      // if not just return non-supervisor employees
-      filteredEmployees =
-        employees?.data.filter((employee: EmployeeWithAssociations) => {
-          return !supervisorEmployeeIds?.includes(employee.id);
-        }) ?? [];
-    }
-    setEmployeesData(filteredEmployees ?? []);
-  }, [searchParams.division_id, employees?.data, supervisors]);
-
   return (
     <Provider
       value={{
@@ -100,8 +75,8 @@ export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.J
         handleSearchParamsChange,
         divisions: divisions ?? [],
         leaveTypes: leaveTypes ?? [],
-        supervisors: supervisors ?? [],
-        employees: employeesData ?? []
+        employees: employeesData ?? [],
+        supervisors: supervisors?.data ?? []
       }}
       {...props}
     />

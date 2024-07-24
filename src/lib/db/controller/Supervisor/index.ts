@@ -81,7 +81,7 @@ export const getSupervisorFromDB = {
         data: filtered,
         limit: convertedPaginationOptions.limit ?? 0,
         offset: convertedPaginationOptions.offset ?? 0,
-        numRecords: filtered.length
+        numRecords: await Supervisor.count()
       };
     }
   },

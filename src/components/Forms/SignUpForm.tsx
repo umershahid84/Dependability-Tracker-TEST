@@ -6,7 +6,10 @@ import {FormInputWithErrors, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
 import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
-export default function SignUpForm(): React.JSX.Element {
+export type SignUpFormProps = {
+  assignedEmail?: string;
+};
+export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): React.JSX.Element {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
   const [token, setToken] = useState<string | null>(null);
@@ -15,7 +18,10 @@ export default function SignUpForm(): React.JSX.Element {
   const [inviteId, setInviteId] = useState<string | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
-  const [formState, setFormState] = useState<SignUpFormState>(defaultSignUpFormState);
+  const [formState, setFormState] = useState<SignUpFormState>({
+    ...defaultSignUpFormState,
+    email: assignedEmail ?? ''
+  });
   const [verifiedPasswordErrors, setVerifiedPasswordErrors] = useState<string[]>([]);
 
   // Create validators for each field
@@ -27,14 +33,6 @@ export default function SignUpForm(): React.JSX.Element {
   const validatedEmail: IUseValidators = useInputValidation({
     value: formState.email as string,
     property: 'email'
-  });
-
-  const validatedVerifiedPassword: IUseValidators = useInputValidation({
-    value: {
-      password: formState.password as string,
-      verifiedPassword: formState.confirmPassword as string
-    },
-    property: 'verifiedPassword'
   });
 
   //  event handlers
@@ -70,6 +68,15 @@ export default function SignUpForm(): React.JSX.Element {
     }
   };
 
+  const validateConfirmedPassword = () => {
+    if (formState.confirmPassword !== formState.password) {
+      !verifiedPasswordErrors.includes('Passwords do not match') &&
+        verifiedPasswordErrors.push('Passwords do not match');
+    } else {
+      setVerifiedPasswordErrors([]);
+    }
+  };
+
   // On Mount
   useEffect(() => {
     if (isMounted) {
@@ -85,29 +92,24 @@ export default function SignUpForm(): React.JSX.Element {
     return () => {
       setToken(null);
       setInviteId(null);
-      setFormState(defaultSignUpFormState);
+      setFormState({...defaultSignUpFormState, email: assignedEmail ?? ''});
     };
+    // eslint-disable-next-line
   }, [isMounted]);
 
   // Field validation
   useEffect(() => {
-    if (isMounted) {
-      validatedEmail.validate();
-    }
+    validatedEmail.validate();
     // eslint-disable-next-line
   }, [formState.email]);
 
   useEffect(() => {
-    if (isMounted) {
-      validatedPassword.validate();
-    }
+    validatedPassword.validate();
     // eslint-disable-next-line
   }, [formState.password]);
 
   useEffect(() => {
-    if (isMounted) {
-      validatedVerifiedPassword.validate();
-    }
+    validateConfirmedPassword();
     // eslint-disable-next-line
   }, [formState.confirmPassword]);
 
@@ -115,7 +117,7 @@ export default function SignUpForm(): React.JSX.Element {
   useEffect(() => {
     if (isMounted) {
       const isEmailValid: boolean = validatedEmail.validated;
-      const isPasswordValid: boolean = validatedPassword.validated;
+      const isPasswordValid: boolean = formState.password === formState.confirmPassword;
 
       if (isPasswordValid && isEmailValid) {
         //NOSONAR
@@ -125,7 +127,7 @@ export default function SignUpForm(): React.JSX.Element {
       }
     }
     // eslint-disable-next-line
-  }, [formState, validatedEmail.validated, validatedPassword.validated]);
+  }, [formState]);
 
   // Update the form state when input errors occur
   useEffect(() => {
@@ -141,34 +143,28 @@ export default function SignUpForm(): React.JSX.Element {
       } else {
         setEmailErrors([]);
       }
-
-      if (validatedVerifiedPassword.error.length > 0 && formState.confirmPassword !== '') {
-        setVerifiedPasswordErrors(
-          validatedVerifiedPassword.error.map(error => Object.values(error)[0])
-        );
-      } else {
-        setVerifiedPasswordErrors([]);
-      }
     }
     // eslint-disable-next-line
   }, [validatedPassword.error, validatedEmail.error]);
 
   return isMounted ? (
     <Form onEnter={handleEnter}>
-      <FormInputWithErrors
-        label="Email"
-        type="text"
-        id="email"
-        required
-        autoComplete="email"
-        placeholder="Enter your work email address"
-        value={formState.email ?? ''}
-        // eslint-disable-next-line
-        // @ts-ignore
-        onChange={handleInputChange}
-        onBlur={validatedEmail.validate}
-        errors={emailErrors ?? []}
-      />
+      {!assignedEmail && (
+        <FormInputWithErrors
+          label="Email"
+          type="text"
+          id="email"
+          required
+          autoComplete="email"
+          placeholder="Enter your work email address"
+          value={formState.email ?? ''}
+          // eslint-disable-next-line
+          // @ts-ignore
+          onChange={handleInputChange}
+          onBlur={validatedEmail.validate}
+          errors={emailErrors ?? []}
+        />
+      )}
       <FormInputWithErrors
         label="Password"
         type="password"
@@ -194,7 +190,7 @@ export default function SignUpForm(): React.JSX.Element {
         // eslint-disable-next-line
         // @ts-ignore
         onChange={handleInputChange}
-        onBlur={validatedVerifiedPassword.validate}
+        onBlur={validateConfirmedPassword}
         errors={verifiedPasswordErrors ?? []}
       />
       <FormAction

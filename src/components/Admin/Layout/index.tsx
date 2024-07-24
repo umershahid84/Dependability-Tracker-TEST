@@ -7,7 +7,8 @@ import {CallOutAdvancedSearchProvider} from '../../../providers';
 const adminLinks: NavLinks = [
   {href: '/admin/dashboard', text: 'Home'},
   {href: '/admin/employees', text: 'Employees'},
-  {href: '/admin/callouts', text: 'CallOuts'}
+  {href: '/admin/callouts', text: 'CallOuts'},
+  {href: '/admin/supervisors', text: 'Supervisors'}
 ];
 const supervisorLinks: NavLinks = [{href: '/dashboard', text: 'Supervisor Home'}];
 

@@ -7,10 +7,10 @@ import {
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
-import {getJwtTokenForAPI} from '../../../auth';
+import {enforceAdminOnly} from '../../../auth';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  const authToken = getJwtTokenForAPI(req, res);
+  const authToken = await enforceAdminOnly(req, res);
 
   if (!authToken) {
     return;

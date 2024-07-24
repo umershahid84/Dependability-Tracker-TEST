@@ -19,7 +19,6 @@ export function useDivisions(): UseDivisions {
   const fetchDivisions = async () => {
     try {
       const _divisions: DivisionAttributes[] = await ClientAPI.Divisions.Read();
-
       setDivisions(_divisions ?? []);
       setIsLoading(false);
     } catch (error) {
