@@ -31,8 +31,6 @@ export function AddOrEditEmployeeForm({
     let successful = false;
 
     if (type === 'Add Employee') {
-      console.log('ADDING EMPLOYEE');
-      console.log(formData);
       successful = await onSubmit({
         formData
       });

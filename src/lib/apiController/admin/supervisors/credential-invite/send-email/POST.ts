@@ -40,8 +40,6 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       LoginCredential.findOne({where: {email: supervisorEmail}})
     ]);
 
-    console.log('loginCredentialWithExistingEmail', loginCredentialWithExistingEmail);
-
     if (loginCredentialWithExistingEmail) {
       throw new Error('Email already exists');
     }
