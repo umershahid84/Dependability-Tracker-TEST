@@ -24,10 +24,22 @@ export const formatter = {
 };
 
 export const getDivisionNameFromPath = (path: string) => {
-  const words = path.split('/divisions/')[1].replace('-', ' ')?.replace('.json', '')?.split(' ');
+  const words = path
+    .split('/divisions/')[1]
+    .replace('-', ' ')
+    ?.replace('.json', '')
+    ?.replace('/reports', '')
+    ?.split(' ');
 
   for (let word of words) {
     word = word.charAt(0).toUpperCase() + word.slice(1);
   }
   return words?.join(' ');
+};
+
+export const capitalizeWords = (text: string) => {
+  return text
+    .split(' ')
+    .map(word => word[0].toUpperCase() + word.slice(1))
+    .join(' ');
 };

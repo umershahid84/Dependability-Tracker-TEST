@@ -7,6 +7,7 @@ export type SelectDivisionProps = {
   name?: string;
   title?: string;
   className?: string;
+  showAny?: boolean;
   divisions: DivisionAttributes[];
   onChangeHandler: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -17,7 +18,7 @@ export function SelectDivision({
   value,
   divisions,
   className,
-
+  showAny = true,
   onChangeHandler
 }: Readonly<SelectDivisionProps>) {
   return (
@@ -30,7 +31,7 @@ export function SelectDivision({
         title={title ?? 'Division(s)'}
         className={className ?? 'border p-2 rounded-md w-full bg-slate-800 text-gray-300'}>
         <option value="">Select Division</option>
-        <option value="">Any</option>
+        {showAny && <option value="">Any</option>}
         {divisions?.map((division: DivisionAttributes) => (
           <option key={division.id} value={division.id}>
             {division.name}

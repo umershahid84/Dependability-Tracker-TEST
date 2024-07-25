@@ -6,6 +6,7 @@ export type SelectEmployeeNameProps = {
   title?: string;
   className?: string;
   employeeName: string;
+  useSelectAll?: boolean;
   employees: EmployeeWithAssociations[];
   onChangeHandler: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -16,6 +17,7 @@ export function SelectEmployeeName({
   employees,
   className,
   employeeName,
+  useSelectAll,
   onChangeHandler
 }: Readonly<SelectEmployeeNameProps>) {
   return (
@@ -28,6 +30,7 @@ export function SelectEmployeeName({
         title={title ?? 'Employee Name'}
         className={className ?? 'border p-2 rounded-md bg-slate-800'}>
         <option value="">Select Employee</option>
+        {useSelectAll && <option value="all">Any</option>}
         {employees?.map((employee: EmployeeWithAssociations) => (
           <option key={employee.id} value={employee.id}>
             {employee.name}

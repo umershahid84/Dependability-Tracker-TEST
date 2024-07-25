@@ -6,6 +6,7 @@ export type SelectLeaveTypes = {
   title?: string;
   leaveType: string;
   className?: string;
+  useSelectAll?: boolean;
   leaveTypes: LeaveTypeAttributes[];
   onChangeHandler: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -16,6 +17,7 @@ export function SelectLeaveTypeReason({
   leaveType,
   className,
   leaveTypes,
+  useSelectAll,
   onChangeHandler
 }: Readonly<SelectLeaveTypes>) {
   return (
@@ -28,6 +30,7 @@ export function SelectLeaveTypeReason({
         value={leaveType}
         onChange={onChangeHandler}>
         <option value="">Select Leave Type</option>
+        {useSelectAll && <option value="all">Any</option>}
         {leaveTypes?.map((leaveType: LeaveTypeAttributes) => (
           <option key={leaveType.id} value={leaveType.id}>
             {leaveType.reason}

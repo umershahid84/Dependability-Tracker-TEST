@@ -1,9 +1,9 @@
 import {useEffect} from 'react';
 import {FormLabel} from '../FormLabel';
 import {FormLabelContainer} from '../../EmployeeModal/FormLayout';
-import {RangeOptionsProps, rangeOptionsStyles, rangeOptionsVariantMap} from './data';
 import {UseDbSearchParamsFormState} from '../../../CallOuts/CallOutsList/helpers';
 import {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
+import {RangeOptionsProps, rangeOptionsStyles, rangeOptionsVariantMap} from './data';
 
 const {
   time,
@@ -34,7 +34,7 @@ export function RangeOptions({
     stateOptionsVariantMap[variant].setOptionValue(null);
     stateOptionsVariantMap[variant].setRangeValue({});
 
-    setSearchParams((prev: GetAllCallOutOptions) => {
+    setSearchParams?.((prev: GetAllCallOutOptions) => {
       return {
         ...prev,
         [dbSearchParamsName[variant]]: undefined,

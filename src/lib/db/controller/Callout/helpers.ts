@@ -26,12 +26,12 @@ export type GetAllCallOutOptions = {
   callout_date?: Date;
   division_id?: string;
   callout_time?: string;
-  employee_id?: string;
   supervisor_id?: string;
-  leave_type_id?: string;
+  employee_id?: string | string[];
   shift_date_range?: [Date, Date];
   created_at_range?: [Date, Date];
   updated_at_range?: [Date, Date];
+  leave_type_id?: string | string[];
   callout_date_range?: [Date, Date];
   shift_time_range?: [string, string];
   callout_time_range?: [string, string];
@@ -367,7 +367,21 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
     where.callout_time = {[Op.or]: whereConditions};
   }
   if (options.employee_id) {
-    if (!uuidV4Regex.test(options.employee_id)) throw new Error('Invalid employee_id');
+    if (Array.isArray(options.employee_id) === false && !uuidV4Regex.test(options.employee_id))
+      throw new Error('Invalid employee_id');
+
+    if (Array.isArray(options.employee_id)) {
+      if (
+        !options.employee_id.every((id: string) => {
+          return uuidV4Regex.test(id);
+        })
+      ) {
+        throw new Error('Invalid employee_id');
+      }
+      where.employee_id = {
+        [Op.in]: options.employee_id
+      };
+    }
     where.employee_id = options.employee_id;
   }
   if (options.supervisor_id) {
@@ -375,7 +389,22 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
     where.supervisor_id = options.supervisor_id;
   }
   if (options.leave_type_id) {
-    if (!uuidV4Regex.test(options.leave_type_id)) throw new Error('Invalid leave_type_id');
+    if (!Array.isArray(options.leave_type_id) && !uuidV4Regex.test(options.leave_type_id))
+      throw new Error('Invalid leave_type_id');
+
+    if (Array.isArray(options.leave_type_id)) {
+      if (
+        !options.leave_type_id.every((id: string) => {
+          return uuidV4Regex.test(id);
+        })
+      ) {
+        throw new Error('Invalid leave_type_id');
+      }
+      where.leave_type_id = {
+        [Op.in]: options.leave_type_id
+      };
+    }
+
     where.leave_type_id = options.leave_type_id;
   }
   if (options.updated_at_range) {

@@ -1,5 +1,5 @@
 import {
-  getServerSidePropsForCallOutForm,
+  getServerSidePropsForDivision,
   getServerSidePropsForTwoWeekCallOutHistory
 } from '../../../lib/utils/server';
 import React from 'react';
@@ -8,7 +8,7 @@ import {CallOutPageContainer} from '../../../components';
 import {getTokenForServerSideProps, JwtPayload, Redirect} from '../../../auth';
 
 export const getServerSideProps = async (request: {req: Request}) => {
-  const props1 = await getServerSidePropsForCallOutForm(request);
+  const props1 = await getServerSidePropsForDivision(request);
   const props2 = await getServerSidePropsForTwoWeekCallOutHistory(request);
   const token: JwtPayload | Redirect | undefined = await getTokenForServerSideProps(request);
   const isAdmin = token && 'isAdmin' in token ? token.isAdmin : false;

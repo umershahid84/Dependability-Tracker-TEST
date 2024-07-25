@@ -36,7 +36,7 @@ export const defaultLeaveTypes: DefaultLeaveTypes[] = [
   DefaultLeaveTypes.OTHER
 ];
 
-export const getServerSidePropsForCallOutForm = async (request: {req: Request}) => {
+export const getServerSidePropsForDivision = async (request: {req: Request}) => {
   try {
     const currentDivision = getDivisionNameFromPath(request.req.url);
     const supervisors = (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
@@ -65,7 +65,7 @@ export const getServerSidePropsForCallOutForm = async (request: {req: Request}) 
       }
     };
   } catch (error) {
-    console.error('Error in getServerSidePropsForCallOutForm', error);
+    console.error('Error in getServerSidePropsForDivision', error);
     return {
       props: {
         employees: JSON.stringify([]),
