@@ -1,12 +1,16 @@
+import 'dotenv/config';
+import sequelize from '../connection';
+import {SupervisorWithAssociations} from '../models/Supervisor';
 import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../controller';
-import { SupervisorWithAssociations } from '../models/Supervisor';
 
 const seedCredentialInvites = async () => {
   // find the admins
-
+  await sequelize.sync();
   try {
-    const admins = await getSupervisorFromDB.admins() as SupervisorWithAssociations[] ;
-    const supervisors = await getSupervisorFromDB.all() as SupervisorWithAssociations[];
+    const admins = (await getSupervisorFromDB.admins()) as SupervisorWithAssociations[];
+    const supervisors = (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
+
+    console.log('🌱 Seeding credential invites...');
 
     // create login invites for each admin so they can create their own login credentials
     for (const supervisor of supervisors) {

@@ -5,12 +5,13 @@ import {getDivisionNameFromPath, headingNormalizer} from '../../lib/utils/shared
 
 const styles = {
   headerTr: 'bg-slate-900',
-  th: 'px-4 py-2 border border-gray-600',
-  td: 'px-4 py-2 border border-gray-600',
+  th: 'px-4 py-2 border border-gray-600 print:border-black',
+  td: 'px-4 py-2 border border-gray-600 print:border-black',
   subTd: 'text-gray-500 text-xs text-nowrap',
   h2: 'text-xl font-semibold my-2 text-center mb-6',
-  div: 'w-full flex flex-col overflow-x-auto mx-auto',
-  table: 'w-full min-w-[621px] table-auto text-left border-collapse mb-6 text-sm lg:text-base'
+  div: 'w-full flex flex-col overflow-x-auto mx-auto h-auto details-print',
+  table:
+    'w-full min-w-[621px] h-auto table-auto text-left border-collapse mb-6 text-sm lg:text-base'
 };
 
 const headings = [
@@ -46,7 +47,7 @@ export function DetailedCallOutHistory({
         Detailed Callout History For {headingNormalizer(getDivisionNameFromPath(router.pathname))}
       </h2>
       <table className={styles.table}>
-        <thead>
+        <thead className={styles.th}>
           <tr className={styles.headerTr}>{headings.map(heading => renderHead(heading))}</tr>
         </thead>
         <tbody>

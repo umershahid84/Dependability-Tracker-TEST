@@ -20,7 +20,7 @@ const styles = {
   textArea: 'border rounded-md w-full bg-slate-800',
   div: 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full',
   form: `flex flex-col justify-center items-center p-2 bg-slate-900 border
-   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print`
+   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print print:hidden`
 };
 
 export type CreateCallOutFormProps = {

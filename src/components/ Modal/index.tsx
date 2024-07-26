@@ -6,6 +6,7 @@ import {
 } from '../Forms';
 import {
   ResetSupervisorPassword,
+  RevokeCredentialsInvite,
   ResendCreateCredentialInviteByEmail,
   CreateCredentialInviteAndEmailItToSupervisor
 } from '../Forms/Supervisors';
@@ -15,6 +16,7 @@ import {useIsMounted} from '../../hooks';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
 import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
 import type {CallOutWithAssociations} from '../../lib/db/models/types';
+import {RevokeCredentials} from '../Forms/Supervisors/RevokeCredentials';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
 
 export enum ModalType {
@@ -25,8 +27,10 @@ export enum ModalType {
   RESET_PASSWORD = 'Reset Password',
   DELETE_CALL_OUT = 'Delete Call Out',
   DELETE_EMPLOYEE = 'Delete Employee',
+  REVOKE_CREDENTIALS = 'Revoke Credentials',
   CREATE_AND_SEND_INVITE = 'Create and Send Invite',
-  ADVANCED_CALLOUT_SEARCH = 'Advanced CallOut Search'
+  ADVANCED_CALLOUT_SEARCH = 'Advanced CallOut Search',
+  REVOKE_CREDENTIALS_INVITE = 'Revoke Credentials Invite'
 }
 
 export type ModalProps = {
@@ -68,7 +72,6 @@ function RenderModalBody({
           onModalDeleteCallBack={data?.onModalDeleteCallBack}
         />
       );
-
     case ModalType.ADVANCED_CALLOUT_SEARCH:
       return <CallOutsAdvancedSearch />;
     case ModalType.EDIT_CALL_OUT:
@@ -87,15 +90,41 @@ function RenderModalBody({
           callOutData={data?.callOut as CallOutWithAssociations}
         />
       );
-
     case ModalType.RESET_PASSWORD:
-      return <ResetSupervisorPassword supervisorId={data?.supervisorId} />;
-
+      return (
+        <ResetSupervisorPassword
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
     case ModalType.CREATE_AND_SEND_INVITE:
-      return <CreateCredentialInviteAndEmailItToSupervisor supervisorId={data?.supervisorId} />;
-
+      return (
+        <CreateCredentialInviteAndEmailItToSupervisor
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
     case ModalType.RESEND_INVITE:
-      return <ResendCreateCredentialInviteByEmail supervisorId={data?.supervisorId} />;
+      return (
+        <ResendCreateCredentialInviteByEmail
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
+    case ModalType.REVOKE_CREDENTIALS:
+      return (
+        <RevokeCredentials
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
+    case ModalType.REVOKE_CREDENTIALS_INVITE:
+      return (
+        <RevokeCredentialsInvite
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
     default:
       return <></>;
   }

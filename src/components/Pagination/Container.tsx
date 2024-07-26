@@ -2,8 +2,9 @@ import Loading from '../Loading';
 import {useEffect, useState} from 'react';
 import {PaginationHeader} from './PaginationHeader';
 import {PaginationFooter} from './PaginationFooter';
-import {RenderCallOutsListProps} from '../CallOuts/CallOutsList/helpers';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
+import {RenderCallOutsListProps} from '../CallOuts/CallOutsList/helpers';
+import {SupervisorWithAssociations} from '../../lib/db/models/Supervisor';
 
 export type PaginationContainerProps = {
   data: any;
@@ -12,20 +13,25 @@ export type PaginationContainerProps = {
   setQueryParams: any;
   onModalDeleteCallBack?:
     | RenderCallOutsListProps['onModalDeleteCallBack']
-    | ((employeeId: string) => void);
+    | ((employeeId: string) => void)
+    | ((supervisorId: string) => void);
   onModalEditCallBack?:
     | RenderCallOutsListProps['onModalEditCallBack']
-    | ((employee: EmployeeWithAssociations) => void);
+    | ((employee: EmployeeWithAssociations) => void)
+    | ((supervisor: SupervisorWithAssociations) => void);
   RenderList: ({
     data,
     onModalEditCallBack,
     onModalDeleteCallBack
   }: {
     data: any;
-    onModalDeleteCallBack?: (calloutId: string) => void | ((employeeId: string) => void);
+    onModalDeleteCallBack?: (
+      calloutId: string
+    ) => void | ((employeeId: string) => void) | ((supervisorId: string) => void);
     onModalEditCallBack?:
       | RenderCallOutsListProps['onModalEditCallBack']
-      | ((employee: EmployeeWithAssociations) => void);
+      | ((employee: EmployeeWithAssociations) => void)
+      | ((supervisor: SupervisorWithAssociations) => void);
   }) => React.JSX.Element[];
 };
 

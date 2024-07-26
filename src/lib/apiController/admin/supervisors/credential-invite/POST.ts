@@ -4,13 +4,13 @@ import type {NextApiResponse} from 'next';
 import type {ApiData} from '../../../index';
 import {JwtPayload} from '../../../../../auth';
 import {sendCredentialInvite} from '../../../../email';
-
 import {CreateCredentialsInvite, LoginCredential} from '../../../../db';
+import {SupervisorWithAssociations} from '../../../../db/models/Supervisor';
 import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../../../../db/controller';
 
 export default async function postSupervisorCredentialInviteApiHandler(
   req: NextRequest & Request,
-  res: NextApiResponse<ApiData<{email: string}>>,
+  res: NextApiResponse<ApiData<SupervisorWithAssociations | null>>,
   token: JwtPayload
 ) {
   try {
@@ -58,9 +58,16 @@ export default async function postSupervisorCredentialInviteApiHandler(
       }
     }
 
-    return res
-      .status(200)
-      .json({message: 'Invite created successfully', data: {email: supervisorEmail}});
+    // get updated supervisor data
+    const updatedData: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
+      forSupervisorId,
+      {
+        showCredentials: true,
+        showCreateCredentialsInvite: true
+      }
+    );
+
+    return res.status(200).json({message: 'Invite created successfully', data: updatedData});
   } catch (error) {
     console.error('Error creating invite:', error);
     return res.status(500).json({error: String(error)});

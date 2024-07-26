@@ -14,12 +14,12 @@ const styles = {
   headingSpan: 'w-full flex flex-row justify-start items-center gap-2'
 };
 
-export function ResetSupervisorPassword({
+export function RevokeCredentials({
   supervisor,
   onModalEditCallBack
 }: Readonly<{
   supervisor: SupervisorWithAssociations;
-  onModalEditCallBack: (supervisor: SupervisorWithAssociations, isNew?: boolean) => void;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations) => void;
 }>) {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -30,10 +30,10 @@ export function ResetSupervisorPassword({
     setValidPassword(e.target.value.length >= 8);
   };
 
-  const resetPassword = async () => {
+  const revokeCredentials = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin/supervisors/login-credentials/reset`, {
+      const response = await fetch(`/api/admin/supervisors/login-credentials/revoke`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ export function ResetSupervisorPassword({
         makeToast({
           type: ToastTypes.Success,
           title: 'Success',
-          message: `Password reset initiated. Credentials invite sent to ${data?.data?.create_credentials_invite?.email}`
+          message: `Credentials Revoked Successfully`
         });
 
         setLoading(false);
@@ -57,7 +57,7 @@ export function ResetSupervisorPassword({
         window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
       }
     } catch (error) {
-      console.error('Error resetting supervisor credentials');
+      console.error('Error revoking supervisor credentials');
       makeToast({
         type: ToastTypes.Error,
         title: 'Error',
@@ -74,8 +74,8 @@ export function ResetSupervisorPassword({
     const textValue = e.currentTarget.textContent;
 
     switch (textValue) {
-      case 'Reset Password':
-        await resetPassword();
+      case 'Revoke Credentials':
+        await revokeCredentials();
         break;
       case 'Cancel':
         window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
@@ -89,27 +89,23 @@ export function ResetSupervisorPassword({
     <div className={styles.div}>
       <h2 className={styles.h2}>
         <span className={styles.headingSpan}>
-          <WarningIcon className="w-8 h-8 stroke-2" /> Reset Password
+          <WarningIcon className="w-8 h-8 stroke-2" /> Revoke Credentials
         </span>
       </h2>
-      <p className="my-3">
-        This is an irreversible action.
-        <br />
-        The Supervisor&apos;s existing password will be deleted!
-      </p>
+      <p className="my-3">This is an irreversible action!</p>
 
       {!loading ? (
         <>
           <FormInputWithErrors
             required
+            gap="mt-2"
             id="password"
             type="password"
-            gap="mt-2"
             value={password}
             label="Admin Password"
             onChange={handlePasswordChange}
-            errors={!validPassword ? ['Password must be at least 8 characters'] : []}
             placeholder="Current Admin's Password"
+            errors={!validPassword ? ['Password must be at least 8 characters'] : []}
             className={`w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none  ${
               !validPassword ? 'ring-red-500' : 'focus:ring-gray-300'
             }`}
@@ -120,7 +116,7 @@ export function ResetSupervisorPassword({
               type="button"
               className="px-2 py-1 bg-slate-700 hover:bg-red-500 text-white rounded mr-2"
               onClick={handleClick}>
-              Reset Password
+              Revoke Credentials
             </button>
             <button
               type="button"

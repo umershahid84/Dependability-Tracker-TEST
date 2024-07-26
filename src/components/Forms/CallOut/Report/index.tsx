@@ -145,7 +145,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
           divisions={divisionData}
           value={formData.division}
           onChangeHandler={handleOnChange}
-          className="p-3 mt-2 rounded-md w-auto bg-slate-700 text-gray-300 hover:scale-105 hover:bg-[var(--green)]"
+          className="p-3 mt-2 rounded-md w-auto bg-slate-700 text-gray-300 hover:scale-105 hover:bg-[var(--green)] hide-on-print"
         />
       </div>
 

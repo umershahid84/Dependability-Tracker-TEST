@@ -106,6 +106,14 @@ CreateCredentialsInvite.init(
       allowNull: true,
       validate: {
         isEmail: true
+        //ensure the email is a @portseattle.org
+
+        //TODO: Uncomment this code when the email validation is needed
+        // validateEmail(value: string) {
+        //   if (value && !value?.includes('@portseattle.org')) {
+        //     throw new Error('Email must be from @PortSeattle.org');
+        //   }
+        // }
       },
       unique: true,
       defaultValue: null

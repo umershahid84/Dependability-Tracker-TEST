@@ -26,9 +26,22 @@ const defaultSupervisorsQueryParams: PaginationQueryParams<SupervisorsSortBy> & 
   showCreateCredentialsInvite: 'true'
 };
 
-function RenderList({data}: Readonly<{data: SupervisorWithAssociations[]}>) {
+function RenderList({
+  data,
+  onModalEditCallBack,
+  onModalDeleteCallBack
+}: Readonly<{
+  data: SupervisorWithAssociations[];
+  onModalDeleteCallBack: (supervisorId: string) => void;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations, isNew?: boolean) => void;
+}>) {
   return data?.map((supervisor: SupervisorWithAssociations) => (
-    <SupervisorListItem key={supervisor.id} supervisor={supervisor} />
+    <SupervisorListItem
+      key={supervisor.id}
+      supervisor={supervisor}
+      onModalEditCallBack={onModalEditCallBack}
+      onModalDeleteCallBack={onModalDeleteCallBack}
+    />
   ));
 }
 
@@ -38,23 +51,45 @@ export function SupervisorsList() {
     useState<ModelWithPagination<SupervisorWithAssociations> | null>(null);
   const {queryParams, setQueryParams, handleQueryParamChange}: UseQueryParams<SupervisorsSortBy> =
     useQueryParams<SupervisorsSortBy>(defaultSupervisorsQueryParams);
-  const {supervisors, refetch}: UseGetSupervisors = useGetSupervisors(queryParams);
+  const {supervisors}: UseGetSupervisors = useGetSupervisors(queryParams);
 
   const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value as SupervisorsSortBy);
   };
 
-  const handleOnSupervisorUpdate = () =>
-    window.addEventListener('supervisorUpdated', () => refetch);
+  const onModalEditCallBack = (supervisor: SupervisorWithAssociations, isNew = false) => {
+    if (!isNew) {
+      // find the supervisor with the same id and update the data in the supervisorData
+      const updatedData =
+        supervisorData?.data.map(sup => {
+          if (sup.id === supervisor.id) {
+            return supervisor;
+          }
+          return sup;
+        }) ?? [];
 
-  const handleRemoveSupervisorUpdate = () =>
-    window.removeEventListener('supervisorUpdated', () => refetch);
+      setSupervisorData({
+        ...(supervisorData as ModelWithPagination<SupervisorWithAssociations>),
+        data: updatedData
+      });
+    } else {
+      // if this is a new supervisor, add them to the supervisorData
+      setSupervisorData({
+        ...(supervisorData as ModelWithPagination<SupervisorWithAssociations>),
+        data: [supervisor, ...(supervisorData?.data ?? [])]
+      });
+    }
+  };
 
-  useEffect(() => {
-    handleOnSupervisorUpdate();
-    return () => handleRemoveSupervisorUpdate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onModalDeleteCallBack = (supervisorId: string) => {
+    const updatedData =
+      supervisorData?.data.filter(supervisor => supervisor.id !== supervisorId) ?? [];
+
+    setSupervisorData({
+      ...(supervisorData as ModelWithPagination<SupervisorWithAssociations>),
+      data: updatedData
+    });
+  };
 
   useEffect(() => {
     if (supervisors?.data) {
@@ -95,9 +130,11 @@ export function SupervisorsList() {
 
       <PaginationContainer
         data={supervisorData}
-        RenderList={RenderList}
         queryParams={queryParams}
+        RenderList={RenderList as any}
         setQueryParams={setQueryParams}
+        onModalEditCallBack={onModalEditCallBack}
+        onModalDeleteCallBack={onModalDeleteCallBack}
       />
     </ModelList>
   ) : (

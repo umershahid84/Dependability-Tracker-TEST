@@ -21,7 +21,7 @@ export function ActiveSearchParams() {
     <ul className={styles.ul}>
       {Object.entries(searchParams).map(([key, value]) => {
         return value ? (
-          <ActiveParam key={key} activeParam={{[key]: value}} onRemove={handleOnRemove} />
+          <ActiveParam key={key} activeParam={{[key]: value} as any} onRemove={handleOnRemove} />
         ) : undefined;
       })}
     </ul>

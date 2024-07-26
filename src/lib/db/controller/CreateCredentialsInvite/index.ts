@@ -24,7 +24,7 @@ export const createCreateCredentialsInviteInDB = async (
       ? {
           supervisor_info: supervisor,
           id: createCredentialsInvite.id,
-          email: createCredentialsInvite.email,
+          email: createCredentialsInvite?.email,
           created_by: {...admin, is_admin: true},
           createdAt: createCredentialsInvite.createdAt,
           updatedAt: createCredentialsInvite.updatedAt,
@@ -34,6 +34,7 @@ export const createCreateCredentialsInviteInDB = async (
       : null;
     // istanbul ignore next
   } catch (error) {
+    console.error(error);
     throw new Error(`\n❌ Error creating createCredentialsInvite: ${String(error)}`);
   }
 };

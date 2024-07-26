@@ -7,12 +7,11 @@ import {
   getLoginCredentialFromDB,
   deleteLoginCredentialFromDB
 } from '../../../../db/controller/LoginCredential';
-import {sendCredentialInvite} from '../../../../email';
+import {getSupervisorFromDB} from '../../../../db/controller';
 import {SupervisorWithAssociations} from '../../../../db/models/Supervisor';
 import {LoginCredentialsWithAssociations} from '../../../../db/models/LoginCredential';
-import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../../../../db/controller';
 
-export default async function resetSupervisorLoginCredentials(
+export default async function revokeSupervisorLoginCredentials(
   req: NextRequest & Request,
   res: NextApiResponse<ApiData<SupervisorWithAssociations | null>>,
   token: JwtPayload
@@ -47,36 +46,6 @@ export default async function resetSupervisorLoginCredentials(
     // remove their existing credentials
     await deleteLoginCredentialFromDB(supervisorCredentials.id);
 
-    // create a new create credential invite - assign the previous email
-    const credentialInvite = await createCreateCredentialsInviteInDB({
-      email: supervisorCredentials.email,
-      created_by: token.supervisorId,
-      supervisor_id: forSupervisorId
-    });
-
-    if (!credentialInvite) {
-      throw new Error('Error creating invite');
-    }
-
-    const existingUser = await getSupervisorFromDB.byId(forSupervisorId);
-
-    if (!existingUser) {
-      throw new Error('Error creating invite');
-    }
-
-    if (process.env.SEND_EMAILS === 'true') {
-      const emailSent = await sendCredentialInvite(
-        supervisorCredentials.email,
-        credentialInvite.invite_token,
-        credentialInvite.id,
-        existingUser.supervisor_info.name
-      );
-
-      if (!emailSent) {
-        throw new Error('Error sending email. Invite created');
-      }
-    }
-
     const updatedSupervisor: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
       forSupervisorId,
       {
@@ -85,11 +54,13 @@ export default async function resetSupervisorLoginCredentials(
       }
     );
 
-    return res.status(200).json({message: 'Invite created successfully', data: updatedSupervisor});
+    return res
+      .status(200)
+      .json({message: 'Credentials removed successfully', data: updatedSupervisor});
   } catch (error) {
     console.error('Error creating invite:', error);
     return res.status(500).json({error: String(error)});
   }
 }
 
-export {resetSupervisorLoginCredentials};
+export {revokeSupervisorLoginCredentials};

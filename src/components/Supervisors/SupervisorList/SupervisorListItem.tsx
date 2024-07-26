@@ -15,8 +15,14 @@ const styles = {
 };
 
 export function SupervisorListItem({
-  supervisor
-}: Readonly<{supervisor: SupervisorWithAssociations}>) {
+  supervisor,
+  onModalEditCallBack,
+  onModalDeleteCallBack
+}: Readonly<{
+  supervisor: SupervisorWithAssociations;
+  onModalDeleteCallBack: (supervisorId: string) => void;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations, isNew?: boolean) => void;
+}>) {
   const isMounted: boolean = useIsMounted();
   const [show, setShow] = useState<boolean>(false);
 
@@ -68,7 +74,13 @@ export function SupervisorListItem({
         </div>
       </div>
       <SupervisorStatusHeader {...supervisor} />
-      <SupervisorListItemAccordion supervisor={supervisor} show={show} roles={roles} />
+      <SupervisorListItemAccordion
+        supervisor={supervisor}
+        show={show}
+        roles={roles}
+        onModalEditCallBack={onModalEditCallBack}
+        onModalDeleteCallBack={onModalDeleteCallBack}
+      />
     </div>
   );
 }

@@ -2,21 +2,14 @@
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
-import {
-  postSupervisorCredentialInviteApiHandler,
-  deleteSupervisorCredentialInviteApiHandler
-} from '../../../../../lib/apiController';
 import {enforceAdminOnly, JwtPayload} from '../../../../../auth';
+import {revokeSupervisorLoginCredentials} from '../../../../../lib/apiController';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
   const token: JwtPayload | undefined | void = await enforceAdminOnly(req, res);
 
   if (req.method === 'POST') {
-    return postSupervisorCredentialInviteApiHandler(req, res, token as JwtPayload);
-  }
-
-  if (req.method === 'DELETE') {
-    return deleteSupervisorCredentialInviteApiHandler(req, res);
+    return revokeSupervisorLoginCredentials(req, res, token as JwtPayload);
   }
   return res.status(405).json({error: 'Method not allowed'});
 }

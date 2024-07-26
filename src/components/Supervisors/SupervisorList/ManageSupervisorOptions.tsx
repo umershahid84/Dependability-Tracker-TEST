@@ -9,9 +9,13 @@ const styles = {
 };
 
 export function ManageSupervisorOptions({
-  supervisor
+  supervisor,
+  onModalEditCallBack,
+  onModalDeleteCallBack
 }: Readonly<{
   supervisor: SupervisorWithAssociations;
+  onModalDeleteCallBack: (supervisorId: string) => void;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations, isNew?: boolean) => void;
 }>): React.ReactElement {
   const hasCredentials: boolean = Boolean(supervisor.login_credentials);
   const hasCreateCredentialsInvite: boolean = Boolean(supervisor.create_credentials_invite);
@@ -21,8 +25,6 @@ export function ManageSupervisorOptions({
     e.preventDefault();
     e.stopPropagation();
 
-    const {id} = supervisor;
-
     let _modalType = (): ModalType | undefined => {
       switch (e.currentTarget.textContent) {
         case 'Reset Password':
@@ -31,6 +33,10 @@ export function ManageSupervisorOptions({
           return ModalType.CREATE_AND_SEND_INVITE;
         case 'Resend Invite':
           return ModalType.RESEND_INVITE;
+        case 'Revoke Credentials':
+          return ModalType.REVOKE_CREDENTIALS;
+        case 'Revoke Credentials Invite':
+          return ModalType.REVOKE_CREDENTIALS_INVITE;
         default:
           return undefined;
       }
@@ -44,7 +50,7 @@ export function ManageSupervisorOptions({
           detail: {
             type: _modalType(),
             action: ModalAction.OPEN,
-            payload: {supervisorId: id}
+            payload: {supervisor, onModalEditCallBack, onModalDeleteCallBack}
           }
         })
       );
@@ -53,12 +59,21 @@ export function ManageSupervisorOptions({
   return (
     <div className={styles.optionsContainer}>
       {hasCredentials && (
-        <button
-          type="button"
-          onClick={handleOnClick}
-          className={styles.button + ' ' + styles.resetPassword}>
-          Reset Password
-        </button>
+        <>
+          {' '}
+          <button
+            type="button"
+            onClick={handleOnClick}
+            className={styles.button + ' ' + styles.resetPassword}>
+            Reset Password
+          </button>
+          <button
+            type="button"
+            onClick={handleOnClick}
+            className={styles.button + ' ' + styles.resetPassword}>
+            Revoke Credentials
+          </button>
+        </>
       )}
       {needsInvite && (
         <button
@@ -69,12 +84,20 @@ export function ManageSupervisorOptions({
         </button>
       )}
       {hasCreateCredentialsInvite && (
-        <button
-          type="button"
-          onClick={handleOnClick}
-          className={styles.button + ' ' + styles.sendInvite}>
-          Resend Invite
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={handleOnClick}
+            className={styles.button + ' ' + styles.sendInvite}>
+            Resend Invite
+          </button>
+          <button
+            type="button"
+            onClick={handleOnClick}
+            className={styles.button + ' ' + styles.resetPassword}>
+            Revoke Credentials Invite
+          </button>
+        </>
       )}
     </div>
   );

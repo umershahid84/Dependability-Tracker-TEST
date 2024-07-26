@@ -17,7 +17,7 @@ export function DivisionReport(
 
   return (
     <DivisionLayout isAdmin={props.isAdmin}>
-      <div className="w-full h-auto flex flex-col justify-center items-center gap-8 mt-8 ">
+      <div className="w-full h-auto flex flex-col justify-center items-center gap-8 mt-8">
         <h1 className="text-2xl hide-on-print text-center">
           <strong>Generate Call-Out Report</strong>
         </h1>

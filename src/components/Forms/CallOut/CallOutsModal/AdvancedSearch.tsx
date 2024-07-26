@@ -152,7 +152,7 @@ export function CallOutsAdvancedSearch() {
           className={styles.input}
           leaveTypes={leaveTypes}
           onChangeHandler={handleSearchParamsCopyChange}
-          leaveType={searchParamsCopy.leave_type_id ?? ''}
+          leaveType={(searchParamsCopy.leave_type_id as string) ?? ''}
         />
 
         <FormLabelContainer>

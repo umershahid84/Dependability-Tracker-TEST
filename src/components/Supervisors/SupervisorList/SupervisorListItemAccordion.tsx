@@ -14,11 +14,15 @@ const styles = {
 export function SupervisorListItemAccordion({
   show,
   roles,
-  supervisor
+  supervisor,
+  onModalEditCallBack,
+  onModalDeleteCallBack
 }: Readonly<{
   show: boolean;
   roles: ('Supervisor' | 'Admin')[];
   supervisor: SupervisorWithAssociations;
+  onModalDeleteCallBack: (supervisorId: string) => void;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations, isNew?: boolean) => void;
 }>) {
   return (
     show && (
@@ -39,7 +43,11 @@ export function SupervisorListItemAccordion({
         </div>
 
         <div className="w-auto flex flex-col justify-between items-end">
-          <ManageSupervisorOptions supervisor={supervisor} />
+          <ManageSupervisorOptions
+            supervisor={supervisor}
+            onModalEditCallBack={onModalEditCallBack}
+            onModalDeleteCallBack={onModalDeleteCallBack}
+          />
           <span className={styles.span}>
             Created at: {new Date(supervisor.createdAt).toLocaleDateString()} @{' '}
             {new Date(supervisor.createdAt).toLocaleTimeString()}

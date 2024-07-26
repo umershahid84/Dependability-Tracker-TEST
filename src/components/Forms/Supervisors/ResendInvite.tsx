@@ -6,6 +6,7 @@ import {validators} from '../../../lib/utils';
 import {makeToast, ToastTypes} from '../../Toasts';
 import {ApiData} from '../../../lib/apiController';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
+import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
 
 const styles = {
   buttonsContainer: 'mt-6 flex flex-row gap-20',
@@ -15,8 +16,12 @@ const styles = {
 };
 
 export function ResendCreateCredentialInviteByEmail({
-  supervisorId
-}: Readonly<{supervisorId: string}>) {
+  supervisor,
+  onModalEditCallBack
+}: Readonly<{
+  supervisor: SupervisorWithAssociations;
+  onModalEditCallBack: (supervisor: SupervisorWithAssociations) => void;
+}>) {
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -42,23 +47,24 @@ export function ResendCreateCredentialInviteByEmail({
         },
         body: JSON.stringify({
           supervisorsEmail: email,
-          forSupervisor: supervisorId
+          forSupervisor: supervisor.id
         })
       });
 
-      const data: ApiData<{email: string}> = await response.json();
+      const data: ApiData<SupervisorWithAssociations> = await response.json();
 
       if (!response.ok) {
-        throw new Error('Error resetting credentials');
+        throw new Error(data.error ?? 'Error resetting credentials');
       }
 
       makeToast({
         title: 'Success',
         type: ToastTypes.Success,
-        message: 'Invite sent to ' + data.data?.email
+        message: 'Invite sent to ' + data.data?.login_credentials?.email
       });
 
       setLoading(false);
+      onModalEditCallBack(data.data as SupervisorWithAssociations);
       window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
     } catch (error) {
       console.error('Error creating invite: ', error);

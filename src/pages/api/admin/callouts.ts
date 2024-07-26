@@ -3,8 +3,8 @@ import {Request} from 'express';
 import {NextRequest} from 'next/server';
 import type {NextApiResponse} from 'next';
 import {enforceAdminOnly, JwtPayload} from '../../../auth';
-import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib/apiController';
 import deleteEmployeeCallOutApiHandler from '../../../lib/apiController/callouts/DELETE';
+import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib/apiController';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
   // allow admins and supervisors to access this route
