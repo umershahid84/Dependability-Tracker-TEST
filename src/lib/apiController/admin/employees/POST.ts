@@ -52,7 +52,7 @@ export default async function postEmployeesApiHandler(
       }
     }
 
-    return res.status(200).json({/*data: newEmployee,*/ message: 'Employee created successfully'});
+    return res.status(200).json({data: newEmployee, message: 'Employee created successfully'});
   } catch (error) {
     console.error('Error creating employee:', error);
     return res.status(500).json({error: String(error)});

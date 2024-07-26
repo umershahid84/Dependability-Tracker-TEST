@@ -11,6 +11,9 @@ import {EmployeeSortBy, ToastTypes, makeToast} from '../components';
 export type UseGetEmployees = {
   isLoading: boolean;
   error: string | null;
+  setEmployees: React.Dispatch<
+    React.SetStateAction<ModelWithPagination<EmployeeWithAssociations> | null>
+  >;
   employees: ModelWithPagination<EmployeeWithAssociations> | null;
   refetch: (queryParams?: PaginationQueryParams<EmployeeSortBy>) => Promise<void>;
 };
@@ -78,5 +81,5 @@ export function useGetEmployees(
     }
   }, [error]);
 
-  return {employees, isLoading, error, refetch: fetchEmployees};
+  return {employees, isLoading, error, setEmployees, refetch: fetchEmployees};
 }

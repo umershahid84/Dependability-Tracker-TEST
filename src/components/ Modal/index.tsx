@@ -4,6 +4,11 @@ import {
   EditEmployeeForm,
   CallOutsAdvancedSearch
 } from '../Forms';
+import {
+  ResetSupervisorPassword,
+  ResendCreateCredentialInviteByEmail,
+  CreateCredentialInviteAndEmailItToSupervisor
+} from '../Forms/Supervisors';
 import {Modal} from './Modal';
 import React, {useEffect} from 'react';
 import {useIsMounted} from '../../hooks';
@@ -11,11 +16,6 @@ import {EmployeeWithAssociations} from '../../lib/db/controller';
 import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
 import type {CallOutWithAssociations} from '../../lib/db/models/types';
 import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
-import {
-  CreateCredentialInviteAndEmailItToSupervisor,
-  ResendCreateCredentialInviteByEmail,
-  ResetSupervisorPassword
-} from '../Forms/Supervisors';
 
 export enum ModalType {
   ADD_EMPLOYEE = 'Add Employee',
@@ -53,11 +53,21 @@ function RenderModalBody({
 }>) {
   switch (type) {
     case ModalType.ADD_EMPLOYEE:
-      return <AddEmployeeForm />;
+      return <AddEmployeeForm onModalEditCallBack={data?.onModalEditCallBack} />;
     case ModalType.EDIT_EMPLOYEE:
-      return <EditEmployeeForm employeeData={data as EmployeeWithAssociations} />;
+      return (
+        <EditEmployeeForm
+          employeeData={data?.employee as EmployeeWithAssociations}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
     case ModalType.DELETE_EMPLOYEE:
-      return <DeleteEmployeeForm employeeData={data as EmployeeWithAssociations} />;
+      return (
+        <DeleteEmployeeForm
+          employeeData={data?.employee as EmployeeWithAssociations}
+          onModalDeleteCallBack={data?.onModalDeleteCallBack}
+        />
+      );
 
     case ModalType.ADVANCED_CALLOUT_SEARCH:
       return <CallOutsAdvancedSearch />;
@@ -74,18 +84,18 @@ function RenderModalBody({
       return (
         <DeleteCallOutForm
           onModalDeleteCallBack={data?.onModalDeleteCallBack as (callOutId: string) => void}
-          callOutData={data.callOut as CallOutWithAssociations}
+          callOutData={data?.callOut as CallOutWithAssociations}
         />
       );
 
     case ModalType.RESET_PASSWORD:
-      return <ResetSupervisorPassword supervisorId={data.supervisorId} />;
+      return <ResetSupervisorPassword supervisorId={data?.supervisorId} />;
 
     case ModalType.CREATE_AND_SEND_INVITE:
-      return <CreateCredentialInviteAndEmailItToSupervisor supervisorId={data.supervisorId} />;
+      return <CreateCredentialInviteAndEmailItToSupervisor supervisorId={data?.supervisorId} />;
 
     case ModalType.RESEND_INVITE:
-      return <ResendCreateCredentialInviteByEmail supervisorId={data.supervisorId} />;
+      return <ResendCreateCredentialInviteByEmail supervisorId={data?.supervisorId} />;
     default:
       return <></>;
   }

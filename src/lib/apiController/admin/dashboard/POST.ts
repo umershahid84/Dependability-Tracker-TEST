@@ -15,12 +15,6 @@ export default async function getAdminDashboardDataUpdateStatusApiHandler( //NOS
 
     const currentCallOutCount = await CallOut.count();
 
-    console.log('\n\n I CANT COUNT', {
-      currentCount,
-      count,
-      currentCallOutCount
-    });
-
     if (currentCallOutCount === count) {
       return res.status(200).json({data: false});
     }

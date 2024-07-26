@@ -5,8 +5,9 @@ import {trim} from '../../../lib/utils/shared/strings';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 
-export type AddOrEditEmployeeFormProps = {
+export type DeleteEmployeeFormProps = {
   employeeData?: EmployeeWithAssociations;
+  onModalDeleteCallBack: (employeeId: string) => void;
 };
 
 const styles = {
@@ -16,7 +17,10 @@ const styles = {
   disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
 };
 
-export function DeleteEmployeeForm({employeeData}: Readonly<AddOrEditEmployeeFormProps>) {
+export function DeleteEmployeeForm({
+  employeeData,
+  onModalDeleteCallBack
+}: Readonly<DeleteEmployeeFormProps>) {
   const isMounted: boolean = useIsMounted();
   const [inputValue, setInputValue] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
@@ -40,7 +44,8 @@ export function DeleteEmployeeForm({employeeData}: Readonly<AddOrEditEmployeeFor
 
     setInputValue('');
     if (didDelete) {
-      window.dispatchEvent(new CustomEvent('employeeUpdated'));
+      onModalDeleteCallBack(employeeData?.id);
+      // window.dispatchEvent(new CustomEvent('employeeUpdated'));
     }
   };
 

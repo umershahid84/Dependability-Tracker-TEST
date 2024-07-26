@@ -12,7 +12,15 @@ const styles = {
   button: 'toggle-details px-2 py-1 bg-slate-400 hover:bg-[var(--green)] text-white rounded mr-2 '
 };
 
-export function EmployeeListItem({employee}: Readonly<{employee: EmployeeWithAssociations}>) {
+export function EmployeeListItem({
+  employee,
+  onModalDeleteCallBack,
+  onModalEditCallBack
+}: Readonly<{
+  employee: EmployeeWithAssociations;
+  onModalDeleteCallBack?: (employeeId: string) => void;
+  onModalEditCallBack?: (employee: EmployeeWithAssociations) => void;
+}>) {
   const isMounted: boolean = useIsMounted();
   const [show, setShow] = useState<boolean>(false);
 
@@ -59,7 +67,12 @@ export function EmployeeListItem({employee}: Readonly<{employee: EmployeeWithAss
         </div>
       </div>
 
-      <EmployeeListItemAccordion employee={employee} show={show} />
+      <EmployeeListItemAccordion
+        show={show}
+        employee={employee}
+        onModalEditCallBack={onModalEditCallBack}
+        onModalDeleteCallBack={onModalDeleteCallBack}
+      />
     </div>
   );
 }

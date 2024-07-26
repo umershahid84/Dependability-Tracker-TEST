@@ -2,6 +2,7 @@
 import {EmployeeFormData} from './create-employee';
 import {ModalAction} from '../../components/ Modal';
 import {makeToast, ToastTypes} from '../../components';
+import {EmployeeWithAssociations} from '../../lib/db/controller';
 
 export type EditEmployeeProps = {
   formData: EmployeeFormData;
@@ -11,7 +12,7 @@ export type EditEmployeeProps = {
 export const EditEmployee = async ({
   formData,
   id
-}: Readonly<EditEmployeeProps>): Promise<boolean> => {
+}: Readonly<EditEmployeeProps>): Promise<EmployeeWithAssociations | null> => {
   try {
     const updateEmployeeData: EditEmployeeProps = {
       id: id,
@@ -40,7 +41,9 @@ export const EditEmployee = async ({
         message: 'Employee Updated!'
       });
       window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
-      return true;
+      const {data} = (await response.json()) as {data: EmployeeWithAssociations};
+
+      return data;
     }
   } catch (error) {
     console.error(error);
@@ -50,6 +53,6 @@ export const EditEmployee = async ({
       message: String(error),
       timeOut: 7500
     });
-    return false;
+    return null;
   }
 };

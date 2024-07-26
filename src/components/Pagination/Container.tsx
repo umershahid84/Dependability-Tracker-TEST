@@ -3,22 +3,29 @@ import {useEffect, useState} from 'react';
 import {PaginationHeader} from './PaginationHeader';
 import {PaginationFooter} from './PaginationFooter';
 import {RenderCallOutsListProps} from '../CallOuts/CallOutsList/helpers';
+import {EmployeeWithAssociations} from '../../lib/db/controller';
 
 export type PaginationContainerProps = {
   data: any;
   queryParams: any;
   searchParams?: any;
   setQueryParams: any;
-  onModalDeleteCallBack?: RenderCallOutsListProps['onModalDeleteCallBack'];
-  onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
+  onModalDeleteCallBack?:
+    | RenderCallOutsListProps['onModalDeleteCallBack']
+    | ((employeeId: string) => void);
+  onModalEditCallBack?:
+    | RenderCallOutsListProps['onModalEditCallBack']
+    | ((employee: EmployeeWithAssociations) => void);
   RenderList: ({
     data,
     onModalEditCallBack,
     onModalDeleteCallBack
   }: {
     data: any;
-    onModalDeleteCallBack?: (calloutId: string) => void;
-    onModalEditCallBack?: RenderCallOutsListProps['onModalEditCallBack'];
+    onModalDeleteCallBack?: (calloutId: string) => void | ((employeeId: string) => void);
+    onModalEditCallBack?:
+      | RenderCallOutsListProps['onModalEditCallBack']
+      | ((employee: EmployeeWithAssociations) => void);
   }) => React.JSX.Element[];
 };
 

@@ -27,15 +27,11 @@ export const checkForCallOutUpdates = async (currentCount: number): Promise<bool
 export const handleCallOutUpdates = async (
   currentCount: number
 ): Promise<ApiData<AdminDashboardData> | null> => {
-  console.log('CURRENT COUNT', currentCount);
   const hasUpdates = await checkForCallOutUpdates(currentCount);
 
-  console.log('HAS UPDATES:', hasUpdates);
   if (!hasUpdates) return null;
 
   const adminData = await getAdminDashData();
-
-  console.log('UPDATED ADMIN DATA');
 
   return adminData ?? null;
 };
@@ -161,14 +157,10 @@ export default function AdminDashboardPage() {
         setAdminData(data ?? null);
         setLoading(false);
         if (!updateInterval) {
-          console.log('UPDATE INTERVAL NOT SET', data);
           const interval = setInterval(async () => {
-            console.log('Interval');
             const updateData: ApiData<AdminDashboardData> | null = await handleCallOutUpdates(
               adminData?.totalCallOuts ?? data?.totalCallOuts ?? 0
             );
-
-            console.log('UPDATE DATA,', updateData);
             updateData && setAdminData(updateData.data as AdminDashboardData);
           }, 30000);
 

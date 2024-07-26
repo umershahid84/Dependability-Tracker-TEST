@@ -10,7 +10,7 @@ export function DivisionPageContainer({
 }>) {
   return (
     <DivisionLayout isAdmin={isAdmin}>
-      <div className="flex flex-col flex-wrap justify-center items-center gap-8">
+      <div className="w-full flex flex-col flex-wrap justify-center items-center gap-8">
         <h3 className="mt-8 text-2xl">
           <strong>Create CallOut</strong>
         </h3>

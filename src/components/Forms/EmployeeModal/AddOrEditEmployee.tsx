@@ -9,13 +9,17 @@ import {CreateEmployeeProps, defaultEmployeeFormData, EditEmployeeProps} from '.
 export type AddOrEditEmployeeFormProps = {
   type: 'Add Employee' | 'Edit Employee';
   employeeData?: EmployeeWithAssociations;
-  onSubmit: (props: CreateEmployeeProps | EditEmployeeProps) => Promise<boolean>;
+  onModalEditCallBack: (employee: EmployeeWithAssociations, isNew?: boolean) => void;
+  onSubmit: (
+    props: CreateEmployeeProps | EditEmployeeProps
+  ) => Promise<EmployeeWithAssociations | null>;
 };
 
 export function AddOrEditEmployeeForm({
   type,
   onSubmit,
-  employeeData
+  employeeData,
+  onModalEditCallBack
 }: Readonly<AddOrEditEmployeeFormProps>) {
   const isMounted: boolean = useIsMounted();
   const {divisions}: UseDivisions = useDivisions();
@@ -28,12 +32,14 @@ export function AddOrEditEmployeeForm({
     e.preventDefault();
     e.stopPropagation();
 
-    let successful = false;
+    let successful: EmployeeWithAssociations | null = null;
 
     if (type === 'Add Employee') {
       successful = await onSubmit({
         formData
       });
+
+      successful && onModalEditCallBack(successful, true);
     }
 
     if (type === 'Edit Employee') {
@@ -41,13 +47,15 @@ export function AddOrEditEmployeeForm({
         formData,
         id: employeeData?.id
       });
+
+      successful && onModalEditCallBack(successful);
     }
 
     if (successful) {
       setFormData(defaultEmployeeFormData);
     }
 
-    window.dispatchEvent(new CustomEvent('employeeUpdated'));
+    // window.dispatchEvent(new CustomEvent('employeeUpdated'));
   };
 
   useEffect(() => {

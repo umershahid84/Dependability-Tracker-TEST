@@ -1,6 +1,8 @@
 'use client';
+import {ApiData} from '../../lib/apiController';
 import {ModalAction} from '../../components/ Modal';
 import {makeToast, ToastTypes} from '../../components';
+import {EmployeeWithAssociations} from '../../lib/db/controller';
 
 export type EmployeeFormData = {
   name: string;
@@ -29,7 +31,7 @@ export type CreateEmployeeProps = {
 
 export const CreateEmployee = async ({
   formData
-}: Readonly<CreateEmployeeProps>): Promise<boolean> => {
+}: Readonly<CreateEmployeeProps>): Promise<EmployeeWithAssociations | null> => {
   try {
     const response = await fetch(`/api/admin/employees`, {
       method: 'POST',
@@ -38,6 +40,8 @@ export const CreateEmployee = async ({
       },
       body: JSON.stringify({...formData})
     });
+
+    const {data} = (await response.json()) as ApiData<EmployeeWithAssociations>;
 
     if (!response.ok) {
       throw new Error('Failed to create employee');
@@ -48,7 +52,7 @@ export const CreateEmployee = async ({
         message: 'Employee Created Successfully'
       });
       window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
-      return true;
+      return data as EmployeeWithAssociations;
     }
   } catch (error) {
     console.error(error);
@@ -58,6 +62,6 @@ export const CreateEmployee = async ({
       message: String(error),
       timeOut: 7500
     });
-    return false;
+    return null;
   }
 };

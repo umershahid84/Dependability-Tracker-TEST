@@ -12,10 +12,14 @@ const styles = {
 
 export function EmployeeListItemAccordion({
   show,
-  employee
+  employee,
+  onModalDeleteCallBack,
+  onModalEditCallBack
 }: Readonly<{
   show: boolean;
   employee: EmployeeWithAssociations;
+  onModalDeleteCallBack?: (employeeId: string) => void;
+  onModalEditCallBack?: (employee: EmployeeWithAssociations) => void;
 }>) {
   const handleOnClick = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -28,7 +32,11 @@ export function EmployeeListItemAccordion({
     if (buttonName.textContent === 'Edit') {
       window.dispatchEvent(
         new CustomEvent('modalEvent', {
-          detail: {action: ModalAction.OPEN, type: ModalType.EDIT_EMPLOYEE, payload: employee}
+          detail: {
+            action: ModalAction.OPEN,
+            type: ModalType.EDIT_EMPLOYEE,
+            payload: {employee, onModalEditCallBack}
+          }
         })
       );
     }
@@ -36,7 +44,11 @@ export function EmployeeListItemAccordion({
     if (buttonName.textContent === 'Delete') {
       window.dispatchEvent(
         new CustomEvent('modalEvent', {
-          detail: {action: ModalAction.OPEN, type: ModalType.DELETE_EMPLOYEE, payload: employee}
+          detail: {
+            action: ModalAction.OPEN,
+            type: ModalType.DELETE_EMPLOYEE,
+            payload: {employee, onModalDeleteCallBack}
+          }
         })
       );
     }
