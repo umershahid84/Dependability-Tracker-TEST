@@ -9,7 +9,7 @@ export const supervisorListStyles = {
   span: 'w-auto flex flex-wrap flex-row gap-4 justify-center items-center',
   listContainer: 'w-full flex flex-col items-center justify-center gap-4 overflow-y-auto mt-6',
   containerClassName:
-    'w-full flex flex-row justify-between items-center gap-4 bg-gray-800 p-2 rounded-md mt-6 relative',
+    'w-full flex flex-wrap flex-row justify-between items-center gap-4 bg-gray-800 p-2 rounded-md mt-6 relative',
   div: 'w-full flex flex-col md:flex-row justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6'
 };
 export type SupervisorsSortBy =

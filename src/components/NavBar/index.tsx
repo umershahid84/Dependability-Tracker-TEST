@@ -4,11 +4,11 @@ import {useRouter} from 'next/router';
 import {trim} from '../../lib/utils/shared/strings';
 
 const navClasses = trim(`w-full flex flex-wrap flex-row justify-center items-center gap-6 md:gap-16 
-                    hide-on-print mt-24 sm:mt-8`);
+                    hide-on-print mt-20 sm:mt-8`);
 const linkClasses = `hover:scale-110 text-lg text-gray-300 print:text-black text-center rounded-md text-center`;
 const activeLinkClass = 'text-[var(--green)] text-lg underline underline-offset-8 text-center';
-const adminClassName = trim(`absolute top-28 sm:top-2 right-[155px] p-3 rounded-md text-xl
-                        hover:bg-[var(--green)] Text-outline bg-slate-700 hide-on-print`);
+const adminClassName = trim(`absolute top-28 sm:top-2 right-[115px] p-2 rounded-md 
+                        hover:bg-[var(--green)] bg-slate-700 hide-on-print`);
 
 export type NavLinks = {href: string; text: string}[];
 

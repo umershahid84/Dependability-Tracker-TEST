@@ -7,11 +7,13 @@ import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib
 import deleteEmployeeCallOutApiHandler from '../../../lib/apiController/callouts/DELETE';
 
 export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  const token: JwtPayload | undefined | void = await enforceAdminOnly(req, res);
-
+  // allow admins and supervisors to access this route
   if (req.method === 'GET') {
     return getCallOutsApiHandler(req, res);
   }
+
+  // If not a GET request, then the user must be an admin
+  const token: JwtPayload | undefined | void = await enforceAdminOnly(req, res);
 
   if (req.method === 'PUT') {
     return editEmployeeCallOutApiHandler(req, res, token as JwtPayload);

@@ -151,7 +151,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
 
       <Form
         onEnter={handleSubmit}
-        className={`flex flex-col justify-center items-center w-full min-w-[450px] sm:min-w-[650px] lg:min-w-[850px] max-w-2xl bg-slate-900 p-4
+        className={`flex flex-col justify-center items-center w-full sm:min-w-[650px] lg:min-w-[850px] max-w-2xl bg-slate-900 p-4
    rounded-md gap-2 hide-on-print`}>
         <div className="w-full grid grid-cols-2 mt-4 gap-x-16 gap-y-4">
           <SelectEmployeeName

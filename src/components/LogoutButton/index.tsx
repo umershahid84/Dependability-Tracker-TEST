@@ -6,8 +6,8 @@ import {ClientAPI, Logout} from '../../client-api';
 import {trim} from '../../lib/utils/shared/strings';
 
 const styles = {
-  logout: `absolute top-28 sm:top-2 right-2 p-3 rounded-md tracking-wide text-xl
-           hover:bg-[var(--green)] Text-outline bg-slate-700`
+  logout: `absolute top-28 sm:top-2 right-2 p-2 rounded-md tracking-wide
+           hover:bg-[var(--green)] bg-slate-700`
 };
 
 export const LogoutButton = ({className}: {className?: string}) => {
