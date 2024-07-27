@@ -6,6 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "removeTel": "npx next telemetry disable",
     "ts": "node --env-file=./.env -r ts-node/register",
     "seedWithCredentialInvites": "npm run seed -- credentialInvites",
     "createEnv": "node -r ts-node/register ./src/scripts/createEnv.ts",

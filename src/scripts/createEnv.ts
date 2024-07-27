@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 const envData = {
   DB_PORT: '3306',
-  EMAIL_PORT: '465',
+
   SEND_EMAILS: 'true',
   DB_DIALECT: 'mysql',
   EMAIL_SECURE: 'true',
@@ -15,6 +15,7 @@ const envData = {
   //   CHANGE THESE VALUES WITH YOUR OWN
   // Leave the keys, ie DB_USER as is
   // Change any values within <>, be sure to remove the <> like the values above
+  EMAIL_PORT: '465',
   DB_USER: '<username>',
   DB_PASS: '<password>',
   EMAIL_USER: '<email_user>',
@@ -45,7 +46,7 @@ function createEnvFile(createTestEnv = false) {
       value = crypto.randomBytes(32).toString('hex');
     }
 
-    envFile += `${key} = "${value}"\n`;
+    envFile += `${key} = ${value}\n`;
   }
   fs.writeFileSync(envPath, envFile);
   console.log('Environment file created successfully');
@@ -56,6 +57,7 @@ if (require.main === module) {
     ,
     ,
     createTestEnv,
+    emailPort,
     dbUser,
     dbPass,
     emailUser,
@@ -67,6 +69,9 @@ if (require.main === module) {
     jwtSecret
   ] = process.argv;
 
+  if (emailPort) {
+    envData.EMAIL_PORT = emailPort;
+  }
   if (dbUser) {
     envData.DB_USER = dbUser;
   }

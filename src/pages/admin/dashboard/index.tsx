@@ -1,10 +1,51 @@
 import {useEffect, useState} from 'react';
 import {useIsMounted} from '../../../hooks';
 import Loading from '../../../components/Loading';
-import {checkForCallOutUpdates, getAdminDashData} from './helpers';
-import {AdminLayout, CallOutTrendsChart} from '../../../components';
 import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../../lib/utils';
+import {AdminLayout, CallOutTrendsChart, makeToast, ToastTypes} from '../../../components';
 import {AdminDashboardData, getDashboardData} from '../../../lib/apiController/admin/dashboard';
+
+export const checkForCallOutUpdates = async (currentCount: number): Promise<boolean> => {
+  const response = await fetch('/api/admin/dashboard', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({currentCount})
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+
+  const {data} = await response.json();
+
+  return data ?? false;
+};
+
+export const getAdminDashData = async () => {
+  try {
+    const response = await fetch('/api/admin/dashboard');
+
+    if (!response.ok) {
+      makeToast({
+        type: ToastTypes.Error,
+        title: 'Error',
+        message: 'Failed to fetch data'
+      });
+    }
+
+    const adminData = await response.json();
+    return adminData;
+  } catch (error) {
+    makeToast({
+      type: ToastTypes.Error,
+      title: 'Error',
+      message: 'Failed to fetch data'
+    });
+    return null;
+  }
+};
 
 export const getServerSideProps = async (): Promise<{props: {data: AdminDashboardData | null}}> => {
   const data = await getDashboardData();
