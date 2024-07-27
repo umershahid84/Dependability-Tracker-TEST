@@ -44,6 +44,8 @@ input:-o-autofill:active {
   --warning: #ff9f1a;
   --info: #1bc2ff;
 
+  --color: #424242;
+
   scrollbar-width: thin;
   scrollbar-color: rgb(51 65 85) rgb(28, 33, 37);
 }

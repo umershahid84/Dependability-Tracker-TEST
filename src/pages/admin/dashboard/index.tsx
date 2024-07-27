@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useIsMounted} from '../../../hooks';
-import {ApiData} from '../../../lib/apiController';
 import Loading from '../../../components/Loading';
+import {ApiData} from '../../../lib/apiController';
 import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../../lib/utils';
-import {AdminLayout, makeToast, ToastTypes} from '../../../components';
 import {AdminDashboardData} from '../../../lib/apiController/admin/dashboard';
+import {AdminLayout, CallOutTrendsChart, makeToast, ToastTypes} from '../../../components';
 
 export const checkForCallOutUpdates = async (currentCount: number): Promise<boolean> => {
   const response = await fetch('/api/admin/dashboard', {
@@ -21,103 +21,8 @@ export const checkForCallOutUpdates = async (currentCount: number): Promise<bool
 
   const {data} = await response.json();
 
-  return data;
+  return data ?? false;
 };
-
-export const handleCallOutUpdates = async (
-  currentCount: number
-): Promise<ApiData<AdminDashboardData> | null> => {
-  const hasUpdates = await checkForCallOutUpdates(currentCount);
-
-  if (!hasUpdates) return null;
-
-  const adminData = await getAdminDashData();
-
-  return adminData ?? null;
-};
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
-
-function CallOutChart({callOutTrends}: {callOutTrends: AdminDashboardData['callOutTrends']}) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<any>(null); // Using a ref to store the chart instance
-
-  useEffect(() => {
-    const createChart = async () => {
-      const {Chart, registerables} = await import('chart.js/auto');
-      Chart.register(...registerables);
-
-      const buildMonthLabels = (months: string[]) => {
-        return months.map(month => {
-          const [year, _month] = month.split('-');
-          return `${_month} ${year}`;
-        });
-      };
-
-      const sortedByMonthArray = callOutTrends?.sort((a, b) => {
-        if (a.year === b.year) {
-          return months.indexOf(a.month) - months.indexOf(b.month);
-        }
-        return parseInt(a.year) - parseInt(b.year);
-      });
-
-      if (callOutTrends) {
-        if (chartRef.current) {
-          chartRef.current.destroy();
-        }
-
-        chartRef.current = new Chart(canvasRef.current as HTMLCanvasElement, {
-          type: 'line',
-          data: {
-            labels: buildMonthLabels(
-              sortedByMonthArray?.map(month => `${month.year}-${month.month}`) ?? []
-            ),
-            datasets: [
-              {
-                label: 'CallOuts',
-                data: callOutTrends.map(month => month.count),
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-      }
-    };
-
-    createChart();
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    };
-  }, [callOutTrends]);
-
-  return <canvas ref={canvasRef}></canvas>;
-}
 
 export const getAdminDashData = async () => {
   try {
@@ -147,36 +52,41 @@ export default function AdminDashboardPage() {
   const isMounted = useIsMounted();
   const [loading, setLoading] = useState<boolean>(false);
   const [adminData, setAdminData] = useState<AdminDashboardData | null>(null);
-  const [updateInterval, setUpdateInterval] = useState<NodeJS.Timeout | null>(null);
+
+  async function handleCallOutUpdates(): Promise<void> {
+    const hasUpdates = await checkForCallOutUpdates(adminData?.totalCallOuts ?? 0);
+
+    if (!hasUpdates) {
+      setTimeout(handleCallOutUpdates, 49000);
+      return;
+    }
+
+    const {data} = await getAdminDashData();
+
+    data && setAdminData(data);
+  }
 
   useEffect(() => {
-    isMounted &&
-      (async () => {
-        setLoading(true);
-        const {data}: ApiData<AdminDashboardData> = await getAdminDashData();
-        setAdminData(data ?? null);
-        setLoading(false);
-        if (!updateInterval) {
-          const interval = setInterval(async () => {
-            const updateData: ApiData<AdminDashboardData> | null = await handleCallOutUpdates(
-              adminData?.totalCallOuts ?? data?.totalCallOuts ?? 0
-            );
-            updateData && setAdminData(updateData.data as AdminDashboardData);
-          }, 30000);
-
-          setUpdateInterval(interval);
-        }
-      })();
-
-    return () => {
-      if (updateInterval) {
-        clearInterval(updateInterval);
-        setUpdateInterval(null);
-      }
+    const fetchData = async () => {
+      setLoading(true);
+      const {data}: ApiData<AdminDashboardData> = await getAdminDashData();
+      setAdminData(data ?? null);
+      setLoading(false);
     };
+
+    if (isMounted) {
+      fetchData();
+    }
 
     //eslint-disable-next-line
   }, [isMounted]);
+
+  useEffect(() => {
+    if (adminData?.totalCallOuts && isMounted) {
+      setTimeout(handleCallOutUpdates, 49000);
+    }
+    //eslint-disable-next-line
+  }, [adminData?.totalCallOuts, isMounted]);
 
   return (
     <AdminLayout>
@@ -224,7 +134,7 @@ export default function AdminDashboardPage() {
             <div className="w-full flex flex-col gap-4 mb-4">
               <div className="bg-gray-800 p-4 rounded-md drop-shadow-md">
                 <h2 className="text-lg font-medium mb-4 underline underline-offset-4 ">
-                  Callouts Within The Last Twelve Hours
+                  Call-Outs Within The Last Twelve Hours
                 </h2>
                 <div className="flex flex-row w-auto overflow-x-auto gap-8 p-2">
                   {adminData?.callOutsWithinLastTwelveHours?.map(callout => {
@@ -258,7 +168,7 @@ export default function AdminDashboardPage() {
               <h2 className="text-lg font-medium mb-4 underline underline-offset-4 text-center">
                 Callout Trends
               </h2>
-              <CallOutChart callOutTrends={adminData?.callOutTrends} />
+              <CallOutTrendsChart callOutTrends={adminData?.callOutTrends} />
             </div>
           </>
         )}

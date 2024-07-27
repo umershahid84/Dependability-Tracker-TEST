@@ -14,20 +14,14 @@ export type AdminDashboardData = {
   fiveMostFrequentCallOutReasons: [string, number][];
   callOutsWithinLastTwelveHours?: CallOutWithAssociations[];
   callOutTrends?: {
-    month: string;
-    year: string;
     count: any;
+    year: string;
+    month: string;
   }[];
 };
 
-const getCalloutTrendChartData = async () => {
+const getCalloutTrendChartData = async (callOuts: CallOutWithAssociations[]) => {
   try {
-    // const callOuts = (await CallOut.findAll()).map(callout =>
-    //   callout.get({plain: true})
-    // ) as unknown as CallOutWithAssociations[];
-
-    const callOuts = (await getCallOutFromDB.all()) as CallOutWithAssociations[];
-
     // create object with key as year-month and value as count of callOuts
     // to generate a trend chart
     const groupedByMonthAndDate = callOuts.reduce((acc, callout) => {
@@ -67,11 +61,6 @@ const getCalloutTrendChartData = async () => {
       'December'
     ];
 
-    // Map the groupedByMonthAndDate object to an array
-    // Converting the year-month key to month name and year
-    // and sorting the array by year and month
-    // creates an array of objects like:
-    // { month: 'January', year: '2023', count: 20 },
     const sortedByMonthArray = Object.entries(groupedByMonthAndDate)
       .map(([date, count]) => {
         const [year, month] = date.split('-');
@@ -103,6 +92,7 @@ export default async function getAdminDashboardDataApiHandler( //NOSONAR
     const leaveTypes = await LeaveType.findAll();
     const employeeCallOutFrequencyMap: Record<string, number> = {};
     const numberOfLeaveTypeOccurrenceMap: Record<string, number> = {};
+    const callOuts = (await getCallOutFromDB.all()) as CallOutWithAssociations[];
 
     // for each leave type count the number of times there is a callout with that leave type as a reason
     for (const leaveType of leaveTypes) {
@@ -114,13 +104,11 @@ export default async function getAdminDashboardDataApiHandler( //NOSONAR
       numberOfLeaveTypeOccurrenceMap[leaveType.reason] = leaveTypeCallOuts;
     }
 
-    // for each employee count the number of callouts
-    const callOuts = await CallOut.findAll();
     for (const callOut of callOuts) {
-      if (employeeCallOutFrequencyMap[callOut.employee_id]) {
-        employeeCallOutFrequencyMap[callOut.employee_id]++;
+      if (employeeCallOutFrequencyMap[callOut.employee.id]) {
+        employeeCallOutFrequencyMap[callOut.employee.id]++;
       } else {
-        employeeCallOutFrequencyMap[callOut.employee_id] = 1;
+        employeeCallOutFrequencyMap[callOut.employee.id] = 1;
       }
     }
 
@@ -149,7 +137,7 @@ export default async function getAdminDashboardDataApiHandler( //NOSONAR
         totalCallOuts: callOuts.length,
         fiveMostFrequentCallOutReasons,
         callOutsWithinLastTwelveHours,
-        callOutTrends: await getCalloutTrendChartData(),
+        callOutTrends: await getCalloutTrendChartData(callOuts),
         //@ts-ignore
         fiveMostFrequentCallers: await Promise.all(fiveMostFrequentCallers)
       }
