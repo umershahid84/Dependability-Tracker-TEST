@@ -5,9 +5,9 @@ import {
 } from '../../../db/controller';
 import {Request} from 'express';
 import {NextRequest} from 'next/server';
-import type {ApiData} from '../../index';
 import type {NextApiResponse} from 'next';
 import {EditEmployeeProps} from '../../../../client-api';
+import {validateAddEmployeeForm, type ApiData} from '../../index';
 
 export default async function putEmployeesApiHandler(
   req: NextRequest & Request,
@@ -15,6 +15,8 @@ export default async function putEmployeesApiHandler(
 ) {
   try {
     const {body} = req as {body: EditEmployeeProps};
+
+    await validateAddEmployeeForm(body.formData);
 
     let updatedEmployee: number | EmployeeWithAssociations | null =
       await updateEmployeeInDB.withEmployeeData(body.id, body.formData);

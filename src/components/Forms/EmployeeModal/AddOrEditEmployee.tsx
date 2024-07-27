@@ -54,8 +54,6 @@ export function AddOrEditEmployeeForm({
     if (successful) {
       setFormData(defaultEmployeeFormData);
     }
-
-    // window.dispatchEvent(new CustomEvent('employeeUpdated'));
   };
 
   useEffect(() => {

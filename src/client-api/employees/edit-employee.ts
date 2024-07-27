@@ -32,8 +32,13 @@ export const EditEmployee = async ({
       body: JSON.stringify({...updateEmployeeData})
     });
 
+    const {data, error} = (await response.json()) as {
+      data: EmployeeWithAssociations;
+      error: string;
+    };
+
     if (!response.ok) {
-      throw new Error('Failed to update employee');
+      throw new Error(error ?? 'Failed to update employee');
     } else {
       makeToast({
         title: 'Success',
@@ -41,7 +46,6 @@ export const EditEmployee = async ({
         message: 'Employee Updated!'
       });
       window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
-      const {data} = (await response.json()) as {data: EmployeeWithAssociations};
 
       return data;
     }

@@ -1,17 +1,18 @@
 import React from 'react';
 import {Request} from 'express';
 import {DivisionReport} from '../../../../components';
+import {getTokenForServerSideProps} from '../../../../auth';
 import {getDivisionFromDB} from '../../../../lib/db/controller';
-import type {DivisionAttributes} from '../../../../lib/db/models/types';
 import {getServerSidePropsForDivision} from '../../../../lib/utils/server';
-import {getTokenForServerSideProps, JwtPayload, Redirect} from '../../../../auth';
 
 export const getServerSideProps = async (request: {req: Request}) => {
-  const props1 = await getServerSidePropsForDivision(request);
-  const token: JwtPayload | Redirect | undefined = await getTokenForServerSideProps(request);
-  const isAdmin = token && 'isAdmin' in token ? token.isAdmin : false;
+  const [props1, token, divisions] = await Promise.all([
+    getServerSidePropsForDivision(request),
+    getTokenForServerSideProps(request),
+    getDivisionFromDB.all()
+  ]);
 
-  const divisions: DivisionAttributes[] = await getDivisionFromDB.all();
+  const isAdmin = token && 'isAdmin' in token ? token.isAdmin : false;
 
   return {
     props: {

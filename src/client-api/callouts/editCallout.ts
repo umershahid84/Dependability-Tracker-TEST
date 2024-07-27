@@ -21,7 +21,7 @@ export const EditCallOut = async (
     });
     const callOutData: ApiData<CallOutWithAssociations> = await response.json();
     if (!response.ok) {
-      throw new Error('Failed to Edit Callout');
+      throw new Error(callOutData?.error ?? 'Failed to Edit Callout');
     }
     return {
       data: callOutData.data,

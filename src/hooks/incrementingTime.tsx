@@ -42,7 +42,7 @@ export function useIncrementingTime(): UseIncrementingTime {
   useEffect(() => {
     isMounted && startTimeInterval();
     return () => {
-      handleClearCallTimeInterval();
+      isMounted && handleClearCallTimeInterval();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);

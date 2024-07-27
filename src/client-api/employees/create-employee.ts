@@ -41,10 +41,10 @@ export const CreateEmployee = async ({
       body: JSON.stringify({...formData})
     });
 
-    const {data} = (await response.json()) as ApiData<EmployeeWithAssociations>;
+    const {error, data} = (await response.json()) as ApiData<EmployeeWithAssociations>;
 
     if (!response.ok) {
-      throw new Error('Failed to create employee');
+      throw new Error(error ?? 'Failed to create employee');
     } else {
       makeToast({
         title: 'Success',

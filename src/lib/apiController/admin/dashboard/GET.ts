@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request} from 'express';
+import {LeaveType} from '../../../db';
 import type {NextApiResponse} from 'next';
-import {Employee, LeaveType} from '../../../db';
 import {getCallOutFromDB} from '../../../db/controller';
 import type {ApiData} from '../../../../lib/apiController';
-import CallOut, {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
+import type {CallOutWithAssociations} from '../../../../lib/db/models/types';
 
 // inviteToken, password, email
 
@@ -20,7 +20,7 @@ export type AdminDashboardData = {
   }[];
 };
 
-const getCalloutTrendChartData = async (callOuts: CallOutWithAssociations[]) => {
+const getCalloutTrendChartData = (callOuts: CallOutWithAssociations[]) => {
   try {
     // create object with key as year-month and value as count of callOuts
     // to generate a trend chart
@@ -84,25 +84,26 @@ const getCalloutTrendChartData = async (callOuts: CallOutWithAssociations[]) => 
   }
 };
 
-export default async function getAdminDashboardDataApiHandler( //NOSONAR
-  req: Request,
-  res: NextApiResponse<ApiData<AdminDashboardData>>
-) {
+export const getDashboardData = async (): Promise<AdminDashboardData | null> => {
   try {
-    const leaveTypes = await LeaveType.findAll();
     const employeeCallOutFrequencyMap: Record<string, number> = {};
     const numberOfLeaveTypeOccurrenceMap: Record<string, number> = {};
-    const callOuts = (await getCallOutFromDB.all()) as CallOutWithAssociations[];
 
-    // for each leave type count the number of times there is a callout with that leave type as a reason
-    for (const leaveType of leaveTypes) {
-      const leaveTypeCallOuts = await CallOut.count({
-        where: {
-          leave_type_id: leaveType.id
+    const [leaveTypes, callOuts] = await Promise.all([
+      LeaveType.findAll(),
+      getCallOutFromDB.all() as Promise<CallOutWithAssociations[]>
+    ]);
+
+    callOuts.forEach(callOut => {
+      const leaveType = leaveTypes.find(type => type.id === callOut.leaveType.id);
+      if (leaveType) {
+        if (numberOfLeaveTypeOccurrenceMap[leaveType.reason]) {
+          numberOfLeaveTypeOccurrenceMap[leaveType.reason]++;
+        } else {
+          numberOfLeaveTypeOccurrenceMap[leaveType.reason] = 1;
         }
-      });
-      numberOfLeaveTypeOccurrenceMap[leaveType.reason] = leaveTypeCallOuts;
-    }
+      }
+    });
 
     for (const callOut of callOuts) {
       if (employeeCallOutFrequencyMap[callOut.employee.id]) {
@@ -113,35 +114,97 @@ export default async function getAdminDashboardDataApiHandler( //NOSONAR
     }
 
     const fiveMostFrequentCallOutReasons = Object.entries(numberOfLeaveTypeOccurrenceMap)
-      .toSorted(([, count]) => count)
+      .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 5);
 
     const fiveMostFrequentCallers = Object.entries(employeeCallOutFrequencyMap)
-      .toSorted(([, count]) => count)
+      .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 5)
-      .map(async ([employeeId, count]) => {
-        const employee = await Employee.findByPk(employeeId);
-        if (employee) {
+      .map(([employeeId, count]) => {
+        const callOut = callOuts.find(callOut => callOut.employee.id === employeeId);
+        if (callOut) {
+          const employee = callOut.employee;
           employeeId = employee.name;
         }
 
         return [employeeId, count];
       });
 
-    const callOutsWithinLastTwelveHours = (await getCallOutFromDB.all({
-      callout_date_range: [new Date(Date.now() - 12 * 60 * 60 * 1000), new Date()]
-    })) as CallOutWithAssociations[];
+    const callOutsWithinLastTwelveHours = callOuts
+      .filter(callOut => {
+        const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+        return callOut.callout_date >= twelveHoursAgo;
+      })
+      .map(callOut => {
+        // return all the properites but convert any dates to a date string
+        return {
+          ...callOut,
+          createdAt: callOut.createdAt.toISOString(),
+          updatedAt: callOut.updatedAt.toISOString(),
+          callout_date: callOut.callout_date.toISOString(),
+          callout_time: callOut.callout_time.toISOString(),
+          employee: {
+            ...callOut.employee,
+            createdAt: callOut.employee.createdAt.toISOString(),
+            updatedAt: callOut.employee.updatedAt.toISOString(),
+            divisions: callOut.employee.divisions.map(division => ({
+              ...division,
+              createdAt: division.createdAt.toISOString(),
+              updatedAt: division.updatedAt.toISOString()
+            }))
+          },
+          shift_date: callOut.shift_date.toISOString(),
+          shift_time: callOut.shift_time.toISOString(),
+          supervisor: {
+            ...callOut.supervisor,
+            createdAt: callOut.supervisor.createdAt.toISOString(),
+            updatedAt: callOut.supervisor.updatedAt.toISOString(),
+            supervisor_info: {
+              ...callOut.supervisor.supervisor_info,
+              createdAt: callOut.supervisor.supervisor_info.createdAt.toISOString(),
+              updatedAt: callOut.supervisor.supervisor_info.updatedAt.toISOString(),
+              divisions: callOut.supervisor.supervisor_info.divisions.map(division => ({
+                ...division,
+                createdAt: division.createdAt.toISOString(),
+                updatedAt: division.updatedAt.toISOString()
+              }))
+            }
+          },
+          leaveType: {
+            ...callOut.leaveType,
+            createdAt: callOut.leaveType.createdAt.toISOString(),
+            updatedAt: callOut.leaveType.updatedAt.toISOString()
+          }
+        };
+      });
 
-    return res.status(200).json({
-      data: {
-        totalCallOuts: callOuts.length,
-        fiveMostFrequentCallOutReasons,
-        callOutsWithinLastTwelveHours,
-        callOutTrends: await getCalloutTrendChartData(callOuts),
-        //@ts-ignore
-        fiveMostFrequentCallers: await Promise.all(fiveMostFrequentCallers)
-      }
-    });
+    return {
+      // @ts-ignore
+      fiveMostFrequentCallers,
+      // @ts-ignore
+      callOutsWithinLastTwelveHours,
+      totalCallOuts: callOuts.length,
+      fiveMostFrequentCallOutReasons,
+      callOutTrends: getCalloutTrendChartData(callOuts)
+    };
+  } catch (error) {
+    console.error('Error in getCallOutsApiHandler:', error);
+    return null;
+  }
+};
+
+export default async function getAdminDashboardDataApiHandler( //NOSONAR
+  req: Request,
+  res: NextApiResponse<ApiData<AdminDashboardData>>
+) {
+  try {
+    const data = await getDashboardData();
+
+    if (!data) {
+      throw new Error('Error fetching data');
+    }
+
+    return res.status(200).json({data});
   } catch (error) {
     console.error('Error in getCallOutsApiHandler:', error);
     return res.status(500).json({error: String(error)});

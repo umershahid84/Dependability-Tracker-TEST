@@ -1,92 +1,52 @@
 import {useEffect, useState} from 'react';
 import {useIsMounted} from '../../../hooks';
 import Loading from '../../../components/Loading';
-import {ApiData} from '../../../lib/apiController';
+import {checkForCallOutUpdates, getAdminDashData} from './helpers';
+import {AdminLayout, CallOutTrendsChart} from '../../../components';
 import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../../lib/utils';
-import {AdminDashboardData} from '../../../lib/apiController/admin/dashboard';
-import {AdminLayout, CallOutTrendsChart, makeToast, ToastTypes} from '../../../components';
+import {AdminDashboardData, getDashboardData} from '../../../lib/apiController/admin/dashboard';
 
-export const checkForCallOutUpdates = async (currentCount: number): Promise<boolean> => {
-  const response = await fetch('/api/admin/dashboard', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({currentCount})
-  });
+export const getServerSideProps = async (): Promise<{props: {data: AdminDashboardData | null}}> => {
+  const data = await getDashboardData();
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  const {data} = await response.json();
-
-  return data ?? false;
+  return {
+    props: {data}
+  };
 };
 
-export const getAdminDashData = async () => {
-  try {
-    const response = await fetch('/api/admin/dashboard');
+let interval: NodeJS.Timeout | null = null;
 
-    if (!response.ok) {
-      makeToast({
-        type: ToastTypes.Error,
-        title: 'Error',
-        message: 'Failed to fetch data'
-      });
-    }
-
-    const adminData = await response.json();
-    return adminData;
-  } catch (error) {
-    makeToast({
-      type: ToastTypes.Error,
-      title: 'Error',
-      message: 'Failed to fetch data'
-    });
-    return null;
-  }
-};
-
-export default function AdminDashboardPage() {
+export default function AdminDashboardPage(props: Readonly<{data: AdminDashboardData | null}>) {
   const isMounted = useIsMounted();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [adminData, setAdminData] = useState<AdminDashboardData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [adminData, setAdminData] = useState<AdminDashboardData | null>(props.data);
 
   async function handleCallOutUpdates(): Promise<void> {
     const hasUpdates = await checkForCallOutUpdates(adminData?.totalCallOuts ?? 0);
 
     if (!hasUpdates) {
-      setTimeout(handleCallOutUpdates, 49000);
       return;
     }
-
     const {data} = await getAdminDashData();
 
     data && setAdminData(data);
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const {data}: ApiData<AdminDashboardData> = await getAdminDashData();
-      setAdminData(data ?? null);
+    if (!interval && isMounted) {
       setLoading(false);
+      const oneMinute = 60000;
+      interval = setInterval(handleCallOutUpdates, oneMinute);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
     };
-
-    if (isMounted) {
-      fetchData();
-    }
-
-    //eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
-
-  useEffect(() => {
-    if (adminData?.totalCallOuts && isMounted) {
-      setTimeout(handleCallOutUpdates, 49000);
-    }
-    //eslint-disable-next-line
-  }, [adminData?.totalCallOuts, isMounted]);
 
   return (
     <AdminLayout>

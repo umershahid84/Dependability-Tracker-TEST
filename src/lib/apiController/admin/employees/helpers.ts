@@ -36,6 +36,8 @@ export const validateAddEmployeeForm = async (
     // if the user is an admin or supervisor, they must have all divisions
 
     if (formData.isAdmin === '1' || formData.isSupervisor === '1') {
+      console.log('formData.division', formData.division);
+      console.log('divisionIds.join(', ')', divisionIds.join(','));
       if (formData.division !== divisionIds.join(',')) {
         validated = false;
         throw new Error('Admins and Supervisors must belong to all divisions');

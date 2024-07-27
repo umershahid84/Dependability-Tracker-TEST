@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "ts-node ./src/scripts/seed.ts",
-    "ts": "ts-node",
-    "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles"
+    "ts": "node --env-file=./.env -r ts-node/register",
+    "seed": "node --env-file=./.env -r ts-node/register ./src/scripts/seed.ts",
+    "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
+    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
   },
   "nodemonConfig": {
     "ignore": [

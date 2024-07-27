@@ -18,7 +18,7 @@ export const DeleteCallOut = async (
     });
     const callOutData: ApiData<CallOutAttributes['id']> = await response.json();
     if (!response.ok) {
-      throw new Error('Failed to Delete Callout');
+      throw new Error(callOutData?.error ?? 'Failed to Delete Callout');
     }
     return {
       data: callOutData.data,

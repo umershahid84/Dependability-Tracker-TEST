@@ -12,7 +12,7 @@ export * from './CallOuts';
 export * from './Division';
 export * from './ModelList';
 export * from './Employees';
-export * from './Pagination';
+// export * from './Pagination';
 export * from './Supervisors';
 export * from './LogoutButton';
 export * from './DivisionReport';

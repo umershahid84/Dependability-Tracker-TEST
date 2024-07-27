@@ -21,8 +21,10 @@ export const DeleteEmployee = async ({id}: Readonly<DeleteEmployeeProps>): Promi
       body: JSON.stringify({...deleteEmployeeData})
     });
 
+    const {error} = await response.json();
+
     if (!response.ok) {
-      throw new Error('Failed to delete employee');
+      throw new Error(error ?? 'Failed to delete employee');
     } else {
       makeToast({
         title: 'Success',
