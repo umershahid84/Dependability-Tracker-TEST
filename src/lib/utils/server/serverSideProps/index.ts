@@ -83,7 +83,7 @@ export const getServerSidePropsForTwoWeekCallOutHistory = async (request: {req: 
     // get callOuts for the last two weeks
     const callOuts: (CallOutWithAssociations | null)[] = (
       ((await getCallOutFromDB.all({
-        shift_date_range: [new Date(Date.now() - 12096e5), new Date(Date.now())]
+        created_at_range: [new Date(Date.now() - 12096e5), new Date(Date.now())]
       })) as CallOutWithAssociations[]) ?? []
     ).filter(callOut =>
       callOut?.employee?.divisions?.map(div => div.id).includes(division?.id as string)

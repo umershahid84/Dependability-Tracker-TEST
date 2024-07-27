@@ -2,8 +2,10 @@
 import {Request} from 'express';
 import {JwtPayload} from '../../../auth';
 import type {NextApiResponse} from 'next';
+import {LoginCredential} from '../../db';
 import type {ApiData} from '../../../lib/apiController';
 import {createCallOutInDB} from '../../../lib/db/controller';
+import {sendCallOutDetails} from '../../email/sendCallOutDetails';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
 
 // inviteToken, password, email
@@ -93,12 +95,22 @@ export default async function createEmployeeCallout( //NOSONAR
       return res.status(500).json({error: 'Failed to create callout'});
     }
 
+    // email the callout details to all supervisors, only include email
+    const supervisorEmails = (await LoginCredential.findAll())
+      .map((credential: LoginCredential) => credential.email)
+      .filter(email => email);
+
+    if (process.env.SEND_EMAILS === 'true' && callOut) {
+      try {
+        sendCallOutDetails(supervisorEmails.join(', '), callOut);
+      } catch (error) {
+        console.error('Error sending email: ', error);
+      }
+    }
     res.status(200).json({message: 'Callout Created Successfully', data: callOut});
   } catch (error) {
-    console.error('Error creating Callout: ', req.body);
-    return {
-      error: String(error)
-    };
+    console.error('Error creating Callout: ', error);
+    res.status(500).json({error: 'Error creating Callout'});
   }
 }
 

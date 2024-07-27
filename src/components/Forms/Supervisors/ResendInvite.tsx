@@ -60,7 +60,7 @@ export function ResendCreateCredentialInviteByEmail({
       makeToast({
         title: 'Success',
         type: ToastTypes.Success,
-        message: 'Invite sent to ' + data.data?.login_credentials?.email
+        message: 'Invite sent to ' + email
       });
 
       setLoading(false);

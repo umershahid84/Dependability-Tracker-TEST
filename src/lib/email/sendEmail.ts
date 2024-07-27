@@ -96,7 +96,7 @@ export const sendEmail = async (email: Email): Promise<boolean> => {
   }
   try {
     const transporter = createTransporter();
-    const transportResult = await transporter.sendMail(email);
+    await transporter.sendMail(email);
 
     return true;
   } catch (error) {
