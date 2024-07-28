@@ -8,6 +8,7 @@
     "ts": "node --env-file=./.env -r ts-node/register",
     "build": "next build && tsc -p tsconfig.node.json",
     "start": "NODE_ENV=production node ./dist/server/index.js",
+    "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "seedWithCredentialInvites": "npm run seed -- credentialInvites",
     "createEnv": "node -r ts-node/register ./src/scripts/createEnv.ts",
     "seed": "node --env-file=./.env -r ts-node/register ./src/scripts/seed.ts",

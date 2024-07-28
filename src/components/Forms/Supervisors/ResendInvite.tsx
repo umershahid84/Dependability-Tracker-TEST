@@ -54,7 +54,7 @@ export function ResendCreateCredentialInviteByEmail({
       const data: ApiData<SupervisorWithAssociations> = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Error resetting credentials');
+        throw new Error(data?.error ?? 'Error resetting credentials');
       }
 
       makeToast({
