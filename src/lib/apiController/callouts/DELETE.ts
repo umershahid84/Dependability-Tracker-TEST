@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../lib/apiController';
 import {deleteCallOutFromDB} from '../../../lib/db/controller';
 import {CallOutAttributes} from '../../../lib/db/models/Callout';
@@ -8,7 +7,7 @@ import {CallOutAttributes} from '../../../lib/db/models/Callout';
 // inviteToken, password, email
 export default async function deleteEmployeeCallOutApiHandler( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<CallOutAttributes['id']>>
+  res: Response<ApiData<CallOutAttributes['id']>>
 ) {
   try {
     const id = req?.body?.id as string;

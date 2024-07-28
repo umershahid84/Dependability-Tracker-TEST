@@ -1,13 +1,12 @@
-import {Request} from 'express';
 import type {ApiData} from '../../index';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {getDivisionFromDB} from '../../../db/controller';
 import {DivisionAttributes} from '../../../db/models/types';
 import {getJwtTokenForAPI, JwtPayload} from '../../../../auth';
 
 export default async function getDivisionsApiHandler(
   req: Request,
-  res: NextApiResponse<ApiData<DivisionAttributes[]>>
+  res: Response<ApiData<DivisionAttributes[]>>
 ) {
   const token: JwtPayload | undefined = await getJwtTokenForAPI(req, res);
 

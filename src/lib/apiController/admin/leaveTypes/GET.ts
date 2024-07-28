@@ -1,12 +1,11 @@
-import {Request} from 'express';
 import type {ApiData} from '../../index';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {getLeaveTypeFromDB} from '../../../db/controller';
 import {LeaveTypeAttributes} from '../../../db/models/types';
 
 export default async function getLeaveTypesApiHandler(
   req: Request,
-  res: NextApiResponse<ApiData<LeaveTypeAttributes[]>>
+  res: Response<ApiData<LeaveTypeAttributes[]>>
 ) {
   try {
     const leaveTypes = await getLeaveTypeFromDB.all();

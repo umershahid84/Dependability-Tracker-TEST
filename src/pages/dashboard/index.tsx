@@ -1,6 +1,6 @@
 import React from 'react';
 import {Request} from 'express';
-import {InferGetServerSidePropsType} from 'next';
+import type {InferGetServerSidePropsType} from 'next';
 import {DivisionLayout, DashboardLinks} from '../../components';
 import {getTokenForServerSideProps, JwtPayload, ClientSidePayload, Redirect} from '../../auth';
 

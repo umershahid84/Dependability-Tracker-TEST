@@ -1,9 +1,11 @@
-import {useEffect, useState} from 'react';
 import {useIsMounted} from '../../../hooks';
+import {useEffect, useState, useRef} from 'react';
 import Loading from '../../../components/Loading';
-import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../../lib/utils';
+import {ApiData} from '../../../lib/apiController';
+import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import {AdminDashboardData} from '../../../lib/apiController/admin/dashboard';
+import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD, makeDate} from '../../../lib/utils';
 import {AdminLayout, CallOutTrendsChart, makeToast, ToastTypes} from '../../../components';
-import {AdminDashboardData, getDashboardData} from '../../../lib/apiController/admin/dashboard';
 
 export const checkForCallOutUpdates = async (currentCount: number): Promise<boolean> => {
   const response = await fetch('/api/admin/dashboard', {
@@ -23,7 +25,7 @@ export const checkForCallOutUpdates = async (currentCount: number): Promise<bool
   return data ?? false;
 };
 
-export const getAdminDashData = async () => {
+export const getAdminDashData = async (): Promise<AdminDashboardData | null> => {
   try {
     const response = await fetch('/api/admin/dashboard');
 
@@ -35,8 +37,8 @@ export const getAdminDashData = async () => {
       });
     }
 
-    const adminData = await response.json();
-    return adminData;
+    const adminData: ApiData<AdminDashboardData> = await response.json();
+    return adminData.data ?? null;
   } catch (error) {
     makeToast({
       type: ToastTypes.Error,
@@ -47,43 +49,195 @@ export const getAdminDashData = async () => {
   }
 };
 
-export const getServerSideProps = async (): Promise<{props: {data: AdminDashboardData | null}}> => {
-  const data = await getDashboardData();
+export const getAdminDataUpdates = async (
+  latestCallOuts: CallOutWithAssociations[]
+): Promise<CallOutWithAssociations[]> => {
+  try {
+    // find the latest callout time
+    let latestCallOutTime = makeDate('1970-01-01T00:00:00.000Z');
 
-  return {
-    props: {data}
-  };
+    latestCallOuts.forEach(callout => {
+      const callOutTime = makeDate(callout.callout_date);
+
+      if (callOutTime > latestCallOutTime) {
+        latestCallOutTime = callOutTime;
+      }
+    });
+
+    const baseURL = '/api/admin/dashboard/update';
+    const query = `?calloutDate=${latestCallOutTime.toISOString()}`;
+
+    const uRL = `${baseURL}${query}`;
+
+    const response = await fetch(uRL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const {data}: ApiData<CallOutWithAssociations[]> = await response.json();
+
+    return data ?? [];
+  } catch (error) {
+    console.error('Error in getAdminDataUpdates:', error);
+    return [];
+  }
 };
 
-let interval: NodeJS.Timeout | null = null;
-
-export default function AdminDashboardPage(props: Readonly<{data: AdminDashboardData | null}>) {
+export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboardData | null}>*/) {
   const isMounted = useIsMounted();
+  const updateCountRef = useRef<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [adminData, setAdminData] = useState<AdminDashboardData | null>(props.data);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const adminDataRef = useRef<AdminDashboardData | null>(null);
+  const [adminData, setAdminData] = useState<AdminDashboardData | null>(null);
 
   async function handleCallOutUpdates(): Promise<void> {
-    const hasUpdates = await checkForCallOutUpdates(adminData?.totalCallOuts ?? 0);
+    const hasUpdates = await checkForCallOutUpdates(adminDataRef?.current?.totalCallOuts ?? 0);
 
     if (!hasUpdates) {
       return;
     }
-    const {data} = await getAdminDashData();
 
-    data && setAdminData(data);
+    if (updateCountRef.current < 5 && adminDataRef.current && hasUpdates) {
+      const data: CallOutWithAssociations[] = await getAdminDataUpdates(
+        adminDataRef?.current?.callOutsWithinLastTwelveHours ?? []
+      );
+
+      if (data) {
+        const newAdminData = {...adminDataRef.current};
+        for (const callout of data) {
+          // only process the callout if it isn't already in the list
+          const callOutIndex = newAdminData?.callOutsWithinLastTwelveHours?.findIndex(
+            ({id}) => id === callout.id
+          );
+
+          if (callOutIndex !== -1) {
+            continue;
+          }
+
+          const reason = callout?.leaveType?.reason;
+          const employee = callout?.employee?.name;
+
+          // if the callout reason is in the top 5 frequent callout reasons list increment the count
+          const callOutReasonIndex = newAdminData?.fiveMostFrequentCallOutReasons?.findIndex(
+            ([reason]) => reason === reason
+          );
+
+          if (newAdminData?.fiveMostFrequentCallOutReasons && callOutReasonIndex !== -1) {
+            if (newAdminData?.fiveMostFrequentCallOutReasons && callOutReasonIndex !== -1) {
+              newAdminData.fiveMostFrequentCallOutReasons[callOutReasonIndex as number][1]++;
+            }
+          } else {
+            newAdminData?.fiveMostFrequentCallOutReasons?.push([reason, 1]);
+          }
+
+          // if the employee is in the top 5 frequent callers list increment the count
+          const employeeIndex = newAdminData?.fiveMostFrequentCallers?.findIndex(
+            ([employee]) => employee === employee
+          );
+
+          if (newAdminData?.fiveMostFrequentCallers && employeeIndex !== -1) {
+            newAdminData.fiveMostFrequentCallers[employeeIndex as number][1]++;
+          } else {
+            newAdminData?.fiveMostFrequentCallers?.push([employee, 1]);
+          }
+
+          // update the callout trends
+          const months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+          ];
+
+          const callOutMonth = months[new Date(callout.callout_date).getMonth()];
+          const callOutYear = String(new Date(callout.callout_date).getFullYear());
+
+          // find the index of the month and year in the callout trends
+
+          const matchingMonthIndex = newAdminData?.callOutTrends?.findIndex(({month, year}) => {
+            return month === callOutMonth && year === callOutYear;
+          });
+
+          if (matchingMonthIndex !== -1) {
+            if (newAdminData?.callOutTrends) {
+              newAdminData.callOutTrends[matchingMonthIndex as number].count++;
+            }
+          } else {
+            newAdminData?.callOutTrends?.push({month: callOutMonth, year: callOutYear, count: 1});
+          }
+
+          const twelveHoursAgo = new Date();
+          twelveHoursAgo.setHours(twelveHoursAgo.getHours() - 12);
+
+          if (new Date(callout.callout_date) > twelveHoursAgo) {
+            newAdminData?.callOutsWithinLastTwelveHours?.unshift(callout);
+          }
+
+          if (newAdminData.totalCallOuts) {
+            newAdminData.totalCallOuts++;
+          } else {
+            newAdminData.totalCallOuts = 1;
+          }
+        }
+
+        // update the admin data
+        adminDataRef.current = {...newAdminData};
+        setAdminData(newAdminData);
+
+        // update the update count ref
+        updateCountRef.current++;
+      }
+    }
+
+    if (updateCountRef.current >= 5 && hasUpdates) {
+      // if there have been more than 5 updates, we need to fetch the entire data again to ensure we are
+      // not missing any edits and to ensure the top-5's are truly accurate
+      const data = await getAdminDashData();
+
+      if (data) {
+        adminDataRef.current = data;
+        updateCountRef.current = 0;
+      }
+    }
   }
 
   useEffect(() => {
-    if (!interval && isMounted) {
-      setLoading(false);
-      const oneMinute = 60000;
-      interval = setInterval(handleCallOutUpdates, oneMinute);
+    adminDataRef.current && setAdminData(adminDataRef.current);
+    // eslint-disable-next-line
+  }, [adminDataRef.current]);
+
+  useEffect(() => {
+    if (!intervalRef.current && isMounted) {
+      getAdminDashData().then(data => {
+        if (data) {
+          adminDataRef.current = data;
+          setLoading(false);
+
+          const oneMinute = 45000;
+          intervalRef.current = setInterval(handleCallOutUpdates, oneMinute);
+        }
+      });
     }
 
     return () => {
-      if (interval) {
-        clearInterval(interval);
-        interval = null;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

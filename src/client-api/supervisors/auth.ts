@@ -1,4 +1,4 @@
-import {NextRequest} from 'next/server';
+import type {NextRequest} from 'next/server';
 import type {JwtPayload} from '../../auth';
 import {RequestCookies} from 'next/dist/compiled/@edge-runtime/cookies';
 
@@ -15,13 +15,19 @@ export const getJwtTokenInEdgeEnvironments = async (
       return undefined;
     }
 
-    const apiResponse = await fetch(new URL(`http://localhost:${process?.env?.PORT ?? '3000'}/api/jwt-verify`, req.url).toString(), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({token: _token})
-    });
+    const apiResponse = await fetch(
+      new URL(
+        `http://localhost:${process?.env?.PORT ?? '3000'}/api/jwt-verify`,
+        req.url
+      ).toString(),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({token: _token})
+      }
+    );
 
     const {token} = (await apiResponse.json()) ?? {};
 

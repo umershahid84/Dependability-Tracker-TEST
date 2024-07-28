@@ -1,18 +1,16 @@
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
 import {
   getSupervisorFromDB,
   getCreateCredentialsInviteFromDB,
   updateCreateCredentialsInviteInDB
 } from '../../../../../db/controller';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../../index';
 import {LoginCredential} from '../../../../../db';
 import {sendCredentialInvite} from '../../../../../email';
 
 export default async function postSupervisorEmailCredentialInviteApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<{email: string}>>
+  req: Request,
+  res: Response<ApiData<{email: string}>>
 ) {
   try {
     const {body} = req as {body: {supervisorsEmail: string; forSupervisor: string}};

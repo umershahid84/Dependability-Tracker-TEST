@@ -1,7 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {ApiData} from '../../../../lib/apiController';
 import {SupervisorOptions} from '../../../db/controller/Supervisor/helpers';
 import {SupervisorWithAssociations} from '../../../../lib/db/models/Supervisor';
@@ -12,15 +10,11 @@ export type booleanOrString = 'true' | 'false' | boolean;
 const limits: EmployeeLimit[] = ['5', '10', '25', '50', '100', '-1'];
 
 export async function getSupervisorsApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<
+  req: Request,
+  res: Response<
     ApiData<ModelWithPagination<SupervisorWithAssociations> | SupervisorWithAssociations[]>
   >
 ) {
-  console.log('\n\nGET request to /api/admin/supervisors');
-
-  console.log('\n\nRAW QUERY PARAMS:', req.query);
-
   let {limit, offset, showCredentials, showCreateCredentialsInvite} = req.query as {
     offset: string | undefined;
     limit: EmployeeLimit | undefined;

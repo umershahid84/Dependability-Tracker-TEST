@@ -1,14 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../lib/apiController';
 
 // inviteToken, password, email
 
-export default async function supervisorLoginApiHandler(
-  req: Request,
-  res: NextApiResponse<ApiData>
-) {
+export default async function supervisorLoginApiHandler(req: Request, res: Response<ApiData>) {
   if (req.method !== 'GET') {
     return res.status(405).json({error: 'Method not allowed'});
   }

@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
 import {JwtPayload} from '../../../auth';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../lib/apiController';
 import {DefaultCallOutFormData} from '../../../client-api';
 import {updateCallOutInDB} from '../../../lib/db/controller';
@@ -11,7 +10,7 @@ import {EditableCalloutProps} from '../../db/controller/Callout/helpers';
 // inviteToken, password, email
 export default async function editEmployeeCallOutApiHandler( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<CallOutWithAssociations>>,
+  res: Response<ApiData<CallOutWithAssociations>>,
   token?: JwtPayload | null
 ) {
   try {

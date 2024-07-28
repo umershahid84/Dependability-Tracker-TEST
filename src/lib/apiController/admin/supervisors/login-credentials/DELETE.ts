@@ -1,6 +1,4 @@
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../index';
 import {JwtPayload} from '../../../../../auth';
 import {
@@ -12,8 +10,8 @@ import {SupervisorWithAssociations} from '../../../../db/models/Supervisor';
 import {LoginCredentialsWithAssociations} from '../../../../db/models/LoginCredential';
 
 export default async function revokeSupervisorLoginCredentials(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<SupervisorWithAssociations | null>>,
+  req: Request,
+  res: Response<ApiData<SupervisorWithAssociations | null>>,
   token: JwtPayload
 ) {
   try {

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+
+import {Request, Response} from 'express';
 import {getJwtTokenForAPI} from '../../auth';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {createEmployeeCallout, type ApiData} from '../../lib/apiController';
@@ -9,7 +9,7 @@ import {createEmployeeCallout, type ApiData} from '../../lib/apiController';
 
 export default async function employeeCalloutSupervisorsApiHandler( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<CallOutWithAssociations>>
+  res: Response<ApiData<CallOutWithAssociations>>
 ) {
   const token = await getJwtTokenForAPI(req, res);
 

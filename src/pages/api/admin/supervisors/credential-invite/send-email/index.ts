@@ -1,11 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {enforceAdminOnly} from '../../../../../../auth';
 import {postSupervisorEmailCredentialInviteApiHandler} from '../../../../../../lib/apiController';
 
-export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
+export default async function handler(req: Request, res: Response) {
   await enforceAdminOnly(req, res);
 
   if (req.method === 'POST') {

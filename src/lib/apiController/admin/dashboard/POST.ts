@@ -1,12 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import CallOut from '../../../../lib/db/models/Callout';
 import type {ApiData} from '../../../../lib/apiController';
 
 export default async function getAdminDashboardDataUpdateStatusApiHandler( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<boolean>>
+  res: Response<ApiData<boolean>>
 ) {
   try {
     const {currentCount} = req.body as {currentCount: string};

@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {getJwtTokenForAPI} from '../../../../auth';
 import type {ApiData} from '../../../../lib/apiController';
 import {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
@@ -11,7 +10,7 @@ import {getCallOutFromDB, ModelWithPagination} from '../../../../lib/db/controll
 
 export default async function getCallOutsApiHandler( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<ModelWithPagination<CallOutWithAssociations>>>
+  res: Response<ApiData<ModelWithPagination<CallOutWithAssociations>>>
 ) {
   // Allow Admins and Supervisors to access this route
   await getJwtTokenForAPI(req, res);
@@ -26,14 +25,6 @@ export default async function getCallOutsApiHandler( //NOSONAR
   if (callOutSearchOptions) {
     callOutSearchOptions = JSON.parse(callOutSearchOptions as string) as GetAllCallOutOptions;
   }
-
-  console.log('\n\nGET request to /api/admin/callouts');
-  console.log({
-    sortBy,
-    limit,
-    offset,
-    callOutSearchOptions
-  });
 
   if (limit === '-1') {
     limit = undefined;

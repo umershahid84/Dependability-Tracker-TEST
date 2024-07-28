@@ -47,9 +47,6 @@ export const getCallOutFromDB = {
   ): Promise<CallOutWithAssociations[] | ModelWithPagination<CallOutWithAssociations>> => {
     const where = options ? buildCalloutAllQueryOptions(options) : {};
     const pageOptions = paginationOptions ?? {};
-
-    console.log('\n\nWHERE:\n', where);
-
     const convertedOptions = convertOptions(pageOptions);
 
     try {

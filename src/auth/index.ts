@@ -1,5 +1,4 @@
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import jwt, {Algorithm} from 'jsonwebtoken';
 import type {ApiData} from '../lib/apiController';
 import {getLoginCredentialFromDB} from '../lib/db/controller/LoginCredential';
@@ -82,7 +81,7 @@ export const getTokenForServerSideProps = async (request: {
 // Can be used to validate the token in API calls
 export const getJwtTokenForAPI = async (
   req: Request,
-  res: NextApiResponse<ApiData>
+  res: Response<ApiData>
 ): Promise<undefined | JwtPayload> => {
   const token = await getTokenForServerSideProps({req});
 
@@ -98,8 +97,8 @@ export const getJwtTokenForAPI = async (
 
 export const enforceAdminOnly = async (
   req: Request,
-  res: NextApiResponse
-): Promise<undefined | JwtPayload | void> => {
+  res: Response
+): Promise<undefined | JwtPayload | void | Response<any, Record<string, any>>> => {
   const token = await getJwtTokenForAPI(req, res);
   if (!token?.isAdmin) {
     return res.status(401).json({error: 'Unauthorized request'});

@@ -1,7 +1,7 @@
 import {NextResponse, NextRequest} from 'next/server';
 import {adminPaths, adminOnly} from './middleware/admins';
-import {getJwtTokenInEdgeEnvironments} from './client-api/supervisors/auth';
 import {supervisorOnly, supervisorPaths} from './middleware/supervisor';
+import {getJwtTokenInEdgeEnvironments} from './client-api/supervisors/auth';
 
 // works on client-side only, does not work for the api routes
 export async function middleware(request: NextRequest) {
@@ -41,7 +41,10 @@ export const config = {
     {source: '/admin/supervisors'},
     {source: '/divisions/public-parking'},
     {source: '/divisions/employee-parking'},
-    {source: '/divisions/ground-transportation'}
+    {source: '/divisions/ground-transportation'},
+    {source: '/divisions/public-parking/reports'},
+    {source: '/divisions/employee-parking/reports'},
+    {source: '/divisions/ground-transportation/reports'}
   ],
   api: {
     externalResolver: true,

@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {JwtPayload, signJwtToken} from '../../auth';
 import type {ApiData} from '../../lib/apiController';
 import {getCreateCredentialsInviteFromDB} from '../../lib/db/controller';
@@ -12,7 +11,7 @@ import {CreateCredentialsInviteWithAssociations} from '../../lib/db/models/Creat
 
 export default async function createLoginCredentialsApiHandler(
   req: Request,
-  res: NextApiResponse<ApiData>
+  res: Response<ApiData>
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({error: 'Method not allowed'});

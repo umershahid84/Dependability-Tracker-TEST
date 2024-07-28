@@ -1,14 +1,9 @@
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {EditEmployeeProps} from '../../../../client-api';
 import {deleteEmployeeFromDB} from '../../../db/controller';
 
-export default async function deleteEmployeesApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData>
-) {
+export default async function deleteEmployeesApiHandler(req: Request, res: Response<ApiData>) {
   try {
     const {body} = req as {body: EditEmployeeProps};
 

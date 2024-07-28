@@ -3,15 +3,13 @@ import {
   updateEmployeeInDB,
   EmployeeWithAssociations
 } from '../../../db/controller';
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {EditEmployeeProps} from '../../../../client-api';
 import {validateAddEmployeeForm, type ApiData} from '../../index';
 
 export default async function putEmployeesApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<EmployeeWithAssociations>>
+  req: Request,
+  res: Response<ApiData<EmployeeWithAssociations>>
 ) {
   try {
     const {body} = req as {body: EditEmployeeProps};

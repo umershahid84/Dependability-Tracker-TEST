@@ -6,12 +6,12 @@ import {ip} from './ip';
 import * as fs from 'fs';
 import {parse} from 'url';
 import * as path from 'path';
-
 import sequelize from '../lib/db/connection';
 import express, {Express, Request, Response} from 'express';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+export const TLS_PORT = PORT + 5;
 
 export const checkForTLS = (): {
   hasSupportForTLS: boolean;
@@ -74,7 +74,7 @@ export const startServer = async () => {
   app.use(express.json({limit: '50mb'}));
 
   // await successful connection to the database
-  await sequelize.sync({force: false});
+  await sequelize.sync({force: false, logging: false});
   // start the next functionality and bootstrap it to the express server
   await nextExpress(app);
 
@@ -87,10 +87,9 @@ export const startServer = async () => {
 
   if (hasSupportForTLS) {
     const hostIP = ip;
-    const TLS_PORT = PORT + 5;
     const https = require('https');
     const httpsServer = https.createServer(tlsOptions, app);
-    await new Promise<void>(resolve => httpsServer.listen(TLS_PORT,hostIP, resolve));
+    await new Promise<void>(resolve => httpsServer.listen(TLS_PORT, hostIP, resolve));
     console.log(`🔒 Local Network Server ready at https://${hostIP}:${TLS_PORT}\n`); //NOSONAR
   }
 };

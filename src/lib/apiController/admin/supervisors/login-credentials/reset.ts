@@ -1,6 +1,4 @@
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../index';
 import {JwtPayload} from '../../../../../auth';
 import {
@@ -13,8 +11,8 @@ import {LoginCredentialsWithAssociations} from '../../../../db/models/LoginCrede
 import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../../../../db/controller';
 
 export default async function resetSupervisorLoginCredentials(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<SupervisorWithAssociations | null>>,
+  req: Request,
+  res: Response<ApiData<SupervisorWithAssociations | null>>,
   token: JwtPayload
 ) {
   try {

@@ -1,14 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
 import {enforceAdminOnly} from '../../../../auth';
-import {getSupervisorsApiHandler} from '../../../../lib/apiController';
+import {getAdminDashboardDataUpdateApiHandler} from '../../../../lib/apiController/admin/dashboard';
 
 export default async function handler(req: Request, res: Response) {
   await enforceAdminOnly(req, res);
 
   if (req.method === 'GET') {
-    return getSupervisorsApiHandler(req, res);
+    return getAdminDashboardDataUpdateApiHandler(req, res);
   }
+
   return res.status(405).json({error: 'Method not allowed'});
 }
 

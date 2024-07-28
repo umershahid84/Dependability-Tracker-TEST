@@ -10,7 +10,9 @@ export const sendCallOutDetails = async (
   const emailData: Email = {
     from: process.env.EMAIL_SENDER as string,
     to: email,
-    subject: 'Dependability Tracker - Create Credential Invite',
+    subject: `Call Out Details for ${
+      callOutDetails.employee.name
+    } on ${callOutDetails.callout_date.toLocaleDateString()} at ${callOutDetails.callout_time.toLocaleTimeString()}`,
     html: callOutDetailsTemplate(callOutDetails)
   };
 

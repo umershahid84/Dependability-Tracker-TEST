@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
+import {Request, Response} from 'express';
 import {JwtPayload} from '../../../auth';
-import type {NextApiResponse} from 'next';
 import {LoginCredential} from '../../db';
 import type {ApiData} from '../../../lib/apiController';
 import {createCallOutInDB} from '../../../lib/db/controller';
@@ -12,7 +11,7 @@ import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/d
 
 export default async function createEmployeeCallout( //NOSONAR
   req: Request,
-  res: NextApiResponse<ApiData<CallOutWithAssociations>>,
+  res: Response<ApiData<CallOutWithAssociations>>,
   token?: JwtPayload | null
 ) {
   try {

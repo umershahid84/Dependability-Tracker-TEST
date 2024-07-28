@@ -4,15 +4,13 @@ import {
   getSupervisorFromDB,
   EmployeeWithAssociations
 } from '../../../db/controller';
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
 import type {ApiData} from '../../index';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
 
 export default async function getEmployeesApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<ModelWithPagination<EmployeeWithAssociations>>>
+  req: Request,
+  res: Response<ApiData<ModelWithPagination<EmployeeWithAssociations>>>
 ) {
   try {
     let {sortBy, limit, offset} = req.query as {

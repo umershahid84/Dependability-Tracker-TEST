@@ -4,12 +4,10 @@ import {
   postEmployeesApiHandler,
   deleteEmployeesApiHandler
 } from '../../../lib/apiController';
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {enforceAdminOnly} from '../../../auth';
 
-export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
+export default async function handler(req: Request, res: Response) {
   const authToken = await enforceAdminOnly(req, res);
 
   if (!authToken) {

@@ -86,6 +86,7 @@ export const getSequelize = (props?: SequelizeConfig): Sequelize =>
     props?.dbUser ?? process.env.DB_USER ?? defaultSequelizeConfig.dbUser,
     props?.dbPassword ?? process.env.DB_PASS ?? defaultSequelizeConfig.dbPassword,
     {
+      logging: false,
       host: props?.options?.host ?? process.env.DB_HOST ?? defaultDbOptions.host,
       port: parseInt(
         props?.options?.port?.toString() ?? process.env.DB_PORT ?? defaultDbOptions.port.toString()

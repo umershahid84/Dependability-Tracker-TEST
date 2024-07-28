@@ -1,14 +1,12 @@
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../../index';
 import {CreateCredentialsInvite} from '../../../../db';
 import {getSupervisorFromDB} from '../../../../db/controller';
 import {SupervisorWithAssociations} from '../../../../db/models/Supervisor';
 
 export default async function deleteSupervisorCredentialInviteApiHandler(
-  req: NextRequest & Request,
-  res: NextApiResponse<ApiData<SupervisorWithAssociations | null>>
+  req: Request,
+  res: Response<ApiData<SupervisorWithAssociations | null>>
 ) {
   try {
     const {body} = req as {body: {forSupervisor: string}};

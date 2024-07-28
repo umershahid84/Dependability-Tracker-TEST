@@ -1,16 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import type {ApiData} from '../../lib/apiController';
 import {getSupervisorFromDB} from '../../lib/db/controller';
 import {JwtPayload, verifyJwtToken_RequiresNode} from '../../auth';
 import {SupervisorWithAssociations} from '../../lib/db/models/Supervisor';
 
 // inviteToken, password, email
-
 export default async function jwtVerificationApiHandler(
   req: Request,
-  res: NextApiResponse<{token: JwtPayload} | ApiData>
+  res: Response<{token: JwtPayload} | ApiData>
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({error: 'Method not allowed'});
@@ -32,10 +30,18 @@ export default async function jwtVerificationApiHandler(
 
   // see if the user exists in the database
   const existingUser: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
-    verifiedToken.supervisorId
+    verifiedToken.supervisorId,
+    {
+      showCredentials: true
+    }
   );
 
   if (!existingUser) {
+    return res.redirect('/api/logout');
+  }
+
+  // see if the user has login credentials
+  if (!existingUser.login_credentials) {
     return res.redirect('/api/logout');
   }
 

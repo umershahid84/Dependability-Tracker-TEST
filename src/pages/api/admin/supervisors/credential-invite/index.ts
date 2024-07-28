@@ -1,15 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request} from 'express';
-import {NextRequest} from 'next/server';
-import type {NextApiResponse} from 'next';
+import {Request, Response} from 'express';
 import {
   postSupervisorCredentialInviteApiHandler,
   deleteSupervisorCredentialInviteApiHandler
 } from '../../../../../lib/apiController';
 import {enforceAdminOnly, JwtPayload} from '../../../../../auth';
 
-export default async function handler(req: NextRequest & Request, res: NextApiResponse) {
-  const token: JwtPayload | undefined | void = await enforceAdminOnly(req, res);
+export default async function handler(req: Request, res: Response) {
+  const token: JwtPayload | undefined | Response<any, Record<string, any>> | void =
+    await enforceAdminOnly(req, res);
 
   if (req.method === 'POST') {
     return postSupervisorCredentialInviteApiHandler(req, res, token as JwtPayload);
