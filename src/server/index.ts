@@ -79,7 +79,7 @@ export const startServer = async () => {
   await nextExpress(app);
 
   // start the http server
-  await new Promise<void>(resolve => httpServer.listen({port: PORT}, resolve));
+  await new Promise<void>(resolve => httpServer.listen(PORT, 'localhost', resolve));
   console.log(`\n🚀 LocalHost Server ready at http://localhost:${PORT}\n`); //NOSONAR
 
   // check for TLS support
@@ -90,7 +90,7 @@ export const startServer = async () => {
     const TLS_PORT = PORT + 5;
     const https = require('https');
     const httpsServer = https.createServer(tlsOptions, app);
-    await new Promise<void>(resolve => httpsServer.listen({port: TLS_PORT}, resolve));
+    await new Promise<void>(resolve => httpsServer.listen(TLS_PORT,hostIP, resolve));
     console.log(`🔒 Local Network Server ready at https://${hostIP}:${TLS_PORT}\n`); //NOSONAR
   }
 };
