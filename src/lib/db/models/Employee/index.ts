@@ -20,8 +20,8 @@ import {
 } from 'sequelize';
 import CallOut from '../Callout';
 import sequelize from '../../connection';
-import {DivisionAttributes} from '../Division';
-import {uuid} from '../../../utils/shared/uuid';
+import { DivisionAttributes } from '../Division';
+import { uuid } from '../../../utils/shared/uuid';
 
 export interface EmployeeAttributes {
   id: string;
@@ -50,11 +50,10 @@ export type EmployeeCreationAttributes = {
 
 class Employee
   extends Model<
-    InferAttributes<Employee, {omit: 'divisions' | 'callOuts'}>,
-    InferCreationAttributes<Employee, {omit: 'divisions' | 'callOuts'}>
+    InferAttributes<Employee, { omit: 'divisions' | 'callOuts' }>,
+    InferCreationAttributes<Employee, { omit: 'divisions' | 'callOuts' }>
   >
-  implements EmployeeAttributes
-{
+  implements EmployeeAttributes {
   // model attributes
   declare name: string;
   declare id: CreationOptional<string>;
@@ -113,6 +112,7 @@ Employee.init(
   },
   {
     sequelize,
+    paranoid: true,
     modelName: 'employee',
     tableName: 'employees',
     underscored: true

@@ -9,8 +9,8 @@ import {
 } from 'sequelize';
 import bcrypt from 'bcrypt';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/shared/uuid';
-import {SupervisorWithAssociations} from '../Supervisor';
+import { uuid } from '../../../utils/shared/uuid';
+import { SupervisorWithAssociations } from '../Supervisor';
 
 export type LoginCredentialsAttributes = {
   id: string;
@@ -51,11 +51,10 @@ export const hashPassword = async (password: string): Promise<string> => {
 
 class LoginCredential
   extends Model<
-    InferAttributes<LoginCredential, {omit: 'supervisor_info'}>,
-    InferCreationAttributes<LoginCredential, {omit: 'supervisor_info'}>
+    InferAttributes<LoginCredential, { omit: 'supervisor_info' }>,
+    InferCreationAttributes<LoginCredential, { omit: 'supervisor_info' }>
   >
-  implements LoginCredentialsAttributes
-{
+  implements LoginCredentialsAttributes {
   // model attributes
   declare email: string;
   declare password: string;
@@ -127,6 +126,7 @@ LoginCredential.init(
       }
     },
     sequelize,
+    paranoid: true,
     modelName: 'login_credential',
     tableName: 'login_credentials',
     underscored: true

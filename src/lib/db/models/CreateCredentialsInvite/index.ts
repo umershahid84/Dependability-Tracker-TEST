@@ -148,6 +148,7 @@ CreateCredentialsInvite.init(
   },
   {
     sequelize,
+    paranoid: true,
     modelName: 'create_credentials_invite',
     timestamps: true
   }

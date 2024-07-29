@@ -6,7 +6,7 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/shared/uuid';
+import { uuid } from '../../../utils/shared/uuid';
 
 export interface DivisionAttributes {
   id: string;
@@ -58,6 +58,7 @@ Division.init(
   },
   {
     sequelize,
+    paranoid: true,
     modelName: 'division',
     tableName: 'divisions',
     underscored: true

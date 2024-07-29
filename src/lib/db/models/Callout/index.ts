@@ -9,10 +9,10 @@ import {
 } from 'sequelize';
 
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/shared/uuid';
-import {EmployeeWithAssociations} from '../Employee';
-import {SupervisorWithAssociations} from '../Supervisor';
-import LeaveType, {LeaveTypeAttributes} from '../LeaveType';
+import { uuid } from '../../../utils/shared/uuid';
+import { EmployeeWithAssociations } from '../Employee';
+import { SupervisorWithAssociations } from '../Supervisor';
+import LeaveType, { LeaveTypeAttributes } from '../LeaveType';
 
 /**
  * Represents the attributes of a CallOut model.
@@ -73,8 +73,7 @@ export type CallOutWithAssociations = {
 
 class CallOut
   extends Model<InferAttributes<CallOut>, InferCreationAttributes<CallOut>>
-  implements CallOutAttributes
-{
+  implements CallOutAttributes {
   declare id: CreationOptional<string>;
   declare shift_date: Date;
   declare shift_time: Date;
@@ -172,6 +171,7 @@ CallOut.init(
   },
   {
     sequelize,
+    paranoid: true,
     modelName: 'callout',
     tableName: 'callouts',
     underscored: true

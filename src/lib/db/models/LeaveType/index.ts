@@ -7,7 +7,7 @@ import {
   InferCreationAttributes
 } from 'sequelize';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/shared/uuid';
+import { uuid } from '../../../utils/shared/uuid';
 
 export interface LeaveTypeAttributes {
   id: string;
@@ -38,7 +38,7 @@ export enum DefaultLeaveTypes {
 }
 
 export interface LeaveTypeCreationAttributes
-  extends Optional<LeaveTypeAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+  extends Optional<LeaveTypeAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class LeaveType extends Model<InferAttributes<LeaveType>, InferCreationAttributes<LeaveType>> {
   // model attributes
@@ -76,6 +76,7 @@ LeaveType.init(
   },
   {
     sequelize,
+    paranoid: true,
     modelName: 'leave_type',
     tableName: 'leave_types',
     underscored: true
