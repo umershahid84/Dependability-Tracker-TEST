@@ -1,40 +1,148 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dependability Tracker
 
-## Getting Started
+Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,`TailwindCSS`, and `TypeScript`, for the sole purpose of tracking when an employee calls out of work.
 
-First, run the development server:
+## Installation
+
+`Node.JS` and `MySQL` are prerequisites but their installation is beyond the scope of the installation methods, you can refer to their documentation if installation is required.
+
+### Download Project from GitHub
+
+#### Via SSH - Linked Key is Required
+
+Open a terminal and navigate to a folder on your system where you would like to save the project folder.
+
+Then run:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:umershahid84/new-dependability-tracker.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Via Zip File Download
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+A zipped project folder can be downloaded from GitHub as well.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+[Dependability Tracker.zip](https://github.com/umershahid84/new-dependability-tracker/archive/refs/heads/main.zip)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Create MySQL Database
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Open a terminal and create the `dependability_tracker` database using the MySQL shell.
 
-## Learn More
+The shell can be accessed via:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+mysql -u <user> -p
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Replace `<user>` with the user needed to access your MySQL database, this is typically root but could be something different.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Enter your password.
 
-## Deploy on Vercel
+Create the database and test database
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+CREATE DATABASE dependability_tracker;
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+CREATE DATABASE dependability_tracker_test;
+```
+
+Then exit the MySQL shell:
+
+```bash
+quit;
+```
+
+### Install Project Dependencies
+
+After the repo has been downloaded and the database has been created, from the root of the project run the following command to install the dependencies:
+
+```bash
+npm i
+```
+
+### Remove Next.JS Telemetry Reporting
+
+Run the following command to disable telemetry collection:
+
+```bash
+npm run removeTel
+```
+
+### Create the .env File
+
+A script has been provided to generate a .env file and populate it with default values. For convenience, a script has been provided that will generate the file with the necessary keys. However, there are variables unique to your environment which can be added manually _AFTER_ the file has been created, _**OR**_ they can be passed as arguments when invoking the script, this is the recommended method. This will generate the file and all the keys with a single command-line command.
+
+#### Generate .env File with Arguments
+
+The following environment variables are unique to your environment and will need to be added. They must be provided, in the same order they are listed here:
+
+Args:
+
+- CREATE_TEST_ENV - true/false : true to generate the env.test file, false to generate a .env file.
+- EMAIL_PORT - number : port for the SMTP relay, typically 465 or 587.
+- DB_USER - string : username for MySQL database access, typically root.
+- DB_PASSWORD - string : password for MySQL database access
+- EMAIL_USER - string : email username for SMTP relay access - This is the noreply address
+- EMAIL_HOST - string : host address for SMTP relay, this can be an IP address or FQDN
+- EMAIL_SENDER - string : email address to 'send' the emails from, this will also be the no reply address
+- TEST_EMAIL_USER - string : email send to address used when running any tests
+
+The syntax for the command is `npm run createEnv -- ARGS IN ORDER, SEPARATED BY A SINGLE SPACE`
+
+Example: `DO NOT COPY AND PASTE THIS COMMAND`
+
+```bash
+npm run createEnv -- false 587 root dbPassword test@test.com smtp.google.com noreply@test.com noreply@test.com testUser@gmail.com
+```
+
+If you make an error, delete the file with `rm .env` and try again. The env file will not overwrite itself once it has been created.
+
+#### Generate .env File with Placeholder values
+
+To generate a .env file with placeholder values run:
+
+```bash
+npm run createEnv
+```
+
+Then open the file and replace the `EMAIL_PORT` and any values within `<>` with your unique environment values. Be sure to save the file and exit.
+
+### Seed the Database with Default Data
+
+To seed the database run the following command:
+
+> `WARNING` Seeding the Database `WILL DESTROY ANY EXISTING DATA`
+
+```bash
+npm run seedWithCredentialInvites
+```
+
+### Generate the Certificate and Keys for TLS:
+
+To generate the credentials needed for TLS run:
+
+```bash
+npm run genTLS
+```
+
+### Generate a Production Build:
+
+```bash
+npm run build
+```
+
+### Start the Server
+
+```bash
+npm start
+```
+
+### Send the Create Credential Email Invite to the Default Admin
+
+To send the email invite so the Admin can generate their login credentials, open a new terminal and navigate to the project root. (Make sure the server is running) Then type the following command, be sure to replace `<emailAddress>` with the administrator's email address. Currently only `@portseattle.org` addresses are supported.
+
+```bash
+npm run sendCredInvite -- <emailAddress>
+```

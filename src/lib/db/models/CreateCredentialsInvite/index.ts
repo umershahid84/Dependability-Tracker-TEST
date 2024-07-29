@@ -9,8 +9,8 @@ import {
 } from 'sequelize';
 import crypto from 'crypto';
 import sequelize from '../../connection';
-import {uuid} from '../../../utils/shared/uuid';
-import Supervisor, {AdminSupervisor, SupervisorWithAssociations} from '../Supervisor';
+import { uuid } from '../../../utils/shared/uuid';
+import Supervisor, { AdminSupervisor, SupervisorWithAssociations } from '../Supervisor';
 
 export interface CreateCredentialsInviteAttributes {
   id: string;
@@ -56,11 +56,10 @@ export type UpdateCredentialsInviteCreationAttributes = {
 
 class CreateCredentialsInvite
   extends Model<
-    InferAttributes<CreateCredentialsInvite, {omit: 'created_by_info' | 'supervisor_info'}>,
-    InferCreationAttributes<CreateCredentialsInvite, {omit: 'created_by_info' | 'supervisor_info'}>
+    InferAttributes<CreateCredentialsInvite, { omit: 'created_by_info' | 'supervisor_info' }>,
+    InferCreationAttributes<CreateCredentialsInvite, { omit: 'created_by_info' | 'supervisor_info' }>
   >
-  implements CreateCredentialsInviteAttributes
-{
+  implements CreateCredentialsInviteAttributes {
   // model attributes
 
   declare id: CreationOptional<string>;
@@ -105,15 +104,13 @@ CreateCredentialsInvite.init(
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isEmail: true
+        isEmail: true,
         //ensure the email is a @portseattle.org
-
-        //TODO: Uncomment this code when the email validation is needed
-        // validateEmail(value: string) {
-        //   if (value && !value?.includes('@portseattle.org')) {
-        //     throw new Error('Email must be from @PortSeattle.org');
-        //   }
-        // }
+        validateEmail(value: string) {
+          if (value && !value?.includes('@portseattle.org')) {
+            throw new Error('Email must be from @PortSeattle.org');
+          }
+        }
       },
       unique: true,
       defaultValue: null

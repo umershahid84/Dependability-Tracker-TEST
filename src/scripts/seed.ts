@@ -31,7 +31,7 @@ if (require.main === module) {
     await seedDatabase();
     // seed callouts only in development if the callouts flag is passed
     if (args.includes('callouts') && process.env.NODE_ENV !== 'production') {
-      console.log('\n\nSeeding callouts...');
+      console.log('\n\nSeeding CallOuts...');
       let numberOfCallOuts = parseInt(args[args.indexOf('callouts') + 1] ?? 20, 10);
 
       if (Number.isNaN(numberOfCallOuts)) numberOfCallOuts = 20;

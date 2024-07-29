@@ -126,7 +126,7 @@ function getRandomTime(date: Date): Date {
 
 // Function to seed callouts
 const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
-  console.log(`\n🌱 Seeding ${numOfSeeds} callOuts...`);
+  console.log(`🌱 Seeding ${numOfSeeds} CallOuts...`);
   await sequelize.sync({force: false});
   try {
     const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
@@ -190,9 +190,9 @@ const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
 
       await CallOut.create(callout);
     }
-    console.log(`✅ Callouts seeded successfully!`);
+    console.log(`✅ CallOuts seeded successfully!`);
   } catch (error) {
-    console.error(`❌ Error seeding callouts: ${error}`);
+    console.error(`❌ Error seeding CallOuts: ${error}`);
   }
 };
 

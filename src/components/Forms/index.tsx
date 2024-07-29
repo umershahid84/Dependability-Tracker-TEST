@@ -11,8 +11,9 @@ import FormInputWithErrors from './FormInputs/FormInputWithErrors';
 export type {FormActionProps} from './FormAction';
 export type {FormInputWithErrorsProps} from './FormInputs/FormInputWithErrors';
 
-export * from './EmployeeModal';
 export * from './CallOut';
+export * from './EmployeeModal';
+export * from './ResetPassword';
 
 export {
   Form,

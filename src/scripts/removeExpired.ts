@@ -43,7 +43,7 @@ if (require.main === module) {
 
   const interval = args[0] ? parseInt(args[0], 10) : intervalInMs;
 
-  console.log(`\n🕰️ Running every ${interval / 1000 / 60} minutes`);
+  console.log(`\n🕰️  Removing expired entries every ${interval / 1000 / 60} minutes`);
 
   removeExpired();
   setInterval(() => {

@@ -1,7 +1,14 @@
 import {getDivisions} from './get-divisions';
 import {getLeaveTypes} from './get-leaveTypes';
 import {DeleteCallOut, EditCallOut, GetCallOuts} from './callouts';
-import {GetSupervisors, Login, Logout, SignUp, getJwtTokenInEdgeEnvironments} from './supervisors';
+import {
+  GetSupervisors,
+  Login,
+  Logout,
+  ResetPassword,
+  SignUp,
+  getJwtTokenInEdgeEnvironments
+} from './supervisors';
 
 import {
   GetEmployees,
@@ -38,6 +45,7 @@ export const ClientAPI = {
     Login,
     Logout,
     SignUp,
+    ResetPassword,
     Read: GetSupervisors,
     VerifyToken: getJwtTokenInEdgeEnvironments
   }

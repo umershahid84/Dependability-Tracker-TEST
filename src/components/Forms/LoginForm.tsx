@@ -1,4 +1,4 @@
-'use client';
+import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import {NextRouter, useRouter} from 'next/router';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
@@ -135,6 +135,13 @@ export default function LoginForm(): React.JSX.Element {
         onAction={handleLogin}
         isValid={isFormValid ?? false}
       />
+
+      <p className="mt-4 mb-2">
+        Forgot password?{' '}
+        <Link href={'/reset-password'} className="text-blue-500 hover:text-[var(--green)]">
+          Reset Credentials.
+        </Link>
+      </p>
     </Form>
   ) : (
     <></>

@@ -29,4 +29,5 @@ export default seedCredentialInvites;
 if (require.main === module) {
   console.log('🌱 Seeding credential invites...');
   seedCredentialInvites();
+  console.log('✅ Credential invites seeded successfully!');
 }

@@ -4,7 +4,6 @@ import crypto from 'crypto';
 
 const envData = {
   DB_PORT: '3306',
-
   SEND_EMAILS: 'true',
   DB_DIALECT: 'mysql',
   EMAIL_SECURE: 'true',
