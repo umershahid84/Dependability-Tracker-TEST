@@ -18,7 +18,7 @@ import {
   HasManyCreateAssociationMixin,
   HasManyRemoveAssociationsMixin
 } from 'sequelize';
-import CallOut from '../Callout';
+import CallOut, { CallOutAttributes, CallOutWithAssociations } from '../Callout';
 import sequelize from '../../connection';
 import { DivisionAttributes } from '../Division';
 import { uuid } from '../../../utils/shared/uuid';
@@ -29,6 +29,7 @@ export interface EmployeeAttributes {
   createdAt: Date;
   updatedAt: Date;
   division_ids: string[];
+  callouts?: (CallOutAttributes | CallOutWithAssociations)[];
 }
 
 export type EmployeeWithAssociations = {
@@ -38,6 +39,7 @@ export type EmployeeWithAssociations = {
   createdAt: Date;
   updatedAt: Date;
   divisions: DivisionAttributes[];
+  callouts?: (CallOutAttributes | CallOutWithAssociations)[];
 };
 
 export type EmployeeCreationAttributes = {
@@ -50,8 +52,8 @@ export type EmployeeCreationAttributes = {
 
 class Employee
   extends Model<
-    InferAttributes<Employee, { omit: 'divisions' | 'callOuts' }>,
-    InferCreationAttributes<Employee, { omit: 'divisions' | 'callOuts' }>
+    InferAttributes<Employee, { omit: 'divisions' | 'callouts' }>,
+    InferCreationAttributes<Employee, { omit: 'divisions' | 'callouts' }>
   >
   implements EmployeeAttributes {
   // model attributes
@@ -77,11 +79,11 @@ class Employee
   declare removeCallOuts: HasManyRemoveAssociationsMixin<CallOut, string>;
 
   declare role?: NonAttribute<string>;
-  declare callOuts?: NonAttribute<CallOut[]>;
+  declare callouts?: NonAttribute<CallOut[]>;
 
   // model associations
   static readonly associations: {
-    callOuts: Association<Employee, CallOut>;
+    callouts: Association<Employee, CallOut>;
   };
 }
 
