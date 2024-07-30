@@ -203,9 +203,6 @@ const seedEmployees = async () => {
       ignoreDuplicates: true
     });
     console.log('  ✅ Employee seeds inserted successfully');
-    const employees = (await Employee.findAll()).map(employee => employee.get({plain: true}));
-
-    console.log('  📄 Employee seeds:', JSON.stringify(employees, null, 2));
   } catch (error) {
     console.error('❌Error inserting employee seeds:', error);
   }
