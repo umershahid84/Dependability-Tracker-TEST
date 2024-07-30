@@ -12,7 +12,7 @@ export default async function seedDivisions() {
       defaultDivisions.map(name => ({name})),
       {ignoreDuplicates: true}
     );
-    console.log('✅ Divisions seeded');
+    console.log('  ✅ Divisions seeds inserted successfully');
   } catch (error) {
     console.error('❌ Error seeding divisions:', error);
   }

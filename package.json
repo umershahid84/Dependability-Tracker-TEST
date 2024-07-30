@@ -4,14 +4,13 @@
   "private": true,
   "scripts": {
     "lint": "next lint",
+    "ts": "node -r ts-node/register",
     "removeTel": "npx next telemetry disable",
-    "ts": "node --env-file=./.env -r ts-node/register",
+    "seed": "ts-node ./src/scripts/seedDb.ts",
     "build": "next build && tsc -p tsconfig.node.json",
+    "createEnv": "npm run ts -- ./src/scripts/createEnv.ts",
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
-    "seedWithCredentialInvites": "npm run seed -- credentialInvites",
-    "createEnv": "node -r ts-node/register ./src/scripts/createEnv.ts",
     "sendCredInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
-    "seed": "node --env-file=./.env -r ts-node/register ./src/scripts/seed.ts",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
     "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production node ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""

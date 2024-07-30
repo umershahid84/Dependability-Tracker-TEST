@@ -178,6 +178,11 @@ const employeeSeeds = [
 const seedEmployees = async () => {
   // get the division ids
   const divisions = await Division.findAll();
+
+  if (divisions.length === 0) {
+    throw new Error('No divisions found');
+  }
+
   const divisionIds = divisions.map(division => division.id);
   const publicParkingId = divisions.find(division => division.name === 'Public Parking')?.id;
 
@@ -197,7 +202,7 @@ const seedEmployees = async () => {
     await Employee.bulkCreate(employeeSeeds as EmployeeCreationAttributes[], {
       ignoreDuplicates: true
     });
-    console.log('✅ Employee seeds inserted successfully');
+    console.log('  ✅ Employee seeds inserted successfully');
   } catch (error) {
     console.error('❌Error inserting employee seeds:', error);
   }

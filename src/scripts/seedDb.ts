@@ -9,15 +9,34 @@ import seedCredentialInvites from '../lib/db/seeds/credentialInvites';
 
 export const seedDatabase = async () => {
   try {
-    console.log('\n🌱 Seeding database...');
+    console.log('\n🌱 Seeding database...\n');
     await sequelize.sync({force: true});
     // run these concurrently
     await Promise.all([seedDivisions(), seedLeaveTypes()]);
-    // cant seed employees until divisions are seeded
-    await seedEmployees();
-    // cant seed supervisors until employees are seeded
-    await seedSupervisors();
-    console.log('✅ Database seeded');
+
+    await new Promise(resolve =>
+      setTimeout(() => {
+        return (async () => {
+          // cant seed employees until divisions are seeded
+          await seedEmployees();
+          // cant seed supervisors until employees are seeded
+          await seedSupervisors();
+
+          await new Promise(resolve => {
+            setTimeout(() => {
+              return (async () => {
+                // create invites for the supervisors to create their credentials
+                await seedCredentialInvites();
+                console.log('\n🌲 Database seeded!');
+                return resolve;
+              })();
+            }, 500);
+          });
+
+          return resolve;
+        })();
+      }, 500)
+    );
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   }
@@ -39,9 +58,6 @@ if (require.main === module) {
       await seedCallOuts(numberOfCallOuts);
     }
 
-    if (args.includes('credentialInvites')) {
-      console.log('\n\nSeeding credential invites...');
-      await seedCredentialInvites();
-    }
+    process.exit();
   })();
 }

@@ -116,7 +116,7 @@ To seed the database run the following command:
 > `WARNING` Seeding the Database `WILL DESTROY ANY EXISTING DATA`
 
 ```bash
-npm run seedWithCredentialInvites
+npm run seed
 ```
 
 ### Generate the Certificate and Keys for TLS:

@@ -7,7 +7,7 @@ export default async function seedLeaveTypes() {
       defaultLeaveTypes.map(reason => ({reason})),
       {ignoreDuplicates: true}
     );
-    console.log('✅ Leave types seeded');
+    console.log('  ✅ Leave types seeds inserted successfully');
   } catch (error) {
     console.error('❌ Error seeding leave types:', error);
   }

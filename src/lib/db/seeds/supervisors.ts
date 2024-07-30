@@ -96,7 +96,7 @@ const seedSupervisors = async () => {
 
   try {
     await Supervisor.bulkCreate(supervisorSeeds, {ignoreDuplicates: true});
-    console.log('✅ Supervisor seeds inserted successfully');
+    console.log('  ✅ Supervisor seeds inserted successfully');
   } catch (error) {
     console.error('❌Error inserting supervisor seeds:', error);
   }
