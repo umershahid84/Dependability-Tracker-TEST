@@ -19,12 +19,11 @@ export const seedDatabase = async () => {
         return (async () => {
           // cant seed employees until divisions are seeded
           await seedEmployees();
-          // cant seed supervisors until employees are seeded
-          await seedSupervisors();
-
           await new Promise(resolve => {
             setTimeout(() => {
               return (async () => {
+                // cant seed supervisors until employees are seeded
+                await seedSupervisors();
                 // create invites for the supervisors to create their credentials
                 await seedCredentialInvites();
                 console.log('\n🌲 Database seeded!');
