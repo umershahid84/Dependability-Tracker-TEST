@@ -15,13 +15,17 @@ import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '
  */
 export const getEmployeeDivisions = async (employeeId: string): Promise<DivisionAttributes[]> => {
   try {
-    const employee = await Employee.findByPk(employeeId);
+    const employee = (await Employee.findByPk(employeeId))?.get({plain: true});
     // istanbul ignore next
     if (!employee) {
       throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
     }
-    const divisionIds = employee.division_ids;
+    let divisionIds = employee.division_ids;
     const divisions = [];
+
+    if (!Array.isArray(divisionIds)) {
+      divisionIds = JSON.parse(divisionIds);
+    }
 
     for (const divisionId of divisionIds) {
       const division = await Division.findByPk(divisionId);
@@ -32,6 +36,7 @@ export const getEmployeeDivisions = async (employeeId: string): Promise<Division
       divisions.push(division);
     }
     const _divisions = divisions?.map(division => division?.get({plain: true})) ?? [];
+
     return _divisions as DivisionAttributes[];
   } catch (error) {
     // istanbul ignore next
