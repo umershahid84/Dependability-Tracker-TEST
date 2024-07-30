@@ -1,7 +1,7 @@
 export * from './Logo';
 export * from './Admin';
 export * from './Icons';
-export * from './ Modal';
+export * from './Modal';
 export * from './Forms';
 export * from './NavBar';
 export * from './Toasts';

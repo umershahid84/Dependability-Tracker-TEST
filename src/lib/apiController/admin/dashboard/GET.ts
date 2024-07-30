@@ -82,8 +82,8 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
     })).map(employee => employee.get({ plain: true })) as unknown as EmployeeWithAssociations[];
 
     for (const employee of employeesWithCallOuts) {
-      const callouts = (employee.callouts ?? []) as CallOutWithAssociations[];
-      for (const callOut of callouts) {
+      const employeeCallOuts = (employee.callouts ?? []) as CallOutWithAssociations[];
+      for (const callOut of employeeCallOuts) {
         // Leave type frequency
         const leaveReason = callOut.leaveType.reason;
         leaveTypeFrequency[leaveReason] = (leaveTypeFrequency[leaveReason] || 0) + 1;
@@ -105,7 +105,7 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
         }
         callOutTrends[calloutDate].count++;
       }
-      callOuts.push(...callouts);
+      callOuts.push(...employeeCallOuts);
     }
 
     const fiveMostFrequentCallers = Object.entries(employeeCallOutFrequency)

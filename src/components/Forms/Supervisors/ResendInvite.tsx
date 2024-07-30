@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import Loading from '../../Loading';
 import {WarningIcon} from '../../Icons';
-import {ModalAction} from '../../ Modal';
+import {ModalAction} from '../../Modal';
 import {validators} from '../../../lib/utils';
 import {makeToast, ToastTypes} from '../../Toasts';
 import {ApiData} from '../../../lib/apiController';

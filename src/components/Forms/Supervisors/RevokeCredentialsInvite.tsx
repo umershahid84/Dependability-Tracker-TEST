@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import Loading from '../../Loading';
 import {WarningIcon} from '../../Icons';
-import {ModalAction} from '../../ Modal';
+import {ModalAction} from '../../Modal';
 import {makeToast, ToastTypes} from '../../Toasts';
 import {ApiData} from '../../../lib/apiController';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';

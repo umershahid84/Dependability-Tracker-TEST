@@ -1,6 +1,6 @@
 'use client';
 import {ApiData} from '../../lib/apiController';
-import {ModalAction} from '../../components/ Modal';
+import {ModalAction} from '../../components/Modal';
 import {makeToast, ToastTypes} from '../../components';
 import {EmployeeWithAssociations} from '../../lib/db/controller';
 

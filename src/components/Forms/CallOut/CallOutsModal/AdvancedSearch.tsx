@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {ModalAction} from '../../../ Modal';
+import {ModalAction} from '../../../Modal';
 import {
   EmployeeWithAssociations,
   SupervisorWithAssociations

@@ -1,4 +1,4 @@
-import {ModalAction, ModalType} from '../../ Modal';
+import {ModalAction, ModalType} from '../../Modal';
 import {trim} from '../../../lib/utils/shared/strings';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 

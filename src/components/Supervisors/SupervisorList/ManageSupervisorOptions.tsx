@@ -1,4 +1,4 @@
-import {ModalAction, ModalType} from '../../ Modal';
+import {ModalAction, ModalType} from '../../Modal';
 import type {SupervisorWithAssociations} from '../../../lib/db/models/types';
 
 const styles = {

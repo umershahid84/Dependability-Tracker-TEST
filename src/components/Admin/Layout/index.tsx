@@ -1,5 +1,5 @@
 import React from 'react';
-import {ModalViewer} from '../../ Modal';
+import {ModalViewer} from '../../Modal';
 import {NavBar, NavLinks} from '../../NavBar';
 import {SupervisorLayout} from '../../SupervisorLayout';
 import {CallOutAdvancedSearchProvider} from '../../../providers';

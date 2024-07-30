@@ -11,7 +11,7 @@ import {
   EmployeeWithAssociations
 } from '../../../lib/db/controller';
 import {DynamicSortOptions} from '../../Forms';
-import {ModalAction, ModalType} from '../../ Modal';
+import {ModalAction, ModalType} from '../../Modal';
 import {EmployeeListItem} from '../EmployeeListItem';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';

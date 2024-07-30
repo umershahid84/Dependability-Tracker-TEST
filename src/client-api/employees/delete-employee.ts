@@ -1,6 +1,6 @@
 'use client';
 
-import {ModalAction} from '../../components/ Modal';
+import {ModalAction} from '../../components/Modal';
 import {makeToast, ToastTypes} from '../../components';
 
 export type DeleteEmployeeProps = {

@@ -7,7 +7,7 @@ import {
 } from './helpers';
 import {useEffect, useState} from 'react';
 import {DynamicSortOptions} from '../../Forms';
-import {ModalAction, ModalType} from '../../ Modal';
+import {ModalAction, ModalType} from '../../Modal';
 import {ActiveSearchParams} from '../ActiveSearchParams';
 import {ModelList, ModelListHeader} from '../../ModelList';
 import {PaginationContainer} from '../../Pagination/Container';
