@@ -7,8 +7,7 @@ const interfaces = os.networkInterfaces();
 // Common VPN interface names
 const excludedInterfaces = ['tun0', 'tun1', 'ppp0'];
 // Typical LAN interface names
-const includedInterfaces = ['Ethernet', 'Wi-Fi', 'en0', 'eth0','wlan0', 'wlan1'];
-
+const includedInterfaces = ['Ethernet', 'Wi-Fi', 'en0', 'eno1', 'eth0', 'wlan0', 'wlan1'];
 
 for (const [key, value] of Object.entries(interfaces)) {
   // Check if the interface is not excluded and is included in our list
