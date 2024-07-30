@@ -1,6 +1,6 @@
 // CRUD Controller for the Employee Table
 // CRUD: Create, Read, Update, Delete
-import {Op} from 'sequelize';
+
 import {uuidV4Regex} from '../../../utils';
 import {Employee, Division} from '../../models';
 import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '../../models/types';
@@ -23,8 +23,17 @@ export const getEmployeeDivisions = async (employeeId: string): Promise<Division
     const divisionIds = employee.division_ids;
     console.log('Getting divisions for employee with ID:', employeeId);
     console.log('Division IDs:', divisionIds);
-    const divisions = await Division.findAll({where: {id: {[Op.in]: divisionIds}}});
-    const _divisions = divisions.map(division => division.get({plain: true}));
+    const divisions = [];
+
+    for (const divisionId of divisionIds) {
+      const division = await Division.findByPk(divisionId);
+      // istanbul ignore next
+      if (!division) {
+        throw new Error(`\n❌ Division with ID ${divisionId} not found`);
+      }
+      divisions.push(division);
+    }
+    const _divisions = divisions?.map(division => division?.get({plain: true})) ?? [];
 
     console.log('Divisions:', _divisions);
     return _divisions;
