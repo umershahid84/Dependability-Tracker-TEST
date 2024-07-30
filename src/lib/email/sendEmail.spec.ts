@@ -117,7 +117,7 @@ describe('Email Module', () => {
 
   describe('send email', () => {
     // test passed - skipping so we don't send an email every time we run tests
-    it.skip('should send an email', async () => {
+    it('should send an email', async () => {
       const result = await sendEmail(testEmail);
 
       expect(result).toBe(true);

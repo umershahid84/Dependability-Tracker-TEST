@@ -25,7 +25,7 @@ export const seedDatabase = async (seedInvites = true) => {
                 // cant seed supervisors until employees are seeded
                 await seedSupervisors();
                 // create invites for the supervisors to create their credentials
-                seedInvites && await seedCredentialInvites();
+                seedInvites && (await seedCredentialInvites());
                 console.log('\n🌲 Database seeded!');
                 return resolve;
               })();
@@ -56,7 +56,5 @@ if (require.main === module) {
 
       await seedCallOuts(numberOfCallOuts);
     }
-
-    process.exit();
   })();
 }
