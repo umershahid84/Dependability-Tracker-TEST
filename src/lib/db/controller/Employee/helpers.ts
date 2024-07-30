@@ -21,22 +21,18 @@ export const getEmployeeDivisions = async (employeeId: string): Promise<Division
       throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
     }
     const divisionIds = employee.division_ids;
-    console.log('Getting divisions for employee with ID:', employeeId);
-    console.log('Division IDs:', divisionIds);
     const divisions = [];
 
     for (const divisionId of divisionIds) {
       const division = await Division.findByPk(divisionId);
       // istanbul ignore next
       if (!division) {
-        throw new Error(`\n❌ Division with ID ${divisionId} not found`);
+        console.error(`\n❌ Division with ID ${divisionId} not found`);
       }
       divisions.push(division);
     }
     const _divisions = divisions?.map(division => division?.get({plain: true})) ?? [];
-
-    console.log('Divisions:', _divisions);
-    return _divisions;
+    return _divisions as DivisionAttributes[];
   } catch (error) {
     // istanbul ignore next
     throw new Error(`\n❌ Error fetching employee divisions: ${error}`);
@@ -56,7 +52,7 @@ export const populateEmployeeWithDivisions = async (
 
   // istanbul ignore next
   if (divisions.length === 0) {
-    throw new Error(`\n❌ Error creating employee: Employee must belong to at least one division`);
+    console.error(`\n❌ Error creating employee: Employee must belong to at least one division`);
   }
 
   return {
