@@ -23,7 +23,7 @@ export const getEmployeeDivisions = async (employeeId: string): Promise<Division
     let divisionIds = employee.division_ids;
     const divisions = [];
 
-    if (!Array.isArray(divisionIds)) {
+    if (!Array.isArray(divisionIds) && typeof divisionIds === 'string') {
       divisionIds = JSON.parse(divisionIds);
     }
 

@@ -7,7 +7,7 @@ import seedLeaveTypes from '../lib/db/seeds/leaveTypes';
 import seedSupervisors from '../lib/db/seeds/supervisors';
 import seedCredentialInvites from '../lib/db/seeds/credentialInvites';
 
-export const seedDatabase = async () => {
+export const seedDatabase = async (seedInvites = true) => {
   try {
     console.log('\n🌱 Seeding database...\n');
     await sequelize.sync({force: true});
@@ -25,7 +25,7 @@ export const seedDatabase = async () => {
                 // cant seed supervisors until employees are seeded
                 await seedSupervisors();
                 // create invites for the supervisors to create their credentials
-                await seedCredentialInvites();
+                seedInvites && await seedCredentialInvites();
                 console.log('\n🌲 Database seeded!');
                 return resolve;
               })();
