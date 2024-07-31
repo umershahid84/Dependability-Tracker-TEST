@@ -896,10 +896,10 @@ describe('Callout Model Controller', () => {
           expect.assertions(2);
         });
 
-        it('should throw an error if the callout time is not a string', async () => {
+        it('should throw an error if the callout time is not a string or number', async () => {
           try {
             // @ts-expect-error - testing bad input
-            await calloutModelController.getCallOutFromDB.all({callout_time: 0});
+            await calloutModelController.getCallOutFromDB.all({callout_time: {}});
           } catch (error) {
             expect(String(error)).toBeDefined();
           }

@@ -84,7 +84,9 @@ type DateRangeAttributes =
   | 'created_at_range'
   | 'updated_at_range'
   | 'shift_date_range'
-  | 'callout_date_range';
+  | 'callout_date_range'
+  | 'shift_time_range'
+  | 'callout_time_range';
 
 const buildTimeQueryForDateRange = (
   time: string,
@@ -95,10 +97,14 @@ const buildTimeQueryForDateRange = (
   const [start, end] = props[attribute] as [Date, Date];
 
   let startDateTime = new Date(start);
-  startDateTime = addTimeToDate(startDateTime, time);
+  if (attribute !== 'shift_time_range' && attribute !== 'callout_time_range') {
+    startDateTime = addTimeToDate(startDateTime, time);
+  }
 
   let endDateTime = new Date(end);
-  endDateTime = addTimeToDate(endDateTime, time);
+  if (attribute !== 'shift_time_range' && attribute !== 'callout_time_range') {
+    endDateTime = addTimeToDate(endDateTime, time);
+  }
 
   let d = new Date(startDateTime);
 
@@ -147,6 +153,14 @@ const buildCorrectTimeQuery = (
     return buildTimeQueryForDateRange(time, props, 'shift_date_range');
   }
 
+  if (props.shift_time_range) {
+    return buildTimeQueryForDateRange(time, props, 'shift_time_range');
+  }
+
+  if (props.callout_time_range) {
+    return buildTimeQueryForDateRange(time, props, 'callout_time_range');
+  }
+
   if (props.shift_date) {
     dateTime = new Date(props.shift_date);
     dateTime = addTimeToDate(dateTime, time);
@@ -155,8 +169,17 @@ const buildCorrectTimeQuery = (
 
   if (props.callout_date) {
     dateTime = new Date(props.callout_date);
-    dateTime = addTimeToDate(dateTime, time);
     return dateTime;
+  }
+
+  if (props.shift_time) {
+    dateTime = new Date(props.shift_time);
+    return [dateTime];
+  }
+
+  if (props.callout_time) {
+    dateTime = new Date(props.callout_time);
+    return [dateTime];
   }
 
   return dateTime;
@@ -188,13 +211,6 @@ export const buildEditableCalloutProps = async (
 
     withProps.shift_time = new Date(year, month, day, hours, minutes, seconds, milliseconds);
     withProps.shift_date = new Date(withProps.shift_time);
-
-    // withProps.shift_time = new Date(withProps.shift_date);
-    // withProps.shift_time.setHours(existingTime.getHours());
-    // withProps.shift_time.setMinutes(existingTime.getMinutes());
-    // withProps.shift_time.setSeconds(existingTime.getSeconds());
-    // withProps.shift_time.setMilliseconds(existingTime.getMilliseconds());
-    // withProps.shift_date = new Date(withProps.shift_time);
   }
 
   if (withProps.shift_time) {
@@ -206,12 +222,6 @@ export const buildEditableCalloutProps = async (
 
   if (withProps.callout_date && !withProps.callout_time) {
     const existingTime = new Date(existingCallout?.callout_time as Date);
-    // withProps.callout_time = new Date(withProps.callout_date);
-    // withProps.callout_time.setHours(existingTime.getHours());
-    // withProps.callout_time.setMinutes(existingTime.getMinutes());
-    // withProps.callout_time.setSeconds(existingTime.getSeconds());
-    // withProps.callout_time.setMilliseconds(existingTime.getMilliseconds());
-    // withProps.callout_date = new Date(withProps.callout_time);
 
     const hours = existingTime.getHours();
     const minutes = existingTime.getMinutes();

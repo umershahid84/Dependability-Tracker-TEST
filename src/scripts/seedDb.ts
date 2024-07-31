@@ -13,29 +13,11 @@ export const seedDatabase = async (seedInvites = true) => {
     await sequelize.sync({force: true});
     // run these concurrently
     await Promise.all([seedDivisions(), seedLeaveTypes()]);
-
-    await new Promise(resolve =>
-      setTimeout(() => {
-        return (async () => {
-          // cant seed employees until divisions are seeded
-          await seedEmployees();
-          await new Promise(resolve => {
-            setTimeout(() => {
-              return (async () => {
-                // cant seed supervisors until employees are seeded
-                await seedSupervisors();
-                // create invites for the supervisors to create their credentials
-                seedInvites && (await seedCredentialInvites());
-                console.log('\n🌲 Database seeded!');
-                return resolve;
-              })();
-            }, 500);
-          });
-
-          return resolve;
-        })();
-      }, 500)
-    );
+    await seedEmployees();
+    await seedSupervisors();
+    // create invites for the supervisors to create their credentials
+    seedInvites && (await seedCredentialInvites());
+    console.log('\n🌲 Database seeded!');
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   }

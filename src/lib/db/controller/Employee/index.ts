@@ -351,10 +351,10 @@ export const updateEmployeeInDB = {
 // (D)elete
 export const deleteEmployeeFromDB = async (employeeId: string): Promise<number | null> => {
   try {
-    const deletedEmployee = await Employee.destroy({where: {id: employeeId}});
-
     // look for a supervisor and delete them if they exist
     const supervisor = await getSupervisorFromDB.byEmployeeId(employeeId);
+    const deletedEmployee = await Employee.destroy({where: {id: employeeId}});
+
     if (supervisor) {
       await deleteSupervisorFromDB(supervisor.id);
     }

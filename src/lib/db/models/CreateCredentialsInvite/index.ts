@@ -9,8 +9,8 @@ import {
 } from 'sequelize';
 import crypto from 'crypto';
 import sequelize from '../../connection';
-import { uuid } from '../../../utils/shared/uuid';
-import Supervisor, { AdminSupervisor, SupervisorWithAssociations } from '../Supervisor';
+import {uuid} from '../../../utils/shared/uuid';
+import Supervisor, {AdminSupervisor, SupervisorWithAssociations} from '../Supervisor';
 
 export interface CreateCredentialsInviteAttributes {
   id: string;
@@ -56,10 +56,11 @@ export type UpdateCredentialsInviteCreationAttributes = {
 
 class CreateCredentialsInvite
   extends Model<
-    InferAttributes<CreateCredentialsInvite, { omit: 'created_by_info' | 'supervisor_info' }>,
-    InferCreationAttributes<CreateCredentialsInvite, { omit: 'created_by_info' | 'supervisor_info' }>
+    InferAttributes<CreateCredentialsInvite, {omit: 'created_by_info' | 'supervisor_info'}>,
+    InferCreationAttributes<CreateCredentialsInvite, {omit: 'created_by_info' | 'supervisor_info'}>
   >
-  implements CreateCredentialsInviteAttributes {
+  implements CreateCredentialsInviteAttributes
+{
   // model attributes
 
   declare id: CreationOptional<string>;
@@ -148,7 +149,6 @@ CreateCredentialsInvite.init(
   },
   {
     sequelize,
-    paranoid: true,
     modelName: 'create_credentials_invite',
     timestamps: true
   }

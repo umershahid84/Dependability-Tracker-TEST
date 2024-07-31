@@ -9,9 +9,9 @@ import {
 } from 'sequelize';
 import sequelize from '../../connection';
 import LoginCredential from '../LoginCredential';
-import { uuid } from '../../../utils/shared/uuid';
-import { EmployeeWithAssociations } from '../Employee';
-import { CreateCredentialsInviteWithAssociations } from '../CreateCredentialsInvite';
+import {uuid} from '../../../utils/shared/uuid';
+import {EmployeeWithAssociations} from '../Employee';
+import {CreateCredentialsInviteWithAssociations} from '../CreateCredentialsInvite';
 
 export interface SupervisorAttributes {
   id: string;
@@ -44,14 +44,15 @@ class Supervisor
   extends Model<
     InferAttributes<
       Supervisor,
-      { omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite' }
+      {omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite'}
     >,
     InferCreationAttributes<
       Supervisor,
-      { omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite' }
+      {omit: 'supervisor_info' | 'login_credentials' | 'create_credentials_invite'}
     >
   >
-  implements SupervisorAttributes {
+  implements SupervisorAttributes
+{
   // model attributes
   declare id: CreationOptional<string>;
   declare employee_id: ForeignKey<string>;
@@ -101,7 +102,6 @@ Supervisor.init(
   },
   {
     sequelize,
-    paranoid: true,
     modelName: 'supervisor',
     tableName: 'supervisors',
     underscored: true
