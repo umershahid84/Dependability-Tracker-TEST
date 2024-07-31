@@ -5,8 +5,8 @@ import {trim} from '../../lib/utils/shared/strings';
 const styles = {
   div: `w-full flex flex-wrap flex-row justify-center items-center mt-8
         sm:mt-12 gap-8 sm:gap-12`,
-  link: `bg-slate-800 rounded-md p-10 hover:bg-[var(--green)] text-white
-         hover:scale-110 drop-shadow-md text-lg whitespace-normal w-48 
+  link: `flex bg-slate-800 rounded-md p-10 hover:bg-[var(--green)] text-white
+         hover:scale-110 drop-shadow-md text-lg text-balance w-48 
          text-center Text-outline`
 };
 
@@ -23,7 +23,10 @@ export function DashboardLinks() {
     <div className={trim(styles.div)}>
       {links.map(link => (
         <Link key={link.href} href={link.href} className={linkClasses}>
-          <strong dangerouslySetInnerHTML={{__html: link.text}} />
+          <strong
+            dangerouslySetInnerHTML={{__html: link.text}}
+            className="w-full mx-auto flex flex-row justify-center items-center"
+          />
         </Link>
       ))}
     </div>
