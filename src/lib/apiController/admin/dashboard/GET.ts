@@ -66,6 +66,7 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
         attributes: { exclude: ['employee_id', 'supervisor_id', 'leave_type_id'] },
         include: [
           { model: LeaveType, as: 'leaveType', attributes: ['reason'] },
+          { model: Supervisor, as: 'supervisor', include: [{ model: Employee, as: 'supervisor_info' }] }
         ],
         where: {
           created_at: {
@@ -94,7 +95,7 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
 
         // Call-outs within the last twelve hours
         if (callOut.callout_date >= twelveHoursAgo) {
-          callOutsWithinLastTwelveHours.push(callOut);
+          callOutsWithinLastTwelveHours.push({ ...callOut, employee });
         }
 
         // Call-out trends

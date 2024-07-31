@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import {Op} from 'sequelize';
-import {getSequelize, CreateCredentialsInvite} from '../lib/db';
+import { Op } from 'sequelize';
+import { getSequelize, CreateCredentialsInvite, connection } from '../lib/db';
 
 const removeExpired = async () => {
   let count = 0;
@@ -32,6 +32,7 @@ const removeExpired = async () => {
   }
 
   console.log(`\n⌛ Removed ${count} expired invites.`);
+  await connection.close();
 };
 
 if (require.main === module) {

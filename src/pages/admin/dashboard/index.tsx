@@ -1,11 +1,11 @@
-import {useIsMounted} from '../../../hooks';
-import {useEffect, useState, useRef} from 'react';
+import { useIsMounted } from '../../../hooks';
+import { useEffect, useState, useRef } from 'react';
 import Loading from '../../../components/Loading';
-import {ApiData} from '../../../lib/apiController';
-import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
-import {AdminDashboardData} from '../../../lib/apiController/admin/dashboard';
-import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD, makeDate} from '../../../lib/utils';
-import {AdminLayout, CallOutTrendsChart, makeToast, ToastTypes} from '../../../components';
+import { ApiData } from '../../../lib/apiController';
+import { CallOutWithAssociations } from '../../../lib/db/models/Callout';
+import { AdminDashboardData } from '../../../lib/apiController/admin/dashboard';
+import { dateTo_HH_MM_SS, dateTo_YYYY_MM_DD, makeDate } from '../../../lib/utils';
+import { AdminLayout, CallOutTrendsChart, makeToast, ToastTypes } from '../../../components';
 
 export const checkForCallOutUpdates = async (currentCount: number): Promise<boolean> => {
   const response = await fetch('/api/admin/dashboard', {
@@ -13,14 +13,14 @@ export const checkForCallOutUpdates = async (currentCount: number): Promise<bool
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({currentCount})
+    body: JSON.stringify({ currentCount })
   });
 
   if (!response.ok) {
     throw new Error('Failed to fetch data');
   }
 
-  const {data} = await response.json();
+  const { data } = await response.json();
 
   return data ?? false;
 };
@@ -80,7 +80,7 @@ export const getAdminDataUpdates = async (
       throw new Error('Failed to fetch data');
     }
 
-    const {data}: ApiData<CallOutWithAssociations[]> = await response.json();
+    const { data }: ApiData<CallOutWithAssociations[]> = await response.json();
 
     return data ?? [];
   } catch (error) {
@@ -110,11 +110,11 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
       );
 
       if (data) {
-        const newAdminData = {...adminDataRef.current};
+        const newAdminData = { ...adminDataRef.current };
         for (const callout of data) {
           // only process the callout if it isn't already in the list
           const callOutIndex = newAdminData?.callOutsWithinLastTwelveHours?.findIndex(
-            ({id}) => id === callout.id
+            ({ id }) => id === callout.id
           );
 
           if (callOutIndex !== -1) {
@@ -169,7 +169,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
 
           // find the index of the month and year in the callout trends
 
-          const matchingMonthIndex = newAdminData?.callOutTrends?.findIndex(({month, year}) => {
+          const matchingMonthIndex = newAdminData?.callOutTrends?.findIndex(({ month, year }) => {
             return month === callOutMonth && year === callOutYear;
           });
 
@@ -178,7 +178,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
               newAdminData.callOutTrends[matchingMonthIndex as number].count++;
             }
           } else {
-            newAdminData?.callOutTrends?.push({month: callOutMonth, year: callOutYear, count: 1});
+            newAdminData?.callOutTrends?.push({ month: callOutMonth, year: callOutYear, count: 1 });
           }
 
           const twelveHoursAgo = new Date();
@@ -196,7 +196,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
         }
 
         // update the admin data
-        adminDataRef.current = {...newAdminData};
+        adminDataRef.current = { ...newAdminData };
         setAdminData(newAdminData);
 
         // update the update count ref
