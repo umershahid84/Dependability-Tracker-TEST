@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "stop": "pm2 stop index",
     "lint": "next lint",
     "ts": "node -r ts-node/register",
     "removeTel": "npx next telemetry disable",
@@ -12,7 +13,7 @@
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "sendCredInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production node ./dist/server/index.js\"",
+    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production pm2 start ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
   },
   "nodemonConfig": {

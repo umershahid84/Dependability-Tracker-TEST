@@ -1,0 +1,23 @@
+Starting the application...
+
+> dependability-tracker@0.1.0 start
+> concurrently "npm run ts ./src/scripts/removeExpired.ts" "NODE_ENV=production node ./dist/server/index.js"
+
+[0] 
+[0] > dependability-tracker@0.1.0 ts
+[0] > node -r ts-node/register ./src/scripts/removeExpired.ts
+[0] 
+[1] 
+[1] 🚀 LocalHost Server ready at http://localhost:3000
+[1] 
+[1] 🔒 Local Network Server ready at https://10.78.4.50:3005
+[1] 
+[0] 
+[0] 🕰️  Removing expired entries every 5 minutes
+[0] 
+[0] 🔎 Looking for expired invites...
+[0] 
+[0] ⌛ Removed 0 expired invites.
+[1] NODE_ENV=production node ./dist/server/index.js exited with code SIGINT
+[0] npm run ts ./src/scripts/removeExpired.ts exited with code SIGINT
+Application started successfully.
