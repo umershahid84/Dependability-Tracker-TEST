@@ -1,4 +1,5 @@
-import {Employee, Supervisor} from '../models';
+import { logTemplate } from '../../utils/server';
+import { Employee, Supervisor } from '../models';
 
 // object containing employee seed data
 const supervisorSeeds = [
@@ -84,21 +85,22 @@ const supervisorSeeds = [
 const seedSupervisors = async () => {
   for (const supervisor of supervisorSeeds) {
     // lookup the employee id
-    const employee = await Employee.findOne({where: {name: supervisor.name}});
+    const employee = await Employee.findOne({ where: { name: supervisor.name } });
     if (employee) {
       supervisor.employee_id = employee.id;
     } else {
-      console.error(`❌ Employee not found: ${supervisor ? supervisor.name : 'undefined'}`);
+      console.error(logTemplate(`❌ Employee not found: ${supervisor ? supervisor.name : 'undefined'}`), 'error');
       // remove the supervisor from the seeds array
       supervisorSeeds.splice(supervisorSeeds.indexOf(supervisor), 1);
     }
   }
 
   try {
-    await Supervisor.bulkCreate(supervisorSeeds, {ignoreDuplicates: true});
-    console.log('  ✅ Supervisor seeds inserted successfully');
+    await Supervisor.bulkCreate(supervisorSeeds, { ignoreDuplicates: true });
+    console.log(logTemplate('  ✅ Supervisor seeds inserted successfully'));
   } catch (error) {
-    console.error('❌Error inserting supervisor seeds:', error);
+    const errMessage = '❌ Error seeding supervisors:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 };
 

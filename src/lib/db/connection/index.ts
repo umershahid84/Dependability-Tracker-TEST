@@ -1,4 +1,4 @@
-import {Dialect, Sequelize} from 'sequelize';
+import { Dialect, Sequelize } from 'sequelize';
 
 export type SequelizeConfig = {
   dbName: string;
@@ -80,8 +80,8 @@ export const defaultSequelizeConfig: SequelizeConfig = {
  *
  * @returns a new instance of the sequelize object
  */
-export const getSequelize = (props?: SequelizeConfig): Sequelize =>
-  new Sequelize(
+export function getSequelize(props?: SequelizeConfig): Sequelize {
+  return new Sequelize(
     props?.dbName ?? process.env.DB_NAME ?? defaultSequelizeConfig.dbName,
     props?.dbUser ?? process.env.DB_USER ?? defaultSequelizeConfig.dbUser,
     props?.dbPassword ?? process.env.DB_PASS ?? defaultSequelizeConfig.dbPassword,
@@ -94,10 +94,16 @@ export const getSequelize = (props?: SequelizeConfig): Sequelize =>
       dialect:
         props?.options?.dialect ??
         (process.env.DB_DIALECT as Dialect | undefined) ??
-        defaultDbOptions.dialect
+        defaultDbOptions.dialect,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
     }
   );
-
+}
 /**
  * The default sequelize object with default values
  */

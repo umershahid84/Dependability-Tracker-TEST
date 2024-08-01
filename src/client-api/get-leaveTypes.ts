@@ -1,4 +1,4 @@
-import {makeToast, ToastTypes} from '../components';
+import { makeToast, ToastTypes } from '../components';
 
 export const getLeaveTypes = async () => {
   try {
@@ -8,10 +8,11 @@ export const getLeaveTypes = async () => {
       throw new Error('Failed to fetch Leave Types');
     }
 
-    const {data} = await response.json();
+    const { data } = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
+    const errMessage = '❌ Error in getLeaveTypes:' + ' ' + error;
+    console.error(errMessage);
     makeToast({
       type: ToastTypes.Error,
       title: 'Error',

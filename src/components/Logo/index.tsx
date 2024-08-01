@@ -1,13 +1,12 @@
-import {useIsMounted} from '../../hooks';
-import {useEffect, useState} from 'react';
-import Image, {StaticImageData} from 'next/image';
-import logo from '../../assets/images/seatac-dark.png';
-import logoOnPrint from '../../assets/images/seatac.png';
+import { useIsMounted } from '../../hooks';
+import { useEffect, useState } from 'react';
+import Image, { StaticImageData } from 'next/image';
+
 
 const styles = {
   imgWidth: 350,
   imgHeight: 100,
-  logo: 'w-[375px] print:w-[300px] h-auto cursor-pointer print:text-black print:mx-auto'
+  logo: 'w-[375px] print:w-[300px] h-auto cursor-pointer print:text-black print:mx-auto hide-on-print'
 };
 
 export type LogoProps = {
@@ -17,9 +16,12 @@ export type LogoProps = {
   className?: string;
 };
 
+const logo = '/images/seatac-dark.png';
+const logoOnPrint = '/images/seatac.png';
+
 export function Logo(props: Readonly<LogoProps>) {
   const isMounded: boolean = useIsMounted();
-  const {className, width, height, src} = props;
+  const { className, width, height, src } = props;
   const [logoSrc, setLogoSrc] = useState<StaticImageData | string>(src ?? logo);
 
   useEffect(() => {

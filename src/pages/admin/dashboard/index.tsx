@@ -84,7 +84,8 @@ export const getAdminDataUpdates = async (
 
     return data ?? [];
   } catch (error) {
-    console.error('Error in getAdminDataUpdates:', error);
+    const errMessage = 'Error in getAdminDataUpdates:' + ' ' + error;
+    console.error(errMessage);
     return [];
   }
 };

@@ -3,17 +3,19 @@ import {
   createSupervisorInDB,
   EmployeeWithAssociations
 } from '../../../db/controller';
-import type {ApiData} from '../../index';
-import {Request, Response} from 'express';
-import {validateAddEmployeeForm} from './helpers';
-import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
+import type { ApiData } from '../../index';
+import { Request, Response } from 'express';
+import { logTemplate } from '../../../utils/server';
+import { validateAddEmployeeForm } from './helpers';
+import { SupervisorWithAssociations } from '../../../db/models/Supervisor';
+
 
 export default async function postEmployeesApiHandler(
   req: Request,
   res: Response<ApiData<EmployeeWithAssociations>>
 ) {
   try {
-    const {body} = req as {
+    const { body } = req as {
       body: any;
     };
 
@@ -28,13 +30,13 @@ export default async function postEmployeesApiHandler(
     });
 
     if (!newEmployee) {
-      return res.status(500).json({error: 'Error creating employee'});
+      return res.status(500).json({ error: 'Error creating employee' });
     }
 
     if (body.isAdmin && !body.isSupervisor) {
       return res
         .status(400)
-        .json({error: 'Cannot create an admin employee without being a supervisor'});
+        .json({ error: 'Cannot create an admin employee without being a supervisor' });
     }
 
     if (body.isSupervisor) {
@@ -46,15 +48,16 @@ export default async function postEmployeesApiHandler(
       if (!supervisor) {
         return res
           .status(500)
-          .json({error: 'Error promoting employee to supervisor. Employee created.'});
+          .json({ error: 'Error promoting employee to supervisor. Employee created.' });
       }
     }
 
-    return res.status(200).json({data: newEmployee, message: 'Employee created successfully'});
+    return res.status(200).json({ data: newEmployee, message: 'Employee created successfully' });
   } catch (error) {
-    console.error('Error creating employee:', error);
-    return res.status(500).json({error: String(error)});
+    const errMessage = '❌ Error in postEmployeesApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    return res.status(500).json({ error: String(error) });
   }
 }
 
-export {postEmployeesApiHandler};
+export { postEmployeesApiHandler };

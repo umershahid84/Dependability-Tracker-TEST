@@ -90,13 +90,19 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 @media print {
   .details-print {
-    display: block !important; /* Ensure details are visible when printing */
+    display: block !important;
+    /* Ensure details are visible when printing */
     border-color: black !important;
     page-break-inside: avoid;
     overflow: visible !important;
   }
 
+  .no-page-break {
+    page-break-inside: avoid;
+  }
+
   .hide-on-print {
-    display: none; /* Hide the toggle button when printing */
+    display: none;
+    /* Hide the toggle button when printing */
   }
 }

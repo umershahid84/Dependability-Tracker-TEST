@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request, Response} from 'express';
-import type {ApiData} from '../../../lib/apiController';
-import {deleteCallOutFromDB} from '../../../lib/db/controller';
-import {CallOutAttributes} from '../../../lib/db/models/Callout';
+import { Request, Response } from 'express';
+import type { ApiData } from '../../../lib/apiController';
+import { deleteCallOutFromDB } from '../../../lib/db/controller';
+import { CallOutAttributes } from '../../../lib/db/models/Callout';
+import { logTemplate } from '../../utils/server';
 
 // inviteToken, password, email
 export default async function deleteEmployeeCallOutApiHandler( //NOSONAR
@@ -15,16 +16,17 @@ export default async function deleteEmployeeCallOutApiHandler( //NOSONAR
     const callOut: boolean | null = await deleteCallOutFromDB(id);
 
     if (!callOut) {
-      return res.status(500).json({error: 'Failed to update callout'});
+      return res.status(500).json({ error: 'Failed to update callout' });
     }
 
-    res.status(200).json({message: 'Callout Updated Successfully', data: id});
+    res.status(200).json({ message: 'Callout Updated Successfully', data: id });
   } catch (error) {
-    console.error('Error deleting Callout: ', req?.body?.id);
+    const errMessage = '❌ Error in deleteEmployeeCallOutApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return {
       error: String(error)
     };
   }
 }
 
-export {deleteEmployeeCallOutApiHandler};
+export { deleteEmployeeCallOutApiHandler };

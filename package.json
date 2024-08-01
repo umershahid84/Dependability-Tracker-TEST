@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "stop": "pm2 stop index",
     "lint": "next lint",
     "ts": "node -r ts-node/register",
+    "stop": "pm2 delete dependability",
     "removeTel": "npx next telemetry disable",
     "seed": "ts-node ./src/scripts/seedDb.ts",
-    "build": "next build && tsc -p tsconfig.node.json",
     "createEnv": "npm run ts -- ./src/scripts/createEnv.ts",
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "sendCredInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
+    "build": "next build && tsc -p tsconfig.node.json && [ ! -f ./log ] && touch ./log",
+    "start-prod": "pm2 start start.sh --name dependability --log ./log  && tail -f ./log",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production pm2 start ./dist/server/index.js\"",
+    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production node ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
   },
   "nodemonConfig": {
@@ -22,6 +23,7 @@
     ]
   },
   "dependencies": {
+    "@react-pdf/renderer": "^3.4.4",
     "bcrypt": "^5.1.1",
     "chart.js": "^4.4.3",
     "concurrently": "^8.2.2",
@@ -60,6 +62,6 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5.5.4"
   }
 }

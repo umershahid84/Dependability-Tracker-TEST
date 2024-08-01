@@ -1,11 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request, Response} from 'express';
-import {JwtPayload} from '../../../auth';
-import {LoginCredential} from '../../db';
-import type {ApiData} from '../../../lib/apiController';
-import {createCallOutInDB} from '../../../lib/db/controller';
-import {sendCallOutDetails} from '../../email/sendCallOutDetails';
-import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import { Request, Response } from 'express';
+import { JwtPayload } from '../../../auth';
+import { LoginCredential } from '../../db';
+import type { ApiData } from '../../../lib/apiController';
+import { createCallOutInDB } from '../../../lib/db/controller';
+import { sendCallOutDetails } from '../../email/sendCallOutDetails';
+import { CallOutCreationAttributes, CallOutWithAssociations } from '../../../lib/db/models/Callout';
+import { logTemplate } from '../../utils/server';
 
 // inviteToken, password, email
 
@@ -47,7 +48,7 @@ export default async function createEmployeeCallout( //NOSONAR
       if (!employeeName) missingFields.push('Employee Name');
       if (!comment) missingFields.push('Supervisor Comments');
 
-      return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
+      return res.status(400).json({ error: `Missing required fields: ${missingFields.join(', ')}` });
     }
 
     // build the calTime and shiftTime into date objects, using the callDate and shiftDate as the base
@@ -91,7 +92,7 @@ export default async function createEmployeeCallout( //NOSONAR
     const callOut: CallOutWithAssociations | null = await createCallOutInDB(callOutData);
 
     if (!callOut) {
-      return res.status(500).json({error: 'Failed to create callout'});
+      return res.status(500).json({ error: 'Failed to create callout' });
     }
 
     // email the callout details to all supervisors, only include email
@@ -103,14 +104,16 @@ export default async function createEmployeeCallout( //NOSONAR
       try {
         sendCallOutDetails(supervisorEmails.join(', '), callOut);
       } catch (error) {
-        console.error('Error sending email: ', error);
+        const errMessage = '❌ Error sending email in createEmployeeCallout:' + ' ' + error;
+        console.error(logTemplate(errMessage, 'error'));
       }
     }
-    res.status(200).json({message: 'Callout Created Successfully', data: callOut});
+    res.status(200).json({ message: 'Callout Created Successfully', data: callOut });
   } catch (error) {
-    console.error('Error creating Callout: ', error);
-    res.status(500).json({error: 'Error creating Callout'});
+    const errMessage = '❌ Error in createEmployeeCallout:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    res.status(500).json({ error: 'Error creating Callout' });
   }
 }
 
-export {createEmployeeCallout};
+export { createEmployeeCallout };

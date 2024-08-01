@@ -1,8 +1,8 @@
 'use client';
-import {ApiData} from '../../lib/apiController';
-import {ModalAction} from '../../components/Modal';
-import {makeToast, ToastTypes} from '../../components';
-import {EmployeeWithAssociations} from '../../lib/db/controller';
+import { ApiData } from '../../lib/apiController';
+import { ModalAction } from '../../components/Modal';
+import { makeToast, ToastTypes } from '../../components';
+import { EmployeeWithAssociations } from '../../lib/db/controller';
 
 export type EmployeeFormData = {
   name: string;
@@ -38,10 +38,10 @@ export const CreateEmployee = async ({
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({...formData})
+      body: JSON.stringify({ ...formData })
     });
 
-    const {error, data} = (await response.json()) as ApiData<EmployeeWithAssociations>;
+    const { error, data } = (await response.json()) as ApiData<EmployeeWithAssociations>;
 
     if (!response.ok) {
       throw new Error(error ?? 'Failed to create employee');
@@ -51,7 +51,7 @@ export const CreateEmployee = async ({
         type: ToastTypes.Success,
         message: 'Employee Created Successfully'
       });
-      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+      window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
       return data as EmployeeWithAssociations;
     }
   } catch (error) {

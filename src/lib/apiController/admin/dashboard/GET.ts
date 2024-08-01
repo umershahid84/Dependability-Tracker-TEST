@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import type { ApiData } from '../../../../lib/apiController';
 import { CallOut, Employee, LeaveType, Supervisor } from '../../../db';
 import type { CallOutAttributes, CallOutWithAssociations, EmployeeWithAssociations } from '../../../../lib/db/models/types';
+import { logTemplate } from '../../../utils/server';
 
 export type AdminDashboardData = {
   totalCallOuts: number;
@@ -133,7 +134,8 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
       callOutTrends: Object.values(callOutTrends)
     }
   } catch (error) {
-    console.error('Error in getDashboardData:', error);
+    const errMessage = '❌ Error in getDashboardData:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return null;
   }
 };
@@ -151,7 +153,8 @@ export default async function getAdminDashboardDataApiHandler(
 
     return res.status(200).json({ data });
   } catch (error) {
-    console.error('Error in getAdminDashboardDataApiHandler:', error);
+    const errMessage = '❌ Error in getAdminDashboardDataApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return res.status(500).json({ error: String(error) });
   }
 }

@@ -1,4 +1,5 @@
-import {Division, DefaultDivisions} from '../models';
+import { logTemplate } from '../../utils/server';
+import { Division, DefaultDivisions } from '../models';
 
 const defaultDivisions: DefaultDivisions[] = [
   DefaultDivisions.PUBLIC_PARKING,
@@ -9,11 +10,12 @@ const defaultDivisions: DefaultDivisions[] = [
 export default async function seedDivisions() {
   try {
     await Division.bulkCreate(
-      defaultDivisions.map(name => ({name})),
-      {ignoreDuplicates: true}
+      defaultDivisions.map(name => ({ name })),
+      { ignoreDuplicates: true }
     );
-    console.log('  ✅ Divisions seeds inserted successfully');
+    console.log(logTemplate('  ✅ Divisions seeds inserted successfully'));
   } catch (error) {
-    console.error('❌ Error seeding divisions:', error);
+    const errMessage = '❌ Error seeding divisions:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 }

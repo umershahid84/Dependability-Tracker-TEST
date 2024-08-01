@@ -1,24 +1,25 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import {
   getLoginCredentialFromDB,
   deleteLoginCredentialFromDB
 } from '../../lib/db/controller/LoginCredential';
-import {sendCredentialInvite} from '../../lib/email';
-import {createCreateCredentialsInviteInDB} from '../../lib/db/controller';
+import { sendCredentialInvite } from '../../lib/email';
+import { createCreateCredentialsInviteInDB } from '../../lib/db/controller';
+import { logTemplate } from '../../lib/utils/server';
 
 export default async function handler(req: Request, res: Response) {
   if (req.method === 'POST') {
     try {
-      const {body} = req as {body: {email: string; username: string}};
+      const { body } = req as { body: { email: string; username: string } };
 
-      const {email, username} = body;
+      const { email, username } = body;
 
       // look for admin credentials with the email
       const adminsCredentials = await getLoginCredentialFromDB.byEmail(email);
 
       if (!adminsCredentials) {
-        return res.status(401).json({error: 'Unauthorized'});
+        return res.status(401).json({ error: 'Unauthorized' });
       }
 
       // compare the names
@@ -26,7 +27,7 @@ export default async function handler(req: Request, res: Response) {
         adminsCredentials?.supervisor_info?.supervisor_info?.name?.toLocaleLowerCase() !==
         username?.toLocaleLowerCase()
       ) {
-        return res.status(401).json({error: 'Unauthorized'});
+        return res.status(401).json({ error: 'Unauthorized' });
       }
 
       // remove their existing credentials
@@ -56,13 +57,13 @@ export default async function handler(req: Request, res: Response) {
         }
       }
 
-      return res.status(200).json({data: true});
+      return res.status(200).json({ data: true });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({error: (error as Error).message});
+      console.error(logTemplate('❌ Error in handler: ' + (error as Error).message, 'error'));
+      return res.status(500).json({ error: (error as Error).message });
     }
   }
-  return res.status(405).json({error: 'Method not allowed'});
+  return res.status(405).json({ error: 'Method not allowed' });
 }
 
 export const config = {

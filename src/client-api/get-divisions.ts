@@ -1,4 +1,5 @@
-import {makeToast, ToastTypes} from '../components';
+import { makeToast, ToastTypes } from '../components';
+
 
 export const getDivisions = async () => {
   try {
@@ -8,10 +9,11 @@ export const getDivisions = async () => {
       throw new Error('Failed to fetch divisions');
     }
 
-    const {data} = await response.json();
+    const { data } = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
+    const errMessage = '❌ Error in getDivisions:' + ' ' + error;
+    console.error(errMessage);
     makeToast({
       type: ToastTypes.Error,
       title: 'Error',

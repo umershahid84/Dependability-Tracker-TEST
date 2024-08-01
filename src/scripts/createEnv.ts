@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { logTemplate } from '../lib/utils/server';
 
 const envData = {
   DB_PORT: '3306',
@@ -28,12 +29,12 @@ const envData = {
 };
 
 function createEnvFile(createTestEnv = false) {
-  console.log(`Generating Environment Variable File: ${createTestEnv ? '.env.test' : '.env'}`);
+  console.log(logTemplate(`Generating Environment Variable File: ${createTestEnv ? '.env.test' : '.env'}`));
   const envPath = path.join(process.cwd(), createTestEnv ? '.env.test' : '.env');
 
   // if the file exists do not overwrite it
   if (fs.existsSync(envPath)) {
-    console.log('Environment file already exists, skipping creation');
+    console.log(logTemplate('Environment file already exists, skipping creation'));
     return;
   }
 
@@ -48,7 +49,7 @@ function createEnvFile(createTestEnv = false) {
     envFile += `${key} = ${value}\n`;
   }
   fs.writeFileSync(envPath, envFile);
-  console.log('Environment file created successfully');
+  console.log(logTemplate('Environment file created successfully'));
 }
 
 if (require.main === module) {

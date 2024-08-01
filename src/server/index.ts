@@ -8,6 +8,7 @@ import { parse } from 'url';
 import * as path from 'path';
 import sequelize from '../lib/db/connection';
 import express, { Express, Request, Response } from 'express';
+import { logTemplate } from '../lib/utils/server';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -66,6 +67,19 @@ export const startServer = async () => {
   const app = express();
   const httpServer = http.createServer(app);
 
+  const gracefulShutdown = async () => {
+    console.log(logTemplate('\nGracefully shutting down server', 'warn')); //NOSONAR
+    httpServer.close();
+    await sequelize.close();
+    process.exit(0);
+  }
+
+  // listen for interrupts to gracefully shutdown the server
+  process.on('SIGINT', gracefulShutdown);
+  process.on('SIGTERM', gracefulShutdown);
+  process.on('uncaughtException', gracefulShutdown);
+  process.on('unhandledRejection', gracefulShutdown);
+
   app.set('port', PORT);
   app.disable('x-powered-by');
   app.disable('etag');
@@ -80,7 +94,7 @@ export const startServer = async () => {
 
   // start the http server
   await new Promise<void>(resolve => httpServer.listen(PORT, 'localhost', resolve));
-  console.log(`\n🚀 LocalHost Server ready at http://localhost:${PORT}\n`); //NOSONAR
+  console.log(logTemplate(`\n🚀 LocalHost Server ready at http://localhost:${PORT}\n`)); //NOSONAR
 
   // check for TLS support
   const { hasSupportForTLS, tlsOptions } = checkForTLS();
@@ -90,8 +104,18 @@ export const startServer = async () => {
     const https = require('https');
     const httpsServer = https.createServer(tlsOptions, app);
     await new Promise<void>(resolve => httpsServer.listen(TLS_PORT, '0.0.0.0', resolve));
-    console.log(`🔒 Local Network Server ready at https://${hostIP}:${TLS_PORT}\n`); //NOSONAR
+    console.log(logTemplate(`🔒 Local Network Server ready at https://${hostIP}:${TLS_PORT}\n`)); //NOSONAR
   }
 };
 
-if (require.main === module) startServer();
+
+
+if (require.main === module) {
+  (async () => {
+    await startServer().catch(e => {
+      const errMessage = '❌ Error starting server for Dependability Tracker:' + ' ' + e;
+      console.error(logTemplate(errMessage, 'error')); //NOSONAR
+      process.exit(1);
+    })
+  })();
+}

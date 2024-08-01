@@ -6,13 +6,15 @@ import {
   SupervisorWithAssociations
 } from '../models/types';
 import sequelize from '../connection';
-import {CallOut, DefaultLeaveTypes} from '../models';
-import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
+import { logTemplate } from '../../utils/server';
+import { CallOut, DefaultLeaveTypes } from '../models';
+import { getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB } from '../controller';
+
 
 const numberOfCallouts = 365;
 
 function getRelevantComments(leaveType: DefaultLeaveTypes): string[] {
-  const leaveTypeToComments: {[key in DefaultLeaveTypes]: number[]} = {
+  const leaveTypeToComments: { [key in DefaultLeaveTypes]: number[] } = {
     [DefaultLeaveTypes.SICK]: [6, 15, 19, 24, 28, 31, 33, 38, 48],
     [DefaultLeaveTypes.FCA]: [2, 11, 16, 17, 25],
     [DefaultLeaveTypes.FMLA]: [7, 10, 18, 21, 36, 37],
@@ -126,8 +128,8 @@ function getRandomTime(date: Date): Date {
 
 // Function to seed callouts
 const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
-  console.log(`🌱 Seeding ${numOfSeeds} CallOuts...`);
-  await sequelize.sync({force: false});
+  console.log(logTemplate(`🌱 Seeding ${numOfSeeds} CallOuts...`));
+  await sequelize.sync({ force: false });
   try {
     const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
     const supervisors: SupervisorWithAssociations[] =
@@ -190,9 +192,9 @@ const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
 
       await CallOut.create(callout);
     }
-    console.log(`✅ CallOuts seeded successfully!`);
+    console.log(logTemplate(`✅ CallOuts seeded successfully!`));
   } catch (error) {
-    console.error(`❌ Error seeding CallOuts: ${error}`);
+    console.error(logTemplate(`❌ Error seeding CallOuts: ${error}`, 'error'));
   }
 };
 

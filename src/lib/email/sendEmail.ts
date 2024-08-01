@@ -1,4 +1,5 @@
-import nodemailer, {Transporter} from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
+import { logTemplate } from '../utils/server';
 
 export type SMTP_Config = {
   host: string;
@@ -28,13 +29,13 @@ export const smtpConfig: SMTP_Config = {
   auth: {
     user: process.env.EMAIL_USER as string
   },
-  tls: {rejectUnauthorized: false}
+  tls: { rejectUnauthorized: false }
 };
 
 export const createTransporter = (): Transporter => {
   const hasEmailPass = process.env.EMAIL_PASS;
 
-  const config = {...smtpConfig};
+  const config = { ...smtpConfig };
 
   if (hasEmailPass) {
     config.auth['pass'] = process.env.EMAIL_PASS;
@@ -80,7 +81,7 @@ export const validateEmail = (email: Email): [boolean, string] => {
   }
 
   if (errors.length > 0) {
-    console.error('validateEmail:: Email is missing required fields or has invalid field types');
+    console.error(logTemplate('validateEmail:: Email is missing required fields or has invalid field types', 'error'));
     return [false, errors.join(', ')];
   }
 
@@ -100,7 +101,7 @@ export const sendEmail = async (email: Email): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.error(`sendEmail:: Error sending email: ${error}`);
+    console.error(logTemplate(`sendEmail:: Error sending email: ${error}`, 'error'));
     return false;
   }
 };

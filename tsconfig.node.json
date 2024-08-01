@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -14,8 +18,27 @@
     "incremental": true,
     "baseUrl": "./",
     "outDir": "./dist",
+    "rootDir": "./src",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/server/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "./src/server/**/*"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./src/assets",
+    "./src/client",
+    "./src/auth",
+    "./src/client-api",
+    "./src/components",
+    "./src/hooks",
+    "./src/lib",
+    "./src/pages",
+    "./src/middleware",
+    "./src/providers",
+    "./src/scripts",
+    "./src/styles",
+    "./src/middleware",
+  ]
 }

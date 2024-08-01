@@ -1,10 +1,12 @@
+import ip from "../../../../server/ip";
+
 export const credentialInviteTemplate = (
-  inviteId: string,
-  username: string,
-  inviteToken: string,
-  createLoginCredentialsLink: string
+    inviteId: string,
+    username: string,
+    inviteToken: string,
+    createLoginCredentialsLink: string
 ): string => {
-  return `
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -21,12 +23,11 @@ export const credentialInviteTemplate = (
                         <tr>
                             <td align="center" style="padding: 20px;">
                               <img
-                                src="https://www.portseattle.org/themes/portseattleflysea/logo.svg"
+                                src="${ip}/images/seatac-dark.png"
                                 alt="Dependability Tracker Logo"
                                 style="
                                     max-width: 350px;
                                     border-radius: 5px;
-                                    filter: invert(1) hue-rotate(180deg) saturate(1.5) !important;
                                 " />
                                 <h2 style="color: #e2e2e2 !important; margin-top: 35px">Dependability Tracker</h2>
                             </td>

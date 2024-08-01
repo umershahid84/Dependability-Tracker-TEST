@@ -1,9 +1,10 @@
 // CRUD Controller for the Employee Table
 // CRUD: Create, Read, Update, Delete
 
-import {uuidV4Regex} from '../../../utils';
-import {Employee, Division} from '../../models';
-import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '../../models/types';
+import { uuidV4Regex } from '../../../utils';
+import { logTemplate } from '../../../utils/server';
+import { Employee, Division } from '../../models';
+import { EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations } from '../../models/types';
 
 /**
  * This is a hack really. There is a way to properly associate the Employee and Division models
@@ -15,7 +16,7 @@ import {EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations} from '
  */
 export const getEmployeeDivisions = async (employeeId: string): Promise<DivisionAttributes[]> => {
   try {
-    const employee = (await Employee.findByPk(employeeId))?.get({plain: true});
+    const employee = (await Employee.findByPk(employeeId))?.get({ plain: true });
     // istanbul ignore next
     if (!employee) {
       throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
@@ -31,11 +32,11 @@ export const getEmployeeDivisions = async (employeeId: string): Promise<Division
       const division = await Division.findByPk(divisionId);
       // istanbul ignore next
       if (!division) {
-        console.error(`\n❌ Division with ID ${divisionId} not found`);
+        console.error(logTemplate(`\n❌ Division with ID ${divisionId} not found`, 'error'));
       }
       divisions.push(division);
     }
-    const _divisions = divisions?.map(division => division?.get({plain: true})) ?? [];
+    const _divisions = divisions?.map(division => division?.get({ plain: true })) ?? [];
 
     return _divisions as DivisionAttributes[];
   } catch (error) {
@@ -57,7 +58,7 @@ export const populateEmployeeWithDivisions = async (
 
   // istanbul ignore next
   if (divisions.length === 0) {
-    console.error(`\n❌ Error creating employee: Employee must belong to at least one division`);
+    console.error(logTemplate(`\n❌ Error creating employee: Employee must belong to at least one division`, 'error'));
   }
 
   return {

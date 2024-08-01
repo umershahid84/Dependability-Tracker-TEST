@@ -1,14 +1,15 @@
-import {LeaveType} from '../models';
-import {defaultLeaveTypes} from '../../utils/server';
+import { LeaveType } from '../models';
+import { defaultLeaveTypes, logTemplate } from '../../utils/server';
 
 export default async function seedLeaveTypes() {
   try {
     await LeaveType.bulkCreate(
-      defaultLeaveTypes.map(reason => ({reason})),
-      {ignoreDuplicates: true}
+      defaultLeaveTypes.map(reason => ({ reason })),
+      { ignoreDuplicates: true }
     );
-    console.log('  ✅ Leave types seeds inserted successfully');
+    console.log(logTemplate('  ✅ Leave types seeds inserted successfully'));
   } catch (error) {
-    console.error('❌ Error seeding leave types:', error);
+    const errMessage = '❌ Error seeding leave types:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 }

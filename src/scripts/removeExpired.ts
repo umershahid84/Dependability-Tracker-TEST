@@ -1,15 +1,16 @@
 import 'dotenv/config';
 import { Op } from 'sequelize';
-import { getSequelize, CreateCredentialsInvite, connection } from '../lib/db';
+import { logTemplate } from '../lib/utils/server';
+import { CreateCredentialsInvite, connection } from '../lib/db';
+
 
 const removeExpired = async () => {
   let count = 0;
   const now = new Date();
-  console.log(`\n🔎 Looking for expired invites...`);
+  console.log(logTemplate(`\n🔎 Looking for expired invites...`));
 
   try {
     // get the db connection
-    const connection = getSequelize();
     // connect to the database and sync the models
     await connection.sync();
 
@@ -27,12 +28,11 @@ const removeExpired = async () => {
     // @ts-ignore
     if (error?.parent?.errno !== 1146) {
       // @ts-ignore
-      console.error(`❌ Error removing expired invites: ${error?.message ?? 'Unknown error'}`);
+      console.error(logTemplate(`❌ Error removing expired invites: ${error?.message ?? 'Unknown error'}`, 'error'));
     }
   }
 
-  console.log(`\n⌛ Removed ${count} expired invites.`);
-  await connection.close();
+  console.log(logTemplate(`\n⌛ Removed ${count} expired invites.`));
 };
 
 if (require.main === module) {
@@ -44,7 +44,7 @@ if (require.main === module) {
 
   const interval = args[0] ? parseInt(args[0], 10) : intervalInMs;
 
-  console.log(`\n🕰️  Removing expired entries every ${interval / 1000 / 60} minutes`);
+  console.log(logTemplate(`\n🕰️ Removing expired entries every ${interval / 1000 / 60} minutes`));
 
   removeExpired();
   setInterval(() => {

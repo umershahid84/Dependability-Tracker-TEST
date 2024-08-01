@@ -1,11 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {JwtPayload} from '../../../auth';
-import {Request, Response} from 'express';
-import type {ApiData} from '../../../lib/apiController';
-import {DefaultCallOutFormData} from '../../../client-api';
-import {updateCallOutInDB} from '../../../lib/db/controller';
-import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
-import {EditableCalloutProps} from '../../db/controller/Callout/helpers';
+import { JwtPayload } from '../../../auth';
+import { Request, Response } from 'express';
+import type { ApiData } from '../../../lib/apiController';
+import { DefaultCallOutFormData } from '../../../client-api';
+import { updateCallOutInDB } from '../../../lib/db/controller';
+import { CallOutWithAssociations } from '../../../lib/db/models/Callout';
+import { EditableCalloutProps } from '../../db/controller/Callout/helpers';
+import { logTemplate } from '../../utils/server';
 
 // inviteToken, password, email
 export default async function editEmployeeCallOutApiHandler( //NOSONAR
@@ -25,7 +26,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       employeeName,
       leftEarlyMinutes,
       lateArrivalMinutes
-    } = req.body.formData as DefaultCallOutFormData & {callDate: string; shiftDate: string};
+    } = req.body.formData as DefaultCallOutFormData & { callDate: string; shiftDate: string };
 
     const id = req.body.id as string;
 
@@ -48,7 +49,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       if (!employeeName) missingFields.push('Employee Name');
       if (!comment) missingFields.push('Supervisor Comments');
 
-      return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
+      return res.status(400).json({ error: `Missing required fields: ${missingFields.join(', ')}` });
     }
 
     // build the calTime and shiftTime into date objects, using the callDate and shiftDate as the base
@@ -92,16 +93,17 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     const callOut: CallOutWithAssociations | null = await updateCallOutInDB(id, callOutData);
 
     if (!callOut) {
-      return res.status(500).json({error: 'Failed to update callout'});
+      return res.status(500).json({ error: 'Failed to update callout' });
     }
 
-    res.status(200).json({message: 'Callout Updated Successfully', data: callOut});
+    res.status(200).json({ message: 'Callout Updated Successfully', data: callOut });
   } catch (error) {
-    console.error('Error updating Callout: ', req?.body?.id);
+    const errMessage = '❌ Error in editEmployeeCallOutApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return {
       error: String(error)
     };
   }
 }
 
-export {editEmployeeCallOutApiHandler};
+export { editEmployeeCallOutApiHandler };

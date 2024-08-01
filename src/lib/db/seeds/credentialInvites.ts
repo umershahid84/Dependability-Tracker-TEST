@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import sequelize from '../connection';
-import {SupervisorWithAssociations} from '../models/Supervisor';
-import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../controller';
+import { SupervisorWithAssociations } from '../models/Supervisor';
+import { getSupervisorFromDB, createCreateCredentialsInviteInDB } from '../controller';
+import { logTemplate } from '../../utils/server';
 
 const seedCredentialInvites = async () => {
   // find the admins
@@ -18,9 +19,10 @@ const seedCredentialInvites = async () => {
       });
     }
 
-    console.log('  ✅ Credential invites seeded successfully!');
+    console.log(logTemplate('  ✅ Credential invites seeded successfully!'));
   } catch (error) {
-    console.error('❌ Error seeding credential invites:', error);
+    const errMessage = '❌ Error seeding credential invites:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 };
 

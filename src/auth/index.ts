@@ -1,7 +1,8 @@
-import {Request, Response} from 'express';
-import jwt, {Algorithm} from 'jsonwebtoken';
-import type {ApiData} from '../lib/apiController';
-import {getLoginCredentialFromDB} from '../lib/db/controller/LoginCredential';
+import { Request, Response } from 'express';
+import jwt, { Algorithm } from 'jsonwebtoken';
+import type { ApiData } from '../lib/apiController';
+import { getLoginCredentialFromDB } from '../lib/db/controller/LoginCredential';
+import { logTemplate } from '../lib/utils/server';
 
 const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
 const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
@@ -44,7 +45,8 @@ export const verifyJwtToken_RequiresNode = async (
     return decoded;
   } catch (error) {
     if (!String(error).includes('Unauthorized')) {
-      console.error('Error in verifyJwtToken_RequiresNode', error);
+      const errMessage = '❌ Error in verifyJwtToken_RequiresNode' + ' ' + error;
+      console.error(logTemplate(errMessage, 'error'));
     }
     // if the token is invalid, we return undefined
     return undefined;
@@ -62,7 +64,7 @@ export type Redirect = {
 export const getTokenForServerSideProps = async (request: {
   req: Request;
 }): Promise<JwtPayload | Redirect | undefined> => {
-  const {req} = request;
+  const { req } = request;
   const cookie = req.cookies['auth-token'];
   const token = await verifyJwtToken_RequiresNode(cookie ?? '');
 
@@ -83,12 +85,12 @@ export const getJwtTokenForAPI = async (
   req: Request,
   res: Response<ApiData>
 ): Promise<undefined | JwtPayload> => {
-  const token = await getTokenForServerSideProps({req});
+  const token = await getTokenForServerSideProps({ req });
 
   const hasRedirect = (token as Redirect)?.redirect;
 
   if (!token || hasRedirect) {
-    res.status(401).json({error: 'Unauthorized request'});
+    res.status(401).json({ error: 'Unauthorized request' });
     return;
   }
 
@@ -101,12 +103,12 @@ export const enforceAdminOnly = async (
 ): Promise<undefined | JwtPayload | void | Response<any, Record<string, any>>> => {
   const token = await getJwtTokenForAPI(req, res);
   if (!token?.isAdmin) {
-    return res.status(401).json({error: 'Unauthorized request'});
+    return res.status(401).json({ error: 'Unauthorized request' });
   } else {
     return token;
   }
 };
 
 export const signJwtToken = (payload: JwtPayload): string => {
-  return jwt.sign({...payload}, SECRET, {algorithm: ALGORITHM, expiresIn: EXPIRES_IN});
+  return jwt.sign({ ...payload }, SECRET, { algorithm: ALGORITHM, expiresIn: EXPIRES_IN });
 };

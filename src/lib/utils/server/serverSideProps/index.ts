@@ -1,4 +1,4 @@
-import {Request} from 'express';
+import { Request } from 'express';
 import {
   getCallOutFromDB,
   getDivisionFromDB,
@@ -13,8 +13,9 @@ import {
   EmployeeWithAssociations,
   SupervisorWithAssociations
 } from '../../../../lib/db/models/types';
-import {DefaultLeaveTypes} from '../../../../lib/db/models';
-import {getDivisionNameFromPath} from '../../shared/strings';
+import { DefaultLeaveTypes } from '../../../../lib/db/models';
+import { getDivisionNameFromPath } from '../../shared/strings';
+import { logTemplate } from '../logger';
 
 export const defaultLeaveTypes: DefaultLeaveTypes[] = [
   DefaultLeaveTypes.SICK,
@@ -36,7 +37,7 @@ export const defaultLeaveTypes: DefaultLeaveTypes[] = [
   DefaultLeaveTypes.OTHER
 ];
 
-export const getServerSidePropsForDivision = async (request: {req: Request}) => {
+export const getServerSidePropsForDivision = async (request: { req: Request }) => {
   try {
     const currentDivision = getDivisionNameFromPath(request.req.url);
     const supervisors = (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
@@ -65,7 +66,8 @@ export const getServerSidePropsForDivision = async (request: {req: Request}) => 
       }
     };
   } catch (error) {
-    console.error('Error in getServerSidePropsForDivision', error);
+    const errMessage = '❌ Error in getServerSidePropsForDivision:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return {
       props: {
         employees: JSON.stringify([]),
@@ -75,7 +77,7 @@ export const getServerSidePropsForDivision = async (request: {req: Request}) => 
   }
 };
 
-export const getServerSidePropsForTwoWeekCallOutHistory = async (request: {req: Request}) => {
+export const getServerSidePropsForTwoWeekCallOutHistory = async (request: { req: Request }) => {
   try {
     const currentDivision = getDivisionNameFromPath(request.req.url);
     const division: DivisionAttributes | null = await getDivisionFromDB.byName(currentDivision);
@@ -95,7 +97,8 @@ export const getServerSidePropsForTwoWeekCallOutHistory = async (request: {req: 
       }
     };
   } catch (error) {
-    console.error('Error in getServerSidePropsForTwoWeekCallOutHistory', error);
+    const errMessage = '❌ Error in getServerSidePropsForTwoWeekCallOutHistory:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
     return {
       props: {
         callOuts: JSON.stringify([])

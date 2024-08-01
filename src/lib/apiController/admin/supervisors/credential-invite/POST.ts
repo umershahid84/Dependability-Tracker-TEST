@@ -1,10 +1,11 @@
-import {Request, Response} from 'express';
-import type {ApiData} from '../../../index';
-import {JwtPayload} from '../../../../../auth';
-import {sendCredentialInvite} from '../../../../email';
-import {CreateCredentialsInvite, LoginCredential} from '../../../../db';
-import {SupervisorWithAssociations} from '../../../../db/models/Supervisor';
-import {getSupervisorFromDB, createCreateCredentialsInviteInDB} from '../../../../db/controller';
+import { Request, Response } from 'express';
+import type { ApiData } from '../../../index';
+import { JwtPayload } from '../../../../../auth';
+import { sendCredentialInvite } from '../../../../email';
+import { CreateCredentialsInvite, LoginCredential } from '../../../../db';
+import { SupervisorWithAssociations } from '../../../../db/models/Supervisor';
+import { getSupervisorFromDB, createCreateCredentialsInviteInDB } from '../../../../db/controller';
+import { logTemplate } from '../../../../utils/server';
 
 export default async function postSupervisorCredentialInviteApiHandler(
   req: Request,
@@ -12,15 +13,15 @@ export default async function postSupervisorCredentialInviteApiHandler(
   token: JwtPayload
 ) {
   try {
-    const {body} = req as {body: {supervisorsEmail: string; forSupervisor: string}};
+    const { body } = req as { body: { supervisorsEmail: string; forSupervisor: string } };
 
     const forSupervisorId = body.forSupervisor;
     const supervisorEmail = body.supervisorsEmail;
 
     // create the invite  // ensure the email is not already in use
     const [loginCredentialWithExistingEmail, inviteWithExistingEmail] = await Promise.all([
-      LoginCredential.findOne({where: {email: supervisorEmail}}),
-      CreateCredentialsInvite.findOne({where: {email: supervisorEmail}})
+      LoginCredential.findOne({ where: { email: supervisorEmail } }),
+      CreateCredentialsInvite.findOne({ where: { email: supervisorEmail } })
     ]);
 
     if (loginCredentialWithExistingEmail || inviteWithExistingEmail) {
@@ -65,11 +66,12 @@ export default async function postSupervisorCredentialInviteApiHandler(
       }
     );
 
-    return res.status(200).json({message: 'Invite created successfully', data: updatedData});
+    return res.status(200).json({ message: 'Invite created successfully', data: updatedData });
   } catch (error) {
-    console.error('Error creating invite:', error);
-    return res.status(500).json({error: String(error)});
+    const errMessage = '❌ Error in postSupervisorCredentialInviteApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    return res.status(500).json({ error: String(error) });
   }
 }
 
-export {postSupervisorCredentialInviteApiHandler};
+export { postSupervisorCredentialInviteApiHandler };

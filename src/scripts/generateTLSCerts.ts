@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import {exec} from 'child_process';
+import { exec } from 'child_process';
+import { logTemplate } from '../lib/utils/server';
 
 // Generate a private key and certificate for use with TLS
 function generateTLSCredentials() {
@@ -24,7 +25,7 @@ function generateTLSCredentials() {
     // Generate a private RSA 4096 Key, save it as a .pem file
     exec(`openssl genrsa -out "${privateKeyPath}" 4096`, err => {
       if (err) {
-        console.error(`Error generating private key: ${err.message}`);
+        console.error(logTemplate(`Error generating private key: ${err.message}`, 'error'));
         return;
       }
 
@@ -33,7 +34,7 @@ function generateTLSCredentials() {
         `openssl req -new -key "${privateKeyPath}" -out "${csrPath}" -subj "/C=US/ST=WA/L=Seattle/O=SEA-TAC/OU=Parking/CN=DependabilityTracker"`,
         err => {
           if (err) {
-            console.error(`Error generating CSR: ${err.message}`);
+            console.error(logTemplate(`Error generating CSR: ${err.message}`, 'error'));
             return;
           }
 
@@ -42,10 +43,10 @@ function generateTLSCredentials() {
             `openssl x509 -req -days 365 -in "${csrPath}" -signkey "${privateKeyPath}" -out "${certPathFile}"`,
             err => {
               if (err) {
-                console.error(`Error generating certificate: ${err.message}`);
+                console.error(logTemplate(`Error generating certificate: ${err.message}`), 'error');
                 return;
               }
-              console.log('TLS credentials generated successfully.');
+              console.log(logTemplate('TLS credentials generated successfully.'));
             }
           );
         }

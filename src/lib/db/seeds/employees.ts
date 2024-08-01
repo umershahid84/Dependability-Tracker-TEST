@@ -1,6 +1,7 @@
-import {uuid} from '../../utils/shared/uuid';
-import {Division, Employee} from '../models';
-import {EmployeeCreationAttributes} from '../models/Employee';
+import { logTemplate } from '../../utils/server';
+import { uuid } from '../../utils/shared/uuid';
+import { Division, Employee } from '../models';
+import { EmployeeCreationAttributes } from '../models/Employee';
 
 // object containing employee seed data
 const employeeSeeds = [
@@ -202,9 +203,10 @@ const seedEmployees = async () => {
     await Employee.bulkCreate(employeeSeeds as EmployeeCreationAttributes[], {
       ignoreDuplicates: true
     });
-    console.log('  ✅ Employee seeds inserted successfully');
+    console.log(logTemplate('  ✅ Employee seeds inserted successfully'));
   } catch (error) {
-    console.error('❌Error inserting employee seeds:', error);
+    const errMessage = '❌ Error seeding employees:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 };
 

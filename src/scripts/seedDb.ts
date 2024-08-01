@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import sequelize from '../lib/db/connection';
+import { logTemplate } from '../lib/utils/server';
 import seedCallOuts from '../lib/db/seeds/callouts';
 import seedEmployees from '../lib/db/seeds/employees';
 import seedDivisions from '../lib/db/seeds/divisions';
@@ -7,19 +8,21 @@ import seedLeaveTypes from '../lib/db/seeds/leaveTypes';
 import seedSupervisors from '../lib/db/seeds/supervisors';
 import seedCredentialInvites from '../lib/db/seeds/credentialInvites';
 
+
 export const seedDatabase = async (seedInvites = true) => {
   try {
-    console.log('\n🌱 Seeding database...\n');
-    await sequelize.sync({force: true});
+    console.log(logTemplate('\n🌱 Seeding database...\n'));
+    await sequelize.sync({ force: true });
     // run these concurrently
     await Promise.all([seedDivisions(), seedLeaveTypes()]);
     await seedEmployees();
     await seedSupervisors();
     // create invites for the supervisors to create their credentials
     seedInvites && (await seedCredentialInvites());
-    console.log('\n🌲 Database seeded!');
+    console.log(logTemplate('\n🌲 Database seeded!'));
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    const errMessage = '❌ Error seeding database:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
   }
 };
 

@@ -6,16 +6,16 @@ import {
   CallOutWithAssociations,
   EmployeeWithAssociations
 } from '../../../../lib/db/models/types';
-import {useIsMounted} from '../../../../hooks';
-import {ClientAPI} from '../../../../client-api';
-import React, {useEffect, useState} from 'react';
-import {NextRouter, useRouter} from 'next/router';
-import {DateInput} from '../../FormInputs/DateInput';
-import {makeToast, ToastTypes} from '../../../Toasts';
-import {SelectDivision} from '../../FormInputs/SelectDivision';
-import {SelectEmployeeName} from '../../../Forms/FormInputs/SelectEmployeeName';
-import {SelectLeaveTypeReason} from '../../../Forms/FormInputs/SelectLeaveType';
-import {capitalizeWords, getDivisionNameFromPath} from '../../../../lib/utils/shared/strings';
+import { useIsMounted } from '../../../../hooks';
+import { ClientAPI } from '../../../../client-api';
+import React, { useEffect, useState } from 'react';
+import { NextRouter, useRouter } from 'next/router';
+import { DateInput } from '../../FormInputs/DateInput';
+import { makeToast, ToastTypes } from '../../../Toasts';
+import { SelectDivision } from '../../FormInputs/SelectDivision';
+import { SelectEmployeeName } from '../../../Forms/FormInputs/SelectEmployeeName';
+import { SelectLeaveTypeReason } from '../../../Forms/FormInputs/SelectLeaveType';
+import { capitalizeWords, getDivisionNameFromPath } from '../../../../lib/utils/shared/strings';
 
 export type DivisionCalloutReportFormData = {
   endDate: Date;
@@ -78,7 +78,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
 
     try {
       const callOuts = await ClientAPI.CallOuts.Read(
-        {limit: '-1'},
+        { limit: '-1' },
         {
           employee_id,
           leave_type_id,
@@ -106,7 +106,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       (d: DivisionAttributes) => d.name === currentDivision
     )?.id;
 
-    isMounted && setFormData({...formData, division: currentDivisionId ?? ''});
+    isMounted && setFormData({ ...formData, division: currentDivisionId ?? '' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
@@ -145,7 +145,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
           divisions={divisionData}
           value={formData.division}
           onChangeHandler={handleOnChange}
-          className="p-3 mt-2 rounded-md w-auto bg-slate-700 text-gray-300 hover:scale-105 hover:bg-[var(--green)] hide-on-print"
+          className="p-3 mt-2 text-center rounded-md w-auto bg-slate-700 text-gray-300 hover:bg-slate-800 hide-on-print"
         />
       </div>
 

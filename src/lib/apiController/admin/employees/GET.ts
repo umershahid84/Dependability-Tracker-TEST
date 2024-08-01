@@ -4,16 +4,17 @@ import {
   getSupervisorFromDB,
   EmployeeWithAssociations
 } from '../../../db/controller';
-import type {ApiData} from '../../index';
-import {Request, Response} from 'express';
-import {SupervisorWithAssociations} from '../../../db/models/Supervisor';
+import type { ApiData } from '../../index';
+import { Request, Response } from 'express';
+import { SupervisorWithAssociations } from '../../../db/models/Supervisor';
+import { logTemplate } from '../../../utils/server';
 
 export default async function getEmployeesApiHandler(
   req: Request,
   res: Response<ApiData<ModelWithPagination<EmployeeWithAssociations>>>
 ) {
   try {
-    let {sortBy, limit, offset} = req.query as {
+    let { sortBy, limit, offset } = req.query as {
       sortBy: string | undefined;
       limit: string | undefined;
       offset: string | undefined;
@@ -42,7 +43,7 @@ export default async function getEmployeesApiHandler(
 
       return res.status(200).json({
         message: 'Employees',
-        data: {...employeesData}
+        data: { ...employeesData }
       });
     } else {
       // if there are no query parameters, default to returning all employees
@@ -151,13 +152,14 @@ export default async function getEmployeesApiHandler(
 
       res.status(200).json({
         message: 'Employees',
-        data: {...employeesData}
+        data: { ...employeesData }
       });
     }
   } catch (error) {
-    console.error('Error fetching employees:', error);
-    res.status(500).json({error: String(error)});
+    const errMessage = '❌ Error in getEmployeesApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    res.status(500).json({ error: String(error) });
   }
 }
 
-export {getEmployeesApiHandler};
+export { getEmployeesApiHandler };

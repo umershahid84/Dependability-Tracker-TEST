@@ -3,17 +3,18 @@ import {
   getCreateCredentialsInviteFromDB,
   updateCreateCredentialsInviteInDB
 } from '../../../../../db/controller';
-import {Request, Response} from 'express';
-import type {ApiData} from '../../../../index';
-import {LoginCredential} from '../../../../../db';
-import {sendCredentialInvite} from '../../../../../email';
+import { Request, Response } from 'express';
+import type { ApiData } from '../../../../index';
+import { LoginCredential } from '../../../../../db';
+import { sendCredentialInvite } from '../../../../../email';
+import { logTemplate } from '../../../../../utils/server';
 
 export default async function postSupervisorEmailCredentialInviteApiHandler(
   req: Request,
-  res: Response<ApiData<{email: string}>>
+  res: Response<ApiData<{ email: string }>>
 ) {
   try {
-    const {body} = req as {body: {supervisorsEmail: string; forSupervisor: string}};
+    const { body } = req as { body: { supervisorsEmail: string; forSupervisor: string } };
 
     const forSupervisorId = body.forSupervisor;
     const supervisorEmail = body.supervisorsEmail;
@@ -35,7 +36,7 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
 
     // ensure the email is not already in use
     const [loginCredentialWithExistingEmail] = await Promise.all([
-      LoginCredential.findOne({where: {email: supervisorEmail}})
+      LoginCredential.findOne({ where: { email: supervisorEmail } })
     ]);
 
     if (loginCredentialWithExistingEmail) {
@@ -46,7 +47,7 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
     if (credentialInvite.email !== supervisorEmail) {
       await updateCreateCredentialsInviteInDB({
         id: credentialInvite.id,
-        updateData: {email: supervisorEmail}
+        updateData: { email: supervisorEmail }
       });
     }
 
@@ -65,11 +66,12 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
 
     return res
       .status(200)
-      .json({message: 'Email sent successfully', data: {email: supervisorEmail}});
+      .json({ message: 'Email sent successfully', data: { email: supervisorEmail } });
   } catch (error) {
-    console.error('Error resending invite:', error);
-    return res.status(500).json({error: String(error)});
+    const errMessage = '❌ Error in postSupervisorEmailCredentialInviteApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    return res.status(500).json({ error: String(error) });
   }
 }
 
-export {postSupervisorEmailCredentialInviteApiHandler};
+export { postSupervisorEmailCredentialInviteApiHandler };

@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {DivisionLayout} from '../Division';
-import {DivisionReportForm} from '../Forms';
-import {DetailedCallOutHistory} from './DetailedCallOutReport';
-import {CallOutWithAssociations} from '../../lib/db/models/types';
+import React, { useState } from 'react';
+import { DivisionLayout } from '../Division';
+import { DivisionReportForm } from '../Forms';
+import { DetailedCallOutHistory } from './DetailedCallOutReport';
+import { CallOutWithAssociations } from '../../lib/db/models/types';
 
 export function DivisionReport(
   props: Readonly<{
@@ -31,7 +31,7 @@ export function DivisionReport(
           leaveTypes={props.leaveTypes}
         />
 
-        {callOuts.length > 0 && <DetailedCallOutHistory callOuts={callOuts} />}
+        {callOuts.length > 0 && <DetailedCallOutHistory callOuts={callOuts} showDownloadButton />}
       </div>
     </DivisionLayout>
   );

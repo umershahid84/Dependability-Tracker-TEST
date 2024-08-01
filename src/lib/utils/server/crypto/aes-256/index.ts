@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { logTemplate } from '../../logger';
 
 export type AES_EncryptionData = {
   iv: string;
@@ -50,7 +51,8 @@ export const generateAESEncryptionKey = async (password: string): Promise<Buffer
       const key: Buffer = crypto.pbkdf2Sync(password + pepper, salt, 100000, 32, 'sha256');
       resolve(key);
     } catch (error) {
-      console.error('Error generating encryption key:', error);
+      const errorMessage = 'Error generating encryption key:' + ' ' + error
+      console.error(logTemplate(errorMessage, 'error'));
       reject(new Error('Error generating encryption key'));
     }
   });
@@ -75,7 +77,7 @@ export const encryptAES = async (
       const iv = crypto.randomBytes(16);
       const cipher = crypto.createCipheriv('aes-256-ctr', encryptionKey, iv);
       const encryptedData = cipher.update(data, 'utf8', 'hex') + cipher.final('hex');
-      resolve({iv: iv.toString('hex'), encryptedData});
+      resolve({ iv: iv.toString('hex'), encryptedData });
     };
 
     if (encryptionKey) {

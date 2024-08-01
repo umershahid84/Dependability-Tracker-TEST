@@ -1,15 +1,15 @@
-import {CallOutWithAssociations} from '../../../db/models/Callout';
+import ip from "../../../../server/ip";
+import { CallOutWithAssociations } from '../../../db/models/Callout';
 
 export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations): string => {
-  return `
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="color-scheme" content="light">
-        <title>Call Out Details - ${
-          callOutDetails.employee.name
+        <title>Call Out Details - ${callOutDetails.employee.name
         } - ${callOutDetails.createdAt.toLocaleTimeString()}</title>
     </head>
     <body style="font-family: Arial, sans-serif; background-color: rgb(2, 6, 23) !important; color: #e2e2e2 !important; margin: 0; padding: 0;">
@@ -20,17 +20,16 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                         <tr>
                             <td align="center" style="padding: 20px;">
                               <img
-                                src="https://www.portseattle.org/themes/portseattleflysea/logo.svg"
+                                 src="${ip}/images/seatac-dark.png"
                                 alt="Dependability Tracker Logo"
-                                style="max-width: 350px; border-radius: 5px; filter: invert(1) hue-rotate(180deg) saturate(1.5) !important; " />
+                                style="max-width: 350px; border-radius: 5px;" />
                                 <h2 style="color: #e2e2e2 !important; margin-top: 35px; font-size: 24px; font-weight: 600;">Dependability Tracker</h2>
                             </td>
                         </tr>
                         <tr>
                             <td align="left" style="padding: 20px;">
-                                <h1 style="font-size: 24px; color: #e2e2e2 !important; margin-bottom: 20px;">Call-Out Received for ${
-                                  callOutDetails.employee.name
-                                }</h1>
+                                <h1 style="font-size: 24px; color: #e2e2e2 !important; margin-bottom: 20px;">Call-Out Received for ${callOutDetails.employee.name
+        }</h1>
                                 <p style="margin-bottom: 20px; color: #e2e2e2 !important;">Details:</p>
                                 <table width="100%" border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; margin-bottom: 20px;">
                                     <thead style="background-color: #1e293b !important;">
@@ -45,9 +44,8 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">${
-                                              callOutDetails.employee.name
-                                            }</td>
+                                            <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">${callOutDetails.employee.name
+        }</td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
                                                 ${callOutDetails.callout_date.toLocaleDateString()}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
@@ -58,35 +56,31 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                                                 ${callOutDetails.shift_date.toLocaleDateString()}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
                                                     Shift Time: ${callOutDetails.shift_time.toLocaleTimeString(
-                                                      [],
-                                                      {hour: '2-digit', minute: '2-digit'}
-                                                    )}
+            [],
+            { hour: '2-digit', minute: '2-digit' }
+        )}
                                                 </div>
                                             </td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
                                                 ${callOutDetails.leaveType.reason}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
-                                                    ${
-                                                      (callOutDetails.left_early_mins ?? 0) > 0
-                                                        ? `Left Early: ${callOutDetails.left_early_mins} mins`
-                                                        : ''
-                                                    }
-                                                    ${
-                                                      (callOutDetails.arrived_late_mins ?? 0) > 0
-                                                        ? `Arrived Late: ${callOutDetails.arrived_late_mins} mins`
-                                                        : ''
-                                                    }
+                                                    ${(callOutDetails.left_early_mins ?? 0) > 0
+            ? `Left Early: ${callOutDetails.left_early_mins} mins`
+            : ''
+        }
+                                                    ${(callOutDetails.arrived_late_mins ?? 0) > 0
+            ? `Arrived Late: ${callOutDetails.arrived_late_mins} mins`
+            : ''
+        }
                                                 </div>
                                             </td>
-                                            <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">${
-                                              callOutDetails.supervisor.supervisor_info.name
-                                            }</td>
+                                            <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">${callOutDetails.supervisor.supervisor_info.name
+        }</td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
-                                                ${
-                                                  callOutDetails.supervisor_comments !== ' '
-                                                    ? callOutDetails.supervisor_comments
-                                                    : 'N/A'
-                                                }
+                                                ${callOutDetails.supervisor_comments !== ' '
+            ? callOutDetails.supervisor_comments
+            : 'N/A'
+        }
                                             </td>
                                         </tr>
                                     </tbody>

@@ -3,16 +3,18 @@ import {
   updateEmployeeInDB,
   EmployeeWithAssociations
 } from '../../../db/controller';
-import {Request, Response} from 'express';
-import {EditEmployeeProps} from '../../../../client-api';
-import {validateAddEmployeeForm, type ApiData} from '../../index';
+import { Request, Response } from 'express';
+import { logTemplate } from '../../../utils/server';
+import { EditEmployeeProps } from '../../../../client-api';
+import { validateAddEmployeeForm, type ApiData } from '../../index';
+
 
 export default async function putEmployeesApiHandler(
   req: Request,
   res: Response<ApiData<EmployeeWithAssociations>>
 ) {
   try {
-    const {body} = req as {body: EditEmployeeProps};
+    const { body } = req as { body: EditEmployeeProps };
 
     await validateAddEmployeeForm(body.formData);
 
@@ -29,9 +31,10 @@ export default async function putEmployeesApiHandler(
       data: updatedEmployee as EmployeeWithAssociations
     });
   } catch (error) {
-    console.error('Error updating employee:', error);
-    return res.status(500).json({error: String(error)});
+    const errMessage = '❌ Error in putEmployeesApiHandler:' + ' ' + error;
+    console.error(logTemplate(errMessage, 'error'));
+    return res.status(500).json({ error: String(error) });
   }
 }
 
-export {putEmployeesApiHandler};
+export { putEmployeesApiHandler };
