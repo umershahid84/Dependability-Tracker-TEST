@@ -1,4 +1,5 @@
 import ip from "../../../../server/ip";
+import { TLS_PORT } from "../../../../server";
 
 export const credentialInviteTemplate = (
     inviteId: string,
@@ -23,7 +24,7 @@ export const credentialInviteTemplate = (
                         <tr>
                             <td align="center" style="padding: 20px;">
                               <img
-                                src="https://${ip}/images/seatac-dark.png"
+                                src="https://${ip}:${TLS_PORT}$/images/seatac-dark.png"
                                 alt="Dependability Tracker Logo"
                                 style="
                                     max-width: 350px;
