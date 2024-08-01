@@ -23,7 +23,7 @@ export const credentialInviteTemplate = (
                         <tr>
                             <td align="center" style="padding: 20px;">
                               <img
-                                src="${ip}/images/seatac-dark.png"
+                                src="https://${ip}/images/seatac-dark.png"
                                 alt="Dependability Tracker Logo"
                                 style="
                                     max-width: 350px;
