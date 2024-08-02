@@ -1,8 +1,8 @@
-import type {SupervisorWithAssociations} from '../../../lib/db/models/types';
+import type { SupervisorWithAssociations } from '../../../lib/db/models/types';
 
 const styles = {
   statusHeader:
-    'text-sm absolute top-1 right-32 w-auto bg-amber-600 rounded-md py-1 px-2 Text-outline hide-on-print'
+    'text-sm absolute top-1 right-24 sm:right-32 w-auto bg-amber-600 rounded-md py-1 px-2 Text-outline hide-on-print'
 };
 
 export function SupervisorStatusHeader(

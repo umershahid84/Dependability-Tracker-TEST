@@ -1,11 +1,11 @@
-import {ModalAction, ModalType} from '../../Modal';
-import type {SupervisorWithAssociations} from '../../../lib/db/models/types';
+import { ModalAction, ModalType } from '../../Modal';
+import type { SupervisorWithAssociations } from '../../../lib/db/models/types';
 
 const styles = {
   resetPassword: 'hover:bg-red-500',
   sendInvite: 'hover:bg-indigo-500',
   optionsContainer: 'mt-3 flex flex-wrap flex-row gap-6',
-  button: 'px-2 py-1 bg-slate-700 text-white rounded mr-2'
+  button: 'px-2 py-1 bg-quaternary text-primary rounded mr-2'
 };
 
 export function ManageSupervisorOptions({
@@ -50,7 +50,7 @@ export function ManageSupervisorOptions({
           detail: {
             type: _modalType(),
             action: ModalAction.OPEN,
-            payload: {supervisor, onModalEditCallBack, onModalDeleteCallBack}
+            payload: { supervisor, onModalEditCallBack, onModalDeleteCallBack }
           }
         })
       );

@@ -4,23 +4,23 @@ import {
   CallOutWithAssociations,
   EmployeeWithAssociations
 } from '../../../../lib/db/models/types';
-import {TextArea} from '../../FormInputs/TextArea';
-import {DateInput} from '../../FormInputs/DateInput';
-import {TimeInput} from '../../FormInputs/TimeInput';
-import {trim} from '../../../../lib/utils/shared/strings';
-import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
-import {LeftEarlyWithRange} from '../../FormInputs/LeftEarlyWithRange';
-import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
-import {ArrivedLateWithRange} from '../../FormInputs/ArrivedLateWithRange';
-import {CallOutFormActionButtons} from '../../FormInputs/CallOutFormActionButtons';
-import {UseCreateCallOutFormState, useCreateCallOutFormState} from '../../../../hooks';
+import { TextArea } from '../../FormInputs/TextArea';
+import { DateInput } from '../../FormInputs/DateInput';
+import { TimeInput } from '../../FormInputs/TimeInput';
+import { trim } from '../../../../lib/utils/shared/strings';
+import { SelectEmployeeName } from '../../FormInputs/SelectEmployeeName';
+import { LeftEarlyWithRange } from '../../FormInputs/LeftEarlyWithRange';
+import { SelectLeaveTypeReason } from '../../FormInputs/SelectLeaveType';
+import { ArrivedLateWithRange } from '../../FormInputs/ArrivedLateWithRange';
+import { CallOutFormActionButtons } from '../../FormInputs/CallOutFormActionButtons';
+import { UseCreateCallOutFormState, useCreateCallOutFormState } from '../../../../hooks';
 
 const styles = {
-  input: 'border p-2 rounded-md bg-slate-800',
-  textArea: 'border rounded-md w-full bg-slate-800',
+  input: 'border p-2 rounded-md bg-tertiary',
+  textArea: 'border rounded-md w-full bg-tertiary',
   div: 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full',
-  form: `flex flex-col justify-center items-center p-2 bg-slate-900 border
-   border-slate-600 rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print print:hidden`
+  form: `flex flex-col justify-center items-center p-2 bg-tertiary border
+   border-bg-quaternary rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print print:hidden`
 };
 
 export type CreateCallOutFormProps = {

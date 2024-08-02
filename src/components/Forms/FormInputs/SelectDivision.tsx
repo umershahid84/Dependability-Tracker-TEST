@@ -1,6 +1,6 @@
-import {FormLabel} from './FormLabel';
-import {FormLabelContainer} from '../EmployeeModal/FormLayout';
-import type {DivisionAttributes} from '../../../lib/db/models/types';
+import { FormLabel } from './FormLabel';
+import { FormLabelContainer } from '../EmployeeModal/FormLayout';
+import type { DivisionAttributes } from '../../../lib/db/models/types';
 
 export type SelectDivisionProps = {
   value: string;
@@ -29,7 +29,7 @@ export function SelectDivision({
         onChange={onChangeHandler}
         name={name ?? 'division_id'}
         title={title ?? 'Division(s)'}
-        className={className ?? 'border p-2 rounded-md w-full bg-slate-800 text-gray-300'}>
+        className={className ?? 'border p-2 rounded-md w-full bg-tertiary text-primary'}>
         <option value="">Select Division</option>
         {showAny && <option value="">Any</option>}
         {divisions?.map((division: DivisionAttributes) => (

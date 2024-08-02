@@ -1,25 +1,25 @@
-import {trim} from '../../../lib/utils/shared/strings';
+import { trim } from '../../../lib/utils/shared/strings';
 
 const getRoleClass = (role: string) => {
   switch (role) {
     case 'Admin':
-      return 'text-[var(--green)]';
+      return 'text-accent';
     case 'Supervisor':
       return 'text-blue-500';
     case 'Employee':
-      return 'text-gray-300';
+      return 'text-primary';
     default:
       return '';
   }
 };
 
-export function EmployeeRoles({roles}: Readonly<{roles: string[]}>) {
+export function EmployeeRoles({ roles }: Readonly<{ roles: string[] }>) {
   return (
     <>
       {roles.map(role => (
         <span
           key={role}
-          className={`p-2 bg-gray-900 rounded-md text-xs ${getRoleClass(trim(role))}`}>
+          className={`p-2 bg-secondary rounded-md text-xs ${getRoleClass(trim(role))}`}>
           {trim(role)}
         </span>
       ))}

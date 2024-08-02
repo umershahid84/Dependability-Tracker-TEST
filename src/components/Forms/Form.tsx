@@ -1,8 +1,8 @@
 import React from 'react';
-import {trim} from '../../lib/utils/shared/strings';
+import { trim } from '../../lib/utils/shared/strings';
 
 const styles = {
-  form: `flex flex-col justify-center items-center w-full min-w-[450px] max-w-2xl bg-slate-900 p-4
+  form: `flex flex-col justify-center items-center w-full min-w-[450px] max-w-2xl bg-secondary p-4 border-2 border-slate-500
    rounded-md gap-2`
 };
 

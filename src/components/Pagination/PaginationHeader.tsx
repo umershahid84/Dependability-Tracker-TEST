@@ -9,11 +9,11 @@ export type PaginationHeaderProps = {
 };
 
 const styles = {
-  text: `text-gray-300 print:text-black`,
-  button: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700`,
-  buttonContainer: `w-auto flex flex-row justify-between items-center gap-8 hide-on-print`,
-  header: `w-full h-auto flex flex-wrap flex-row justify-between items-center cursor-pointer`,
-  buttonDisabled: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700 cursor-not-allowed`
+  button: `p-3 bg-tertiary rounded-md text-xs hover:bg-secondary`,
+  text: `text-primary print:text-black w-full text-center md:text-left`,
+  buttonContainer: `w-[98%] sm:w-auto flex flex-row justify-between items-center gap-8 hide-on-print`,
+  buttonDisabled: `p-3 bg-tertiary rounded-md text-xs hover:bg-secondary cursor-not-allowed`,
+  header: `w-full h-auto flex flex-col gap-2 sm:flex-wrap sm:flex-row justify-between items-center cursor-pointer mt-2`,
 };
 
 export function PaginationHeader({
@@ -27,13 +27,11 @@ export function PaginationHeader({
 }: Readonly<PaginationHeaderProps>): React.JSX.Element {
   return (
     <div className={styles.header}>
-      <p className={styles.text}>
-        Showing {showing} to {ending} of {totalNumberOfRecords ?? 0} records
-      </p>
-
-      <p className={styles.text + ' hide-on-print'}>
-        Page {currentPage} of {numberOfPages}
-      </p>
+      <span className="w-auto mb-6 sm:mb-0 ">
+        <p className={styles.text}>
+          Showing {showing} to {ending} of {totalNumberOfRecords ?? 0} records
+        </p>
+      </span>
 
       <div className={styles.buttonContainer}>
         <button
@@ -43,6 +41,11 @@ export function PaginationHeader({
           onClick={handlePageDecrement}>
           Previous
         </button>
+
+        <p className={styles.text + ' hide-on-print'}>
+          Page {currentPage} of {numberOfPages}
+        </p>
+
         <button
           type="button"
           onClick={handlePageIncrement}

@@ -9,17 +9,17 @@ import { getDivisionNameFromPath, headingNormalizer } from '../../lib/utils/shar
 const styles = {
 
   icon: `w-4 h-4`,
-  headerTr: 'bg-slate-900',
-  subTd: 'text-gray-500 text-xs text-nowrap',
+  headerTr: 'bg-tertiary',
+  subTd: 'text-tertiary text-xs text-nowrap',
   h2: 'text-xl font-semibold my-2 text-center mb-6',
   div: 'w-full flex flex-col overflow-x-auto mx-auto h-auto',
   th: 'px-4 py-2 border border-gray-600 print:border-black',
   td: 'px-4 py-2 border border-gray-600 print:border-black',
   table:
-    'w-full  h-auto table-auto text-left border-collapse mb-6 text-xs lg:text-sm xl:text-base',
+    'w-full h-auto table-auto text-left border-collapse mb-6 text-xs lg:text-sm xl:text-base bg-secondary',
   buttonContainer: 'lg:absolute lg:top-[8px] lg:left-0 flex flex-row justify-start items-center gap-4 hide-on-print',
   headingSpan: 'w-full flex flex-col lg:flex-wrap lg:flex-row items-center justify-center relative mb-6 lg:mb-0',
-  printButton: 'rounded-md bg-slate-700 hover:bg-blue-600 text-white px-4 py-2 w-auto text-sm flex flex-row justify-start items',
+  printButton: 'rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm flex flex-row justify-start items',
 };
 
 const headings = [

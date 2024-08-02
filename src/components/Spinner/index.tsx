@@ -1,4 +1,4 @@
-import {trim} from '../../lib/utils/shared/strings';
+import { trim } from '../../lib/utils/shared/strings';
 
 export type SpinnerProps = {
   label?: string;
@@ -12,7 +12,7 @@ export const SpinnerStyles = {
 
   yellowText: 'text-amber-500',
   orangeText: 'text-orange-500',
-  greenText: 'text-[var(--green)]'
+  greenText: 'text-accent'
 };
 
 // Maps the text color to the fill color of the spinner
@@ -20,7 +20,7 @@ export const SpinnerFillMap = {
   'text-red-500': 'fill-red-500',
   'text-amber-500': 'fill-amber-500',
   'text-orange-500': 'fill-orange-500',
-  'text-[var(--green)]': 'fill-[var(--green)]'
+  'text-accent': 'fill-[var(--green)]'
 };
 
 const styles = {

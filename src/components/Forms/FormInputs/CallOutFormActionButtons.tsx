@@ -1,9 +1,9 @@
-import {trim} from '../../../lib/utils/shared/strings';
+import { trim } from '../../../lib/utils/shared/strings';
 
 const styles = {
   buttonContainer: `flex flex-wrap flex-row justify-between items-center w-[80%] p-5`,
-  submit: `rounded-md p-3 bg-slate-950 hover:bg-[var(--green)] hover:scale-105 text-white drop-shadow-md`,
-  reset: `bg-slate-950 hover:bg-red-600 rounded-md p-3 hover:scale-105 text-white
+  submit: `rounded-md p-3 bg-secondary hover:bg-accent-primary hover:scale-105 text-primary drop-shadow-md`,
+  reset: `bg-secondary hover:bg-red-600 rounded-md p-3 hover:scale-105 text-primary
    drop-shadow-md`
 };
 

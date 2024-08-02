@@ -1,14 +1,14 @@
-import {trim} from '../../../lib/utils/shared/strings';
-import {ManageSupervisorOptions} from './ManageSupervisorOptions';
-import {SupervisorWithAssociations} from '../../../lib/db/models/types';
+import { trim } from '../../../lib/utils/shared/strings';
+import { ManageSupervisorOptions } from './ManageSupervisorOptions';
+import { SupervisorWithAssociations } from '../../../lib/db/models/types';
 
 const styles = {
   infoContainer: 'ml-2',
   hideOnPrint: 'hide-on-print',
-  span: 'text-xs text-gray-400 print:text-black mt-10',
-  edit: 'px-2 py-1 bg-slate-400 hover:bg-amber-500 text-white rounded mr-2',
-  delete: 'px-2 py-1 bg-slate-400 hover:bg-red-500 text-white rounded mr-2',
-  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md details-print`
+  span: 'text-xs text-tertiary print:text-black mt-10',
+  edit: 'px-2 py-1 bg-slate-400 hover:bg-amber-500 text-primary rounded mr-2',
+  delete: 'px-2 py-1 bg-slate-400 hover:bg-red-500 text-primary rounded mr-2',
+  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-secondary rounded-b-md details-print`
 };
 
 export function SupervisorListItemAccordion({

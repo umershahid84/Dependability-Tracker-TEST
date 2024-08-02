@@ -1,7 +1,7 @@
 'use client';
 import Loading from '../Loading';
-import {useEffect, useState} from 'react';
-import {trim} from '../../lib/utils/shared/strings';
+import { useEffect, useState } from 'react';
+import { trim } from '../../lib/utils/shared/strings';
 
 export type FormActionProps = {
   label?: string;
@@ -12,9 +12,9 @@ export type FormActionProps = {
 
 const defaultStyles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
-  defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md 
-                  hover:bg-[var(--green)] focus:bg-[var(--green)] hover:text-white`),
-  disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
+  defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-tertiary text-lg rounded-md border
+                  hover:bg-accent-primary focus:bg-accent-primary hover:text-primary`),
+  disabled: 'min-w-36 max-w-42 p-4 bg-tertiary border border-quaternary text-lg rounded-md cursor-not-allowed'
 };
 
 export default function FormAction(props: Readonly<FormActionProps>): React.JSX.Element {

@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {useIsMounted} from '../../../hooks';
-import {ClientAPI} from '../../../client-api';
-import {trim} from '../../../lib/utils/shared/strings';
+import React, { useState } from 'react';
+import { useIsMounted } from '../../../hooks';
+import { ClientAPI } from '../../../client-api';
+import { trim } from '../../../lib/utils/shared/strings';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
-import {EmployeeWithAssociations} from '../../../lib/db/controller';
+import { EmployeeWithAssociations } from '../../../lib/db/controller';
 
 export type DeleteEmployeeFormProps = {
   employeeData?: EmployeeWithAssociations;
@@ -12,9 +12,9 @@ export type DeleteEmployeeFormProps = {
 
 const styles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
-  defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-slate-700 text-lg rounded-md 
-                  hover:bg-[var(--error)] hover:text-white Text-outline`),
-  disabled: 'min-w-36 max-w-42 p-4 bg-slate-700 text-lg rounded-md cursor-not-allowed'
+  defaultButton: trim(`w-auto h-auto p-4 bg-secondary text-lg rounded-md 
+                  hover:bg-red-600 hover:text-primary Text-outline`),
+  disabled: 'w-auto p-4 bg-tertiary text-lg rounded-md cursor-not-allowed'
 };
 
 export function DeleteEmployeeForm({
@@ -40,7 +40,7 @@ export function DeleteEmployeeForm({
       setErrors([]);
     }
 
-    const didDelete: boolean = await ClientAPI.Employees.Delete({id: employeeData?.id});
+    const didDelete: boolean = await ClientAPI.Employees.Delete({ id: employeeData?.id });
 
     setInputValue('');
     if (didDelete) {
@@ -54,14 +54,14 @@ export function DeleteEmployeeForm({
       onSubmit={e => {
         e.preventDefault();
       }}>
-      <h2 className="text-lg text-center text-red-600 font-bold">Delete Employee</h2>
+      <h2 className="text-2xl text-center text-red-500 font-bold">Delete Employee</h2>
       <FormInputWithErrors
         type="text"
         errors={errors}
         value={inputValue}
         id="deleteEmployee"
         onChange={handleInputChange}
-        label="Confirm Employee Deletion"
+        label="Confirm Deletion"
         placeholder={`Type '${employeeData?.name}' to delete`}
         gap={`mt-2 ${inputValue === employeeData?.name ? '' : 'focus:ring-[var(--error)]'}`}
       />

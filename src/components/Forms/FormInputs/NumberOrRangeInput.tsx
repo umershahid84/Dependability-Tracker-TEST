@@ -35,7 +35,7 @@ export function NumberOrRangeInput({
       name={name ?? 'lateArrivalMinutes'}
       placeholder={placeholder ?? 'Minutes'}
       title={label ?? 'Arrived Late (Mins)'}
-      className={className ?? 'border p-[5.5px] rounded-md w-full bg-slate-800'}
+      className={className ?? 'border p-[5.5px] rounded-md w-full bg-tertiary'}
     />
   );
 }

@@ -1,14 +1,14 @@
-import {InputContainer} from './InputContainer';
-import {NumberOrRangeInput} from './NumberOrRangeInput';
+import { InputContainer } from './InputContainer';
+import { NumberOrRangeInput } from './NumberOrRangeInput';
 const styles = {
-  inputNumber: 'border p-[5.5px] rounded-md w-full bg-slate-800'
+  inputNumber: 'border p-[5.5px] rounded-md w-full bg-tertiary'
 };
 
 export type LeftEarlyWithRangeProps = {
   value: number;
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-export function LeftEarlyWithRange({value, onChangeHandler}: Readonly<LeftEarlyWithRangeProps>) {
+export function LeftEarlyWithRange({ value, onChangeHandler }: Readonly<LeftEarlyWithRangeProps>) {
   return (
     <InputContainer label="Left Early (Mins)" htmlFor="leftEarlyMinutes">
       <NumberOrRangeInput

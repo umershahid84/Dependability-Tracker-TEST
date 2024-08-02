@@ -5,24 +5,24 @@ import {
   RenderCallOutsList,
   defaultCallOutsQueryParams
 } from './helpers';
-import {useEffect, useState} from 'react';
-import {DynamicSortOptions} from '../../Forms';
-import {ModalAction, ModalType} from '../../Modal';
-import {ActiveSearchParams} from '../ActiveSearchParams';
-import {ModelList, ModelListHeader} from '../../ModelList';
-import {PaginationContainer} from '../../Pagination/Container';
-import {ModelWithPagination} from '../../../lib/db/controller';
-import {CallOutWithAssociations} from '../../../lib/db/models/types';
-import {callOutLimitOptions, callOutSortBy, CallOutSortBy, showLastOptions} from './data';
-import {useIsMounted, useQueryParams, UseGetCallOuts, useGetCallOuts} from '../../../hooks';
-import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../providers';
+import { useEffect, useState } from 'react';
+import { DynamicSortOptions } from '../../Forms';
+import { ModalAction, ModalType } from '../../Modal';
+import { ActiveSearchParams } from '../ActiveSearchParams';
+import { ModelList, ModelListHeader } from '../../ModelList';
+import { PaginationContainer } from '../../Pagination/Container';
+import { ModelWithPagination } from '../../../lib/db/controller';
+import { CallOutWithAssociations } from '../../../lib/db/models/types';
+import { callOutLimitOptions, callOutSortBy, CallOutSortBy, showLastOptions } from './data';
+import { useIsMounted, useQueryParams, UseGetCallOuts, useGetCallOuts } from '../../../hooks';
+import { CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext } from '../../../providers';
 
 const styles = {
-  modalClasses: 'bg-gray-800 p-8 rounded-md shadow-lg relative w-auto ',
+  modalClasses: 'bg-secondary p-8 rounded-md shadow-lg relative w-auto ',
   button: 'hover:underline hover:underline-offset-4',
   clearSearchButton: 'text-cyan-500 hover:text-red-500 hover:underline hover:underline-offset-4',
   containerClassName:
-    'w-full flex flex-col justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6 relative'
+    'w-full flex flex-col justify-center items-center gap-4  bg-tertiary p-2 rounded-md mt-6 relative -mb-12'
 };
 
 export function CallOutsList() {
@@ -40,11 +40,11 @@ export function CallOutsList() {
   }: CallOutAdvancedSearchContext = useCallOutAdvancedSearchContext();
 
   const hasParams = Object.values(searchParams).some(value => value !== undefined);
-  const {queryParams, setQueryParams, handleQueryParamChange} = useQueryParams<CallOutSortBy>(
+  const { queryParams, setQueryParams, handleQueryParamChange } = useQueryParams<CallOutSortBy>(
     defaultCallOutsQueryParams
   );
 
-  const {callOuts}: UseGetCallOuts = useGetCallOuts({
+  const { callOuts }: UseGetCallOuts = useGetCallOuts({
     showLast,
     queryParams
   });
@@ -64,7 +64,7 @@ export function CallOutsList() {
       data: updatedCallOuts
     });
 
-    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+    window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
   };
 
   const onModalDeleteCallBack = (calloutId: string) => {
@@ -77,12 +77,12 @@ export function CallOutsList() {
       data: updatedCallOuts
     });
 
-    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+    window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
   };
 
   const executeSearch = () => setExecuteSearch(true);
   const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    callOuts && handleSortChange({e, callOuts, setSortBy, setCallOuts: setCalloutData, leaveTypes});
+    callOuts && handleSortChange({ e, callOuts, setSortBy, setCallOuts: setCalloutData, leaveTypes });
   };
 
   const handleShowLastChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,7 +103,7 @@ export function CallOutsList() {
     e.preventDefault();
     e.stopPropagation();
 
-    setSearchParams({...dbSearchParams});
+    setSearchParams({ ...dbSearchParams });
     executeSearch();
   };
 
@@ -114,7 +114,7 @@ export function CallOutsList() {
           action: ModalAction.OPEN,
           type: ModalType.ADVANCED_CALLOUT_SEARCH,
           payload: {
-            modalClasses: 'bg-gray-800 p-8 rounded-md shadow-lg relative w-auto '
+            modalClasses: 'bg-tertiary p-8 rounded-md shadow-lg relative w-auto '
           }
         }
       })
@@ -135,54 +135,59 @@ export function CallOutsList() {
 
   useEffect(() => {
     callOuts?.data &&
-      handleOnSortChange({target: {value: sortBy}} as React.ChangeEvent<HTMLSelectElement>);
+      handleOnSortChange({ target: { value: sortBy } } as React.ChangeEvent<HTMLSelectElement>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callOuts?.data]);
 
   return (
     <ModelList>
-      <ModelListHeader containerClassName={styles.containerClassName}>
+      <ModelListHeader
+        containerClassName={styles.containerClassName}>
         <span className={defaultStyles.span}>
-          <DynamicSortOptions
-            label="Sort By:"
-            name="sortBy"
-            sortOptions={callOutSortBy}
-            onSortChange={handleOnSortChange}
-            currentSort={sortBy as string}
-            title="Sort the CallOuts by the selected option."
-          />
+          <span className='w-full md:w-auto flex flex-wrap flex-row justify-between items-center gap-2'>
+            <DynamicSortOptions
+              label="Sort By:"
+              name="sortBy"
+              sortOptions={callOutSortBy}
+              onSortChange={handleOnSortChange}
+              currentSort={sortBy as string}
+              title="Sort the CallOuts by the selected option."
+            />
 
-          <DynamicSortOptions
-            label="Show Last:"
-            name="showLast"
-            sortOptions={showLastOptions}
-            onSortChange={handleShowLastChange}
-            currentSort={showLast ? String(showLast) : 'all'}
-            title="Show all the CallOuts in for the selected number of days."
-          />
-
-          <DynamicSortOptions
-            label="Limit:"
-            name="limit"
-            sortOptions={callOutLimitOptions}
-            onSortChange={queryParamsChangeWrapper}
-            currentSort={String(queryParams.limit ?? 5)}
-            title="Limit the number of CallOuts displayed."
-          />
-
-          <span>
-            🔎{' '}
-            <button className={styles.button} type="button" onClick={handleAdvancedSearchOnClick}>
-              Advanced Search
-            </button>
+            <DynamicSortOptions
+              label="Show:"
+              name="showLast"
+              sortOptions={showLastOptions}
+              onSortChange={handleShowLastChange}
+              currentSort={showLast ? String(showLast) : 'all'}
+              title="Show all the CallOuts in for the selected number of days."
+            />
           </span>
+          <span className='w-full md:w-auto flex flex-wrap flex-row justify-between items-center gap-4'>
+            <DynamicSortOptions
+              label="Limit:"
+              name="limit"
+              sortOptions={callOutLimitOptions}
+              onSortChange={queryParamsChangeWrapper}
+              currentSort={String(queryParams.limit ?? 5)}
+              title="Limit the number of CallOuts displayed."
+            />
 
-          {hasParams && (
-            <button className={styles.clearSearchButton} type="button" onClick={handleClearSearch}>
-              Clear Search
-            </button>
-          )}
+            <span>
+              🔎{' '}
+              <button className={styles.button} type="button" onClick={handleAdvancedSearchOnClick}>
+                Advanced Search
+              </button>
+            </span>
+
+            {hasParams && (
+              <button className={styles.clearSearchButton} type="button" onClick={handleClearSearch}>
+                Clear Search
+              </button>
+            )}
+          </span>
         </span>
+
       </ModelListHeader>
 
       <ActiveSearchParams />

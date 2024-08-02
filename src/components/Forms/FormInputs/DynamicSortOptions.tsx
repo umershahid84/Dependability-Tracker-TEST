@@ -1,9 +1,9 @@
-import {DynamicOptions} from './DynamicOptions';
+import { DynamicOptions } from './DynamicOptions';
 
 export const employeeListStyles = {
-  label: 'text-gray-300 print:text-black',
+  label: 'text-primary print:text-black',
   sortableOption: 'flex items-center space-x-4',
-  select: 'px-2 py-1  bg-slate-900 text-gray-100 print:text-black rounded-md cursor-pointer'
+  select: 'px-2 py-1 bg-secondary text-gray-100 print:text-black rounded-md cursor-pointer'
 };
 
 export function DynamicSortOptions({
@@ -18,7 +18,7 @@ export function DynamicSortOptions({
   label: string;
   title: string;
   currentSort: string;
-  sortOptions: {value: string; text: string}[];
+  sortOptions: { value: string; text: string }[];
   onSortChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }>) {
   return (

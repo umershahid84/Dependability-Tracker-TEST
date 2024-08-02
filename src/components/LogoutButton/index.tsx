@@ -1,16 +1,16 @@
-import React, {useEffect} from 'react';
-import {useIsMounted} from '../../hooks';
-import {NextRouter, useRouter} from 'next/router';
-import {ClientAPI, Logout} from '../../client-api';
+import React, { useEffect } from 'react';
+import { useIsMounted } from '../../hooks';
+import { NextRouter, useRouter } from 'next/router';
+import { ClientAPI, Logout } from '../../client-api';
 
-import {trim} from '../../lib/utils/shared/strings';
+import { trim } from '../../lib/utils/shared/strings';
 
 const styles = {
-  logout: `absolute top-28 sm:top-2 right-2 p-2 rounded-md tracking-wide
-           hover:bg-[var(--green)] bg-slate-700`
+  logout: `absolute top-32 sm:top-2 right-2 p-2 rounded-md tracking-wide
+           bg-tertiary hover:bg-accent-primary bg-tertiary`
 };
 
-export const LogoutButton = ({className}: {className?: string}) => {
+export const LogoutButton = ({ className }: { className?: string }) => {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
 

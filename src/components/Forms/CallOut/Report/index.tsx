@@ -145,13 +145,13 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
           divisions={divisionData}
           value={formData.division}
           onChangeHandler={handleOnChange}
-          className="p-3 mt-2 text-center rounded-md w-auto bg-slate-700 text-gray-300 hover:bg-slate-800 hide-on-print"
+          className="p-3 mt-2 text-center rounded-md w-auto bg-tertiary text-primary hover:bg-secondary hide-on-print"
         />
       </div>
 
       <Form
         onEnter={handleSubmit}
-        className={`flex flex-col justify-center items-center w-full sm:min-w-[650px] lg:min-w-[850px] max-w-2xl bg-slate-900 p-4
+        className={`flex flex-col justify-center items-center w-full sm:min-w-[650px] lg:min-w-[850px] max-w-2xl bg-tertiary p-4
    rounded-md gap-2 hide-on-print`}>
         <div className="w-full grid grid-cols-2 mt-4 gap-x-16 gap-y-4">
           <SelectEmployeeName
@@ -191,7 +191,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
         ) : (
           <button
             type="button"
-            className="bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-[var(--green)] mt-8 w-96"
+            className="bg-blue-500 text-primary rounded-md py-2 px-4 hover:bg-accent-primary mt-8 w-96"
             onClick={handleSubmit}>
             Generate Report
           </button>

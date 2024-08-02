@@ -1,20 +1,20 @@
-import {ModalAction, ModalType} from '../../../Modal';
-import {trim} from '../../../../lib/utils/shared/strings';
-import {getDate, getTime, getTimeNoSeconds} from '../../../../lib/utils';
-import {CallOutWithAssociations} from '../../../../lib/db/models/Callout';
+import { ModalAction, ModalType } from '../../../Modal';
+import { trim } from '../../../../lib/utils/shared/strings';
+import { getDate, getTime, getTimeNoSeconds } from '../../../../lib/utils';
+import { CallOutWithAssociations } from '../../../../lib/db/models/Callout';
 
 const styles = {
   superComments: 'ml-4 ',
   container: 'w-full flex flex-col justify-start gap-4 relative',
-  modalClasses: 'bg-gray-800 rounded-md shadow-lg relative w-auto',
-  edit: 'px-2 py-1 bg-slate-900 hover:bg-amber-500 text-white rounded ',
-  delete: 'px-2 py-1 bg-slate-900 hover:bg-red-500 text-white rounded ',
+  modalClasses: 'bg-tertiary rounded-md shadow-lg relative w-auto',
+  edit: 'px-2 py-1 bg-quaternary hover:bg-amber-500 text-primary rounded ',
+  delete: 'px-2 py-1 bg-quaternary hover:bg-red-500 text-primary rounded ',
   infoContainer: 'ml-4 w-5/6 grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2',
   buttonContainer:
-    'hide-on-print w-[125px] flex flex-row justify-between gap-3  absolute top-24 right-0 ',
+    'hide-on-print w-[125px] flex flex-row justify-between gap-3 absolute top-24 right-0 ',
   createdUpdatedAtContainer:
     'ml-4 w-5/6 grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2',
-  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md details-print`
+  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-secondary rounded-b-md details-print`
 };
 
 export type CallOutsListItemProps = {
@@ -97,11 +97,11 @@ export function CallOutsListItemAccordion({
           <p className={styles.superComments}>Supervisor Comments: {callOut.supervisor_comments}</p>
 
           <span className={styles.createdUpdatedAtContainer}>
-            <p className="text-gray-400 text-sm">
+            <p className="text-tertiary text-sm">
               Created: {getDate(callOut.createdAt)} @ {getTime(callOut.createdAt)}
             </p>
 
-            <p className="text-gray-400 text-sm">
+            <p className="text-tertiary text-sm">
               Last Updated: {getDate(callOut.updatedAt)} @ {getTime(callOut.updatedAt)}
             </p>
           </span>

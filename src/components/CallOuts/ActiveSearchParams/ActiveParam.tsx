@@ -1,28 +1,28 @@
-import {useState} from 'react';
-import {CloseIcon} from '../../Icons';
-import {formatTimeWithAmPm} from '../../../lib/utils';
-import {GetAllCallOutOptions} from '../../../lib/db/controller/Callout/helpers';
-import {useCallOutAdvancedSearchContext} from '../../../providers';
+import { useState } from 'react';
+import { CloseIcon } from '../../Icons';
+import { formatTimeWithAmPm } from '../../../lib/utils';
+import { GetAllCallOutOptions } from '../../../lib/db/controller/Callout/helpers';
+import { useCallOutAdvancedSearchContext } from '../../../providers';
 
 export type ActiveParamProps = {
   // an entry in the searchParams object
   activeParam: {
     [key: string]:
-      | string
-      | number
-      | Date
-      | [Date, Date]
-      | [string, string]
-      | [number, number]
-      | null;
+    | string
+    | number
+    | Date
+    | [Date, Date]
+    | [string, string]
+    | [number, number]
+    | null;
   };
 
   onRemove: (key: string) => void;
 };
 
 const styles = {
-  p: 'p-2 bg-gray-800 rounded-md relative',
-  activeParam: 'rounded-md text-gray-300 ',
+  p: 'p-2 bg-tertiary rounded-md relative',
+  activeParam: 'rounded-md text-primary ',
   iconStyles: 'w-5 h-5 absolute -right-2 -top-2 cursor-pointer hover:text-red-500 stroke-2'
 };
 
@@ -36,7 +36,7 @@ const formatParamKey = (key: string): string => {
 
 const useFormatParamValue = (key: keyof GetAllCallOutOptions, value: string) => {
   let formatted = '';
-  const {divisions, employees, leaveTypes, supervisors} = useCallOutAdvancedSearchContext();
+  const { divisions, employees, leaveTypes, supervisors } = useCallOutAdvancedSearchContext();
 
   switch (key) {
     case 'created_at_range':
@@ -85,7 +85,7 @@ const useFormatParamValue = (key: keyof GetAllCallOutOptions, value: string) => 
   return formatted;
 };
 
-export function ActiveParam({activeParam, onRemove}: Readonly<ActiveParamProps>) {
+export function ActiveParam({ activeParam, onRemove }: Readonly<ActiveParamProps>) {
   const [key, value] = Object.entries(activeParam)[0];
   const [isHovered, setIsHovered] = useState<boolean>(false);
 

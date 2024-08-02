@@ -1,4 +1,4 @@
-import {InputContainer} from './InputContainer';
+import { InputContainer } from './InputContainer';
 
 export type TextAreaProps = {
   rows?: number;
@@ -28,7 +28,7 @@ export function TextArea({
         name={name ?? 'comment'}
         onChange={onChangeHandler}
         title={label ?? 'Comments'}
-        className={className ?? 'border rounded-md w-full bg-slate-800'}></textarea>
+        className={className ?? 'border rounded-md w-full bg-tertiary'}></textarea>
     </InputContainer>
   );
 }

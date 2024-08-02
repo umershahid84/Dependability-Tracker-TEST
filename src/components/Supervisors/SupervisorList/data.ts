@@ -1,16 +1,16 @@
-import {makeDate} from '../../../lib/utils';
-import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
+import { makeDate } from '../../../lib/utils';
+import { SupervisorWithAssociations } from '../../../lib/db/models/Supervisor';
 
 export const supervisorListStyles = {
   button: 'hover:underline hover:underline-offset-4',
   h1: 'w-auto text-xl font-semibold whitespace-nowrap',
   li: 'rounded-md employee drop-shadow-md toggle-container w-full',
-  modalClasses: 'bg-gray-800 p-8 rounded-md shadow-lg relative w-auto ',
+  modalClasses: 'bg-tertiary p-8 rounded-md shadow-lg relative w-auto ',
   span: 'w-auto flex flex-wrap flex-row gap-4 justify-center items-center',
   listContainer: 'w-full flex flex-col items-center justify-center gap-4 overflow-y-auto mt-6',
   containerClassName:
-    'w-full flex flex-wrap flex-row justify-between items-center gap-4 bg-gray-800 p-2 rounded-md mt-6 relative',
-  div: 'w-full flex flex-col md:flex-row justify-center items-center gap-4  bg-gray-800 p-2 rounded-md mt-6'
+    'w-full flex flex-wrap flex-row justify-between items-center gap-4 bg-tertiary p-2 rounded-md mt-6 relative',
+  div: 'w-full flex flex-col md:flex-row justify-center items-center gap-4  bg-tertiary p-2 rounded-md mt-6'
 };
 export type SupervisorsSortBy =
   | 'name'

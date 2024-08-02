@@ -1,7 +1,7 @@
 'use client';
-import {useState, useEffect} from 'react';
-import {formatter, trim} from '../../../lib/utils/shared/strings';
-import {CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon} from '../../Icons';
+import { useState, useEffect } from 'react';
+import { formatter, trim } from '../../../lib/utils/shared/strings';
+import { CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon } from '../../Icons';
 
 export enum ToastTypes {
   Info = 'info',
@@ -20,25 +20,25 @@ const styles = {
   infoBg: 'bg-cyan-500',
   errorBg: 'bg-red-500',
   warningBg: 'bg-amber-500',
-  successBg: 'bg-[var(--green)]',
+  successBg: 'bg-accent-primary',
   infoText: 'text-cyan-500',
   errorText: 'text-red-500',
   warningText: 'text-amber-500',
-  successText: 'text-[var(--green)]',
+  successText: 'text-accent',
   heading: 'text-xl font-light',
   toastIcon: 'w-6 h-6 mr-2 fill-current',
-  timestamp: 'text-gray-400 print:text-black text-xs mt-2',
-  body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-slate-800
+  timestamp: 'text-tertiary print:text-black text-xs mt-2',
+  body: `ml-4 flex flex-row items-start justify-start w-[98%] bg-secondary
   relative p-2 rounded-r-[5px]`,
-  article: `w-[450px] sm:w-[550px] rounded-[8px] flex flex-row 
+  article: ` w-auto min-w-[350px] rounded-[8px] flex flex-row 
   items-center justify-end`,
-  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-gray-400 print:text-black hover:text-red-500',
+  closeIcon: 'w-7 h-7 absolute top-1 right-1 text-tertiary print:text-black hover:text-red-500',
   textContainer:
-    'w-[95%] flex flex-col items-start justify-center ml-2 text-gray-300 print:text-black',
+    'w-[95%] flex flex-col items-start justify-center ml-2 text-primary print:text-black',
   messageContainer:
-    'w-full flex flex-col items-start justify-center ml-2 text-gray-300 print:text-black',
+    'w-full flex flex-col items-start justify-center ml-2 text-primary print:text-black',
   message:
-    'text-gray-300 print:text-black text-base mt-2 flex flex-wrap flex-row items-start justify-start'
+    'text-primary print:text-black text-base mt-2 flex flex-wrap flex-row items-start justify-start'
 };
 
 const toastIcons = {
@@ -75,7 +75,7 @@ export function Toast(props: {
   const removeToast = (): NodeJS.Timeout => {
     return setTimeout(() => {
       setTimer(null);
-      window.dispatchEvent(new CustomEvent('remove-toast', {detail: {id: props.id}}));
+      window.dispatchEvent(new CustomEvent('remove-toast', { detail: { id: props.id } }));
     }, removeInMs);
   };
 
@@ -100,7 +100,7 @@ export function Toast(props: {
       clearTimeout(timer);
       setTimer(null);
     }
-    window.dispatchEvent(new CustomEvent('remove-toast', {detail: {id: props.id}}));
+    window.dispatchEvent(new CustomEvent('remove-toast', { detail: { id: props.id } }));
   };
 
   const title: string | undefined = props.title !== '' ? props.title : props.type;

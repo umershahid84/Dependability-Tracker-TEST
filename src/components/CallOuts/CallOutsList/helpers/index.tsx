@@ -1,17 +1,17 @@
-import {CallOutSortBy} from '../data';
-import {NextRouter} from 'next/router';
-import {sortCallOutsBy} from './sortCallOutsBy';
-import {CallOutsListItem} from '../CallOutsListItem';
-import {trim} from '../../../../lib/utils/shared/strings';
-import {useEffect, useState, SetStateAction} from 'react';
-import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
-import {ModelWithPagination, PaginationQueryParams} from '../../../../lib/db/controller';
-import {CallOutWithAssociations, LeaveTypeAttributes} from '../../../../lib/db/models/types';
+import { CallOutSortBy } from '../data';
+import { NextRouter } from 'next/router';
+import { sortCallOutsBy } from './sortCallOutsBy';
+import { CallOutsListItem } from '../CallOutsListItem';
+import { trim } from '../../../../lib/utils/shared/strings';
+import { useEffect, useState, SetStateAction } from 'react';
+import type { GetAllCallOutOptions } from '../../../../lib/db/controller/Callout/helpers';
+import { ModelWithPagination, PaginationQueryParams } from '../../../../lib/db/controller';
+import { CallOutWithAssociations, LeaveTypeAttributes } from '../../../../lib/db/models/types';
 
 export const defaultStyles = {
-  span: 'w-auto flex flex-wrap flex-row gap-4 justify-start sm:justify-center items-center',
-  addCallOutsBtn: trim(`px-4 py-2 bg-[var(--green)]  text-center hover:bg-black 
-  text-white rounded-md text-sm w-26  hide-on-print`)
+  span: 'w-auto flex flex-col sm:flex-wrap sm:flex-row gap-4 sm:justify-center items-center',
+  addCallOutsBtn: trim(`px-4 py-2 bg-accent-primary  text-center hover:bg-black 
+  text-primary rounded-md text-sm w-26  hide-on-print`)
 };
 
 export type RenderCallOutsListProps = {
@@ -91,7 +91,7 @@ export const useDbSearchParamsFormState = (defaultParams?: GetAllCallOutOptions)
     }
   }, [defaultParams]);
 
-  return {searchParams, setSearchParams, handleSearchParamsChange};
+  return { searchParams, setSearchParams, handleSearchParamsChange };
 };
 
 export type HandleSortOnChangeProps = {
@@ -114,5 +114,5 @@ export const handleSortChange = ({
   const sort = e.target.value as CallOutSortBy;
   setSortBy(sort);
 
-  return sortCallOutsBy({sort, callOuts, setCallOuts, leaveTypes});
+  return sortCallOutsBy({ sort, callOuts, setCallOuts, leaveTypes });
 };

@@ -1,11 +1,11 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import Loading from '../../Loading';
-import {WarningIcon} from '../../Icons';
-import {ModalAction} from '../../Modal';
-import {makeToast, ToastTypes} from '../../Toasts';
-import {ApiData} from '../../../lib/apiController';
+import { WarningIcon } from '../../Icons';
+import { ModalAction } from '../../Modal';
+import { makeToast, ToastTypes } from '../../Toasts';
+import { ApiData } from '../../../lib/apiController';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
-import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
+import { SupervisorWithAssociations } from '../../../lib/db/models/Supervisor';
 
 const styles = {
   buttonsContainer: 'mt-6 flex flex-row gap-2',
@@ -38,7 +38,7 @@ export function RevokeCredentials({
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({forSupervisor: supervisor.id, password})
+        body: JSON.stringify({ forSupervisor: supervisor.id, password })
       });
 
       const data: ApiData<SupervisorWithAssociations> = await response.json();
@@ -54,7 +54,7 @@ export function RevokeCredentials({
 
         setLoading(false);
         onModalEditCallBack(data.data as SupervisorWithAssociations);
-        window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+        window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
       }
     } catch (error) {
       console.error('Error revoking supervisor credentials');
@@ -78,7 +78,7 @@ export function RevokeCredentials({
         await revokeCredentials();
         break;
       case 'Cancel':
-        window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+        window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
         break;
       default:
         break;
@@ -106,21 +106,20 @@ export function RevokeCredentials({
             onChange={handlePasswordChange}
             placeholder="Current Admin's Password"
             errors={!validPassword ? ['Password must be at least 8 characters'] : []}
-            className={`w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none  ${
-              !validPassword ? 'ring-red-500' : 'focus:ring-gray-300'
-            }`}
+            className={`w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none  ${!validPassword ? 'ring-red-500' : 'focus:ring-gray-300'
+              }`}
           />
 
           <div className={styles.buttonsContainer}>
             <button
               type="button"
-              className="px-2 py-1 bg-slate-700 hover:bg-red-500 text-white rounded mr-2"
+              className="px-2 py-1 bg-quinary hover:bg-red-500 text-primary rounded mr-2"
               onClick={handleClick}>
               Revoke Credentials
             </button>
             <button
               type="button"
-              className="px-2 py-1 bg-slate-900 hover:bg-gray-700 text-white rounded mr-2"
+              className="px-2 py-1 bg-quinary hover:bg-quaternary text-primary rounded mr-2"
               onClick={handleClick}>
               Cancel
             </button>

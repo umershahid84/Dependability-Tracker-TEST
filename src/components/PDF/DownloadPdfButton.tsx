@@ -7,7 +7,7 @@ import { CallOutWithAssociations } from '../../lib/db/models/Callout';
 
 const styles = {
     icon: `w-4 h-4`,
-    button: `rounded-md bg-slate-700 hover:bg-blue-600 text-white px-4 py-2 w-auto text-sm
+    button: `rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm
      flex flex-row justify-start items-center gap-4 `
 }
 

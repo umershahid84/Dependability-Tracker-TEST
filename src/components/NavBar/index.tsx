@@ -1,20 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
-import {useRouter} from 'next/router';
-import {trim} from '../../lib/utils/shared/strings';
+import { useRouter } from 'next/router';
+import { trim } from '../../lib/utils/shared/strings';
 
 const navClasses = trim(`w-full flex flex-wrap flex-row justify-center items-center gap-6 md:gap-16 
                     hide-on-print mt-20 sm:mt-8`);
-const linkClasses = `hover:scale-110 text-lg text-gray-300 print:text-black text-center rounded-md text-center`;
-const activeLinkClass = 'text-[var(--green)] text-lg underline underline-offset-8 text-center';
-const adminClassName = trim(`absolute top-28 sm:top-2 right-[115px] p-2 rounded-md 
-                        hover:bg-[var(--green)] bg-slate-700 hide-on-print`);
+const linkClasses = `hover:scale-110 text-lg text-primary print:text-black text-center rounded-md text-center`;
+const activeLinkClass = 'text-accent text-lg underline underline-offset-8 text-center';
+const adminClassName = trim(`absolute top-32 sm:top-2 right-[115px] p-2 rounded-md 
+                        hover:bg-accent-primary bg-tertiary hide-on-print bg-tertiary hover:text-white`);
 
-export type NavLinks = {href: string; text: string}[];
+export type NavLinks = { href: string; text: string }[];
 
-type NavLinksProps = {navLinks: NavLinks};
+type NavLinksProps = { navLinks: NavLinks };
 
-function NavLinks({navLinks}: Readonly<NavLinksProps>) {
+function NavLinks({ navLinks }: Readonly<NavLinksProps>) {
   const router = useRouter();
   return (
     <>
@@ -30,7 +30,7 @@ function NavLinks({navLinks}: Readonly<NavLinksProps>) {
   );
 }
 
-function SecondaryLinks({links}: Readonly<{links: NavLinks}>) {
+function SecondaryLinks({ links }: Readonly<{ links: NavLinks }>) {
   return (
     <>
       {links.map(link => (

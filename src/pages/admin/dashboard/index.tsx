@@ -246,8 +246,8 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
 
   return (
     <AdminLayout>
-      <div className="container mx-auto mt-20 p-2 rounded-md">
-        <div className="flex justify-between items-center bg-gray-800 p-4 rounded-md mb-4">
+      <div className="container mx-auto mt-8 p-2 rounded-md">
+        <div className="flex justify-between items-center bg-tertiary p-4 rounded-md mb-4">
           <h1 className="text-xl font-semibold">Admin Dashboard</h1>
         </div>
 
@@ -256,13 +256,14 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
         ) : (
           <>
             <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 mb-4">
-              <div className="w-full md:w-[500px] bg-gray-800 p-4 rounded-md drop-shadow-md ">
+              <div className="w-auto min-w-[175px] bg-tertiary p-4 rounded-md drop-shadow-md ">
                 <h2 className="text-lg font-medium underline underline-offset-4 mb-3">
                   Total Call-Outs
                 </h2>
-                <p className="text-2xl">Total Call-Outs: {adminData?.totalCallOuts}</p>
+
+                <h3 className="text-2xl font-bold">{adminData?.totalCallOuts}</h3>
               </div>
-              <div className="w-full md:w-[500px] bg-gray-800 p-4 rounded-md drop-shadow-md">
+              <div className="w-full  bg-tertiary p-4 rounded-md drop-shadow-md">
                 <h2 className="text-lg font-medium underline underline-offset-4 mb-3">
                   Top 5 Call-Out Reasons
                 </h2>
@@ -274,7 +275,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
                   ))}
                 </ul>
               </div>
-              <div className="w-full md:w-[500px] bg-gray-800 p-4 rounded-md drop-shadow-md">
+              <div className="w-full  bg-tertiary p-4 rounded-md drop-shadow-md">
                 <h2 className="text-lg font-medium underline underline-offset-4 mb-3">
                   Top 5 Frequent Callers
                 </h2>
@@ -288,7 +289,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
               </div>
             </div>
             <div className="w-full flex flex-col gap-4 mb-4">
-              <div className="bg-gray-800 p-4 rounded-md drop-shadow-md">
+              <div className="bg-tertiary p-4 rounded-md drop-shadow-md">
                 <h2 className="text-lg font-medium mb-4 underline underline-offset-4 ">
                   Call-Outs Within The Last Twelve Hours
                 </h2>
@@ -297,7 +298,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
                     return (
                       <div
                         key={callout.id}
-                        className="border border-gray-200 dark:border-gray-700 rounded-md p-4 hover:bg-slate-100 dark:hover:bg-slate-700 min-w-72 snap-center">
+                        className="border border-gray-200 dark:border-gray-700 rounded-md p-4 bg-secondary min-w-72 snap-center">
                         <p>
                           <strong>Employee:</strong> {callout?.employee?.name}
                         </p>
@@ -320,7 +321,7 @@ export default function AdminDashboardPage(/*props: Readonly<{data: AdminDashboa
               </div>
             </div>
 
-            <div className="bg-gray-800 p-4 rounded-md drop-shadow-md mb-6">
+            <div className="bg-tertiary p-4 rounded-md drop-shadow-md mb-6">
               <h2 className="text-lg font-medium mb-4 underline underline-offset-4 text-center">
                 Callout Trends
               </h2>

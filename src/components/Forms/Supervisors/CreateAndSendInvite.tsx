@@ -1,12 +1,12 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import Loading from '../../Loading';
-import {WarningIcon} from '../../Icons';
-import {ModalAction} from '../../Modal';
-import {validators} from '../../../lib/utils';
-import {makeToast, ToastTypes} from '../../Toasts';
-import {ApiData} from '../../../lib/apiController';
+import { WarningIcon } from '../../Icons';
+import { ModalAction } from '../../Modal';
+import { validators } from '../../../lib/utils';
+import { makeToast, ToastTypes } from '../../Toasts';
+import { ApiData } from '../../../lib/apiController';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
-import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
+import { SupervisorWithAssociations } from '../../../lib/db/models/Supervisor';
 
 const styles = {
   p: 'w-full bg-black',
@@ -66,7 +66,7 @@ export function CreateCredentialInviteAndEmailItToSupervisor({
       setLoading(false);
 
       onModalEditCallBack(data.data as SupervisorWithAssociations, false);
-      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+      window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
     } catch (error) {
       console.error('Error creating invite: ', error);
       makeToast({
@@ -90,7 +90,7 @@ export function CreateCredentialInviteAndEmailItToSupervisor({
         await createAndSendInvite();
         break;
       case 'Cancel':
-        window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+        window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
         break;
       default:
         break;
@@ -117,26 +117,24 @@ export function CreateCredentialInviteAndEmailItToSupervisor({
             onChange={handleEmailChange}
             errors={[emailError as string]}
             placeholder="Valid Work Email"
-            className={`w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none  ${
-              emailError ? 'ring-red-500' : 'focus:ring-gray-300'
-            }`}
+            className={`w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none  ${emailError ? 'ring-red-500' : 'focus:ring-gray-300'
+              }`}
           />
 
           <div className={styles.buttonsContainer}>
             <button
               type="button"
               disabled={emailError != null}
-              className={`px-2 py-1 bg-slate-700 ${
-                emailError === null && email.length > 0
-                  ? 'hover:bg-[var(--green)]'
-                  : 'cursor-not-allowed'
-              } text-white rounded mr-2 Text-outline-hover`}
+              className={`px-2 py-1 bg-quinary ${emailError === null && email.length > 0
+                ? 'hover:bg-accent-primary'
+                : 'cursor-not-allowed'
+                } text-primary rounded mr-2 Text-outline-hover`}
               onClick={handleClick}>
               Create and Send Invite
             </button>
             <button
               type="button"
-              className="px-2 py-1 bg-slate-900 hover:bg-red-600 text-white rounded mr-2"
+              className="px-2 py-1 bg-quinary hover:bg-red-600 text-primary rounded mr-2"
               onClick={handleClick}>
               Cancel
             </button>

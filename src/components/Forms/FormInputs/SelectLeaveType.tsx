@@ -1,5 +1,5 @@
-import {InputContainer} from './InputContainer';
-import type {LeaveTypeAttributes} from '../../../lib/db/models/types';
+import { InputContainer } from './InputContainer';
+import type { LeaveTypeAttributes } from '../../../lib/db/models/types';
 
 export type SelectLeaveTypes = {
   name?: string;
@@ -26,7 +26,7 @@ export function SelectLeaveTypeReason({
         required
         name={name ?? 'leaveType'}
         title={title ?? 'Leave Type'}
-        className={className ?? 'border p-2 rounded-md bg-slate-800'}
+        className={className ?? 'border p-2 rounded-md bg-tertiary'}
         value={leaveType}
         onChange={onChangeHandler}>
         <option value="">Select Leave Type</option>

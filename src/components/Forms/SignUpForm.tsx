@@ -1,15 +1,15 @@
 'use client';
 import Link from 'next/link';
-import {useEffect, useState} from 'react';
-import {useRouter, NextRouter} from 'next/router';
-import {FormInputWithErrors, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
-import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
+import { useEffect, useState } from 'react';
+import { useRouter, NextRouter } from 'next/router';
+import { FormInputWithErrors, Form, FormAction } from '../../components';
+import { useInputValidation, IUseValidators, useIsMounted } from '../../hooks';
+import { ClientAPI, defaultSignUpFormState, SignUpFormState } from '../../client-api';
 
 export type SignUpFormProps = {
   assignedEmail?: string;
 };
-export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): React.JSX.Element {
+export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>): React.JSX.Element {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
   const [token, setToken] = useState<string | null>(null);
@@ -40,10 +40,10 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
     // @ts-ignore
     const name = e?.target?.getAttribute('id') ?? '';
     // @ts-ignore
-    const {value} = e.target;
+    const { value } = e.target;
 
     // update the form state
-    setFormState({...formState, [name]: value});
+    setFormState({ ...formState, [name]: value });
   };
 
   const handleSignUp = async (e: React.SyntheticEvent): Promise<void> => {
@@ -92,7 +92,7 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
     return () => {
       setToken(null);
       setInviteId(null);
-      setFormState({...defaultSignUpFormState, email: assignedEmail ?? ''});
+      setFormState({ ...defaultSignUpFormState, email: assignedEmail ?? '' });
     };
     // eslint-disable-next-line
   }, [isMounted]);
@@ -201,7 +201,7 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
       />
       <p className="mt-4 mb-2">
         Already have an account?{' '}
-        <Link href={'/login'} className="text-blue-500 hover:text-[var(--green)]">
+        <Link href={'/login'} className="text-blue-500 hover:text-accent">
           Login here.
         </Link>
       </p>

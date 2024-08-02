@@ -1,5 +1,5 @@
-import {InputContainer} from './InputContainer';
-import {dateTo_YYYY_MM_DD} from '../../../lib/utils';
+import { InputContainer } from './InputContainer';
+import { dateTo_YYYY_MM_DD } from '../../../lib/utils';
 
 export type DateProps = {
   date: Date;
@@ -9,7 +9,7 @@ export type DateProps = {
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function DateInput({name, date, label, className, onChangeHandler}: Readonly<DateProps>) {
+export function DateInput({ name, date, label, className, onChangeHandler }: Readonly<DateProps>) {
   return (
     <InputContainer label={label ?? 'Call Date'} htmlFor={name ?? 'callDate'}>
       <input
@@ -19,7 +19,7 @@ export function DateInput({name, date, label, className, onChangeHandler}: Reado
         title={label ?? 'Call Date'}
         onChange={onChangeHandler}
         value={dateTo_YYYY_MM_DD(date)}
-        className={className ?? 'border p-2 rounded-md bg-slate-800'}
+        className={className ?? 'border p-2 rounded-md bg-tertiary'}
       />
     </InputContainer>
   );

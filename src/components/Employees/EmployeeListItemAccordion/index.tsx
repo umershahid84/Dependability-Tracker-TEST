@@ -1,13 +1,13 @@
-import {ModalAction, ModalType} from '../../Modal';
-import {trim} from '../../../lib/utils/shared/strings';
-import {EmployeeWithAssociations} from '../../../lib/db/controller';
+import { ModalAction, ModalType } from '../../Modal';
+import { trim } from '../../../lib/utils/shared/strings';
+import { EmployeeWithAssociations } from '../../../lib/db/controller';
 
 const styles = {
   infoContainer: 'ml-2',
   hideOnPrint: 'hide-on-print',
-  edit: 'px-2 py-1 bg-slate-400 hover:bg-amber-500 text-white rounded mr-2',
-  delete: 'px-2 py-1 bg-slate-400 hover:bg-red-500 text-white rounded mr-2',
-  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-slate-800 rounded-b-md details-print`
+  edit: 'px-2 py-1 bg-quinary hover:bg-amber-500 rounded mr-2',
+  delete: 'px-2 py-1 bg-quinary hover:bg-red-500 rounded mr-2',
+  div: `flex justify-between items-center border-t-2 p-2 text-sm cursor-pointer bg-secondary rounded-b-md details-print`
 };
 
 export function EmployeeListItemAccordion({
@@ -35,7 +35,7 @@ export function EmployeeListItemAccordion({
           detail: {
             action: ModalAction.OPEN,
             type: ModalType.EDIT_EMPLOYEE,
-            payload: {employee, onModalEditCallBack}
+            payload: { employee, onModalEditCallBack }
           }
         })
       );
@@ -47,7 +47,7 @@ export function EmployeeListItemAccordion({
           detail: {
             action: ModalAction.OPEN,
             type: ModalType.DELETE_EMPLOYEE,
-            payload: {employee, onModalDeleteCallBack}
+            payload: { employee, onModalDeleteCallBack }
           }
         })
       );

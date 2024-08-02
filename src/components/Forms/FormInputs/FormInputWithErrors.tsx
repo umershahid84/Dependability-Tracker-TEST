@@ -1,5 +1,5 @@
 'use client';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 export type FormInputWithErrorsProps = {
   id: string;
@@ -25,7 +25,7 @@ const defaultStyles = {
   span: 'flex flex-row justify-between items-center w-full',
   div: 'w-full flex flex-col justify-center items-center p-2',
   input:
-    'w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none focus:ring-[var(--green)]'
+    'w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-500'
 };
 
 export default function FormInputWithErrors(
@@ -49,10 +49,10 @@ export default function FormInputWithErrors(
       setStyles({
         ...styles,
         input:
-          'w-full p-2 rounded-md bg-slate-700 ring-1 ring-slate-700 focus:ring-2 focus:outline-none focus:ring-red-500'
+          'w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none focus:ring-red-500'
       });
 
-    !hasError && setStyles({...styles, input: defaultStyles.input});
+    !hasError && setStyles({ ...styles, input: defaultStyles.input });
     // eslint-disable-next-line
   }, [hasError]);
   return (

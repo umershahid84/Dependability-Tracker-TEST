@@ -1,4 +1,4 @@
-import {InputContainer} from './InputContainer';
+import { InputContainer } from './InputContainer';
 
 export type CallTimeProps = {
   time: string;
@@ -23,7 +23,7 @@ export function TimeInput({
         value={time}
         name={name ?? 'callTime'}
         title={label ?? 'Call Time'}
-        className={className ?? 'border p-2 rounded-md bg-slate-800'}
+        className={className ?? 'border p-2 rounded-md bg-tertiary'}
         onChange={onChangeHandler}
       />
     </InputContainer>

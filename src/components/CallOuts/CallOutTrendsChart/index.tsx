@@ -1,5 +1,5 @@
-import {useEffect, useRef} from 'react';
-import {AdminDashboardData} from '../../../lib/apiController/admin/dashboard';
+import { useEffect, useRef } from 'react';
+import { AdminDashboardData } from '../../../lib/apiController/admin/dashboard';
 
 const months = [
   'January',
@@ -18,13 +18,13 @@ const months = [
 
 export function CallOutTrendsChart({
   callOutTrends
-}: Readonly<{callOutTrends: AdminDashboardData['callOutTrends']}>) {
+}: Readonly<{ callOutTrends: AdminDashboardData['callOutTrends'] }>) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chartRef = useRef<any>(null); // Using a ref to store the chart instance
 
   useEffect(() => {
     const createChart = async () => {
-      const {Chart, registerables} = await import('chart.js/auto');
+      const { Chart, registerables } = await import('chart.js/auto');
       Chart.register(...registerables);
 
       const buildMonthLabels = (months: string[]) => {
@@ -64,7 +64,8 @@ export function CallOutTrendsChart({
                 data: callOutTrends.map(month => month.count),
                 backgroundColor: 'rgba(74, 202, 0, 0.2)',
                 borderColor: 'rgba(74, 202, 0, 1)',
-                borderWidth: 1
+                borderWidth: 1.5,
+
               }
             ]
           },
@@ -77,7 +78,7 @@ export function CallOutTrendsChart({
                   color: '#b0b0b0' // Color for Y-axis labels
                 },
                 grid: {
-                  color: '#424242' // Color for Y-axis grid lines
+                  color: '#78909C' // Color for Y-axis grid lines
                 }
               },
               x: {
@@ -85,7 +86,7 @@ export function CallOutTrendsChart({
                   color: '#b0b0b0' // Color for X-axis labels
                 },
                 grid: {
-                  color: '#424242' // Color for X-axis grid lines
+                  color: '#78909C' // Color for X-axis grid lines
                 }
               }
             },

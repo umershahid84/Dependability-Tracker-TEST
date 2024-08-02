@@ -1,6 +1,6 @@
-import {dateTo_YYYY_MM_DD} from '../../../../lib/utils';
-import {UseRangeOptionsStateMap} from './useRangeOptionsVariantMap';
-import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
+import { dateTo_YYYY_MM_DD } from '../../../../lib/utils';
+import { UseRangeOptionsStateMap } from './useRangeOptionsVariantMap';
+import type { GetAllCallOutOptions } from '../../../../lib/db/controller/Callout/helpers';
 
 export enum RangeOptionsVariant {
   CALL_DATE = 'callout_date_range',
@@ -18,15 +18,15 @@ export const rangeOptionsStyles = {
   form: 'grid grid-cols-1 gap-4 w-full',
   buttonContainer: 'w-full flex justify-end',
   h2: 'text-2xl font-bold mb-4 text-center mt-2',
-  formLabel: 'block font-medium text-gray-300 mt-2',
+  formLabel: 'block font-medium text-primary mt-2',
   rangeLabelSpan: 'w-full flex flex-row justify-end',
-  formLabelMr: 'block font-medium text-gray-300 mr-2',
-  formLabelMt: 'block font-medium text-gray-300 mt-2',
+  formLabelMr: 'block font-medium text-primary mr-2',
+  formLabelMt: 'block font-medium text-primary mt-2',
   label: 'font-medium mb-2 underline underline-offset-4',
   optionsContainer: 'w-full flex flex-col justify-start',
-  input: 'border p-2 rounded-md w-full bg-slate-800 text-gray-300',
-  inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-slate-800',
-  button: 'bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600',
+  input: 'border p-2 rounded-md w-full bg-tertiary text-primary',
+  inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-tertiary',
+  button: 'bg-blue-600 text-primary rounded-md py-2 px-4 hover:bg-blue-500',
   clearButton:
     'border border-gray-300 p-[3px] w-14 rounded-md hover:border-red-600 hover:text-red-600 absolute top-1 right-1'
 };

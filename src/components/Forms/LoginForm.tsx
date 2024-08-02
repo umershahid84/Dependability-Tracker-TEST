@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import React, {useEffect, useState} from 'react';
-import {NextRouter, useRouter} from 'next/router';
-import {FormInputWithErrors, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
-import {ClientAPI, LoginFormState, defaultLoginFormState} from '../../client-api';
+import React, { useEffect, useState } from 'react';
+import { NextRouter, useRouter } from 'next/router';
+import { FormInputWithErrors, Form, FormAction } from '../../components';
+import { useInputValidation, IUseValidators, useIsMounted } from '../../hooks';
+import { ClientAPI, LoginFormState, defaultLoginFormState } from '../../client-api';
 
 export default function LoginForm(): React.JSX.Element {
   const router: NextRouter = useRouter();
@@ -26,9 +26,9 @@ export default function LoginForm(): React.JSX.Element {
 
   //  event handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const {value} = e.target;
+    const { value } = e.target;
     const name = e?.target?.getAttribute('id') ?? '';
-    setFormState({...formState, [name]: value});
+    setFormState({ ...formState, [name]: value });
   };
 
   const handleLogin = async (e: React.SyntheticEvent): Promise<void> => {
@@ -138,7 +138,7 @@ export default function LoginForm(): React.JSX.Element {
 
       <p className="mt-4 mb-2">
         Forgot password?{' '}
-        <Link href={'/reset-password'} className="text-blue-500 hover:text-[var(--green)]">
+        <Link href={'/reset-password'} className="text-blue-500 hover:text-accent">
           Reset Credentials.
         </Link>
       </p>

@@ -3,7 +3,7 @@ export type EmployeeModalFormLabelProps = {
   htmlFor: string;
   className?: string;
 };
-const defaultStyles = 'block font-medium text-gray-300';
+const defaultStyles = 'block font-medium text-primary';
 export function FormLabel({
   label,
   htmlFor,

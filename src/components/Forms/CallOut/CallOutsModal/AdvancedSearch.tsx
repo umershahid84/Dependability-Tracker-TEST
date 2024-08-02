@@ -1,35 +1,35 @@
-import {useEffect, useState} from 'react';
-import {ModalAction} from '../../../Modal';
+import { useEffect, useState } from 'react';
+import { ModalAction } from '../../../Modal';
 import {
   EmployeeWithAssociations,
   SupervisorWithAssociations
 } from '../../../../lib/db/models/types';
-import {FormLabel} from '../../FormInputs/FormLabel';
-import {RangeOptions} from '../../FormInputs/RangeOptions';
-import {SelectDivision} from '../../FormInputs/SelectDivision';
+import { FormLabel } from '../../FormInputs/FormLabel';
+import { RangeOptions } from '../../FormInputs/RangeOptions';
+import { SelectDivision } from '../../FormInputs/SelectDivision';
 import {
   UseRangeOptionsStateMap,
   useRangeOptionsStateMap
 } from '../../FormInputs/RangeOptions/useRangeOptionsVariantMap';
-import {FormLabelContainer} from '../../EmployeeModal/FormLayout';
-import {dbSearchParams} from '../../../CallOuts/CallOutsList/helpers';
-import {RangeOptionsVariant} from '../../FormInputs/RangeOptions/data';
-import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
-import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
-import type {GetAllCallOutOptions} from '../../../../lib/db/controller/Callout/helpers';
-import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../../../../providers';
+import { FormLabelContainer } from '../../EmployeeModal/FormLayout';
+import { dbSearchParams } from '../../../CallOuts/CallOutsList/helpers';
+import { RangeOptionsVariant } from '../../FormInputs/RangeOptions/data';
+import { SelectEmployeeName } from '../../FormInputs/SelectEmployeeName';
+import { SelectLeaveTypeReason } from '../../FormInputs/SelectLeaveType';
+import type { GetAllCallOutOptions } from '../../../../lib/db/controller/Callout/helpers';
+import { CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext } from '../../../../providers';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4 text-center mt-2',
   form: 'grid grid-cols-2 gap-y-4 gap-x-12 w-full p-3',
-  input: 'border p-2 rounded-md w-full bg-slate-800 text-gray-300',
-  inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-slate-800',
+  input: 'border p-2 rounded-md w-full bg-tertiary text-primary',
+  inputWithMargin: 'mr-2 h-4 w-4  border-gray-300 rounded bg-tertiary',
   buttonContainer:
     'w-full flex flex-col justify-center items-center mt-6 gap-4 transition-all  duration-300',
-  clearButton: `border-2 border-gray-300 text-gray-300 hover:border-red-600 rounded-md py-2 px-4
+  clearButton: `border-2 border-gray-300 text-primary hover:border-red-600 rounded-md py-2 px-4
      hover:bg-red-700 w-[95%] hover:w-[98%] h-10 `,
-  submitButton: `border-2 border-[var(--green)] text-[var(--green)] hover:text-gray-300 rounded-md rounded-md
-     py-2 px-4 hover:bg-[var(--green)] w-[95%] hover:w-[98%] Text-outline-hover h-10`
+  submitButton: `border-2 border-[var(--green)] text-accent hover:text-primary rounded-md rounded-md
+     py-2 px-4 hover:bg-accent-primary w-[95%] hover:w-[98%] Text-outline-hover h-10`
 };
 
 export function CallOutsAdvancedSearch() {
@@ -57,10 +57,10 @@ export function CallOutsAdvancedSearch() {
     e.preventDefault();
     e.stopPropagation();
     if (copyHasParams) {
-      setSearchParams({...searchParamsCopy});
+      setSearchParams({ ...searchParamsCopy });
       setExecuteSearch(true);
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+        window.dispatchEvent(new CustomEvent('modalEvent', { detail: { action: ModalAction.CLOSE } }));
       }, 200);
     }
   };
@@ -71,12 +71,12 @@ export function CallOutsAdvancedSearch() {
 
     if (copyHasParams) {
       setClearRanges(true);
-      setSearchParamsCopy({...dbSearchParams});
+      setSearchParamsCopy({ ...dbSearchParams });
     }
 
     if (searchParamsHasParams) {
       setClearRanges(true);
-      setSearchParams({...dbSearchParams});
+      setSearchParams({ ...dbSearchParams });
       setExecuteSearch(true);
     }
   };

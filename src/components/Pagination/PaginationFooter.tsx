@@ -6,10 +6,10 @@ export type PaginationFooterProps = {
 };
 
 const styles = {
-  text: `text-gray-300 print:text-black`,
-  button: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700`,
+  text: `text-primary print:text-black`,
+  button: `p-3 bg-tertiary rounded-md text-xs hover:bg-secondary`,
   buttonContainer: `w-full h-auto  flex flex-wrap flex-row justify-between items-center hide-on-print`,
-  buttonDisabled: `p-3 bg-gray-800 rounded-md text-xs hover:bg-gray-700 cursor-not-allowed`
+  buttonDisabled: `p-3 bg-tertiary rounded-md text-xs hover:bg-secondary cursor-not-allowed`
 };
 
 export function PaginationFooter({
@@ -28,7 +28,7 @@ export function PaginationFooter({
         Previous
       </button>
 
-      <p className="text-gray-300 print:text-black">
+      <p className="text-primary print:text-black">
         Page {currentPage} of {numberOfPages}
       </p>
 

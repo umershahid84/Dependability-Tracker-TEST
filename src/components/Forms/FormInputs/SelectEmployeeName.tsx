@@ -1,5 +1,5 @@
-import {InputContainer} from './InputContainer';
-import type {EmployeeWithAssociations} from '../../../lib/db/controller';
+import { InputContainer } from './InputContainer';
+import type { EmployeeWithAssociations } from '../../../lib/db/controller';
 
 export type SelectEmployeeNameProps = {
   name?: string;
@@ -28,7 +28,7 @@ export function SelectEmployeeName({
         onChange={onChangeHandler}
         name={name ?? 'employeeName'}
         title={title ?? 'Employee Name'}
-        className={className ?? 'border p-2 rounded-md bg-slate-800'}>
+        className={className ?? 'border p-2 rounded-md bg-tertiary'}>
         <option value="">Select Employee</option>
         {useSelectAll && <option value="all">Any</option>}
         {employees?.map((employee: EmployeeWithAssociations) => (

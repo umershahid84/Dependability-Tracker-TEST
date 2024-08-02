@@ -5,15 +5,15 @@ import {
   supervisorsSortOptions
 } from './data';
 import Loading from '../../Loading';
-import {useEffect, useState} from 'react';
-import {DynamicSortOptions} from '../../Forms';
-import {employeeLimitOptions} from '../../Employees';
-import {SupervisorListItem} from './SupervisorListItem';
-import {ModelList, ModelListHeader} from '../../ModelList';
-import {PaginationContainer} from '../../Pagination/Container';
-import type {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
-import {PaginationQueryParams, ModelWithPagination} from '../../../lib/db/controller';
-import {UseGetSupervisors, useGetSupervisors, useQueryParams, UseQueryParams} from '../../../hooks';
+import { useEffect, useState } from 'react';
+import { DynamicSortOptions } from '../../Forms';
+import { employeeLimitOptions } from '../../Employees';
+import { SupervisorListItem } from './SupervisorListItem';
+import { ModelList, ModelListHeader } from '../../ModelList';
+import { PaginationContainer } from '../../Pagination/Container';
+import type { SupervisorWithAssociations } from '../../../lib/db/models/Supervisor';
+import { PaginationQueryParams, ModelWithPagination } from '../../../lib/db/controller';
+import { UseGetSupervisors, useGetSupervisors, useQueryParams, UseQueryParams } from '../../../hooks';
 
 const defaultSupervisorsQueryParams: PaginationQueryParams<SupervisorsSortBy> & {
   showCredentials: 'true' | 'false';
@@ -49,9 +49,9 @@ export function SupervisorsList() {
   const [sortBy, setSortBy] = useState<SupervisorsSortBy>('name');
   const [supervisorData, setSupervisorData] =
     useState<ModelWithPagination<SupervisorWithAssociations> | null>(null);
-  const {queryParams, setQueryParams, handleQueryParamChange}: UseQueryParams<SupervisorsSortBy> =
+  const { queryParams, setQueryParams, handleQueryParamChange }: UseQueryParams<SupervisorsSortBy> =
     useQueryParams<SupervisorsSortBy>(defaultSupervisorsQueryParams);
-  const {supervisors}: UseGetSupervisors = useGetSupervisors(queryParams);
+  const { supervisors }: UseGetSupervisors = useGetSupervisors(queryParams);
 
   const handleOnSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value as SupervisorsSortBy);
@@ -105,19 +105,7 @@ export function SupervisorsList() {
     <ModelList>
       <ModelListHeader
         title="Supervisors"
-        titleClassName="w-auto"
         containerClassName={supervisorListStyles.containerClassName}>
-        <span className={supervisorListStyles.span}>
-          <DynamicSortOptions
-            name="sortBy"
-            label="Sort By:"
-            currentSort={sortBy as string}
-            onSortChange={handleOnSortChange}
-            sortOptions={supervisorsSortOptions}
-            title="Sort the supervisors by the selected option."
-          />
-        </span>
-
         <DynamicSortOptions
           name="limit"
           label="Limit:"
@@ -126,6 +114,18 @@ export function SupervisorsList() {
           currentSort={String(queryParams.limit ?? 5)}
           title="Limit the number of employees displayed."
         />
+
+        <DynamicSortOptions
+          name="sortBy"
+          label="Sort By:"
+          currentSort={sortBy as string}
+          onSortChange={handleOnSortChange}
+          sortOptions={supervisorsSortOptions}
+          title="Sort the supervisors by the selected option."
+        />
+
+
+
       </ModelListHeader>
 
       <PaginationContainer
