@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { runCommand, runCommandAsRoot, runCommandAsRootCapture, runCommandCapture } from './_helpers.mjs';
 
-const osType = runCommandCapture('uname -s');
+const osType = runCommandCapture('uname -s', false, false);
 const isLinux = osType.includes('Linux');
 const serviceFileExists = existsSync('/etc/systemd/system/dependability.service');
 

@@ -2,41 +2,45 @@ import { dirname, join } from 'path';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
-export const runCommand = command => {
+export const runCommand = (command, exitOnFailure = true, logError = true) => {
     try {
         execSync(command, { stdio: 'inherit' });
     } catch (error) {
-        console.error(`Command failed: ${command}`, error);
-        process.exit(1);
+        logError && console.error(`Command failed: ${command}`, error);
+        exitOnFailure && process.exit(1);
+        return 'Command failed';
     }
 };
 
-export const runCommandCapture = command => {
+export const runCommandCapture = (command, exitOnFailure = true, logError = true) => {
     try {
         return execSync(command).toString().trim();
     } catch (error) {
-        console.error(`Command failed: ${command}`, error);
-        process.exit(1);
+        logError && console.error(`Command failed: ${command}`, error);
+        exitOnFailure && process.exit(1);
+        return 'Command failed';
     }
 }
 
 // Utility function to run commands with elevated privileges
-export const runCommandAsRoot = command => {
+export const runCommandAsRoot = (command, exitOnFailure = true, logError = true) => {
     try {
         execSync(`sudo ${command}`, { stdio: 'inherit' });
     } catch (error) {
-        console.error(`Command failed: ${command}`, error);
-        process.exit(1);
+        logError && console.error(`Command failed: ${command}`, error);
+        exitOnFailure && process.exit(1);
+        return 'Command failed';
     }
 };
 
 // Utility function to run a command and capture output
-export const runCommandAsRootCapture = command => {
+export const runCommandAsRootCapture = (command, exitOnFailure = true, logError = true) => {
     try {
         return execSync(command).toString().trim();
     } catch (error) {
-        console.error(`Command failed: ${command}`, error);
-        process.exit(1);
+        logError && console.error(`Command failed: ${command}`, error);
+        exitOnFailure && process.exit(1);
+        return 'Command failed';
     }
 };
 

@@ -24,8 +24,8 @@ const main = () => {
     createServiceFile(nodePath, projectPath);
 
     // check if SELinux is enabled
-    const selinuxStatus = runCommandAsRootCapture('sestatus');
-    if (selinuxStatus.includes('enabled')) {
+    const selinuxStatus = runCommandAsRootCapture('sestatus', false, false);
+    if (selinuxStatus?.includes('enabled')) {
 
         // Create the SELinux policy file
         createSelinuxPolicyFile();

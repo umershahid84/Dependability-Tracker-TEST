@@ -14,7 +14,7 @@ const main = () => {
     // check for node_modules folder in the project and remove it
     if (existsSync(join(projectPath, 'node_modules'))) {
         console.log('Removing node_modules folder...');
-        runCommandAsRoot('rm -rf node_modules');
+        runCommandAsRoot('rm -rf node_modules', false, false);
     }
 
     // remove start.sh script
@@ -22,20 +22,20 @@ const main = () => {
     const startScriptPath = join(projectPath, 'scripts', 'start.sh');
     if (existsSync(startScriptPath)) {
         console.log('Removing start.sh script...');
-        runCommandAsRoot(`rm ${startScriptPath}`);
+        runCommandAsRoot(`rm ${startScriptPath}`, false, false);
     }
 
     // uninstall the service
     console.log('Uninstalling Dependability Tracker service...');
-    runCommandAsRoot('sudo systemctl stop dependability');
-    runCommandAsRoot('sudo systemctl disable dependability');
-    runCommandAsRoot('sudo rm /etc/systemd/system/dependability.service');
+    runCommandAsRoot('sudo systemctl stop dependability', false, false);
+    runCommandAsRoot('sudo systemctl disable dependability', false, false);
+    runCommandAsRoot('sudo rm /etc/systemd/system/dependability.service', false, false);
     runCommandAsRoot('sudo systemctl daemon-reload');
 
     // check if SELinux is enabled
-    const selinuxStatus = runCommandAsRootCapture('sestatus');
+    const selinuxStatus = runCommandAsRootCapture('sestatus', false, false);
 
-    if (selinuxStatus.includes('enabled')) {
+    if (selinuxStatus?.includes('enabled')) {
         // remove SELinux policies
         console.log('Removing SELinux policies...');
         runCommandAsRoot('semodule -r dependability_service');
@@ -45,11 +45,11 @@ const main = () => {
 
     // remove the log file
     console.log('Removing log file...');
-    runCommand(`rm ${join(projectPath, 'log')}`);
+    runCommand(`rm ${join(projectPath, 'log')}`, false, false);
 
     // remove the cert folder
     console.log('Removing cert folder...');
-    runCommand(`rm -rf ${join(projectPath, 'cert')}`);
+    runCommand(`rm -rf ${join(projectPath, 'cert')}`, false, false);
 
     console.log('Dependability Tracker has been uninstalled successfully.');
 
