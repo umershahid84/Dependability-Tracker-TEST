@@ -43,7 +43,7 @@ const main = () => {
         // Ensures the policy context is applied to all files recursively
         runCommandAsRoot(`restorecon -R ${projectPath}`);
     }
-    console.log('Reloading daemons and attaching dependability.service')
+    console.log('Reloading daemons and attaching dependability.service');
     runCommandAsRoot('systemctl daemon-reload');
     runCommandAsRoot('systemctl enable dependability.service');
     runCommandAsRoot('systemctl start dependability.service');

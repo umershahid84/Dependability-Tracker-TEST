@@ -17,7 +17,7 @@
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "sendInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production node ./dist/server/index.js\"",
+    "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"cross-env NODE_ENV=production node ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
   },
   "nodemonConfig": {
@@ -31,6 +31,7 @@
     "chart.js": "^4.4.3",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",

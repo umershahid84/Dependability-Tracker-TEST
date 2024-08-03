@@ -148,20 +148,14 @@ tail -f log
 
 [Go to Next Step](#6-seed-the-database-with-default-data)
 
+---
+
 ### 5.b If Using Any Other Operating System
 
 #### Install project dependencies:
 
 ```bash
 npm i
-```
-
-#### Generate the Certificate and Keys for TLS:
-
-To generate the credentials needed for TLS run:
-
-```bash
-npm run genTLS
 ```
 
 #### Generate a Production Build:

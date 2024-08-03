@@ -2,7 +2,7 @@ import { dirname, join } from 'path';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
-export const runCommand = (command) => {
+export const runCommand = command => {
     try {
         execSync(command, { stdio: 'inherit' });
     } catch (error) {
@@ -11,7 +11,7 @@ export const runCommand = (command) => {
     }
 };
 
-export const runCommandCapture = (command) => {
+export const runCommandCapture = command => {
     try {
         return execSync(command).toString().trim();
     } catch (error) {
@@ -21,7 +21,7 @@ export const runCommandCapture = (command) => {
 }
 
 // Utility function to run commands with elevated privileges
-export const runCommandAsRoot = (command) => {
+export const runCommandAsRoot = command => {
     try {
         execSync(`sudo ${command}`, { stdio: 'inherit' });
     } catch (error) {
@@ -31,7 +31,7 @@ export const runCommandAsRoot = (command) => {
 };
 
 // Utility function to run a command and capture output
-export const runCommandAsRootCapture = (command) => {
+export const runCommandAsRootCapture = command => {
     try {
         return execSync(command).toString().trim();
     } catch (error) {
@@ -48,9 +48,7 @@ export const findNodePath = () => {
 };
 
 // Find the project directory dynamically
-export const findProjectPath = () => {
-    return runCommandAsRootCapture('pwd');
-};
+export const findProjectPath = () => process.cwd();
 
 
 /**
@@ -60,7 +58,7 @@ export const findProjectPath = () => {
  * The script can be used by systemd to start the service.
  * @param {string} projectPath the path to the project
  */
-export const createStartScript = (projectPath) => {
+export const createStartScript = projectPath => {
     const startScriptPath = join(projectPath, 'scripts', 'start.sh');
     const logFilePath = join(projectPath, 'log');
     const startScriptContent = `#!/bin/bash
