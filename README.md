@@ -2,6 +2,21 @@
 
 Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,`TailwindCSS`, and `TypeScript`, for the sole purpose of tracking when an employee calls out of work.
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Download](#1-download-project-from-github)
+  - [Create Database](#2-create-mariadb-database)
+  - [Remove Telemetry Reporting](#3-remove-nextjs-telemetry-reporting)
+  - [Create Env File](#4-create-the-env-file)
+  - [Installing, Building, and Starting Server](#5a-if-using-a-linux-distributions-with-systemd)  
+     -[Linux](#5a-if-using-a-linux-distributions-with-systemd)  
+     -[Any Other OS](#5b-if-using-any-other-operating-system)
+  - [Seeding Database With Default Data](#6-seed-the-database-with-default-data)
+  - [Send Default Admin Their Sign-Up Invite](#7-send-the-create-credential-email-invite-to-the-default-admin)
+- [Updating](#updating)
+- [Remove Service](#uninstall-service)
+
 ## Installation
 
 `Node.JS` and `MariaDB` are prerequisites but their installation is beyond the scope of the installation methods, you can refer to their documentation if installation is required.
@@ -131,6 +146,8 @@ tail log
 tail -f log
 ```
 
+[Go to Next Step](#6-seed-the-database-with-default-data)
+
 ### 5.b If Using Any Other Operating System
 
 #### Install project dependencies:
@@ -169,10 +186,26 @@ To seed the database run the following command:
 npm run seed
 ```
 
-### 6. Send the Create Credential Email Invite to the Default Admin
+### 7. Send the Create Credential Email Invite to the Default Admin
 
 To send the email invite so the Admin can generate their login credentials, open a new terminal and navigate to the project root. (Make sure the server is running) Then type the following command, be sure to replace `<emailAddress>` with the administrator's email address. Currently only `@portseattle.org` addresses are supported.
 
 ```bash
 npm run sendInvite -- <emailAddress>
+```
+
+## Updating
+
+To check for updates and rebuild upon any changes:
+
+```bash
+npm run update
+```
+
+## Uninstall Service
+
+To remove the Dependability Service and all created files:
+
+```bash
+npm run uninstall
 ```
