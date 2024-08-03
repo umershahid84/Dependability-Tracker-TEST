@@ -13,9 +13,9 @@
     "seed": "ts-node ./src/scripts/seedDb.ts",
     "uninstall": "node ./scripts/uninstall.mjs",
     "createEnv": "npm run ts -- ./src/scripts/createEnv.ts",
+    "install-service": "node ./scripts/install-as-service.mjs",
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
-    "install-as-service": "node ./scripts/install-as-service.mjs",
-    "sendCredInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
+    "sendInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
     "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"NODE_ENV=production node ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""

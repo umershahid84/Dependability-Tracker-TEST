@@ -32,11 +32,16 @@ const main = () => {
     runCommandAsRoot('sudo rm /etc/systemd/system/dependability.service');
     runCommandAsRoot('sudo systemctl daemon-reload');
 
-    // remove SELinux policies
-    console.log('Removing SELinux policies...');
-    runCommandAsRoot('semodule -r dependability_service');
-    runCommandAsRoot(`semanage fcontext -d "${projectPath}(/.*)?"`);
-    runCommandAsRoot(`restorecon -R ${projectPath}`);
+    // check if SELinux is enabled
+    const selinuxStatus = runCommandAsRootCapture('sestatus');
+
+    if (selinuxStatus.includes('enabled')) {
+        // remove SELinux policies
+        console.log('Removing SELinux policies...');
+        runCommandAsRoot('semodule -r dependability_service');
+        runCommandAsRoot(`semanage fcontext -d "${projectPath}(/.*)?"`);
+        runCommandAsRoot(`restorecon -R ${projectPath}`);
+    }
 
     // remove the log file
     console.log('Removing log file...');
