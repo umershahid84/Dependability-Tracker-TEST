@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { runCommand, runCommandAsRoot, findProjectPath } from './_helpers.mjs';
+import { runCommand, runCommandAsRoot, findProjectPath, runCommandAsRootCapture } from './_helpers.mjs';
 
 // Main function to uninstall Dependability Tracker
 // removes the build artifacts, the start.sh script, the service, SELinux policies, the log file, and the cert folder
