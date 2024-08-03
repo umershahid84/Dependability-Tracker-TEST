@@ -44,3 +44,4 @@ package-lock.json
 .hintrc
 dist/
 log
+start.sh
