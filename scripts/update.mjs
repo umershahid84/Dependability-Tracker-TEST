@@ -18,6 +18,8 @@ const main = () => {
         return;
     }
     console.log('\nUpdates found. Rebuilding the project...');
+    // run the clean script to remove the build files
+    runCommand('node scripts/clean.mjs');
     // run the build script to ensure the project is ready
     runCommand('node scripts/build.mjs');
     console.log('Project rebuilt successfully.');
