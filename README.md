@@ -203,3 +203,27 @@ To remove the Dependability Service and all created files:
 ```bash
 npm run uninstall
 ```
+
+## Seeding CallOut Data for Test Purposes
+
+### When specifying an Arbitrary Number
+
+```bash
+npm run seed-callout numberOfCallOutsToGenerate
+```
+
+### Generate 365 CallOuts
+
+```bash
+npm run seed-callouts-365
+```
+
+## Managing Services With Systemd
+
+Here is a link to a short guide for using systemd for [managing system services](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).
+
+For more information refer to the man page documentation for the systemd command.
+
+```bash
+man systemd
+```

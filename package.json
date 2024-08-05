@@ -16,6 +16,8 @@
     "install-service": "node ./scripts/install-as-service.mjs",
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "sendInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
+    "seed-callout": "ts-node ./src/lib/db/seeds/callouts.ts",
+    "seed-callouts-365": "ts-node ./src/lib/db/seeds/callouts.ts 365",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
     "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"cross-env NODE_ENV=production node ./dist/server/index.js\"",
     "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
