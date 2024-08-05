@@ -124,7 +124,7 @@ npm run createEnv
 
 Then open the file and replace the `EMAIL_PORT` and any values within `<>` with your unique environment values. Be sure to save the file and exit.
 
-### 5.a If Using a Linux Distributions With Systemd
+### 5.a If Using Linux Distributions With Systemd
 
 #### (Arch, CentOS, CoreOs, Debian, Fedora, Mageia, Manjaro, Mint, OpenSUSE, RHEL, Rocky, Solus, Ubuntu)
 
