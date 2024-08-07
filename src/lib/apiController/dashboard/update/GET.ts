@@ -1,19 +1,24 @@
 import { Op } from 'sequelize';
-import { CallOut } from '../../../../db';
+import { CallOut } from '../../../db';
 import { Request, Response } from 'express';
-import type { ApiData } from '../../../../../lib/apiController';
-import type { CallOutWithAssociations } from '../../../../../lib/db/models/types';
-import { populateCallOutAssociations } from '../../../../db/controller/Callout/helpers';
-import { logTemplate } from '../../../../utils/server';
+import { logTemplate } from '../../../utils/server';
+import type { ApiData } from '../../../../lib/apiController';
+import type { CallOutWithAssociations } from '../../../../lib/db/models/types';
+import { populateCallOutAssociations } from '../../../db/controller/Callout/helpers';
 
-export default async function getAdminDashboardDataUpdateApiHandler(
+
+export default async function getDashboardDataUpdateApiHandler(
   req: Request,
   res: Response<ApiData<CallOutWithAssociations[]>>
 ) {
   const { calloutDate } = req.query as { calloutDate: string };
   const latestDate = new Date(calloutDate);
-  //add 1 second to the latest date to avoid fetching the same data
-  latestDate.setSeconds(latestDate.getMinutes() + 15);
+
+  if (isNaN(latestDate.getTime())) {
+    return res.status(400).json({ error: 'Invalid date' });
+  }
+
+  latestDate.setSeconds(latestDate.getSeconds() + 1);
 
   try {
     const data = (
@@ -38,10 +43,10 @@ export default async function getAdminDashboardDataUpdateApiHandler(
 
     return res.status(200).json({ data: filteredData });
   } catch (error) {
-    const errMessage = '❌ Error in getAdminDashboardDataUpdateApiHandler:' + ' ' + error;
+    const errMessage = '❌ Error in getDashboardDataUpdateApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));
     return res.status(500).json({ error: String(error) });
   }
 }
 
-export { getAdminDashboardDataUpdateApiHandler };
+export { getDashboardDataUpdateApiHandler };

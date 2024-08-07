@@ -14,6 +14,7 @@ export type SupervisorLayoutProps = {
 };
 export function SupervisorLayout({ title, children }: Readonly<SupervisorLayoutProps>) {
   return (
+
     <div className={styles.body}>
       <LogoutButton />
       <header className={styles.header}>
@@ -26,5 +27,7 @@ export function SupervisorLayout({ title, children }: Readonly<SupervisorLayoutP
       </header>
       {children}
     </div>
+
   );
+
 }

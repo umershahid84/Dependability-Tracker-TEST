@@ -1,9 +1,12 @@
 import { Op } from 'sequelize';
 import { Request, Response } from 'express';
-import type { ApiData } from '../../../../lib/apiController';
-import { CallOut, Employee, LeaveType, Supervisor } from '../../../db';
-import type { CallOutAttributes, CallOutWithAssociations, EmployeeWithAssociations } from '../../../../lib/db/models/types';
-import { logTemplate } from '../../../utils/server';
+import { months } from '../../../components';
+import { logTemplate } from '../../utils/server';
+import type { ApiData } from '../../../lib/apiController';
+import { CallOut, Employee, LeaveType, Supervisor } from '../../db';
+import type { CallOutAttributes, CallOutWithAssociations, EmployeeWithAssociations } from '../../../lib/db/models/types';
+
+
 
 export type AdminDashboardData = {
   totalCallOuts: number;
@@ -16,23 +19,6 @@ export type AdminDashboardData = {
     month: string;
   }[];
 };
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-]
-
-
 
 export const getDashboardData = async (): Promise<AdminDashboardData | null> => {
   try {
@@ -125,6 +111,16 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
       .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 5);
 
+
+    // sort the calloutWithinLastTwelveHours by callout_date and time, ensuring the most recent callouts are first
+    callOutsWithinLastTwelveHours.sort((a, b) => {
+      if (a.callout_date > b.callout_date) return -1;
+      if (a.callout_date < b.callout_date) return 1;
+      if (a.callout_time > b.callout_time) return -1;
+      if (a.callout_time < b.callout_time) return 1;
+      return 0;
+    });
+
     return {
       //@ts-ignore
       fiveMostFrequentCallers,
@@ -140,7 +136,7 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
   }
 };
 
-export default async function getAdminDashboardDataApiHandler(
+export default async function getDashboardDataApiHandler(
   req: Request,
   res: Response<ApiData<AdminDashboardData>>
 ) {
@@ -153,10 +149,10 @@ export default async function getAdminDashboardDataApiHandler(
 
     return res.status(200).json({ data });
   } catch (error) {
-    const errMessage = '❌ Error in getAdminDashboardDataApiHandler:' + ' ' + error;
+    const errMessage = '❌ Error in getDashboardDataApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));
     return res.status(500).json({ error: String(error) });
   }
 }
 
-export { getAdminDashboardDataApiHandler };
+export { getDashboardDataApiHandler };

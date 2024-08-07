@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {validateEmployeeCallOut} from './helpers';
-import {makeToast, ToastTypes} from '../../components';
-import {CallOutWithAssociations} from '../../lib/db/models/Callout';
-import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
-import {ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData} from '../../client-api';
+import React, { useEffect, useState } from 'react';
+import { validateEmployeeCallOut } from './helpers';
+import { makeToast, ToastTypes } from '../../components';
+import { CallOutWithAssociations } from '../../lib/db/models/Callout';
+import { UseIncrementingTime, useIncrementingTime, useIsMounted } from '../../hooks';
+import { ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData } from '../../client-api';
 
 export type UseCreateCallOutFormState = {
   callTime: string;
@@ -36,8 +36,8 @@ export function useCreateCallOutFormState(
   ) => {
     incrementingCallTime.clearTimeInterval();
     incrementingShiftTime.clearTimeInterval();
-    const {name, value} = e.target;
-    setFormData(prevFormData => ({...prevFormData, [name]: value}));
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
   };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {
@@ -61,7 +61,7 @@ export function useCreateCallOutFormState(
         type: ToastTypes.Success,
         message: data.message ?? 'Callout Created Successfully'
       });
-      setFormData(defaultFormData);
+      resetFormData();
       callback?.(data?.data as CallOutWithAssociations);
     } catch (error) {
       makeToast({

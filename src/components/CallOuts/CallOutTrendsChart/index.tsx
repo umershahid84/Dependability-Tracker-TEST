@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { AdminDashboardData } from '../../../lib/apiController/admin/dashboard';
+import { AdminDashboardData } from '../../../lib/apiController/dashboard';
 
-const months = [
+export const months = [
   'January',
   'February',
   'March',

@@ -1,4 +1,6 @@
+import { logoBase64 } from '../../logoBase64';
 import { CallOutWithAssociations } from '../../../db/models/Callout';
+
 
 export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations): string => {
     return `
@@ -19,9 +21,9 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                         <tr>
                             <td align="center" style="padding: 20px;">
                               <img
-                                src="https://www.portseattle.org/themes/portseattleflysea/logo.svg"
+                                src=${logoBase64}
                                 alt="Dependability Tracker Logo"
-                                style="max-width: 350px; border-radius: 5px; filter: invert(1) hue-rotate(180deg) saturate(1.5) !important; " />
+                                style="max-width: 350px; border-radius: 5px;" />
                                 <h2 style="color: #e2e2e2 !important; margin-top: 35px; font-size: 24px; font-weight: 600;">Dependability Tracker</h2>
                             </td>
                         </tr>
