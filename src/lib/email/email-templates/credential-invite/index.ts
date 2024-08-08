@@ -1,12 +1,12 @@
-import { logoBase64 } from "../../logoBase64";
+import {logoBase64} from '../../logoBase64';
 
 export const credentialInviteTemplate = (
-    inviteId: string,
-    username: string,
-    inviteToken: string,
-    createLoginCredentialsLink: string
+  inviteId: string,
+  username: string,
+  inviteToken: string,
+  createLoginCredentialsLink: string
 ): string => {
-    return `
+  return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -25,7 +25,7 @@ export const credentialInviteTemplate = (
                               <img
                                 src=${logoBase64}
                                 alt="Dependability Tracker Logo"
-                                style="max-width: 350px; border-radius: 5px;" />
+                                style="max-width: 350px !important; border-radius: 5px;" />
                                 <h2 style="color: #e2e2e2 !important; margin-top: 35px">Dependability Tracker</h2>
                             </td>
                         </tr>
