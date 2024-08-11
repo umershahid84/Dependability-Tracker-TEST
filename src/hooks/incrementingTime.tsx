@@ -1,5 +1,5 @@
 import {useIsMounted} from '../hooks';
-import {dateTo_HH_MM} from '../lib/utils';
+import {dateTo_HH_MM_SS} from '../lib/utils';
 import React, {useEffect, useState} from 'react';
 
 export type UseIncrementingTime = {
@@ -13,7 +13,7 @@ export type UseIncrementingTime = {
 export function useIncrementingTime(): UseIncrementingTime {
   const isMounted = useIsMounted();
 
-  const [time, setTime] = useState<string>(dateTo_HH_MM(new Date()));
+  const [time, setTime] = useState<string>(dateTo_HH_MM_SS(new Date()));
   const [timeInterval, setTimeInterval] = useState<NodeJS.Timeout | null>(null);
 
   const handleClearCallTimeInterval = () => {
@@ -34,7 +34,7 @@ export function useIncrementingTime(): UseIncrementingTime {
       setTimeInterval(
         setInterval(() => {
           const now = new Date();
-          setTime(dateTo_HH_MM(now));
+          setTime(dateTo_HH_MM_SS(now));
         }, 1000)
       );
   };
