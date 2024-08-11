@@ -23,7 +23,7 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                               <img
                                 src=${logoBase64}
                                 alt="Dependability Tracker Logo"
-                                style="max-width: 350px !important; border-radius: 5px;" />
+                                style="width: 350px !important; border-radius: 5px;" />
                                 <h2 style="color: #e2e2e2 !important; margin-top: 35px; font-size: 24px; font-weight: 600;">Dependability Tracker</h2>
                             </td>
                         </tr>
