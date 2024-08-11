@@ -5,9 +5,9 @@ describe('Email Verification Template', () => {
   const testCallOutData: CallOutWithAssociations = {
     id: '123',
     callout_date: new Date('2021-08-01'),
-    callout_time: new Date('2021-08-01T08:00'),
+    callout_time: new Date('2021-08-01T08:00:00'),
     shift_date: new Date('2021-08-01'),
-    shift_time: new Date('2021-08-01T08:00'),
+    shift_time: new Date('2021-08-01T08:00:00'),
     employee: {
       name: 'Testy McTestface',
       id: '1234',
