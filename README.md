@@ -228,24 +228,6 @@ For more information refer to the man page documentation for the systemd command
 man systemd
 ```
 
-## Start Server
-
-```bash
-sudo systemctl start dependability
-```
-
-## Stop Server
-
-```bash
-sudo systemctl stop dependability
-```
-
-## Status Server
-
-```bash
-sudo systemctl status dependability
-```
-
 ## Disregard this one please
 ```bash
 This is just a test to update.
