@@ -73,7 +73,7 @@ export default function FormInputWithErrors(
       <input
         {...props}
         tabIndex={0}
-        className={(props?.className ?? styles.input) + ' ' + props.gap ?? ''}
+        className={(props?.className ||styles.input) + ' ' + props.gap || ''}
       />
     </div>
   );

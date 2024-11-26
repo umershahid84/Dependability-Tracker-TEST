@@ -85,6 +85,8 @@ export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>)
       const token = urlParams.get('token');
 
       if (inviteId && token) {
+
+        console.log({inviteId, token})
         setInviteId(inviteId);
         setToken(token);
       }

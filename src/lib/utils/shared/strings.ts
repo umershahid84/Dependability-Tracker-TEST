@@ -1,7 +1,7 @@
 // remove extra white spaces from a string, tabs, and new lines
 export const trim = (str: string): string => str?.replace(/\s+/g, ' ')?.trim();
 export function headingNormalizer(text = '') {
-  if (!text ?? text === undefined) {
+  if (!text || text === undefined) {
     return '';
   }
 
