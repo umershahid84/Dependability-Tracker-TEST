@@ -228,9 +228,9 @@ For more information refer to the man page documentation for the systemd command
 man systemd
 ```
 sudo systemctl status dependability
-```
+
 sudo systemctl start dependability
-```
+
 sudo systemctl stop dependability
 
 ## Disregard this one please
