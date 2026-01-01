@@ -14,6 +14,7 @@ Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,
      -[Any Other OS](#5b-if-using-any-other-operating-system)
   - [Seeding Database With Default Data](#6-seed-the-database-with-default-data)
   - [Send Default Admin Their Sign-Up Invite](#7-send-the-create-credential-email-invite-to-the-default-admin)
+- [Apache Reverse Proxy Setup for VPN Access](#apache-reverse-proxy-setup-for-vpn-access)
 - [Updating](#updating)
 - [Remove Service](#uninstall-service)
 
@@ -187,6 +188,20 @@ To send the email invite so the Admin can generate their login credentials, open
 ```bash
 npm run sendInvite -- <emailAddress>
 ```
+
+## Apache Reverse Proxy Setup for VPN Access
+
+If you need to deploy the Dependability Tracker behind Apache as a reverse proxy on port 443 (HTTPS) for access through a VPN, comprehensive documentation is available:
+
+- **[Apache VPN Setup Guide](./APACHE_VPN_SETUP_GUIDE.md)** - Complete documentation with detailed explanations
+- **[Quick Setup Guide](./examples/QUICK_SETUP.md)** - Step-by-step instructions for rapid deployment
+- **[Apache Configuration Example](./examples/apache-vpn-reverse-proxy.conf)** - Ready-to-use Apache virtual host template
+
+This setup allows you to:
+- Access the application via HTTPS on standard port 443
+- Restrict access to VPN networks only
+- Use Apache for SSL/TLS termination
+- Keep Node.js application running on localhost
 
 ## Updating
 
