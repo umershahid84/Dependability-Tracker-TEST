@@ -198,13 +198,21 @@ You need SSL certificates for HTTPS. Choose one:
 ### Option 1: Use Existing Self-Signed Certificates
 
 The app already generates self-signed certificates in `cert/` directory:
-- `cert/private_key.pem` → Use as `SSLCertificateKeyFile`
 - `cert/certificate.pem` → Use as `SSLCertificateFile`
+- `cert/private_key.pem` → Use as `SSLCertificateKeyFile`
+
+**In Apache config, use full paths:**
+```apache
+SSLCertificateFile /full/path/to/project/cert/certificate.pem
+SSLCertificateKeyFile /full/path/to/project/cert/private_key.pem
+```
 
 **Generate them** (if not present):
 ```bash
 npm run genTLS
 ```
+
+**Note:** Self-signed certificates will show security warnings in browsers. They're fine for internal/VPN use but not for public-facing sites.
 
 ### Option 2: Use Let's Encrypt (Free, Trusted)
 

@@ -57,17 +57,30 @@ LoadModule rewrite_module modules/mod_rewrite.so
 cd /path/to/dependability-tracker
 npm run genTLS
 # Certificates will be in: cert/certificate.pem and cert/private_key.pem
+# Use these paths in Apache config:
+#   SSLCertificateFile /path/to/project/cert/certificate.pem
+#   SSLCertificateKeyFile /path/to/project/cert/private_key.pem
 ```
 
 **Option B: Use Let's Encrypt (requires public domain)**
 ```bash
-sudo apt install certbot python3-certbot-apache  # Ubuntu/Debian
+# Ubuntu/Debian
+sudo apt install certbot python3-certbot-apache
+
+# RHEL/CentOS/Fedora
+sudo yum install certbot python3-certbot-apache
+# or
+sudo dnf install certbot python3-certbot-apache
+
+# Obtain certificate
 sudo certbot --apache -d yourdomain.com
+# Certificates will be in: /etc/letsencrypt/live/yourdomain.com/
 ```
 
 **Option C: Use Corporate Certificates**
 - Request certificates from your IT/security team
 - Place them in a secure location (e.g., `/etc/ssl/private/`)
+- Use appropriate file extensions (.crt, .pem, etc.)
 
 ### 4. Create Apache Virtual Host Configuration
 
