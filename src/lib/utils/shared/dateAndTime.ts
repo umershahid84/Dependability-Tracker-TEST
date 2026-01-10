@@ -16,7 +16,10 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
 export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
   if (!date) return '';
   const _date = new Date(date);
-  return _date.toISOString().split('T')[0];
+  const year = _date.getFullYear();
+  const month = String(_date.getMonth() + 1).padStart(2, '0');
+  const day = String(_date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 export const getDate = (date: Date): string => {
@@ -49,16 +52,14 @@ export const getTimeNoSeconds = (date: Date): string => {
   return dateString;
 };
 
-// Function to normalize date to the beginning of the day in UTC
+// Function to normalize date to the beginning of the day in local timezone
 export const normalizeToStartOfDayUTC = (date: Date) => {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
 };
 
-// Function to normalize date to the end of the day in UTC
+// Function to normalize date to the end of the day in local timezone
 export const normalizeToEndOfDayUTC = (date: Date) => {
-  return new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)
-  );
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 };
 
 export const addTimeToDate = (date: Date, time: string) => {
