@@ -1,5 +1,6 @@
 import { PrinterIcon } from '../Icons';
 import DownloadPDF from '../PDF/DownloadPdfButton';
+import DownloadCSV from '../CSV/DownloadCsvButton';
 import { NextRouter, useRouter } from 'next/router';
 import { CallOutWithAssociations } from '../../lib/db/models/Callout';
 import { getDate, getTime, getTimeNoSeconds, makeDate } from '../../lib/utils';
@@ -77,6 +78,7 @@ export function DetailedCallOutHistory({
         {showDownloadButton &&
           <span className={styles.buttonContainer}>
             <DownloadPDF callOuts={callOuts} />
+            <DownloadCSV callOuts={callOuts} />
             <PrintButton />
           </span>}
       </span>
