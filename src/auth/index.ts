@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import jwt, { Algorithm, SignOptions } from 'jsonwebtoken';
+import jwt, { Algorithm } from 'jsonwebtoken';
 import type { ApiData } from '../lib/apiController';
 import { getLoginCredentialFromDB } from '../lib/db/controller/LoginCredential';
 import { logTemplate } from '../lib/utils/server';
 
-const EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? '24h';
+const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
 const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
 const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) ?? ('HS256' as Algorithm);
 
@@ -110,8 +110,5 @@ export const enforceAdminOnly = async (
 };
 
 export const signJwtToken = (payload: JwtPayload): string => {
-  return jwt.sign({ ...payload }, SECRET, { 
-    algorithm: ALGORITHM, 
-    expiresIn: EXPIRES_IN as any
-  });
+  return jwt.sign({ ...payload }, SECRET, { algorithm: ALGORITHM, expiresIn: EXPIRES_IN });
 };

@@ -31,7 +31,7 @@ const DownloadPDF = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
             onClick={handleDownload}
             className={trim(styles.button)}
         >
-            <DownloadIcon className={styles.icon} /> PDF
+            <DownloadIcon className={styles.icon} /> {' '}
         </button>
 
     );
