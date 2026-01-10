@@ -31,11 +31,17 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
             ...callOuts.map(callOut => {
                 // Helper function to safely format string values
                 const formatStringValue = (value: string | null | undefined): string => {
-                    if (value === null || value === undefined || value === '') {
+                    if (value === null || value === undefined) {
                         return '"N/A"';
                     }
+                    // Trim whitespace
+                    const trimmedValue = value.trim();
+                    // Empty string is valid data
+                    if (trimmedValue === '') {
+                        return '""';
+                    }
                     // Convert to string and escape quotes, newlines, then wrap in quotes
-                    return `"${String(value).replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ')}"`;
+                    return `"${trimmedValue.replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ')}"`;
                 };
 
                 // Helper function to format numeric values
@@ -53,10 +59,10 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
                     formatStringValue(getDate(callOut.shift_date)),
                     formatStringValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
                     formatStringValue(callOut.leaveType?.reason),
-                    formatNumericValue(callOut.left_early_mins ?? 0),
-                    formatNumericValue(callOut.arrived_late_mins ?? 0),
+                    formatNumericValue(callOut.left_early_mins),
+                    formatNumericValue(callOut.arrived_late_mins),
                     formatStringValue(callOut.supervisor?.supervisor_info?.name),
-                    formatStringValue(callOut.supervisor_comments?.trim() ?? '')
+                    formatStringValue(callOut.supervisor_comments)
                 ];
                 return row.join(',');
             })
