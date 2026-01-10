@@ -14,32 +14,41 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
     const handleDownload = () => {
         // Create CSV content
         const headers = [
-            'Employee Name',
-            'Call Date',
-            'Call Time',
-            'Shift Date',
-            'Shift Time',
-            'Leave Type',
-            'Left Early (mins)',
-            'Arrived Late (mins)',
-            'Created By',
-            'Supervisor Comments'
+            '"Employee Name"',
+            '"Call Date"',
+            '"Call Time"',
+            '"Shift Date"',
+            '"Shift Time"',
+            '"Leave Type"',
+            '"Left Early (mins)"',
+            '"Arrived Late (mins)"',
+            '"Created By"',
+            '"Supervisor Comments"'
         ];
 
         const csvRows = [
             headers.join(','), // Header row
             ...callOuts.map(callOut => {
+                // Helper function to safely format values
+                const formatValue = (value: any): string => {
+                    if (value === null || value === undefined || value === '') {
+                        return '"N/A"';
+                    }
+                    // Convert to string and escape quotes, then wrap in quotes
+                    return `"${String(value).replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ')}"`;
+                };
+
                 const row = [
-                    `"${callOut.employee?.name || 'N/A'}"`,
-                    `"${getDate(callOut.callout_date)}"`,
-                    `"${getTime(callOut.callout_time)}"`,
-                    `"${getDate(callOut.shift_date)}"`,
-                    `"${getTimeNoSeconds(makeDate(callOut.shift_time))}"`,
-                    `"${callOut.leaveType?.reason || 'N/A'}"`,
-                    `"${callOut.left_early_mins || 0}"`,
-                    `"${callOut.arrived_late_mins || 0}"`,
-                    `"${callOut.supervisor?.supervisor_info?.name || 'N/A'}"`,
-                    `"${(callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : 'N/A').replace(/"/g, '""')}"`
+                    formatValue(callOut.employee?.name),
+                    formatValue(getDate(callOut.callout_date)),
+                    formatValue(getTime(callOut.callout_time)),
+                    formatValue(getDate(callOut.shift_date)),
+                    formatValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
+                    formatValue(callOut.leaveType?.reason),
+                    formatValue(callOut.left_early_mins || 0),
+                    formatValue(callOut.arrived_late_mins || 0),
+                    formatValue(callOut.supervisor?.supervisor_info?.name),
+                    formatValue(callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : '')
                 ];
                 return row.join(',');
             })
