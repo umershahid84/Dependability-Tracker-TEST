@@ -57,7 +57,7 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
                     formatStringValue(getDate(callOut.callout_date)),
                     formatStringValue(getTime(callOut.callout_time)),
                     formatStringValue(getDate(callOut.shift_date)),
-                    formatStringValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
+                    formatStringValue(callOut.shift_time ? getTimeNoSeconds(makeDate(callOut.shift_time)) : null),
                     formatStringValue(callOut.leaveType?.reason),
                     formatNumericValue(callOut.left_early_mins),
                     formatNumericValue(callOut.arrived_late_mins),
@@ -75,7 +75,9 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'detailed-callout-history.csv';
+        // Include timestamp in filename for easier file management
+        const timestamp = new Date().toISOString().split('T')[0];
+        link.download = `detailed-callout-history-${timestamp}.csv`;
         link.click();
         URL.revokeObjectURL(url);
     };
