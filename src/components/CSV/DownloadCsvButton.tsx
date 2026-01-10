@@ -29,26 +29,34 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
         const csvRows = [
             headers.join(','), // Header row
             ...callOuts.map(callOut => {
-                // Helper function to safely format values
-                const formatValue = (value: any): string => {
+                // Helper function to safely format string values
+                const formatStringValue = (value: string | null | undefined): string => {
                     if (value === null || value === undefined || value === '') {
                         return '"N/A"';
                     }
-                    // Convert to string and escape quotes, then wrap in quotes
+                    // Convert to string and escape quotes, newlines, then wrap in quotes
                     return `"${String(value).replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ')}"`;
                 };
 
+                // Helper function to format numeric values
+                const formatNumericValue = (value: number | null | undefined): string => {
+                    if (value === null || value === undefined) {
+                        return '0';
+                    }
+                    return String(value);
+                };
+
                 const row = [
-                    formatValue(callOut.employee?.name),
-                    formatValue(getDate(callOut.callout_date)),
-                    formatValue(getTime(callOut.callout_time)),
-                    formatValue(getDate(callOut.shift_date)),
-                    formatValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
-                    formatValue(callOut.leaveType?.reason),
-                    formatValue(callOut.left_early_mins || 0),
-                    formatValue(callOut.arrived_late_mins || 0),
-                    formatValue(callOut.supervisor?.supervisor_info?.name),
-                    formatValue(callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : '')
+                    formatStringValue(callOut.employee?.name),
+                    formatStringValue(getDate(callOut.callout_date)),
+                    formatStringValue(getTime(callOut.callout_time)),
+                    formatStringValue(getDate(callOut.shift_date)),
+                    formatStringValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
+                    formatStringValue(callOut.leaveType?.reason),
+                    formatNumericValue(callOut.left_early_mins || 0),
+                    formatNumericValue(callOut.arrived_late_mins || 0),
+                    formatStringValue(callOut.supervisor?.supervisor_info?.name),
+                    formatStringValue(callOut.supervisor_comments?.trim() || '')
                 ];
                 return row.join(',');
             })
