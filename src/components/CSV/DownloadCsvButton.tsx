@@ -53,10 +53,10 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
                     formatStringValue(getDate(callOut.shift_date)),
                     formatStringValue(getTimeNoSeconds(makeDate(callOut.shift_time))),
                     formatStringValue(callOut.leaveType?.reason),
-                    formatNumericValue(callOut.left_early_mins || 0),
-                    formatNumericValue(callOut.arrived_late_mins || 0),
+                    formatNumericValue(callOut.left_early_mins ?? 0),
+                    formatNumericValue(callOut.arrived_late_mins ?? 0),
                     formatStringValue(callOut.supervisor?.supervisor_info?.name),
-                    formatStringValue(callOut.supervisor_comments?.trim() || '')
+                    formatStringValue(callOut.supervisor_comments?.trim() ?? '')
                 ];
                 return row.join(',');
             })
