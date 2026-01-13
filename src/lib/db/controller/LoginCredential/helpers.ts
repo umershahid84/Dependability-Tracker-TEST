@@ -28,3 +28,10 @@ export const validateSupervisorCanCreateLoginCredential = async (
 
   return true;
 };
+
+export const isPasswordExpired = (passwordChangedAt: Date): boolean => {
+  const expiryDays = parseInt(process.env.PASSWORD_EXPIRY_DAYS ?? '90', 10);
+  const expiryDate = new Date(passwordChangedAt);
+  expiryDate.setDate(expiryDate.getDate() + expiryDays);
+  return new Date() > expiryDate;
+};

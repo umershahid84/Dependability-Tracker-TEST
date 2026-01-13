@@ -18,6 +18,7 @@ export type LoginCredentialsAttributes = {
   createdAt: Date;
   updatedAt: Date;
   password: string;
+  password_changed_at: Date;
   is_default?: boolean;
   supervisor_id: ForeignKey<string>;
 };
@@ -28,6 +29,7 @@ export type LoginCredentialsCreationAttributes = {
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
+  password_changed_at?: Date;
   is_default?: boolean;
   supervisor_id: string;
   invite_token?: string;
@@ -39,6 +41,7 @@ export type LoginCredentialsWithAssociations = {
   createdAt: Date;
   updatedAt: Date;
   password: string;
+  password_changed_at: Date;
   is_default?: boolean;
   supervisor_info: SupervisorWithAssociations;
   comparePassword: (password: string) => boolean;
@@ -62,6 +65,7 @@ class LoginCredential
   declare id: CreationOptional<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare password_changed_at: CreationOptional<Date>;
   declare supervisor_id: ForeignKey<string>;
   declare is_default?: CreationOptional<boolean>;
 
@@ -100,6 +104,11 @@ LoginCredential.init(
       type: DataTypes.STRING,
       allowNull: false
     },
+    password_changed_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     supervisor_id: {
@@ -120,10 +129,14 @@ LoginCredential.init(
     hooks: {
       async beforeCreate(loginCredential): Promise<void> {
         loginCredential.password = await hashPassword(loginCredential.password);
+        loginCredential.password_changed_at = new Date();
       },
       // istanbul ignore next
       async beforeUpdate(loginCredential): Promise<void> {
-        loginCredential.password = await hashPassword(loginCredential.password);
+        if (loginCredential.changed('password')) {
+          loginCredential.password = await hashPassword(loginCredential.password);
+          loginCredential.password_changed_at = new Date();
+        }
       }
     },
     sequelize,

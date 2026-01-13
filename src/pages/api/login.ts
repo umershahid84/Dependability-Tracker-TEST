@@ -3,6 +3,7 @@ import {Request, Response} from 'express';
 import {JwtPayload, signJwtToken} from '../../auth';
 import type {ApiData} from '../../lib/apiController';
 import {getLoginCredentialFromDB} from '../../lib/db/controller/LoginCredential';
+import {isPasswordExpired} from '../../lib/db/controller/LoginCredential/helpers';
 import {LoginCredentialsWithAssociations} from '../../lib/db/models/LoginCredential';
 
 // inviteToken, password, email
@@ -32,6 +33,11 @@ export default async function supervisorLoginApiHandler(req: Request, res: Respo
 
   if (!isPasswordCorrect) {
     return res.status(401).json({error: 'Unauthorized request'});
+  }
+
+  // Check if password is expired
+  if (isPasswordExpired(existingUser.password_changed_at)) {
+    return res.status(403).json({error: 'Password expired. Please reset your password.'});
   }
 
   try {

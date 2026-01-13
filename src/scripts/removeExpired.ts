@@ -1,13 +1,14 @@
 import 'dotenv/config';
 import { Op } from 'sequelize';
 import { logTemplate } from '../lib/utils/server';
-import { CreateCredentialsInvite, connection } from '../lib/db';
+import { CreateCredentialsInvite, LoginCredential, connection } from '../lib/db';
 
 
 const removeExpired = async () => {
-  let count = 0;
+  let inviteCount = 0;
+  let expiredPasswordCount = 0;
   const now = new Date();
-  console.log(logTemplate(`\n🔎 Looking for expired invites...`));
+  console.log(logTemplate(`\n🔎 Looking for expired invites and passwords...`));
 
   try {
     // get the db connection
@@ -15,13 +16,33 @@ const removeExpired = async () => {
     await connection.sync();
 
     // find all expired invites and delete them
-    count = await CreateCredentialsInvite.destroy({
+    inviteCount = await CreateCredentialsInvite.destroy({
       where: {
         expires_at: {
           [Op.lt]: now
         }
       }
     });
+
+    // Check for expired passwords
+    const expiryDays = parseInt(process.env.PASSWORD_EXPIRY_DAYS ?? '90', 10);
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() - expiryDays);
+
+    const expiredPasswords = await LoginCredential.findAll({
+      where: {
+        password_changed_at: {
+          [Op.lt]: expiryDate
+        }
+      }
+    });
+
+    expiredPasswordCount = expiredPasswords.length;
+
+    if (expiredPasswordCount > 0) {
+      console.log(logTemplate(`\n⚠️  Found ${expiredPasswordCount} accounts with expired passwords.`));
+      console.log(logTemplate(`   Users will be required to reset their passwords on next login.`));
+    }
   } catch (error) {
     // 1146 means the table doesn't exist, which is fine bc that means no tables
     // have been created yet
@@ -32,7 +53,10 @@ const removeExpired = async () => {
     }
   }
 
-  console.log(logTemplate(`\n⌛ Removed ${count} expired invites.`));
+  console.log(logTemplate(`\n⌛ Removed ${inviteCount} expired invites.`));
+  if (expiredPasswordCount > 0) {
+    console.log(logTemplate(`\n🔐 Detected ${expiredPasswordCount} expired passwords.`));
+  }
 };
 
 if (require.main === module) {
