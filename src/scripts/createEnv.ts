@@ -12,7 +12,6 @@ const envData = {
   JWT_EXPIRES_IN: '10h',
   JWT_ALGORITHM: 'HS256',
   DB_NAME: 'dependability_tracker',
-  PASSWORD_EXPIRY_DAYS: '90',
   //   CHANGE THESE VALUES WITH YOUR OWN
   // Leave the keys, ie DB_USER as is
   // Change any values within <>, be sure to remove the <> like the values above

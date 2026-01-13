@@ -216,46 +216,4 @@ describe('Login Credential Model Controller', () => {
       expect.assertions(1);
     });
   });
-
-  describe('password expiry', () => {
-    it('should set password_changed_at when creating a login credential', async () => {
-      const existingCredentials: LoginCredential[] = await LoginCredential.findAll();
-      const existingSupervisorsWithCredentials: string[] = existingCredentials.map(
-        credential => credential.supervisor_id
-      );
-
-      const admins: SupervisorWithAssociations[] = await getSupervisorFromDB.admins() as SupervisorWithAssociations[];
-      const existingInviteSupers = (await CreateCredentialsInvite.findAll()).map(
-        e => e.supervisor_id
-      );
-
-      const supervisorWithoutCredentials: Supervisor | null = await Supervisor.findOne({
-        where: {
-          id: {
-            [Op.notIn]: [...existingSupervisorsWithCredentials, ...existingInviteSupers]
-          },
-          is_admin: false
-        }
-      });
-
-      const invite = await createCreateCredentialsInviteInDB({
-        supervisor_id: supervisorWithoutCredentials?.id as string,
-        created_by: admins[0].id
-      });
-
-      const props: LoginCredentialsCreationAttributes = {
-        password: 'password',
-        email: 'passwordExpiryTest@test.com',
-        invite_token: invite?.invite_token as string,
-        supervisor_id: supervisorWithoutCredentials?.id as string
-      };
-
-      const createdCredentials: LoginCredentialsWithAssociations | null =
-        await loginCredentialModelController.createLoginCredentialInDB(props);
-
-      expect(createdCredentials).not.toBeNull();
-      expect(createdCredentials?.password_changed_at).toBeDefined();
-      expect(createdCredentials?.password_changed_at).toBeInstanceOf(Date);
-    });
-  });
 });

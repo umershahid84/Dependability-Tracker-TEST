@@ -231,26 +231,6 @@ sudo systemctl start dependability
 sudo systemctl stop dependability
 ```
 
-## Password Expiry
-
-The application now includes automatic password expiry to enhance security. Passwords expire after a configurable period (default: 90 days).
-
-### Configuration
-
-Set the `PASSWORD_EXPIRY_DAYS` environment variable in your `.env` file:
-
-```bash
-PASSWORD_EXPIRY_DAYS=90
-```
-
-### How it Works
-
-- When a password expires, users will be unable to log in and will see: "Password expired. Please reset your password."
-- The system automatically tracks when passwords were last changed
-- The monitoring script (running every 5 minutes) reports accounts with expired passwords
-
-For detailed information, see [PASSWORD_EXPIRY.md](./PASSWORD_EXPIRY.md).
-
 ## Disregard this one please
 ```bash
 This is just a test to update.

@@ -31,7 +31,6 @@ export const createLoginCredentialInDB = async (
           createdAt: loginCredential.createdAt,
           updatedAt: loginCredential.updatedAt,
           password: loginCredential.password,
-          password_changed_at: loginCredential.password_changed_at,
           supervisor_info: (await getSupervisorFromDB.byId(
             loginCredential.supervisor_id
           )) as SupervisorWithAssociations,
@@ -55,7 +54,6 @@ export const getLoginCredentialFromDB = {
             createdAt: loginCredential.createdAt,
             updatedAt: loginCredential.updatedAt,
             password: loginCredential.password,
-            password_changed_at: loginCredential.password_changed_at,
             supervisor_info: (await getSupervisorFromDB.byId(
               loginCredential.supervisor_id
             )) as SupervisorWithAssociations,
@@ -78,7 +76,6 @@ export const getLoginCredentialFromDB = {
             createdAt: loginCredential.createdAt,
             updatedAt: loginCredential.updatedAt,
             password: loginCredential.password,
-            password_changed_at: loginCredential.password_changed_at,
             supervisor_info: (await getSupervisorFromDB.byId(
               loginCredential.supervisor_id
             )) as SupervisorWithAssociations,
@@ -103,7 +100,6 @@ export const getLoginCredentialFromDB = {
             createdAt: loginCredential.createdAt,
             updatedAt: loginCredential.updatedAt,
             password: loginCredential.password,
-            password_changed_at: loginCredential.password_changed_at,
             supervisor_info: (await getSupervisorFromDB.byId(
               loginCredential.supervisor_id
             )) as SupervisorWithAssociations,
