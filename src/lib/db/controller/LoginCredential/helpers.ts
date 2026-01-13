@@ -1,5 +1,6 @@
 import {CreateCredentialsInviteWithAssociations} from '../../models/types';
 import {getCreateCredentialsInviteFromDB} from '../CreateCredentialsInvite';
+import {getPasswordExpiryDays} from '../../../utils/server/config/passwordExpiry';
 
 export const validateSupervisorCanCreateLoginCredential = async (
   supervisor_id: string,
@@ -30,7 +31,7 @@ export const validateSupervisorCanCreateLoginCredential = async (
 };
 
 export const isPasswordExpired = (passwordChangedAt: Date): boolean => {
-  const expiryDays = parseInt(process.env.PASSWORD_EXPIRY_DAYS ?? '90', 10);
+  const expiryDays = getPasswordExpiryDays();
   const expiryDate = new Date(passwordChangedAt);
   expiryDate.setDate(expiryDate.getDate() + expiryDays);
   return new Date() > expiryDate;

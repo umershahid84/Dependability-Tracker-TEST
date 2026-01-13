@@ -1,4 +1,5 @@
 import { isPasswordExpired } from './helpers';
+import { getPasswordExpiryDays } from '../../../utils/server/config/passwordExpiry';
 
 describe('LoginCredential Helpers', () => {
   describe('isPasswordExpired', () => {
@@ -23,7 +24,7 @@ describe('LoginCredential Helpers', () => {
     });
 
     it('should return true for passwords changed exactly PASSWORD_EXPIRY_DAYS + 1 ago', () => {
-      const expiryDays = parseInt(process.env.PASSWORD_EXPIRY_DAYS ?? '90', 10);
+      const expiryDays = getPasswordExpiryDays();
       const exactlyExpiredDate = new Date();
       exactlyExpiredDate.setDate(exactlyExpiredDate.getDate() - (expiryDays + 1));
       

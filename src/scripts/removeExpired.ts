@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Op } from 'sequelize';
 import { logTemplate } from '../lib/utils/server';
 import { CreateCredentialsInvite, LoginCredential, connection } from '../lib/db';
+import { isPasswordExpired } from '../lib/db/controller/LoginCredential/helpers';
 
 
 const removeExpired = async () => {
@@ -25,17 +26,10 @@ const removeExpired = async () => {
     });
 
     // Check for expired passwords
-    const expiryDays = parseInt(process.env.PASSWORD_EXPIRY_DAYS ?? '90', 10);
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() - expiryDays);
-
-    const expiredPasswords = await LoginCredential.findAll({
-      where: {
-        password_changed_at: {
-          [Op.lt]: expiryDate
-        }
-      }
-    });
+    const allCredentials = await LoginCredential.findAll();
+    const expiredPasswords = allCredentials.filter(credential => 
+      isPasswordExpired(credential.password_changed_at)
+    );
 
     expiredPasswordCount = expiredPasswords.length;
 
