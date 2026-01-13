@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { logTemplate } from '../lib/utils/server';
 import { CreateCredentialsInvite, LoginCredential, connection } from '../lib/db';
 import { isPasswordExpired } from '../lib/db/controller/LoginCredential/helpers';
+import { getPasswordExpiryDays } from '../lib/utils/server/config/passwordExpiry';
 
 
 const removeExpired = async () => {
@@ -26,12 +27,20 @@ const removeExpired = async () => {
     });
 
     // Check for expired passwords
-    const allCredentials = await LoginCredential.findAll();
-    const expiredPasswords = allCredentials.filter(credential => 
-      isPasswordExpired(credential.password_changed_at)
-    );
-
-    expiredPasswordCount = expiredPasswords.length;
+    // Note: For very large datasets, consider using a database-level date calculation
+    // For typical use cases, this in-memory filter is sufficient
+    const expiryDays = getPasswordExpiryDays();
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() - expiryDays);
+    
+    // More efficient: use database query for counting
+    expiredPasswordCount = await LoginCredential.count({
+      where: {
+        password_changed_at: {
+          [Op.lt]: expiryDate
+        }
+      }
+    });
 
     if (expiredPasswordCount > 0) {
       console.log(logTemplate(`\n⚠️  Found ${expiredPasswordCount} accounts with expired passwords.`));
