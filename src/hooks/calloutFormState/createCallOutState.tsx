@@ -25,11 +25,20 @@ export function useCreateCallOutFormState(
   const isMounted = useIsMounted();
   const incrementingCallTime: UseIncrementingTime = useIncrementingTime();
   const incrementingShiftTime: UseIncrementingTime = useIncrementingTime();
-  const defaultFormData: DefaultCallOutFormData = getDefaultCallOutFormData();
-  const [formData, setFormData] = useState<DefaultCallOutFormData>(defaultFormData);
+  // Initialize with a placeholder date to avoid hydration mismatch
+  const [formData, setFormData] = useState<DefaultCallOutFormData>(() => getDefaultCallOutFormData());
 
   const callTime: string = incrementingCallTime.time;
   const shiftTime: string = incrementingShiftTime.time;
+
+  // Update dates on client side after mount to ensure correct timezone
+  useEffect(() => {
+    if (isMounted) {
+      const clientFormData = getDefaultCallOutFormData();
+      setFormData(clientFormData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted]);
 
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -80,7 +89,7 @@ export function useCreateCallOutFormState(
   }, [isMounted]);
 
   const resetFormData = () => {
-    setFormData(defaultFormData);
+    setFormData(getDefaultCallOutFormData());
     incrementingCallTime.resetTime();
     incrementingShiftTime.resetTime();
   };
