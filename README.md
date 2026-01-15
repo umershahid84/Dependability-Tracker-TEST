@@ -188,6 +188,27 @@ To send the email invite so the Admin can generate their login credentials, open
 npm run sendInvite -- <emailAddress>
 ```
 
+### 8. Get the Invite Token Manually (Without Sending Email)
+
+If you need to retrieve the invite token for a user without sending an email (for example, to manually create a password), you can use the following command. Replace `<Full Name>` with the exact name of the user as it appears in the database.
+
+```bash
+npm run getInviteToken -- "<Full Name>"
+```
+
+Example:
+
+```bash
+npm run getInviteToken -- "Umer Shahid"
+```
+
+This will display:
+- The invite token
+- The invite ID
+- The email address (if set)
+- The expiration date
+- A warning if the token has expired
+
 ## Updating
 
 To check for updates and rebuild upon any changes:

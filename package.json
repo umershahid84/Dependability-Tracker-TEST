@@ -16,6 +16,7 @@
     "install-service": "node ./scripts/install-as-service.mjs",
     "genTLS": "npm run ts -- ./src/scripts/generateTLSCerts.ts",
     "sendInvite": "npm run ts -- ./src/scripts/loginCredInvite.ts",
+    "getInviteToken": "npm run ts -- ./src/scripts/getInviteToken.ts",
     "seed-callout": "ts-node ./src/lib/db/seeds/callouts.ts",
     "seed-callouts-365": "ts-node ./src/lib/db/seeds/callouts.ts 365",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
