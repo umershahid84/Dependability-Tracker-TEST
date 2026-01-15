@@ -14,6 +14,7 @@ Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,
      -[Any Other OS](#5b-if-using-any-other-operating-system)
   - [Seeding Database With Default Data](#6-seed-the-database-with-default-data)
   - [Send Default Admin Their Sign-Up Invite](#7-send-the-create-credential-email-invite-to-the-default-admin)
+  - [Get Invite Token Manually](#8-get-the-invite-token-manually-without-sending-email)
 - [Updating](#updating)
 - [Remove Service](#uninstall-service)
 
