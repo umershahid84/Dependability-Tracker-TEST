@@ -1,5 +1,5 @@
-import { Employee, Supervisor } from '../../lib/db';
-import { getCreateCredentialsInviteFromDB } from '../../lib/db/controller';
+import { Employee, Supervisor } from '../lib/db';
+import { getCreateCredentialsInviteFromDB } from '../lib/db/controller';
 
 // Mock console methods
 const mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();

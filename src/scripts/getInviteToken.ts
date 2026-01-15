@@ -21,6 +21,7 @@ if (require.main === module) {
             if (!employee) {
                 console.error(`❌ Employee not found: ${name}`);
                 console.log('\nPlease check the spelling and ensure the employee exists in the database.');
+                console.log('Note: The name must match exactly as stored in the database (case-sensitive).');
                 process.exit(1);
             }
             
@@ -56,7 +57,7 @@ if (require.main === module) {
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
             
             // Check if token is expired
-            if (expiresAt && new Date() > new Date(expiresAt)) {
+            if (expiresAt && new Date() > expiresAt) {
                 console.log('⚠️  WARNING: This invite token has EXPIRED!');
                 console.log('You may need to create a new invite.\n');
             }
