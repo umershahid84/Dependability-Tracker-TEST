@@ -59,8 +59,21 @@ export function useCreateCallOutFormState(
     }
 
     try {
+      // Convert date strings back to Date objects to preserve user's timezone
+      // When user changes date input, it becomes a string like "2026-01-14"
+      // We need to convert it to a Date object in their local timezone
+      const submissionData = {
+        ...formData,
+        callDate: typeof formData.callDate === 'string' 
+          ? new Date(formData.callDate.replace(/-/g, '/')) // Use / instead of - for local timezone parsing
+          : formData.callDate,
+        shiftDate: typeof formData.shiftDate === 'string'
+          ? new Date(formData.shiftDate.replace(/-/g, '/'))
+          : formData.shiftDate
+      };
+
       const data = await ClientAPI.Employees.CallOuts.Create({
-        formData,
+        formData: submissionData,
         callTime,
         shiftTime
       });
