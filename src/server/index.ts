@@ -2,13 +2,13 @@ import 'dotenv/config';
 import next from 'next';
 import http from 'http';
 import cors from 'cors';
-import { ip } from './ip';
+import {ip} from './ip';
 import * as fs from 'fs';
-import { parse } from 'url';
+import {parse} from 'url';
 import * as path from 'path';
 import sequelize from '../lib/db/connection';
-import express, { Express, Request, Response } from 'express';
-import { logTemplate } from '../lib/utils/server';
+import express, {Express, Request, Response} from 'express';
+import {logTemplate} from '../lib/utils/server';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -16,10 +16,10 @@ export const TLS_PORT = PORT + 5;
 
 export const checkForTLS = (): {
   hasSupportForTLS: boolean;
-  tlsOptions: { key: string | Buffer; cert: string | Buffer };
+  tlsOptions: {key: string | Buffer; cert: string | Buffer};
 } => {
   let hasSupportForTLS = false;
-  const tlsOptions: { key: string | Buffer; cert: string | Buffer } = {
+  const tlsOptions: {key: string | Buffer; cert: string | Buffer} = {
     key: '',
     cert: ''
   };
@@ -33,20 +33,20 @@ export const checkForTLS = (): {
     hasSupportForTLS = true;
   }
 
-  return { hasSupportForTLS, tlsOptions };
+  return {hasSupportForTLS, tlsOptions};
 };
 
 const nextExpress = async (expressApp: Express) => {
   const dev = !IS_PRODUCTION;
-  const nextApp = next({ dev, hostname: 'localhost', port: PORT });
+  const nextApp = next({dev, hostname: 'localhost', port: PORT});
   await nextApp.prepare();
 
   const handle = nextApp.getRequestHandler();
 
   // @ts-ignore
-  expressApp.get('*', async (req: Request, res: Response) => {
+  expressApp.get(/.*/, async (req: Request, res: Response) => {
     const parsedUrl = parse(req.url, true);
-    const { pathname, query } = parsedUrl;
+    const {pathname, query} = parsedUrl;
     if (pathname === '/a') {
       await nextApp.render(req, res, '/a', query);
     } else if (pathname === '/b') {
@@ -57,7 +57,7 @@ const nextExpress = async (expressApp: Express) => {
   });
 
   // allow next to handle all requests
-  expressApp.all('*', async (req: Request, res: Response) => {
+  expressApp.all(/.*/, async (req: Request, res: Response) => {
     return await handle(req, res);
   });
 };
@@ -72,7 +72,7 @@ export const startServer = async () => {
     httpServer.close();
     await sequelize.close();
     process.exit(0);
-  }
+  };
 
   // listen for interrupts to gracefully shutdown the server
   process.on('SIGINT', gracefulShutdown);
@@ -84,11 +84,11 @@ export const startServer = async () => {
   app.disable('x-powered-by');
   app.disable('etag');
   app.use(cors());
-  app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
-  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
+  app.use(express.json({limit: '50mb'}));
 
   // await successful connection to the database
-  await sequelize.sync({ force: false, logging: false });
+  await sequelize.sync({force: false, logging: false});
   // start the next functionality and bootstrap it to the express server
   await nextExpress(app);
 
@@ -97,7 +97,7 @@ export const startServer = async () => {
   console.log(logTemplate(`\n🚀 LocalHost Server ready at http://localhost:${PORT}\n`)); //NOSONAR
 
   // check for TLS support
-  const { hasSupportForTLS, tlsOptions } = checkForTLS();
+  const {hasSupportForTLS, tlsOptions} = checkForTLS();
 
   if (hasSupportForTLS) {
     const hostIP = ip;
@@ -108,14 +108,12 @@ export const startServer = async () => {
   }
 };
 
-
-
 if (require.main === module) {
   (async () => {
     await startServer().catch(e => {
       const errMessage = '❌ Error starting server for Dependability Tracker:' + ' ' + e;
       console.error(logTemplate(errMessage, 'error')); //NOSONAR
       process.exit(1);
-    })
+    });
   })();
 }

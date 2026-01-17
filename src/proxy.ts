@@ -4,7 +4,7 @@ import {supervisorOnly, supervisorPaths} from './middleware/supervisor';
 import {getJwtTokenInEdgeEnvironments} from './client-api/supervisors/auth';
 
 // works on client-side only, does not work for the api routes
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const authToken = await getJwtTokenInEdgeEnvironments(request);
 
   // handle redirects for base paths
