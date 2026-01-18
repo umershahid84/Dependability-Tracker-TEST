@@ -16,6 +16,7 @@ export type DefaultCallOutFormData = {
 
 export const getDefaultCallOutFormData = (): DefaultCallOutFormData => {
   const now = new Date();
+  now.setHours(0, 0, 0, 0);
   return {
     comment: '',
     leaveType: '',

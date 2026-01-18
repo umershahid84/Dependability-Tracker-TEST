@@ -1,13 +1,10 @@
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
+const config = {
   content: [
     './src/pages/**/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
-
     extend: {
       backgroundColor: {
         // slate-900
@@ -22,9 +19,8 @@ const config: Config = {
         quinary: 'rgb(100 116 139)',
         accent: {
           // SeaTac Green
-          primary: 'var(--green)',
-        },
-
+          primary: 'var(--green)'
+        }
       },
       textColor: {
         // gray-200
@@ -36,7 +32,7 @@ const config: Config = {
         // gray-500
         muted: 'rgb(107 114 128)',
         // SeaTac Green
-        accent: 'var(--green)',
+        accent: 'var(--green)'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -12,6 +12,50 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
 
   return `${_hours}:${_minutes}:${_seconds}`;
 };
+export const APP_TZ =
+  typeof Intl !== 'undefined'
+    ? Intl.DateTimeFormat().resolvedOptions().timeZone ||
+      process.env.NEXT_PUBLIC_TIMEZONE ||
+      process.env.TIMEZONE ||
+      'America/Los_Angeles'
+    : process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || 'America/Los_Angeles';
+
+export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(d);
+};
+
+export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).format(d);
+};
+
+export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  }).format(d);
+};
 
 export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
   if (!date) return '';

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { DivisionLayout } from '../Division';
-import { DivisionReportForm } from '../Forms';
-import { DetailedCallOutHistory } from './DetailedCallOutReport';
-import { CallOutWithAssociations } from '../../lib/db/models/types';
+'use client';
+import React, {useState} from 'react';
+import {DivisionLayout} from '../Division';
+import {DivisionReportForm} from '../Forms';
+import {DetailedCallOutHistory} from './DetailedCallOutReport';
+import {CallOutWithAssociations} from '../../lib/db/models/types';
 
 export function DivisionReport(
   props: Readonly<{

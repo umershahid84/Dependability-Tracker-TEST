@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
-import { Html, Head, Main, NextScript } from 'next/document';
+import type {Metadata} from 'next';
+import {Html, Head, Main, NextScript} from 'next/document';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -10,7 +10,7 @@ export default function Document() {
   return (
     <Html lang="en" className="bg-primary text-primary print:text-black">
       <Head />
-      <body>
+      <body className="bg-primary text-primary print:text-black">
         <Main />
         <NextScript />
       </body>

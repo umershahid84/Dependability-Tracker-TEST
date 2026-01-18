@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { validateEmployeeCallOut } from './helpers';
-import { makeToast, ToastTypes } from '../../components';
-import { CallOutWithAssociations } from '../../lib/db/models/Callout';
-import { UseIncrementingTime, useIncrementingTime, useIsMounted } from '../../hooks';
-import { ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData } from '../../client-api';
+import React, {useEffect, useState} from 'react';
+import {validateEmployeeCallOut} from './helpers';
+import {makeToast, ToastTypes} from '../../components';
+import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
+import {ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData} from '../../client-api';
 
 export type UseCreateCallOutFormState = {
   callTime: string;
@@ -18,6 +18,16 @@ export type UseCreateCallOutFormState = {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
 };
+export function localDateAndTimeToUTC(date: Date, time: string): string {
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const d = date.getDate();
+
+  const [hh, mm, ss = 0] = time.split(':').map(Number);
+
+  const localDate = new Date(y, m, d, hh, mm, ss);
+  return localDate.toISOString();
+}
 
 export function useCreateCallOutFormState(
   callback?: (data: CallOutWithAssociations) => void
@@ -36,8 +46,8 @@ export function useCreateCallOutFormState(
   ) => {
     incrementingCallTime.clearTimeInterval();
     incrementingShiftTime.clearTimeInterval();
-    const { name, value } = e.target;
-    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+    const {name, value} = e.target;
+    setFormData(prevFormData => ({...prevFormData, [name]: value}));
   };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {
@@ -52,8 +62,8 @@ export function useCreateCallOutFormState(
     try {
       const data = await ClientAPI.Employees.CallOuts.Create({
         formData,
-        callTime,
-        shiftTime
+        callTime: localDateAndTimeToUTC(formData.callDate, callTime),
+        shiftTime: localDateAndTimeToUTC(formData.shiftDate, shiftTime)
       });
 
       makeToast({

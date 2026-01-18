@@ -1,13 +1,17 @@
-import { PrinterIcon } from '../Icons';
+'use client';
+import {PrinterIcon} from '../Icons';
+import {useEffect, useState} from 'react';
 import DownloadPDF from '../PDF/DownloadPdfButton';
-import { NextRouter, useRouter } from 'next/router';
-import { CallOutWithAssociations } from '../../lib/db/models/Callout';
-import { getDate, getTime, getTimeNoSeconds, makeDate } from '../../lib/utils';
-import { getDivisionNameFromPath, headingNormalizer } from '../../lib/utils/shared/strings';
-
+import {NextRouter, useRouter} from 'next/router';
+import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {
+  formatDate_YYYY_MM_DD_TZ,
+  formatTimeNoSeconds_TZ,
+  formatTime_hh_mm_ss_TZ
+} from '../../lib/utils';
+import {getDivisionNameFromPath, headingNormalizer} from '../../lib/utils/shared/strings';
 
 const styles = {
-
   icon: `w-4 h-4`,
   headerTr: 'bg-tertiary',
   subTd: 'text-tertiary text-xs text-nowrap',
@@ -17,9 +21,12 @@ const styles = {
   td: 'px-4 py-2 border border-gray-600 print:border-black',
   table:
     'w-full h-auto table-auto text-left border-collapse mb-6 text-xs lg:text-sm xl:text-base bg-secondary',
-  buttonContainer: 'lg:absolute lg:top-[8px] lg:left-0 flex flex-row justify-start items-center gap-4 hide-on-print',
-  headingSpan: 'w-full flex flex-col lg:flex-wrap lg:flex-row items-center justify-center relative mb-6 lg:mb-0',
-  printButton: 'rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm flex flex-row justify-start items',
+  buttonContainer:
+    'lg:absolute lg:top-[8px] lg:left-0 flex flex-row justify-start items-center gap-4 hide-on-print',
+  headingSpan:
+    'w-full flex flex-col lg:flex-wrap lg:flex-row items-center justify-center relative mb-6 lg:mb-0',
+  printButton:
+    'rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm flex flex-row justify-start items'
 };
 
 const headings = [
@@ -31,34 +38,40 @@ const headings = [
   'Supervisor Comments'
 ];
 
-
-
 function PrintButton() {
   return (
     <button
-      type='button'
-      title='Print'
+      type="button"
+      title="Print"
       onClick={() => {
         // fire a print event
         window.dispatchEvent(new Event('beforeprint'));
         window.print();
-
       }}
-      className={styles.printButton} >
-      <PrinterIcon className={styles.icon} /> {' '}
+      className={styles.printButton}>
+      <PrinterIcon className={styles.icon} />{' '}
     </button>
   );
 }
 export function DetailedCallOutHistory({
   callOuts,
   showDownloadButton = false
-}: Readonly<{ callOuts: CallOutWithAssociations[], showDownloadButton?: boolean }>) {
+}: Readonly<{callOuts: CallOutWithAssociations[]; showDownloadButton?: boolean}>) {
   const router: NextRouter = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const renderCell = (value: string | number, subValue?: string | number, center = true) => (
     <td className={!center ? styles.td : `${styles.td} text-center`}>
       {value}
-      {subValue && <div className={styles.subTd}>{subValue}</div>}
+      {subValue && (
+        <div className={styles.subTd} suppressHydrationWarning>
+          {subValue}
+        </div>
+      )}
     </td>
   );
 
@@ -74,40 +87,42 @@ export function DetailedCallOutHistory({
         <h2 className={styles.h2}>
           Detailed Callout History For {headingNormalizer(getDivisionNameFromPath(router.pathname))}
         </h2>
-        {showDownloadButton &&
+        {showDownloadButton && (
           <span className={styles.buttonContainer}>
             <DownloadPDF callOuts={callOuts} />
             <PrintButton />
-          </span>}
+          </span>
+        )}
       </span>
 
       <table className={styles.table}>
         <thead className={styles.th}>
-          <tr className={styles.headerTr}>{headings.map(heading => renderHead(heading, true))}</tr>
+          <tr className={styles.headerTr}>{headings.map(h => renderHead(h, true))}</tr>
         </thead>
         <tbody>
           {callOuts?.map(callOut => (
-            <tr key={callOut.id} className='no-page-break'>
+            <tr key={callOut.id} className="no-page-break">
               {renderCell(callOut.employee?.name)}
               {renderCell(
-                getDate(callOut.callout_date),
-                `Call Time: ${getTime(callOut.callout_time)}`
+                formatDate_YYYY_MM_DD_TZ(callOut.callout_date),
+                `Call Time: ${formatTime_hh_mm_ss_TZ(callOut.callout_time)}`
               )}
 
               {renderCell(
-                getDate(callOut.shift_date),
-                `Shift Time: ${getTimeNoSeconds(makeDate(callOut.shift_time))}`
+                formatDate_YYYY_MM_DD_TZ(callOut.shift_date),
+                `Shift Time: ${formatTimeNoSeconds_TZ(callOut.shift_time)}`
               )}
-
               {renderCell(
                 callOut.leaveType?.reason,
-                `${(callOut?.left_early_mins ?? 0) > 0
-                  ? `Left Early: ${callOut.left_early_mins} mins`
-                  : ''
-                  } ${(callOut?.arrived_late_mins ?? 0) > 0
+                `${
+                  (callOut?.left_early_mins ?? 0) > 0
+                    ? `Left Early: ${callOut.left_early_mins} mins`
+                    : ''
+                } ${
+                  (callOut?.arrived_late_mins ?? 0) > 0
                     ? `Arrived Late: ${callOut.arrived_late_mins} mins`
                     : ''
-                  }`.trim()
+                }`.trim()
               )}
               {renderCell(callOut.supervisor?.supervisor_info?.name)}
               {renderCell(

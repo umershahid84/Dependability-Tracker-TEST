@@ -4,6 +4,7 @@ services:
     container_name: dependability-app
     ports:
       - '5000:5000'
+      - '5005:5005'
     env_file:
       - .env
     environment:
@@ -12,6 +13,7 @@ services:
       DB_PORT: 3306
       DB_USER: app_user
       DB_PASS: rootpassword
+      SEND_EMAILS: 'false'
       DB_NAME: dependability_tracker
     depends_on:
       db:
@@ -19,7 +21,12 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-
+    command: [
+        'sh',
+        '-c',
+        'npm run seed && npm run seed-callouts-365 && npm run sendInvite "test@test.com" && npm run dev'
+        # 'npm run dev'
+      ]
   db:
     image: mariadb:11
     container_name: dependability-db
