@@ -33,7 +33,7 @@ const CallOutAdvancedSearchContext: Context<CallOutAdvancedSearchContext> =
 
 const {Provider}: Context<CallOutAdvancedSearchContext> = CallOutAdvancedSearchContext;
 
-export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.JSX.Element => {
+export const CallOutAdvancedSearchProvider = (props: PropsWithChildren): React.ReactElement => {
   const {divisions}: UseDivisions = useDivisions();
   const {leaveTypes}: UseLeaveTypes = useLeaveTypes();
   const {employees}: UseGetEmployees = useGetEmployees();

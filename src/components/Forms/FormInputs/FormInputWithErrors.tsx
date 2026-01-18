@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 export type FormInputWithErrorsProps = {
   id: string;
@@ -30,7 +30,7 @@ const defaultStyles = {
 
 export default function FormInputWithErrors(
   props: Readonly<FormInputWithErrorsProps>
-): React.JSX.Element {
+): React.ReactElement {
   const [hasError, setHasError] = useState<boolean>(false);
   const [styles, setStyles] = useState<typeof defaultStyles>(defaultStyles);
 
@@ -52,7 +52,7 @@ export default function FormInputWithErrors(
           'w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none focus:ring-red-500'
       });
 
-    !hasError && setStyles({ ...styles, input: defaultStyles.input });
+    !hasError && setStyles({...styles, input: defaultStyles.input});
     // eslint-disable-next-line
   }, [hasError]);
   return (
@@ -73,7 +73,7 @@ export default function FormInputWithErrors(
       <input
         {...props}
         tabIndex={0}
-        className={(props?.className ||styles.input) + ' ' + props.gap || ''}
+        className={(props?.className || styles.input) + ' ' + props.gap || ''}
       />
     </div>
   );

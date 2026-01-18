@@ -13,7 +13,7 @@ export const defaultResetPasswordFormState: ResetPasswordFormState = {
   email: ''
 };
 
-export function ResetPasswordForm(): React.JSX.Element {
+export function ResetPasswordForm(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [hasError, setHasError] = useState<boolean>(false);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);

@@ -12,7 +12,7 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
 
   return `${_hours}:${_minutes}:${_seconds}`;
 };
-export const APP_TZ =
+export const APP_TZ = (): string =>
   typeof Intl !== 'undefined'
     ? Intl.DateTimeFormat().resolvedOptions().timeZone ||
       process.env.NEXT_PUBLIC_TIMEZONE ||
@@ -20,7 +20,7 @@ export const APP_TZ =
       'America/Los_Angeles'
     : process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || 'America/Los_Angeles';
 
-export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ): string => {
+export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ()): string => {
   if (!date) return '';
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return '';
@@ -32,7 +32,7 @@ export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ): str
   }).format(d);
 };
 
-export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ): string => {
+export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ()): string => {
   if (!date) return '';
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return '';
@@ -45,7 +45,7 @@ export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ): strin
   }).format(d);
 };
 
-export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ): string => {
+export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): string => {
   if (!date) return '';
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return '';

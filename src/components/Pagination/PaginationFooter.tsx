@@ -17,7 +17,7 @@ export function PaginationFooter({
   numberOfPages,
   handlePageIncrement,
   handlePageDecrement
-}: Readonly<PaginationFooterProps>): React.JSX.Element {
+}: Readonly<PaginationFooterProps>): React.ReactElement {
   return (
     <div className={styles.buttonContainer}>
       <button

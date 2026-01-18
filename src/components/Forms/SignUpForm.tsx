@@ -1,15 +1,15 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useRouter, NextRouter } from 'next/router';
-import { FormInputWithErrors, Form, FormAction } from '../../components';
-import { useInputValidation, IUseValidators, useIsMounted } from '../../hooks';
-import { ClientAPI, defaultSignUpFormState, SignUpFormState } from '../../client-api';
+import {useEffect, useState} from 'react';
+import {useRouter, NextRouter} from 'next/router';
+import {FormInputWithErrors, Form, FormAction} from '../../components';
+import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
+import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
 export type SignUpFormProps = {
   assignedEmail?: string;
 };
-export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>): React.JSX.Element {
+export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): React.ReactElement {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
   const [token, setToken] = useState<string | null>(null);
@@ -40,10 +40,10 @@ export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>)
     // @ts-ignore
     const name = e?.target?.getAttribute('id') ?? '';
     // @ts-ignore
-    const { value } = e.target;
+    const {value} = e.target;
 
     // update the form state
-    setFormState({ ...formState, [name]: value });
+    setFormState({...formState, [name]: value});
   };
 
   const handleSignUp = async (e: React.SyntheticEvent): Promise<void> => {
@@ -85,8 +85,7 @@ export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>)
       const token = urlParams.get('token');
 
       if (inviteId && token) {
-
-        console.log({inviteId, token})
+        console.log({inviteId, token});
         setInviteId(inviteId);
         setToken(token);
       }
@@ -94,7 +93,7 @@ export default function SignUpForm({ assignedEmail }: Readonly<SignUpFormProps>)
     return () => {
       setToken(null);
       setInviteId(null);
-      setFormState({ ...defaultSignUpFormState, email: assignedEmail ?? '' });
+      setFormState({...defaultSignUpFormState, email: assignedEmail ?? ''});
     };
     // eslint-disable-next-line
   }, [isMounted]);

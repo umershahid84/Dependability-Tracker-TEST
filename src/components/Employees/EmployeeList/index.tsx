@@ -4,21 +4,21 @@ import {
   employeeSortOptions,
   employeeLimitOptions
 } from './data';
-import { useEffect } from 'react';
+import {useEffect, ReactElement} from 'react';
 import {
   ModelWithPagination,
   PaginationQueryParams,
   EmployeeWithAssociations
 } from '../../../lib/db/controller';
-import { ClientAPI } from '../../../client-api';
-import { DynamicSortOptions } from '../../Forms';
-import { ModalAction, ModalType } from '../../Modal';
-import { EmployeeListItem } from '../EmployeeListItem';
-import { ModelList, ModelListHeader } from '../../ModelList';
-import { PaginationContainer } from '../../Pagination/Container';
-import { UseGetEmployees, useGetEmployees, UseQueryParams, useQueryParams } from '../../../hooks';
+import {ClientAPI} from '../../../client-api';
+import {DynamicSortOptions} from '../../Forms';
+import {ModalAction, ModalType} from '../../Modal';
+import {EmployeeListItem} from '../EmployeeListItem';
+import {ModelList, ModelListHeader} from '../../ModelList';
+import {PaginationContainer} from '../../Pagination/Container';
+import {UseGetEmployees, useGetEmployees, UseQueryParams, useQueryParams} from '../../../hooks';
 
-import { SupervisorWithAssociations } from '../../../lib/db/models/Supervisor';
+import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
 
 function RenderList({
   data,
@@ -28,7 +28,7 @@ function RenderList({
   data: EmployeeWithAssociations[];
   onModalDeleteCallBack?: (employeeId: string) => void;
   onModalEditCallBack?: (employee: EmployeeWithAssociations) => void;
-}): JSX.Element[] {
+}): ReactElement[] {
   return data?.map((employee: EmployeeWithAssociations) => (
     <EmployeeListItem
       key={employee.id}
@@ -46,13 +46,13 @@ export const defaultEmployeesQueryParams: PaginationQueryParams<EmployeeSortBy> 
 };
 
 export function EmployeeList() {
-  const { queryParams, setQueryParams, handleQueryParamChange }: UseQueryParams<EmployeeSortBy> =
+  const {queryParams, setQueryParams, handleQueryParamChange}: UseQueryParams<EmployeeSortBy> =
     useQueryParams<EmployeeSortBy>(defaultEmployeesQueryParams);
-  const { employees, setEmployees, refetch }: UseGetEmployees = useGetEmployees(queryParams);
+  const {employees, setEmployees, refetch}: UseGetEmployees = useGetEmployees(queryParams);
 
   const onModalEditCallBack = (employee: EmployeeWithAssociations, isNew = false) => {
     (async () => {
-      const { data } =
+      const {data} =
         (await ClientAPI.Supervisors.Read()) as ModelWithPagination<SupervisorWithAssociations>;
 
       let roles: string[] = [];
@@ -77,7 +77,7 @@ export function EmployeeList() {
         const updatedEmployees: EmployeeWithAssociations[] =
           employees?.data.map(currentEmployee => {
             if (currentEmployee.id === employee.id) {
-              return { ...employee, role: roles.join(', ') };
+              return {...employee, role: roles.join(', ')};
             }
             return currentEmployee;
           }) ?? [];
@@ -89,7 +89,7 @@ export function EmployeeList() {
       } else {
         setEmployees({
           ...(employees as ModelWithPagination<EmployeeWithAssociations>),
-          data: [{ ...employee, role: roles.join(', ') }, ...(employees?.data ?? [])]
+          data: [{...employee, role: roles.join(', ')}, ...(employees?.data ?? [])]
         });
       }
     })();
@@ -114,7 +114,7 @@ export function EmployeeList() {
         detail: {
           action: ModalAction.OPEN,
           type: ModalType.ADD_EMPLOYEE,
-          payload: { onModalEditCallBack }
+          payload: {onModalEditCallBack}
         }
       })
     );

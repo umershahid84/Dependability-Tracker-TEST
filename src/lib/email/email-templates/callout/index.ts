@@ -1,5 +1,6 @@
 import {logoBase64} from '../../logoBase64';
 import {CallOutWithAssociations} from '../../../db/models/Callout';
+import {formatDate_YYYY_MM_DD_TZ, formatTime_hh_mm_ss_TZ} from '../../../utils';
 
 export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations): string => {
   return `
@@ -11,7 +12,7 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
         <meta name="color-scheme" content="light">
         <title>Call Out Details - ${
           callOutDetails.employee.name
-        } - ${callOutDetails.createdAt.toLocaleTimeString()}</title>
+        } - ${formatTime_hh_mm_ss_TZ(callOutDetails.createdAt)}</title>
     </head>
     <body style="font-family: Arial, sans-serif; background-color: rgb(2, 6, 23) !important; color: #e2e2e2 !important; margin: 0; padding: 0;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: rgb(2, 6, 23) !important; width: 100%; height: 100%; margin: 0; padding: 20px 0;">
@@ -50,18 +51,15 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                                               callOutDetails.employee.name
                                             }</td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
-                                                ${callOutDetails.callout_date.toLocaleDateString()}
+                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date)}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
-                                                    Call Time: ${callOutDetails.callout_time.toLocaleTimeString()}
+                                                    Call Time: ${formatTime_hh_mm_ss_TZ(callOutDetails.callout_time)}
                                                 </div>
                                             </td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
-                                                ${callOutDetails.shift_date.toLocaleDateString()}
+                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.shift_date)}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
-                                                    Shift Time: ${callOutDetails.shift_time.toLocaleTimeString(
-                                                      [],
-                                                      {hour: '2-digit', minute: '2-digit'}
-                                                    )}
+                                                    Shift Time: ${formatTime_hh_mm_ss_TZ(callOutDetails.shift_time)}
                                                 </div>
                                             </td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">

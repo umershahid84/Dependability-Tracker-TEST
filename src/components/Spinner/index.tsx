@@ -1,4 +1,4 @@
-import { trim } from '../../lib/utils/shared/strings';
+import {trim} from '../../lib/utils/shared/strings';
 
 export type SpinnerProps = {
   label?: string;
@@ -46,7 +46,7 @@ const svgPathData = {
           32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z`
 };
 
-export default function Spinner(props: Readonly<SpinnerProps>): React.JSX.Element {
+export default function Spinner(props: Readonly<SpinnerProps>): React.ReactElement {
   const width = props.width ?? 'w-8';
   const height = props.height ?? 'h-8';
   const textColor = props.textColor ?? SpinnerStyles.greenText;

@@ -2,6 +2,7 @@ import {Email} from '../types';
 import {sendEmail} from '../sendEmail';
 import {CallOutWithAssociations} from '../../db/models/Callout';
 import {callOutDetailsTemplate} from '../email-templates/callout';
+import {formatDate_YYYY_MM_DD_TZ, formatTime_hh_mm_ss_TZ} from '../../utils';
 
 export const sendCallOutDetails = async (
   email: string,
@@ -12,7 +13,7 @@ export const sendCallOutDetails = async (
     to: email,
     subject: `Call Out Details for ${
       callOutDetails.employee.name
-    } on ${callOutDetails.callout_date.toLocaleDateString()} at ${callOutDetails.callout_time.toLocaleTimeString()}`,
+    } on ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date)} at ${formatTime_hh_mm_ss_TZ(callOutDetails.callout_time)}`,
     html: callOutDetailsTemplate(callOutDetails)
   };
 
