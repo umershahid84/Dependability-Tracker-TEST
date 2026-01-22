@@ -1,7 +1,7 @@
 import {ClientAPI} from '../../client-api';
 import React, {useEffect, useState} from 'react';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
+import {useInputValidation, IUseValidators} from '../../hooks';
 
 export type ResetPasswordFormState = {
   username: string;
@@ -14,7 +14,6 @@ export const defaultResetPasswordFormState: ResetPasswordFormState = {
 };
 
 export function ResetPasswordForm(): React.ReactElement {
-  const isMounted: boolean = useIsMounted();
   const [hasError, setHasError] = useState<boolean>(false);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
@@ -49,39 +48,33 @@ export function ResetPasswordForm(): React.ReactElement {
 
   // Field validation
   useEffect(() => {
-    if (isMounted) {
-      validatedEmail.validate();
-    }
+    validatedEmail.validate();
     // eslint-disable-next-line
   }, [formState.email]);
 
   // Form validation
   useEffect(() => {
-    if (isMounted) {
-      const isUsernameValid: boolean = validatedEmail.validated;
+    const isUsernameValid: boolean = validatedEmail.validated;
 
-      if (isUsernameValid && formState.email !== '') {
-        setIsFormValid(true);
-      } else {
-        setIsFormValid(false);
-      }
+    if (isUsernameValid && formState.email !== '') {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
     }
     // eslint-disable-next-line
   }, [formState, validatedEmail.validated]);
 
   // Update the form state when input errors occur
   useEffect(() => {
-    if (isMounted) {
-      if (validatedEmail.error.length > 0 && formState.email !== '') {
-        setEmailErrors(validatedEmail.error.map(error => Object.values(error)[0]));
-      } else {
-        setEmailErrors([]);
-      }
+    if (validatedEmail.error.length > 0 && formState.email !== '') {
+      setEmailErrors(validatedEmail.error.map(error => Object.values(error)[0]));
+    } else {
+      setEmailErrors([]);
     }
     // eslint-disable-next-line
   }, [validatedEmail.error]);
 
-  return isMounted ? (
+  return (
     <Form onEnter={handleEnter}>
       <FormInputWithErrors
         label="Name"
@@ -116,7 +109,5 @@ export function ResetPasswordForm(): React.ReactElement {
         isValid={isFormValid ?? false}
       />
     </Form>
-  ) : (
-    <></>
   );
 }

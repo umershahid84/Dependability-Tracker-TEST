@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
-import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
+import {useInputValidation, IUseValidators} from '../../hooks';
 import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
 
 export type SignUpFormProps = {
@@ -11,7 +11,6 @@ export type SignUpFormProps = {
 };
 export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): React.ReactElement {
   const router: NextRouter = useRouter();
-  const isMounted: boolean = useIsMounted();
   const [token, setToken] = useState<string | null>(null);
   const [hasError, setHasError] = useState<boolean>(false);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
@@ -77,9 +76,9 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
     }
   };
 
-  // On Mount
+  // On Mount - extract URL parameters
   useEffect(() => {
-    if (isMounted) {
+    if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const inviteId = urlParams.get('invite-id');
       const token = urlParams.get('token');
@@ -96,7 +95,7 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
       setFormState({...defaultSignUpFormState, email: assignedEmail ?? ''});
     };
     // eslint-disable-next-line
-  }, [isMounted]);
+  }, []);
 
   // Field validation
   useEffect(() => {
@@ -116,39 +115,35 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
 
   // Form validation
   useEffect(() => {
-    if (isMounted) {
-      const isEmailValid: boolean = validatedEmail.validated;
-      const isPasswordValid: boolean = formState.password === formState.confirmPassword;
+    const isEmailValid: boolean = validatedEmail.validated;
+    const isPasswordValid: boolean = formState.password === formState.confirmPassword;
 
-      if (isPasswordValid && isEmailValid) {
-        //NOSONAR
-        setIsFormValid(true);
-      } else {
-        setIsFormValid(false);
-      }
+    if (isPasswordValid && isEmailValid) {
+      //NOSONAR
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
     }
     // eslint-disable-next-line
   }, [formState]);
 
   // Update the form state when input errors occur
   useEffect(() => {
-    if (isMounted) {
-      if (validatedPassword.error.length > 0 && formState.password !== '') {
-        setPasswordErrors(validatedPassword.error.map(error => Object.values(error)[0]));
-      } else {
-        setPasswordErrors([]);
-      }
+    if (validatedPassword.error.length > 0 && formState.password !== '') {
+      setPasswordErrors(validatedPassword.error.map(error => Object.values(error)[0]));
+    } else {
+      setPasswordErrors([]);
+    }
 
-      if (validatedEmail.error.length > 0 && formState.email !== '') {
-        setEmailErrors(validatedEmail.error.map(error => Object.values(error)[0]));
-      } else {
-        setEmailErrors([]);
-      }
+    if (validatedEmail.error.length > 0 && formState.email !== '') {
+      setEmailErrors(validatedEmail.error.map(error => Object.values(error)[0]));
+    } else {
+      setEmailErrors([]);
     }
     // eslint-disable-next-line
   }, [validatedPassword.error, validatedEmail.error]);
 
-  return isMounted ? (
+  return (
     <Form onEnter={handleEnter}>
       {!assignedEmail && (
         <FormInputWithErrors
@@ -207,7 +202,5 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
         </Link>
       </p>
     </Form>
-  ) : (
-    <></>
   );
 }
