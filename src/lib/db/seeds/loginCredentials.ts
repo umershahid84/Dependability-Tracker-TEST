@@ -5,41 +5,38 @@ import { LoginCredential } from '../models';
 import { getSupervisorFromDB } from '../controller';
 import { SupervisorWithAssociations } from '../models/Supervisor';
 
+// WARNING: These credentials are for development/testing only
+// In production, credentials should be created through the invitation system
+// or provided via secure configuration management
 const loginCredentialSeeds = [
   {
     email: 'testadmin@xyz.org',
-    password: 'Molajut5115!',
-    supervisorName: 'Umer Shahid' // The first admin supervisor from supervisors seed
+    password: 'Molajut5115!'
   }
 ];
 
 const seedLoginCredentials = async () => {
   await sequelize.sync();
   try {
-    // Get all supervisors to find the admin
-    const supervisors = (await getSupervisorFromDB.all()) as SupervisorWithAssociations[];
+    // Get the first admin supervisor
+    const admins = (await getSupervisorFromDB.admins()) as SupervisorWithAssociations[];
+    
+    if (!admins || admins.length === 0) {
+      console.error(logTemplate('❌ No admin supervisors found', 'error'));
+      return;
+    }
+
+    const adminSupervisor = admins[0];
     
     for (const credentialSeed of loginCredentialSeeds) {
-      // Find the supervisor by name
-      const supervisor = supervisors.find(
-        s => s.supervisor_info?.name === credentialSeed.supervisorName
-      );
-      
-      if (!supervisor) {
-        console.error(
-          logTemplate(`❌ Supervisor not found: ${credentialSeed.supervisorName}`, 'error')
-        );
-        continue;
-      }
-
       // Check if credential already exists for this supervisor
       const existingCredential = await LoginCredential.findOne({
-        where: { supervisor_id: supervisor.id }
+        where: { supervisor_id: adminSupervisor.id }
       });
 
       if (existingCredential) {
         console.log(
-          logTemplate(`  ⏭️  Login credential already exists for ${supervisor.supervisor_info?.name}`)
+          logTemplate(`  ⏭️  Login credential already exists for ${adminSupervisor.supervisor_info?.name}`)
         );
         continue;
       }
@@ -48,11 +45,11 @@ const seedLoginCredentials = async () => {
       await LoginCredential.create({
         email: credentialSeed.email,
         password: credentialSeed.password,
-        supervisor_id: supervisor.id
+        supervisor_id: adminSupervisor.id
       });
       
       console.log(
-        logTemplate(`  ✅ Login credential created for ${supervisor.supervisor_info?.name} (${credentialSeed.email})`)
+        logTemplate(`  ✅ Login credential created for ${adminSupervisor.supervisor_info?.name} (${credentialSeed.email})`)
       );
     }
 
