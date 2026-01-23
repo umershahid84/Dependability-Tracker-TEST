@@ -7,6 +7,7 @@ import seedDivisions from '../lib/db/seeds/divisions';
 import seedLeaveTypes from '../lib/db/seeds/leaveTypes';
 import seedSupervisors from '../lib/db/seeds/supervisors';
 import seedCredentialInvites from '../lib/db/seeds/credentialInvites';
+import seedLoginCredentials from '../lib/db/seeds/loginCredentials';
 
 
 export const seedDatabase = async (seedInvites = true) => {
@@ -17,6 +18,8 @@ export const seedDatabase = async (seedInvites = true) => {
     await Promise.all([seedDivisions(), seedLeaveTypes()]);
     await seedEmployees();
     await seedSupervisors();
+    // create default login credentials for admin
+    await seedLoginCredentials();
     // create invites for the supervisors to create their credentials
     seedInvites && (await seedCredentialInvites());
     console.log(logTemplate('\n🌲 Database seeded!'));
