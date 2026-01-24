@@ -100,36 +100,38 @@ export function DetailedCallOutHistory({
           <tr className={styles.headerTr}>{headings.map(h => renderHead(h, true))}</tr>
         </thead>
         <tbody>
-          {callOuts?.map(callOut => (
-            <tr key={callOut.id} className="no-page-break">
-              {renderCell(callOut.employee?.name)}
-              {renderCell(
-                formatDate_YYYY_MM_DD_TZ(callOut.callout_date),
-                `Call Time: ${formatTime_hh_mm_ss_TZ(callOut.callout_time)}`
-              )}
+          {callOuts?.map(callOut => {
+            return (
+              <tr key={callOut.id} className="no-page-break">
+                {renderCell(callOut.employee?.name)}
+                {renderCell(
+                  formatDate_YYYY_MM_DD_TZ(callOut.callout_date),
+                  `Call Time: ${formatTime_hh_mm_ss_TZ(callOut.callout_time)}`
+                )}
 
-              {renderCell(
-                formatDate_YYYY_MM_DD_TZ(callOut.shift_date),
-                `Shift Time: ${formatTimeNoSeconds_TZ(callOut.shift_time)}`
-              )}
-              {renderCell(
-                callOut.leaveType?.reason,
-                `${
-                  (callOut?.left_early_mins ?? 0) > 0
-                    ? `Left Early: ${callOut.left_early_mins} mins`
-                    : ''
-                } ${
-                  (callOut?.arrived_late_mins ?? 0) > 0
-                    ? `Arrived Late: ${callOut.arrived_late_mins} mins`
-                    : ''
-                }`.trim()
-              )}
-              {renderCell(callOut.supervisor?.supervisor_info?.name)}
-              {renderCell(
-                callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : 'N/A'
-              )}
-            </tr>
-          ))}
+                {renderCell(
+                  formatDate_YYYY_MM_DD_TZ(callOut.shift_date),
+                  `Shift Time: ${formatTimeNoSeconds_TZ(callOut.shift_time)}`
+                )}
+                {renderCell(
+                  callOut.leaveType?.reason,
+                  `${
+                    (callOut?.left_early_mins ?? 0) > 0
+                      ? `Left Early: ${callOut.left_early_mins} mins`
+                      : ''
+                  } ${
+                    (callOut?.arrived_late_mins ?? 0) > 0
+                      ? `Arrived Late: ${callOut.arrived_late_mins} mins`
+                      : ''
+                  }`.trim()
+                )}
+                {renderCell(callOut.supervisor?.supervisor_info?.name)}
+                {renderCell(
+                  callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : 'N/A'
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

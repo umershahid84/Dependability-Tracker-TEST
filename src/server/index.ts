@@ -11,7 +11,7 @@ import express, {Express, Request, Response} from 'express';
 import {logTemplate} from '../lib/utils/server';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 export const TLS_PORT = PORT + 5;
 
 export const checkForTLS = (): {

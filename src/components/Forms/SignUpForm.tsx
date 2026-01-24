@@ -4,7 +4,8 @@ import {useEffect, useState} from 'react';
 import {useRouter, NextRouter} from 'next/router';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
-import {ClientAPI, defaultSignUpFormState, SignUpFormState} from '../../client-api';
+import {defaultSignUpFormState, type SignUpFormState} from '../../client-api/supervisors';
+import {SignUp} from '../../client-api/supervisors';
 
 export type SignUpFormProps = {
   assignedEmail?: string;
@@ -50,7 +51,7 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
     e?.preventDefault();
     e?.stopPropagation();
 
-    await ClientAPI.Supervisors.SignUp({
+    await SignUp({
       router,
       formState,
       setHasError,
@@ -85,7 +86,6 @@ export default function SignUpForm({assignedEmail}: Readonly<SignUpFormProps>): 
       const token = urlParams.get('token');
 
       if (inviteId && token) {
-        console.log({inviteId, token});
         setInviteId(inviteId);
         setToken(token);
       }

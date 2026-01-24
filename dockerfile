@@ -12,4 +12,4 @@ EXPOSE 5000
 EXPOSE 5005
 
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

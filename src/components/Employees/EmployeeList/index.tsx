@@ -10,7 +10,6 @@ import {
   PaginationQueryParams,
   EmployeeWithAssociations
 } from '../../../lib/db/controller';
-import {ClientAPI} from '../../../client-api';
 import {DynamicSortOptions} from '../../Forms';
 import {ModalAction, ModalType} from '../../Modal';
 import {EmployeeListItem} from '../EmployeeListItem';
@@ -19,6 +18,7 @@ import {PaginationContainer} from '../../Pagination/Container';
 import {UseGetEmployees, useGetEmployees, UseQueryParams, useQueryParams} from '../../../hooks';
 
 import {SupervisorWithAssociations} from '../../../lib/db/models/Supervisor';
+import {GetSupervisors} from '../../../client-api/supervisors';
 
 function RenderList({
   data,
@@ -52,8 +52,7 @@ export function EmployeeList() {
 
   const onModalEditCallBack = (employee: EmployeeWithAssociations, isNew = false) => {
     (async () => {
-      const {data} =
-        (await ClientAPI.Supervisors.Read()) as ModelWithPagination<SupervisorWithAssociations>;
+      const {data} = (await GetSupervisors()) as ModelWithPagination<SupervisorWithAssociations>;
 
       let roles: string[] = [];
 

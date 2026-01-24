@@ -4,7 +4,11 @@ import EmployeeCrudFromModalLayout from './FormLayout';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 import {UseDivisions, useDivisions, useIsMounted} from '../../../hooks';
 import {UseEmployeeFormState, useEmployeeFormState} from '../../../hooks/employeeFormState';
-import {CreateEmployeeProps, defaultEmployeeFormData, EditEmployeeProps} from '../../../client-api';
+import {
+  CreateEmployeeProps,
+  defaultEmployeeFormData,
+  EditEmployeeProps
+} from '../../../client-api/employees';
 
 export type AddOrEditEmployeeFormProps = {
   type: 'Add Employee' | 'Edit Employee';

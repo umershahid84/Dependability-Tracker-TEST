@@ -1,5 +1,5 @@
-import { makeToast, ToastTypes } from '../../components';
-import { DefaultCallOutFormData } from '../../client-api';
+import {makeToast, ToastTypes} from '../../components';
+import {DefaultCallOutFormData} from '../../client-api/employees';
 
 export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boolean => {
   // validate form data before sending

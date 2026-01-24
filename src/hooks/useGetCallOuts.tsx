@@ -1,4 +1,3 @@
-import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {ToastTypes, makeToast} from '../components';
@@ -7,6 +6,7 @@ import {CallOutSortBy} from '../components/CallOuts/CallOutsList/data';
 import {GetAllCallOutOptions} from '../lib/db/controller/Callout/helpers';
 import {ModelWithPagination, PaginationQueryParams} from '../lib/db/controller';
 import {CallOutAdvancedSearchContext, useCallOutAdvancedSearchContext} from '../providers';
+import {GetCallOuts} from '../client-api/callouts';
 
 export type UseGetCallOuts = {
   isLoading: boolean;
@@ -38,7 +38,7 @@ export function useGetCallOuts({showLast, queryParams}: UseGetCallOutsProps): Us
     searchParams?: GetAllCallOutOptions
   ) => {
     try {
-      const data = await ClientAPI.CallOuts.Read(queryParams, searchParams, showLast);
+      const data = await GetCallOuts(queryParams, searchParams, showLast);
       setCallOuts(
         data.data ?? {
           data: [],

@@ -3,7 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {NextRouter, useRouter} from 'next/router';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
-import {ClientAPI, LoginFormState, defaultLoginFormState} from '../../client-api';
+import {type LoginFormState, defaultLoginFormState} from '../../client-api/supervisors';
+import {Login} from '../../client-api/supervisors';
 
 export default function LoginForm(): React.ReactElement {
   const router: NextRouter = useRouter();
@@ -35,7 +36,7 @@ export default function LoginForm(): React.ReactElement {
     e?.preventDefault();
     e?.stopPropagation();
 
-    await ClientAPI.Supervisors.Login({
+    await Login({
       router,
       formState,
       setHasError,

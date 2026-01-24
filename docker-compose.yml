@@ -24,7 +24,7 @@ services:
     command: [
         'sh',
         '-c',
-        'npm run seed && npm run seed-callouts-365 && npm run sendInvite "test@test.com" && npm run dev'
+        'npm run seed && npm run seed-callouts-365 && npm run sendInvite "test@test.com" && npm run start'
         # 'npm run dev'
       ]
   db:

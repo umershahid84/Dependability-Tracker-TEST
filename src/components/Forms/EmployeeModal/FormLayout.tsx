@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormLabel } from '../FormInputs/FormLabel';
-import { EmployeeFormData } from '../../../client-api';
-import { DynamicOptions, DynamicOption } from '../FormInputs/DynamicOptions';
-import { DivisionAttributes } from '../../../lib/db/models/Division';
+import {FormLabel} from '../FormInputs/FormLabel';
+import {EmployeeFormData} from '../../../client-api/employees';
+import {DynamicOptions, DynamicOption} from '../FormInputs/DynamicOptions';
+import {DivisionAttributes} from '../../../lib/db/models/Division';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4',
@@ -16,7 +16,7 @@ const styles = {
 export function FormLabelContainer({
   children,
   addClasses
-}: Readonly<{ children: React.ReactNode; addClasses?: string }>): React.ReactElement {
+}: Readonly<{children: React.ReactNode; addClasses?: string}>): React.ReactElement {
   return (
     <div className={'w-full flex flex-col justify-start items-start' + ' ' + (addClasses ?? '')}>
       {children}
@@ -24,7 +24,7 @@ export function FormLabelContainer({
   );
 }
 
-function RadioDivider({ children }: Readonly<{ children: React.ReactNode }>): React.ReactElement {
+function RadioDivider({children}: Readonly<{children: React.ReactNode}>): React.ReactElement {
   return <div className="flex items-center space-x-4">{children}</div>;
 }
 

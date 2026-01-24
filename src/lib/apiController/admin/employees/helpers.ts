@@ -1,4 +1,4 @@
-import {EmployeeFormData} from '../../../../client-api';
+import {EmployeeFormData} from '../../../../client-api/employees';
 import {getDivisionFromDB} from '../../../db/controller';
 
 export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useIsMounted } from '../../../hooks';
-import { ClientAPI } from '../../../client-api';
-import { trim } from '../../../lib/utils/shared/strings';
+import React, {useState} from 'react';
+import {useIsMounted} from '../../../hooks';
+import {trim} from '../../../lib/utils/shared/strings';
 import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
-import { EmployeeWithAssociations } from '../../../lib/db/controller';
+import {EmployeeWithAssociations} from '../../../lib/db/controller';
+import {DeleteEmployee} from '../../../client-api/employees';
 
 export type DeleteEmployeeFormProps = {
   employeeData?: EmployeeWithAssociations;
@@ -40,7 +40,7 @@ export function DeleteEmployeeForm({
       setErrors([]);
     }
 
-    const didDelete: boolean = await ClientAPI.Employees.Delete({ id: employeeData?.id });
+    const didDelete: boolean = await DeleteEmployee({id: employeeData?.id});
 
     setInputValue('');
     if (didDelete) {

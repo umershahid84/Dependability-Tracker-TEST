@@ -20,7 +20,7 @@ import {
 import {Op} from 'sequelize';
 import {Employee} from '../../models';
 import {getDivisionFromDB} from '../Division';
-import {EmployeeFormData} from '../../../../client-api';
+import {EmployeeFormData} from '../../../../client-api/employees';
 import {ModelWithPagination, PaginationQueryParams, convertOptions} from '..';
 
 // (C)reate

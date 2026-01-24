@@ -1,10 +1,10 @@
-import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import type {ApiData} from '../lib/apiController';
 import type {SupervisorWithAssociations} from '../lib/db/models/Supervisor';
 import {ModelWithPagination, PaginationQueryParams} from '../lib/db/controller';
 import {SupervisorsSortBy} from '../components/Supervisors/SupervisorList/data';
+import {GetSupervisors} from '../client-api/supervisors';
 
 export type UseGetSupervisors = {
   isLoading: boolean;
@@ -26,7 +26,7 @@ export function useGetSupervisors(
     try {
       const data: ApiData<
         ModelWithPagination<SupervisorWithAssociations> | SupervisorWithAssociations[]
-      > = await ClientAPI.Supervisors.Read(queryParams);
+      > = await GetSupervisors(queryParams);
 
       const supervisors = Array.isArray(data.data)
         ? {

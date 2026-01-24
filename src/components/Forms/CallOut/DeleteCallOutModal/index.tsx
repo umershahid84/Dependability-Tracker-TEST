@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useIsMounted } from '../../../../hooks';
-import { ClientAPI } from '../../../../client-api';
-import { ApiData } from '../../../../lib/apiController';
-import { makeToast, ToastTypes } from '../../../Toasts';
-import { trim } from '../../../../lib/utils/shared/strings';
+import React, {useState} from 'react';
+import {useIsMounted} from '../../../../hooks';
+import {ApiData} from '../../../../lib/apiController';
+import {makeToast, ToastTypes} from '../../../Toasts';
+import {trim} from '../../../../lib/utils/shared/strings';
 import FormInputWithErrors from '../../FormInputs/FormInputWithErrors';
-import { CallOutWithAssociations } from '../../../../lib/db/models/types';
+import {CallOutWithAssociations} from '../../../../lib/db/models/types';
+import {DeleteCallOut} from '../../../../client-api/callouts';
 
 export type DeleteCallOutFormProps = {
   callOutData?: CallOutWithAssociations;
@@ -16,10 +16,11 @@ const styles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
   defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-secondary text-lg rounded-md 
                   hover:bg-red-600 hover:text-primary `),
-  disabled: 'min-w-36 max-w-42 p-4 bg-secondary border-2 border-gray-300 text-lg rounded-md cursor-not-allowed'
+  disabled:
+    'min-w-36 max-w-42 p-4 bg-secondary border-2 border-gray-300 text-lg rounded-md cursor-not-allowed'
 };
 
-export function DeleteCallOutForm({ callOutData, onModalDeleteCallBack }: DeleteCallOutFormProps) {
+export function DeleteCallOutForm({callOutData, onModalDeleteCallBack}: DeleteCallOutFormProps) {
   const isMounted: boolean = useIsMounted();
   const [inputValue, setInputValue] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
@@ -40,7 +41,7 @@ export function DeleteCallOutForm({ callOutData, onModalDeleteCallBack }: Delete
     }
 
     try {
-      const deletedId: ApiData<string> = await ClientAPI.CallOuts.Delete(callOutData?.id as string);
+      const deletedId: ApiData<string> = await DeleteCallOut(callOutData?.id as string);
 
       if (deletedId?.error) throw new Error('CallOut could not be deleted');
 
@@ -77,10 +78,11 @@ export function DeleteCallOutForm({ callOutData, onModalDeleteCallBack }: Delete
         onChange={handleInputChange}
         label="Confirm Record Deletion"
         placeholder={`Type 'Delete' to delete`}
-        className={`w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none ${inputValue.toLowerCase() === 'delete'
-          ? 'focus:ring-gray-300'
-          : 'focus:ring-[var(--error)]'
-          }`}
+        className={`w-full p-2 rounded-md bg-tertiary ring-1 ring-gray-300 focus:ring-2 focus:outline-none ${
+          inputValue.toLowerCase() === 'delete'
+            ? 'focus:ring-gray-300'
+            : 'focus:ring-[var(--error)]'
+        }`}
         gap={`mt-2 `}
       />
       <div className={styles.div}>

@@ -12,19 +12,29 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
 
   return `${_hours}:${_minutes}:${_seconds}`;
 };
-export const APP_TZ = (): string =>
-  typeof Intl !== 'undefined'
-    ? Intl.DateTimeFormat().resolvedOptions().timeZone ||
-      process.env.NEXT_PUBLIC_TIMEZONE ||
-      process.env.TIMEZONE ||
-      'America/Los_Angeles'
-    : process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || 'America/Los_Angeles';
+
+const default_tz = 'America/Los_Angeles';
+
+export const APP_TZ = (): string => {
+  // On the server, always use env var or default
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || default_tz;
+  }
+
+  // On the client, use browser's timezone or env var or default
+  return (
+    (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null) ||
+    process.env.NEXT_PUBLIC_TIMEZONE ||
+    process.env.TIMEZONE ||
+    default_tz
+  );
+};
 
 export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ()): string => {
   if (!date) return '';
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return '';
-  return new Intl.DateTimeFormat('en-CA', {
+  return new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
     year: 'numeric',
     month: '2-digit',

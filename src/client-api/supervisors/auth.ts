@@ -17,7 +17,7 @@ export const getJwtTokenInEdgeEnvironments = async (
 
     const apiResponse = await fetch(
       new URL(
-        `http://localhost:${process?.env?.PORT ?? '3000'}/api/jwt-verify`,
+        `http://localhost:${process?.env?.PORT ?? '5000'}/api/jwt-verify`,
         req.url
       ).toString(),
       {
