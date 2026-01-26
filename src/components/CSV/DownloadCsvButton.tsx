@@ -76,14 +76,16 @@ const DownloadCSV = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
     };
 
     return (
+
         <button
             type='button'
             title='Download as CSV'
             onClick={handleDownload}
             className={trim(styles.button)}
         >
-            <DownloadIcon className={styles.icon} />
+            <DownloadIcon className={styles.icon} /> {' '}
         </button>
+
     );
 };
 
