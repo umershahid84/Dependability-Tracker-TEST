@@ -33,17 +33,13 @@ export const formatDateYYYYMMDD = (
   
   let d: Date;
   if (typeof date === 'string') {
-    // Parse date-only strings as local dates to avoid timezone issues
-    const datePart = date.split('T')[0];
-    const parts = datePart.split('-');
-    
-    // Validate format before parsing
-    if (parts.length !== 3) {
+    // Try to parse as a date string first
+    const parsedDate = parseDateString(date.split('T')[0]);
+    if (parsedDate) {
+      d = parsedDate;
+    } else {
       // Fallback to standard Date parsing if not in expected format
       d = new Date(date);
-    } else {
-      const [year, month, day] = parts.map(Number);
-      d = new Date(year, month - 1, day);
     }
   } else {
     d = new Date(date);
@@ -302,12 +298,19 @@ export const parseDateString = (dateString: string): Date | null => {
   if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
   
   // Validate ranges
+  if (year < 1900 || year > 2200) return null; // Reasonable year range
   if (month < 1 || month > 12 || day < 1 || day > 31) return null;
   
   const date = new Date(year, month - 1, day);
   
-  // Validate that the date is valid (e.g., not Feb 31)
-  if (isNaN(date.getTime())) return null;
+  // Validate that the date is valid and didn't overflow
+  // (e.g., Feb 31 would overflow to Mar 3)
+  if (isNaN(date.getTime()) || 
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day) {
+    return null;
+  }
   
   return date;
 };
