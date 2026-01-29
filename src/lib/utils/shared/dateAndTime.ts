@@ -34,8 +34,17 @@ export const formatDateYYYYMMDD = (
   let d: Date;
   if (typeof date === 'string') {
     // Parse date-only strings as local dates to avoid timezone issues
-    const [year, month, day] = date.split('T')[0].split('-').map(Number);
-    d = new Date(year, month - 1, day);
+    const datePart = date.split('T')[0];
+    const parts = datePart.split('-');
+    
+    // Validate format before parsing
+    if (parts.length !== 3) {
+      // Fallback to standard Date parsing if not in expected format
+      d = new Date(date);
+    } else {
+      const [year, month, day] = parts.map(Number);
+      d = new Date(year, month - 1, day);
+    }
   } else {
     d = new Date(date);
   }
@@ -170,7 +179,10 @@ export const formatTimeWithAmPm = (
 ): string => {
   if (!time) return '';
 
-  const [h, m] = time.split(':');
+  const parts = time.split(':');
+  if (parts.length < 2) return '';
+  
+  const [h, m] = parts;
   const hours = Number(h);
 
   if (isNaN(hours)) return '';
@@ -272,3 +284,30 @@ export const normalizeToEndOfDayUTC = (
 export const makeDate = (
   value: Date | string
 ): Date => new Date(value);
+
+/**
+ * Parses a date string in YYYY-MM-DD format to a Date object in local timezone
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Date object or null if invalid
+ */
+export const parseDateString = (dateString: string): Date | null => {
+  if (!dateString) return null;
+  
+  const parts = dateString.split('-');
+  if (parts.length !== 3) return null;
+  
+  const [year, month, day] = parts.map(Number);
+  
+  // Validate that all parts are valid numbers
+  if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+  
+  // Validate ranges
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  
+  const date = new Date(year, month - 1, day);
+  
+  // Validate that the date is valid (e.g., not Feb 31)
+  if (isNaN(date.getTime())) return null;
+  
+  return date;
+};

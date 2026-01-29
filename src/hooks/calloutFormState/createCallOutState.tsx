@@ -8,6 +8,7 @@ import {
   DefaultCallOutFormData,
   getDefaultCallOutFormData
 } from '../../client-api/employees';
+import {parseDateString} from '../../lib/utils';
 
 export type UseCreateCallOutFormState = {
   callTime: string;
@@ -83,9 +84,10 @@ export function useCreateCallOutFormState(
     
     // Convert date input strings to Date objects in local timezone
     if ((name === 'callDate' || name === 'shiftDate') && value) {
-      const [year, month, day] = value.split('-').map(Number);
-      const localDate = new Date(year, month - 1, day);
-      setFormData(prevFormData => ({...prevFormData, [name]: localDate}));
+      const localDate = parseDateString(value);
+      if (localDate) {
+        setFormData(prevFormData => ({...prevFormData, [name]: localDate}));
+      }
     } else {
       setFormData(prevFormData => ({...prevFormData, [name]: value}));
     }
