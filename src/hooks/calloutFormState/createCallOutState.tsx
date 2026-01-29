@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {validateEmployeeCallOut} from './helpers';
 import {makeToast, ToastTypes} from '../../components';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
-import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
+import {useIsMounted} from '../../hooks';
 import {
   CreateEmployeeCallOut,
   DefaultCallOutFormData,
@@ -16,8 +16,8 @@ export type UseCreateCallOutFormState = {
   formData: DefaultCallOutFormData;
   resetFormData: () => void;
   handleFormSubmit: (e: React.SyntheticEvent) => Promise<void>;
-  handleCallTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleShiftTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCallTimeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleShiftTimeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   setFormData: React.Dispatch<React.SetStateAction<DefaultCallOutFormData>>;
   onChangeHandler: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -58,19 +58,16 @@ export function useCreateCallOutFormState(
   callback?: (data: CallOutWithAssociations) => void
 ): UseCreateCallOutFormState {
   const isMounted = useIsMounted();
-  const incrementingCallTime: UseIncrementingTime = useIncrementingTime();
-  const incrementingShiftTime: UseIncrementingTime = useIncrementingTime();
   const defaultFormData: DefaultCallOutFormData = getDefaultCallOutFormData();
   const [formData, setFormData] = useState<DefaultCallOutFormData>(defaultFormData);
-
-  const callTime: string = incrementingCallTime.time;
-  const shiftTime: string = incrementingShiftTime.time;
+  
+  // Initialize times with current time in HH:MM:SS format
+  const [callTime, setCallTime] = useState<string>('');
+  const [shiftTime, setShiftTime] = useState<string>('');
 
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    incrementingCallTime.clearTimeInterval();
-    incrementingShiftTime.clearTimeInterval();
     const {name, value} = e.target;
     
     // Convert date input strings to Date objects in local timezone
@@ -83,6 +80,14 @@ export function useCreateCallOutFormState(
       setFormData(prevFormData => ({...prevFormData, [name]: value}));
     }
   };
+  
+  const handleCallTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCallTime(e.target.value);
+  };
+  
+  const handleShiftTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setShiftTime(e.target.value);
+  };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -92,16 +97,26 @@ export function useCreateCallOutFormState(
     if (!formValidated) {
       return;
     }
+    
+    // Validate that times are selected
+    if (!callTime || !shiftTime) {
+      makeToast({
+        type: ToastTypes.Error,
+        title: 'Error',
+        message: 'Please select both call time and shift time'
+      });
+      return;
+    }
 
     try {
       const callDateStr =
         formData.callDate instanceof Date
-          ? formData.callDate.toISOString().split('T')[0]
+          ? formatDate(formData.callDate)
           : formData.callDate;
 
       const shiftDateStr =
         formData.shiftDate instanceof Date
-          ? formData.shiftDate.toISOString().split('T')[0]
+          ? formatDate(formData.shiftDate)
           : formData.shiftDate;
 
       const data = await CreateEmployeeCallOut({
@@ -127,17 +142,10 @@ export function useCreateCallOutFormState(
     }
   };
 
-  useEffect(() => {
-    return () => {
-      incrementingCallTime.clearTimeInterval();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMounted]);
-
   const resetFormData = () => {
     setFormData(defaultFormData);
-    incrementingCallTime.resetTime();
-    incrementingShiftTime.resetTime();
+    setCallTime('');
+    setShiftTime('');
   };
 
   return {
@@ -148,7 +156,7 @@ export function useCreateCallOutFormState(
     resetFormData,
     onChangeHandler,
     handleFormSubmit,
-    handleCallTimeChange: incrementingCallTime.handleTimeChange,
-    handleShiftTimeChange: incrementingShiftTime.handleTimeChange
+    handleCallTimeChange,
+    handleShiftTimeChange
   };
 }

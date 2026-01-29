@@ -6,7 +6,7 @@ import {
 } from '../../../../lib/db/models/types';
 import { TextArea } from '../../FormInputs/TextArea';
 import { DateInput } from '../../FormInputs/DateInput';
-import { TimeInput } from '../../FormInputs/TimeInput';
+import { TimeSelect } from '../../FormInputs/TimeSelect';
 import { trim } from '../../../../lib/utils/shared/strings';
 import { SelectEmployeeName } from '../../FormInputs/SelectEmployeeName';
 import { LeftEarlyWithRange } from '../../FormInputs/LeftEarlyWithRange';
@@ -75,7 +75,7 @@ export function CreateCallOutForm({
           onChangeHandler={onChangeHandler}
         />
 
-        <TimeInput
+        <TimeSelect
           name="callTime"
           time={callTime}
           label="Call Time"
@@ -91,7 +91,7 @@ export function CreateCallOutForm({
           onChangeHandler={onChangeHandler}
         />
 
-        <TimeInput
+        <TimeSelect
           name="shiftTime"
           time={shiftTime}
           label="Shift Time"

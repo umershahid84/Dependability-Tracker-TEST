@@ -1,6 +1,6 @@
 import {TextArea} from '../../FormInputs/TextArea';
 import {DateInput} from '../../FormInputs/DateInput';
-import {TimeInput} from '../../FormInputs/TimeInput';
+import {TimeSelect} from '../../FormInputs/TimeSelect';
 import {trim} from '../../../../lib/utils/shared/strings';
 import {dateTo_HH_MM_SS, makeDate} from '../../../../lib/utils';
 import {useCallOutAdvancedSearchContext} from '../../../../providers';
@@ -75,7 +75,7 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
           />
 
-          <TimeInput
+          <TimeSelect
             name="callTime"
             label="Call Time"
             className={styles.input}
@@ -91,7 +91,7 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
           />
 
-          <TimeInput
+          <TimeSelect
             name="shiftTime"
             label="Shift Time"
             className={styles.input}
