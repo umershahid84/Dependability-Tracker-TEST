@@ -27,7 +27,7 @@ export const APP_TZ = (): string => {
 
 export const formatDateYYYYMMDD = (
   date?: Date | string,
-  tz: string = APP_TZ()
+  tz?: string
 ): string => {
   if (!date) return '';
   
@@ -47,12 +47,18 @@ export const formatDateYYYYMMDD = (
   
   if (isNaN(d.getTime())) return '';
 
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: tz,
+  // Use local timezone if no timezone specified (for database timestamps)
+  const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-  }).format(d);
+  };
+  
+  if (tz) {
+    options.timeZone = tz;
+  }
+
+  return new Intl.DateTimeFormat('en-CA', options).format(d);
 };
 
 export const formatDateReadable = (
@@ -79,12 +85,13 @@ export const formatDateReadable = (
 export const dateTo_YYYY_MM_DD = (
   date?: Date | string
 ): string => {
+  // Don't pass timezone - use local browser timezone for database timestamps
   return formatDateYYYYMMDD(date);
 };
 
 export const formatDate_YYYY_MM_DD_TZ = (
   date?: Date | string,
-  tz: string = APP_TZ()
+  tz?: string
 ): string => {
   return formatDateYYYYMMDD(date, tz);
 };
@@ -95,37 +102,49 @@ export const formatDate_YYYY_MM_DD_TZ = (
 
 export const formatTime24h = (
   date?: Date | string,
-  tz: string = APP_TZ()
+  tz?: string
 ): string => {
   if (!date) return '';
   const d = new Date(date);
   if (isNaN(d.getTime())) return '';
 
-  return new Intl.DateTimeFormat('en-GB', {
-    timeZone: tz,
+  // Use local timezone if no timezone specified (for database timestamps)
+  const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
-  }).format(d);
+  };
+  
+  if (tz) {
+    options.timeZone = tz;
+  }
+
+  return new Intl.DateTimeFormat('en-GB', options).format(d);
 };
 
 export const formatTime12h = (
   date?: Date | string,
-  tz: string = APP_TZ(),
+  tz?: string,
   withSeconds = true
 ): string => {
   if (!date) return '';
   const d = new Date(date);
   if (isNaN(d.getTime())) return '';
 
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: tz,
+  // Use local timezone if no timezone specified (for database timestamps)
+  const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: '2-digit',
     second: withSeconds ? '2-digit' : undefined,
     hour12: true,
-  }).format(d);
+  };
+  
+  if (tz) {
+    options.timeZone = tz;
+  }
+
+  return new Intl.DateTimeFormat('en-US', options).format(d);
 };
 
 // ==========================
@@ -134,7 +153,7 @@ export const formatTime12h = (
 
 /**
  * Required by existing imports
- * Returns HH:mm:ss (24h) in APP_TZ
+ * Returns HH:mm:ss (24h) in local browser timezone
  */
 export const dateTo_HH_MM_SS = (
   date?: Date
@@ -143,8 +162,8 @@ export const dateTo_HH_MM_SS = (
   const d = new Date(date);
   if (isNaN(d.getTime())) return '';
 
+  // Don't pass timezone - use local browser timezone for database timestamps
   return new Intl.DateTimeFormat('en-GB', {
-    timeZone: APP_TZ(),
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
@@ -154,14 +173,14 @@ export const dateTo_HH_MM_SS = (
 
 export const formatTime_hh_mm_ss_TZ = (
   date?: Date | string,
-  tz: string = APP_TZ()
+  tz?: string
 ): string => {
   return formatTime12h(date, tz, true);
 };
 
 export const formatTimeNoSeconds_TZ = (
   date?: Date | string,
-  tz: string = APP_TZ()
+  tz?: string
 ): string => {
   return formatTime12h(date, tz, false);
 };
