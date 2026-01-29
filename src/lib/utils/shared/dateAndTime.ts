@@ -3,7 +3,7 @@
  * 
  * This module provides a clean, simple approach to date/time handling:
  * - All dates stored in DB are in UTC
- * - All dates displayed to users are in APP_TZ (America/Los_Angeles by default)
+ * - All dates displayed to users are in GMT-8 (Etc/GMT+8 - fixed offset, no DST)
  * - Clear separation between input parsing and output formatting
  * - No complex timezone logic - just simple, reliable functions
  */
@@ -14,22 +14,13 @@
 
 /**
  * Get the application timezone
- * Priority: browser timezone -> env var -> fallback
+ * Uses fixed GMT-8 (Etc/GMT+8) for consistency
+ * Note: Etc/GMT+8 means UTC-8 (8 hours behind UTC), which is Pacific Standard Time
  */
 export const APP_TZ = (): string => {
-  const fallback = 'America/Los_Angeles';
-
-  // Server-side: use environment variable or fallback
-  if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || fallback;
-  }
-
-  // Client-side: use browser timezone, env var, or fallback
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || fallback;
-  } catch {
-    return fallback;
-  }
+  // Use fixed GMT-8 timezone (no daylight saving time)
+  // This is equivalent to Pacific Standard Time year-round
+  return 'Etc/GMT+8';
 };
 
 // ==========================
