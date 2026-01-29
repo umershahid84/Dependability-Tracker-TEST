@@ -219,13 +219,13 @@ export const formatTimeWithAmPm = (
 // ==========================
 
 export const getDate = (date: Date): string =>
-  dateTo_YYYY_MM_DD(date);
+  formatDateYYYYMMDD(date, APP_TZ());
 
 export const getTime = (date: Date): string =>
-  formatTime_hh_mm_ss_TZ(date);
+  formatTime_hh_mm_ss_TZ(date, APP_TZ());
 
 export const getTimeNoSeconds = (date: Date): string =>
-  formatTimeNoSeconds_TZ(date);
+  formatTimeNoSeconds_TZ(date, APP_TZ());
 
 // ==========================
 // DATE MANIPULATION (SAFE)
