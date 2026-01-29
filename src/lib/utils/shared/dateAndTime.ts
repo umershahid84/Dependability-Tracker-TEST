@@ -219,7 +219,7 @@ export const formatTimeWithAmPm = (
 // ==========================
 
 export const getDate = (date: Date): string =>
-  formatDateYYYYMMDD(date, APP_TZ());
+  formatDate_YYYY_MM_DD_TZ(date, APP_TZ());
 
 export const getTime = (date: Date): string =>
   formatTime_hh_mm_ss_TZ(date, APP_TZ());
