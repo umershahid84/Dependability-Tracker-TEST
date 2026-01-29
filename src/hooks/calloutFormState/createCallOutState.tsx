@@ -8,7 +8,7 @@ import {
   DefaultCallOutFormData,
   getDefaultCallOutFormData
 } from '../../client-api/employees';
-import {parseDateString} from '../../lib/utils';
+import {parseDateInput, parseTimeInput, toUTCString, formatDate} from '../../lib/utils';
 
 export type UseCreateCallOutFormState = {
   callTime: string;
@@ -23,44 +23,35 @@ export type UseCreateCallOutFormState = {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
 };
-// export function localDateAndTimeToUTC(date: Date | string, time: string): string {
-//   const d = date instanceof Date ? date : new Date(date);
 
-//   if (Number.isNaN(d.getTime())) {
-//     throw new TypeError('Invalid date input');
-//   }
-
-//   const y = d.getFullYear();
-//   const m = d.getMonth();
-//   const day = d.getDate();
-
-//   const [hh, mm, ss = 0] = time.split(':').map(Number);
-
-//   const localDate = new Date(y, m, day, hh, mm, ss);
-//   return localDate.toISOString();
-// }
-
+/**
+ * Simplified function to combine date and time into UTC ISO string
+ */
 export function localDateAndTimeToUTC(date: Date | string, time: string): string {
-  // If it's a Date object, extract just the date portion in local timezone
+  // Convert date to YYYY-MM-DD string
   let dateStr: string;
   if (date instanceof Date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    dateStr = `${year}-${month}-${day}`;
+    dateStr = formatDate(date);
   } else {
     dateStr = date;
   }
 
-  // Parse the date string and time to create a local datetime
-  const [year, month, day] = dateStr.split('-').map(Number);
-  const [hh, mm, ss = 0] = time.split(':').map(Number);
+  // Parse the date and time
+  const parsedDate = parseDateInput(dateStr);
+  if (!parsedDate) {
+    throw new Error('Invalid date input');
+  }
 
-  // Create date in local timezone
-  const localDate = new Date(year, month - 1, day, hh, mm, ss);
+  const parsedTime = parseTimeInput(time);
+  if (!parsedTime) {
+    throw new Error('Invalid time input');
+  }
 
-  // Convert to ISO string (UTC)
-  return localDate.toISOString();
+  // Set the time on the date
+  parsedDate.setHours(parsedTime.hours, parsedTime.minutes, parsedTime.seconds, 0);
+
+  // Convert to UTC ISO string
+  return toUTCString(parsedDate);
 }
 
 export function useCreateCallOutFormState(
@@ -84,7 +75,7 @@ export function useCreateCallOutFormState(
     
     // Convert date input strings to Date objects in local timezone
     if ((name === 'callDate' || name === 'shiftDate') && value) {
-      const localDate = parseDateString(value);
+      const localDate = parseDateInput(value);
       if (localDate) {
         setFormData(prevFormData => ({...prevFormData, [name]: localDate}));
       }

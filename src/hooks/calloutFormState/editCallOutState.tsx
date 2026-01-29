@@ -4,6 +4,7 @@ import {makeToast, ToastTypes} from '../../components';
 import {EditCallOut} from '../../client-api/callouts';
 import {DefaultCallOutFormData} from '../../client-api/employees';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {parseDateInput} from '../../lib/utils';
 import {parseDateString} from '../../lib/utils';
 
 export type UseEditCallOutFormState = {
