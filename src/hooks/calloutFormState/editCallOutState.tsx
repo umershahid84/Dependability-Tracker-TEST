@@ -27,7 +27,15 @@ export function useEditCallOutFormState(
   ) => {
     const {name, value} = e.target;
     const needsNumber = ['leftEarlyMinutes', 'lateArrivalMinutes'].includes(name);
-    setFormData(prevFormData => ({...prevFormData, [name]: needsNumber ? Number(value) : value}));
+    
+    // Convert date input strings to Date objects in local timezone
+    if ((name === 'callDate' || name === 'shiftDate') && value) {
+      const [year, month, day] = value.split('-').map(Number);
+      const localDate = new Date(year, month - 1, day);
+      setFormData(prevFormData => ({...prevFormData, [name]: localDate}));
+    } else {
+      setFormData(prevFormData => ({...prevFormData, [name]: needsNumber ? Number(value) : value}));
+    }
   };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {

@@ -1,134 +1,274 @@
-export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
-  if (!date) return '';
-  const _date = new Date(date);
-  const hours = _date.getHours();
-  const minutes = _date.getMinutes();
-  const seconds = _date.getSeconds();
-
-  // ensure the hours, minutes, and seconds are always two digits
-  const _hours = hours < 10 ? `0${hours}` : hours;
-  const _minutes = minutes < 10 ? `0${minutes}` : minutes;
-  const _seconds = seconds < 10 ? `0${seconds}` : seconds;
-
-  return `${_hours}:${_minutes}:${_seconds}`;
-};
-
-const default_tz = 'America/Los_Angeles';
+// ==========================
+// TIMEZONE (DISPLAY ONLY)
+// ==========================
 
 export const APP_TZ = (): string => {
-  // On the server, always use env var or default
+  const fallback = 'America/Los_Angeles';
+
   if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || default_tz;
+    return (
+      process.env.NEXT_PUBLIC_TIMEZONE ||
+      process.env.TIMEZONE ||
+      fallback
+    );
   }
 
-  // On the client, use browser's timezone or env var or default
   return (
-    (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null) ||
+    Intl.DateTimeFormat().resolvedOptions().timeZone ||
     process.env.NEXT_PUBLIC_TIMEZONE ||
     process.env.TIMEZONE ||
-    default_tz
+    fallback
   );
 };
 
-export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ()): string => {
+// ==========================
+// DATE FORMATTING (DISPLAY ONLY)
+// ==========================
+
+export const formatDateYYYYMMDD = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
   if (!date) return '';
-  const d = new Date(date);
-  if (Number.isNaN(d.getTime())) return '';
-  return new Intl.DateTimeFormat('en-US', {
+  
+  let d: Date;
+  if (typeof date === 'string') {
+    // Parse date-only strings as local dates to avoid timezone issues
+    const [year, month, day] = date.split('T')[0].split('-').map(Number);
+    d = new Date(year, month - 1, day);
+  } else {
+    d = new Date(date);
+  }
+  
+  if (isNaN(d.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-CA', {
     timeZone: tz,
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   }).format(d);
 };
 
-export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ()): string => {
+export const formatDateReadable = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
   if (!date) return '';
   const d = new Date(date);
-  if (Number.isNaN(d.getTime())) return '';
+  if (isNaN(d.getTime())) return '';
+
   return new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
-    hour: 'numeric',
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(d);
+};
+
+// ==========================
+// LEGACY DATE EXPORTS
+// ==========================
+
+export const dateTo_YYYY_MM_DD = (
+  date?: Date | string
+): string => {
+  return formatDateYYYYMMDD(date);
+};
+
+export const formatDate_YYYY_MM_DD_TZ = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
+  return formatDateYYYYMMDD(date, tz);
+};
+
+// ==========================
+// TIME FORMATTING
+// ==========================
+
+export const formatTime24h = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: tz,
+    hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: true
+    hour12: false,
   }).format(d);
 };
 
-export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): string => {
+export const formatTime12h = (
+  date?: Date | string,
+  tz: string = APP_TZ(),
+  withSeconds = true
+): string => {
   if (!date) return '';
   const d = new Date(date);
-  if (Number.isNaN(d.getTime())) return '';
+  if (isNaN(d.getTime())) return '';
+
   return new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true
+    second: withSeconds ? '2-digit' : undefined,
+    hour12: true,
   }).format(d);
 };
 
-export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
+// ==========================
+// LEGACY TIME EXPORTS
+// ==========================
+
+/**
+ * Required by existing imports
+ * Returns HH:mm:ss (24h) in APP_TZ
+ */
+export const dateTo_HH_MM_SS = (
+  date?: Date
+): string => {
   if (!date) return '';
-  const _date = new Date(date);
-  return _date.toISOString().split('T')[0];
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: APP_TZ(),
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(d);
 };
 
-export const getDate = (date: Date): string => {
-  return new Date(date).toLocaleDateString();
+export const formatTime_hh_mm_ss_TZ = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
+  return formatTime12h(date, tz, true);
 };
 
-export const getTime = (date: Date): string => {
-  return new Date(date).toLocaleTimeString();
+export const formatTimeNoSeconds_TZ = (
+  date?: Date | string,
+  tz: string = APP_TZ()
+): string => {
+  return formatTime12h(date, tz, false);
 };
 
-export const getTimeNoSeconds = (date: Date): string => {
-  date = new Date(date);
-  let dateString = `${date.toLocaleTimeString().slice(0, 5)} ${
-    date.toLocaleTimeString().split(' ')[1]
-  }`;
+/**
+ * Converts "HH:mm" or "HH:mm:ss" → "h:mm am/pm"
+ * Legacy helper required by existing imports
+ */
+export const formatTimeWithAmPm = (
+  time: string
+): string => {
+  if (!time) return '';
 
-  let numberOfColons = dateString.split(':').length - 1;
+  const [h, m] = time.split(':');
+  const hours = Number(h);
 
-  if (numberOfColons === 2) {
-    const timeOfDay = dateString.split(' ')[1]?.trim();
-    let [time] = dateString.split(timeOfDay);
-    time = time.trim();
+  if (isNaN(hours)) return '';
 
-    if (time.endsWith(':')) {
-      time = time.slice(0, -1);
-    }
-    return `${time.trim()} ${timeOfDay.trim()}`;
-  }
+  const ampm = hours >= 12 ? 'pm' : 'am';
+  const displayHour = hours % 12 || 12;
 
-  return dateString;
+  return `${displayHour}:${m} ${ampm}`;
 };
 
-// Function to normalize date to the beginning of the day in UTC
-export const normalizeToStartOfDayUTC = (date: Date) => {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+// ==========================
+// LEGACY ALIASES
+// ==========================
+
+export const getDate = (date: Date): string =>
+  dateTo_YYYY_MM_DD(date);
+
+export const getTime = (date: Date): string =>
+  formatTime_hh_mm_ss_TZ(date);
+
+export const getTimeNoSeconds = (date: Date): string =>
+  formatTimeNoSeconds_TZ(date);
+
+// ==========================
+// DATE MANIPULATION (SAFE)
+// ==========================
+
+/**
+ * Adds time without string → Date parsing
+ * Does NOT restrict past or future dates
+ */
+export const addTimeToDate = (
+  date: Date,
+  time: string
+): Date => {
+  const [h, m, s = '0'] = time.split(':');
+  const d = new Date(date);
+  d.setHours(
+    Number(h),
+    Number(m),
+    Number(s),
+    0
+  );
+  return d;
 };
 
-// Function to normalize date to the end of the day in UTC
-export const normalizeToEndOfDayUTC = (date: Date) => {
+// ==========================
+// NORMALIZATION (OPTIONAL)
+// ==========================
+
+export const startOfDayLocal = (date: Date): Date => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+export const endOfDayLocal = (date: Date): Date => {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+};
+
+// ==========================
+// UTC HELPERS (LEGACY SAFE)
+// ==========================
+
+export const normalizeToStartOfDayUTC = (
+  date: Date
+): Date => {
   return new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate()
+    )
   );
 };
 
-export const addTimeToDate = (date: Date, time: string) => {
-  const [hours, minutes, seconds] = time.split(':');
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-
-  date = new Date(year, month, day, Number(hours), Number(minutes), Number(seconds ?? 0), 0);
-  return date;
+export const normalizeToEndOfDayUTC = (
+  date: Date
+): Date => {
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      23,
+      59,
+      59,
+      999
+    )
+  );
 };
 
-export const formatTimeWithAmPm = (time: string): string => {
-  const [hours, minutes] = time.split(':');
-  const amOrPm = parseInt(hours) > 12 ? 'pm' : 'am';
-  return `${parseInt(hours) % 12}:${minutes} ${amOrPm}`;
-};
+// ==========================
+// UTILITIES
+// ==========================
 
-export const makeDate = (date: Date | string) => new Date(date);
+export const makeDate = (
+  value: Date | string
+): Date => new Date(value);
