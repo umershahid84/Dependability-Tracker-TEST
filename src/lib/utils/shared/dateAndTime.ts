@@ -159,7 +159,8 @@ export const formatTime12h = (
 
 /**
  * Required by existing imports
- * Returns HH:mm:ss (24h) in local timezone
+ * Returns HH:mm:ss (24h) in APP_TZ timezone
+ * Used for time input initialization and extracting times from database timestamps
  */
 export const dateTo_HH_MM_SS = (
   date?: Date
@@ -168,8 +169,9 @@ export const dateTo_HH_MM_SS = (
   const d = new Date(date);
   if (isNaN(d.getTime())) return '';
 
-  // Don't pass timezone - use local timezone for database timestamps
+  // Use APP_TZ to ensure consistent time extraction across server and client
   return new Intl.DateTimeFormat('en-GB', {
+    timeZone: APP_TZ(),
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
