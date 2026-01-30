@@ -22,43 +22,25 @@ export type UseCreateCallOutFormState = {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
 };
-// export function localDateAndTimeToUTC(date: Date | string, time: string): string {
-//   const d = date instanceof Date ? date : new Date(date);
-
-//   if (Number.isNaN(d.getTime())) {
-//     throw new TypeError('Invalid date input');
-//   }
-
-//   const y = d.getFullYear();
-//   const m = d.getMonth();
-//   const day = d.getDate();
-
-//   const [hh, mm, ss = 0] = time.split(':').map(Number);
-
-//   const localDate = new Date(y, m, day, hh, mm, ss);
-//   return localDate.toISOString();
-// }
 
 export function localDateAndTimeToUTC(date: Date | string, time: string): string {
-  // If it's a Date object, extract just the date portion in local timezone
   let dateStr: string;
-  if (date instanceof Date) {
+
+  if (typeof date === 'string') {
+    // String from date picker - already in YYYY-MM-DD format
+    dateStr = date;
+  } else {
+    // Date object - extract local date components
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     dateStr = `${year}-${month}-${day}`;
-  } else {
-    dateStr = date;
   }
 
-  // Parse the date string and time to create a local datetime
   const [year, month, day] = dateStr.split('-').map(Number);
   const [hh, mm, ss = 0] = time.split(':').map(Number);
 
-  // Create date in local timezone
   const localDate = new Date(year, month - 1, day, hh, mm, ss);
-
-  // Convert to ISO string (UTC)
   return localDate.toISOString();
 }
 
@@ -93,20 +75,10 @@ export function useCreateCallOutFormState(
     }
 
     try {
-      const callDateStr =
-        formData.callDate instanceof Date
-          ? formData.callDate.toISOString().split('T')[0]
-          : formData.callDate;
-
-      const shiftDateStr =
-        formData.shiftDate instanceof Date
-          ? formData.shiftDate.toISOString().split('T')[0]
-          : formData.shiftDate;
-
       const data = await CreateEmployeeCallOut({
         formData,
-        callTime: localDateAndTimeToUTC(callDateStr, callTime),
-        shiftTime: localDateAndTimeToUTC(shiftDateStr, shiftTime)
+        callTime: localDateAndTimeToUTC(formData.callDate, callTime),
+        shiftTime: localDateAndTimeToUTC(formData.shiftDate, shiftTime)
       });
 
       makeToast({

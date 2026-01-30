@@ -51,37 +51,21 @@ export default async function createEmployeeCallout( //NOSONAR
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
     }
 
-    // build the calTime and shiftTime into date objects, using the callDate and shiftDate as the base
-    // const callTimeParts = callTime.split(':');
-    // const shiftTimeParts = shiftTime.split(':');
-
-    // const callDateParts = callDate.split('-');
-    // const shiftDateParts = shiftDate.split('-');
-
-    // const callDateTime = new Date(
-    //   parseInt(callDateParts[0]),
-    //   parseInt(callDateParts[1]) - 1,
-    //   parseInt(callDateParts[2]),
-    //   parseInt(callTimeParts[0]),
-    //   parseInt(callTimeParts[1])
-    // );
-
-    // const shiftDateTime = new Date(
-    //   parseInt(shiftDateParts[0]),
-    //   parseInt(shiftDateParts[1]) - 1,
-    //   parseInt(shiftDateParts[2]),
-    //   parseInt(shiftTimeParts[0]),
-    //   parseInt(shiftTimeParts[1])
-    // );
-
     const shiftDateTime = new Date(shiftTime);
     const callDateTime = new Date(callTime);
 
     const supervisorId = (token as JwtPayload).supervisorId;
 
+    // Parse date strings as local dates, not UTC
+    const parseLocalDate = (dateStr: string | Date): Date => {
+      if (dateStr instanceof Date) return dateStr;
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+
     const callOutData: CallOutCreationAttributes = {
-      shift_date: shiftDate,
-      callout_date: callDate,
+      shift_date: parseLocalDate(shiftDate),
+      callout_date: parseLocalDate(callDate),
       leave_type_id: leaveType,
       employee_id: employeeName,
       shift_time: shiftDateTime,

@@ -105,12 +105,12 @@ export function DetailedCallOutHistory({
               <tr key={callOut.id} className="no-page-break">
                 {renderCell(callOut.employee?.name)}
                 {renderCell(
-                  formatDate_YYYY_MM_DD_TZ(callOut.callout_date),
+                  formatDate_YYYY_MM_DD_TZ(callOut.callout_date, 'UTC'),
                   `Call Time: ${formatTime_hh_mm_ss_TZ(callOut.callout_time)}`
                 )}
 
                 {renderCell(
-                  formatDate_YYYY_MM_DD_TZ(callOut.shift_date),
+                  formatDate_YYYY_MM_DD_TZ(callOut.shift_date, 'UTC'),
                   `Shift Time: ${formatTimeNoSeconds_TZ(callOut.shift_time)}`
                 )}
                 {renderCell(

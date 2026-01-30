@@ -67,14 +67,22 @@ export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): str
   }).format(d);
 };
 
-export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
+export const dateTo_YYYY_MM_DD = (date: Date | string | undefined): string => {
   if (!date) return '';
-  const _date = new Date(date);
-  return _date.toISOString().split('T')[0];
+  if (typeof date === 'string') return date;
+  const d = new Date(date);
+  // Use UTC methods to avoid timezone shifts for date-only values stored in DB
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 export const getDate = (date: Date): string => {
-  return new Date(date).toLocaleDateString();
+  // For date-only values from DB (stored as UTC midnight), use UTC methods
+  // to avoid timezone shifts
+  const d = new Date(date);
+  return d.toLocaleDateString('en-US', {timeZone: 'UTC'});
 };
 
 export const getTime = (date: Date): string => {

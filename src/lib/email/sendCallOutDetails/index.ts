@@ -13,7 +13,7 @@ export const sendCallOutDetails = async (
     to: email,
     subject: `Call Out Details for ${
       callOutDetails.employee.name
-    } on ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date)} at ${formatTime_hh_mm_ss_TZ(callOutDetails.callout_time)}`,
+    } on ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date, 'UTC')} at ${formatTime_hh_mm_ss_TZ(callOutDetails.callout_time)}`,
     html: callOutDetailsTemplate(callOutDetails)
   };
 

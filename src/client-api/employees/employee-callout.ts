@@ -3,10 +3,10 @@ import {ApiData} from '../../lib/apiController';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 
 export type DefaultCallOutFormData = {
-  callDate: Date;
+  callDate: Date | string;
   callTime: string;
   comment: string;
-  shiftDate: Date;
+  shiftDate: Date | string;
   shiftTime: string;
   leaveType: string;
   employeeName: string;
@@ -16,12 +16,17 @@ export type DefaultCallOutFormData = {
 
 export const getDefaultCallOutFormData = (): DefaultCallOutFormData => {
   const now = new Date();
-  now.setHours(0, 0, 0, 0);
+  // Create date string in YYYY-MM-DD format for consistency with date picker
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+
   return {
     comment: '',
     leaveType: '',
-    callDate: now,
-    shiftDate: now,
+    callDate: todayStr,
+    shiftDate: todayStr,
     employeeName: '',
     leftEarlyMinutes: 0,
     lateArrivalMinutes: 0,
@@ -48,7 +53,13 @@ export const CreateEmployeeCallOut = async ({
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        ...formData,
+        comment: formData.comment,
+        leaveType: formData.leaveType,
+        employeeName: formData.employeeName,
+        leftEarlyMinutes: formData.leftEarlyMinutes,
+        lateArrivalMinutes: formData.lateArrivalMinutes,
+        callDate: formData.callDate,
+        shiftDate: formData.shiftDate,
         callTime,
         shiftTime
       })

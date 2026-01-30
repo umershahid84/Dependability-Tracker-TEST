@@ -51,13 +51,13 @@ export const callOutDetailsTemplate = (callOutDetails: CallOutWithAssociations):
                                               callOutDetails.employee.name
                                             }</td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
-                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date)}
+                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.callout_date, 'UTC')}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
                                                     Call Time: ${formatTime_hh_mm_ss_TZ(callOutDetails.callout_time)}
                                                 </div>
                                             </td>
                                             <td style="padding: 8px 16px; border: 1px solid #4b5563; color: #e2e2e2 !important;">
-                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.shift_date)}
+                                                ${formatDate_YYYY_MM_DD_TZ(callOutDetails.shift_date, 'UTC')}
                                                 <div style="color: #6b7280 !important; font-size: 12px; white-space: nowrap;">
                                                     Shift Time: ${formatTime_hh_mm_ss_TZ(callOutDetails.shift_time)}
                                                 </div>

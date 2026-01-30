@@ -1,15 +1,15 @@
-import { InputContainer } from './InputContainer';
-import { dateTo_YYYY_MM_DD } from '../../../lib/utils';
+import {InputContainer} from './InputContainer';
+import {dateTo_YYYY_MM_DD} from '../../../lib/utils';
 
 export type DateProps = {
-  date: Date;
+  date: Date | string;
   name?: string;
   label?: string;
   className?: string;
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function DateInput({ name, date, label, className, onChangeHandler }: Readonly<DateProps>) {
+export function DateInput({name, date, label, className, onChangeHandler}: Readonly<DateProps>) {
   return (
     <InputContainer label={label ?? 'Call Date'} htmlFor={name ?? 'callDate'}>
       <input

@@ -1,4 +1,4 @@
-import { Dialect, Sequelize } from 'sequelize';
+import {Dialect, Sequelize} from 'sequelize';
 
 export type SequelizeConfig = {
   dbName: string;
@@ -100,6 +100,13 @@ export function getSequelize(props?: SequelizeConfig): Sequelize {
         min: 0,
         acquire: 30000,
         idle: 10000
+      },
+      // CRITICAL: Tell Sequelize to NOT convert dates to UTC
+      // This makes dates timezone-agnostic - they're stored exactly as provided
+      timezone: '+00:00', // Store dates as-is without timezone conversion
+      dialectOptions: {
+        timezone: '+00:00' // Tell MySQL driver to not convert either
+        // This makes the connection timezone-neutral
       }
     }
   );
