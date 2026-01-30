@@ -7,6 +7,7 @@ import {createCallOutInDB} from '../../../lib/db/controller';
 import {sendCallOutDetails} from '../../email/sendCallOutDetails';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {logTemplate} from '../../utils/server';
+import {validators} from '../../utils/shared/validators';
 
 // inviteToken, password, email
 
@@ -89,8 +90,19 @@ export default async function createEmployeeCallout( //NOSONAR
 
     // Add group emails if configured (supports comma-separated list)
     const groupEmails = process.env.GROUP_EMAIL 
-      ? process.env.GROUP_EMAIL.split(',').map(email => email.trim()).filter(email => email)
+      ? process.env.GROUP_EMAIL.split(',')
+          .map(email => email.trim())
+          .filter(email => email && validators.isEmail(email))
       : [];
+
+    // Log warning for invalid group emails if any were filtered out
+    if (process.env.GROUP_EMAIL) {
+      const allGroupEmails = process.env.GROUP_EMAIL.split(',').map(email => email.trim()).filter(email => email);
+      const invalidEmails = allGroupEmails.filter(email => !validators.isEmail(email));
+      if (invalidEmails.length > 0) {
+        console.warn(logTemplate(`⚠️ Invalid group email addresses found and skipped: ${invalidEmails.join(', ')}`, 'warn'));
+      }
+    }
 
     // Combine supervisor emails and group emails, removing duplicates
     const allRecipients = [...new Set([...supervisorEmails, ...groupEmails])];
