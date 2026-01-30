@@ -53,7 +53,7 @@ export const getAdminDataUpdates = async (
 ): Promise<CallOutWithAssociations[]> => {
   try {
     const currentTime = new Date(Date.now());
-    const currentTimeMinus45Seconds = new Date(currentTime.getTime() - 43000);
+    const currentTimeMinus45Seconds = new Date(currentTime.getTime() - 45000);
 
     let latestCallOutTime =
       latestCallOuts.length === 0
@@ -222,7 +222,7 @@ export function useDashboardData(): UseDashboardData {
           adminDataRef.current = data;
           setLoading(false);
 
-          const oneMinute = 43000;
+          const oneMinute = 45000;
           intervalRef.current = setInterval(handleCallOutUpdates, oneMinute);
         }
       });

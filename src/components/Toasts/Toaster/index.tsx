@@ -103,7 +103,7 @@ export function Toaster(): React.ReactElement {
           title={title ?? 'Test Title'}
           type={type ?? ToastTypes.Error}
           message={message ?? 'Test Message'}
-          removeInMs={3000 + index * 1500}
+          removeInMs={5000 + index * 1500}
         />
       ))}
     </section>

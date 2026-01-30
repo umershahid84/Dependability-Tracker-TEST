@@ -7,7 +7,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  transition: background-color 3000s ease-in-out 0s !important;
+  transition: background-color 5000s ease-in-out 0s !important;
   -webkit-box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
   -webkit-text-fill-color: rgb(255, 255, 255) !important;
 }

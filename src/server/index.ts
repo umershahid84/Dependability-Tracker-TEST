@@ -84,7 +84,7 @@ export const startServer = async () => {
   app.disable('x-powered-by');
   app.disable('etag');
   app.use(cors());
-  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 30000}));
+  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
   app.use(express.json({limit: '50mb'}));
 
   // await successful connection to the database

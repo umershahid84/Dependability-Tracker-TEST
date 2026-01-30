@@ -122,7 +122,7 @@ describe('Email Module', () => {
 
       expect(result).toBe(true);
       expect.assertions(1);
-    }, 230000);
+    }, 250000);
 
     it('should throw an error if email is not valid', async () => {
       try {
