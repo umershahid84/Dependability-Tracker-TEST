@@ -89,19 +89,20 @@ export default async function createEmployeeCallout( //NOSONAR
       .filter(email => email);
 
     // Add group emails if configured (supports comma-separated list)
-    const groupEmails = process.env.GROUP_EMAIL 
-      ? process.env.GROUP_EMAIL.split(',')
-          .map(email => email.trim())
-          .filter(email => email && validators.isEmail(email))
-      : [];
-
-    // Log warning for invalid group emails if any were filtered out
+    let groupEmails: string[] = [];
     if (process.env.GROUP_EMAIL) {
-      const allGroupEmails = process.env.GROUP_EMAIL.split(',').map(email => email.trim()).filter(email => email);
-      const invalidEmails = allGroupEmails.filter(email => !validators.isEmail(email));
+      const parsedEmails = process.env.GROUP_EMAIL.split(',')
+        .map(email => email.trim())
+        .filter(email => email);
+      
+      const validEmails = parsedEmails.filter(email => validators.isEmail(email));
+      const invalidEmails = parsedEmails.filter(email => !validators.isEmail(email));
+      
       if (invalidEmails.length > 0) {
         console.warn(logTemplate(`⚠️ Invalid group email addresses found and skipped: ${invalidEmails.join(', ')}`, 'warn'));
       }
+      
+      groupEmails = validEmails;
     }
 
     // Combine supervisor emails and group emails, removing duplicates
