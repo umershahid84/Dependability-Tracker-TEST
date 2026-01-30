@@ -20,7 +20,7 @@
     "seed-callouts-365": "ts-node ./src/lib/db/seeds/callouts.ts 365",
     "test": "node --env-file='.env.test' ./node_modules/.bin/jest --runInBand --detectOpenHandles",
     "start": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \"cross-env NODE_ENV=production node ./dist/server/index.js\"",
-    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" cross-env PORT=5000 nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
+    "dev": "concurrently \"npm run ts ./src/scripts/removeExpired.ts\" \" cross-env PORT=3000 nodemon --watch src --ext ts --exec ts-node ./src/server/index.ts\""
   },
   "nodemonConfig": {
     "ignore": [

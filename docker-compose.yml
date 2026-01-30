@@ -3,8 +3,8 @@ services:
     build: .
     container_name: dependability-app
     ports:
-      - '5000:5000'
-      - '5005:5005'
+      - '3000:3000'
+      - '3005:3005'
     env_file:
       - .env
     environment:

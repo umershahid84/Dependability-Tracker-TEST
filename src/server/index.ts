@@ -11,7 +11,7 @@ import express, {Express, Request, Response} from 'express';
 import {logTemplate} from '../lib/utils/server';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 export const TLS_PORT = PORT + 5;
 
 export const checkForTLS = (): {
@@ -84,7 +84,7 @@ export const startServer = async () => {
   app.disable('x-powered-by');
   app.disable('etag');
   app.use(cors());
-  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
+  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 30000}));
   app.use(express.json({limit: '50mb'}));
 
   // await successful connection to the database

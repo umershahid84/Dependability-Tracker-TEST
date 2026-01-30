@@ -67,7 +67,7 @@ export function Toast(props: {
   type: ToastTypes;
   removeInMs?: number;
 }): ReactElement {
-  const removeInMs: number = props.removeInMs ?? 5000;
+  const removeInMs: number = props.removeInMs ?? 3000;
 
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
