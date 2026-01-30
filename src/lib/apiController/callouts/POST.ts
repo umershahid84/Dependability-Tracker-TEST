@@ -87,9 +87,17 @@ export default async function createEmployeeCallout( //NOSONAR
       .map((credential: LoginCredential) => credential.email)
       .filter(email => email);
 
-    if (process.env.SEND_EMAILS === 'true' && callOut) {
+    // Add group emails if configured (supports comma-separated list)
+    const groupEmails = process.env.GROUP_EMAIL 
+      ? process.env.GROUP_EMAIL.split(',').map(email => email.trim()).filter(email => email)
+      : [];
+
+    // Combine supervisor emails and group emails, removing duplicates
+    const allRecipients = [...new Set([...supervisorEmails, ...groupEmails])];
+
+    if (process.env.SEND_EMAILS === 'true' && callOut && allRecipients.length > 0) {
       try {
-        sendCallOutDetails(supervisorEmails.join(', '), callOut);
+        sendCallOutDetails(allRecipients.join(', '), callOut);
       } catch (error) {
         const errMessage = '❌ Error sending email in createEmployeeCallout:' + ' ' + error;
         console.error(logTemplate(errMessage, 'error'));

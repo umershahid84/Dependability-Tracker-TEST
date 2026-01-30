@@ -102,6 +102,7 @@ Args:
 - EMAIL_USER - string : email username for SMTP relay access - This is the noreply address
 - EMAIL_HOST - string : host address for SMTP relay, this can be an IP address or FQDN
 - EMAIL_SENDER - string : email address to 'send' the emails from, this will also be the no reply address
+- GROUP_EMAIL - string (optional) : comma-separated list of email addresses to receive call-out notifications, regardless of whether they have portal accounts. Example: "group@company.com,manager@company.com"
 - TEST_EMAIL_USER - string : email send to address used when running any tests
 
 The syntax for the command is `npm run createEnv -- ARGS IN ORDER, SEPARATED BY A SINGLE SPACE`
