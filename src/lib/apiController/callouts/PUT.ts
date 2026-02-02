@@ -60,7 +60,10 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     // Parse date strings as local dates, not UTC
     const parseLocalDate = (dateStr: string | Date): Date => {
       if (dateStr instanceof Date) return dateStr;
-      const [year, month, day] = dateStr.split('-').map(Number);
+      // Handle ISO datetime strings (e.g., "2026-02-01T10:29:00.000Z")
+      // by extracting just the date part before 'T'
+      const datePart = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+      const [year, month, day] = datePart.split('-').map(Number);
       return new Date(year, month - 1, day);
     };
 
