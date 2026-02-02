@@ -49,13 +49,16 @@ export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boole
     const callDate = new Date(formData.callDate);
     const shiftDate = new Date(formData.shiftDate);
 
-    const dayDifference = shiftDate.getDate() - callDate.getDate();
-    const monthDifference = shiftDate.getMonth() - callDate.getMonth();
-    const yearDifference = shiftDate.getFullYear() - callDate.getFullYear();
+    // Reset time components to compare dates only
+    callDate.setHours(0, 0, 0, 0);
+    shiftDate.setHours(0, 0, 0, 0);
 
-    if (yearDifference < 0 || monthDifference < 0 || dayDifference < 0) {
+    if (shiftDate < callDate) {
+      console.log({callDate, shiftDate});
+
       throw new Error('Shift Date cannot be before the Call Date');
     }
+
     // if leave type is Left Early, check if left early minutes are missing
     if (
       !missingFields.includes('leaveType') &&

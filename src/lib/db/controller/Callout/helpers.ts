@@ -596,7 +596,7 @@ export const populateCallOutAssociations = async (
   ]);
 
   // istanbul ignore next
-  if (!employee || !supervisor ||!leaveType) {
+  if (!employee || !supervisor || !leaveType) {
     return null;
   }
 
@@ -646,6 +646,8 @@ export const validateCallOutProps = async (props: CallOutCreationAttributes): Pr
 
   // validate date and time
   if (props.shift_date < props.callout_date) {
+    console.log('HELPERS');
+    console.log({shift: props.shift_date, call: props.callout_date});
     throw new Error('Shift date cannot be before callout date');
   }
 
