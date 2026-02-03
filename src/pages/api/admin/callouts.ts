@@ -14,6 +14,11 @@ export default async function handler(req: Request, res: Response) {
   const token: JwtPayload | undefined | Response<any, Record<string, any>> | void =
     await enforceAdminOnly(req, res);
 
+  // If enforceAdminOnly failed, it already sent a response, so return early
+  if (!token || typeof token !== 'object' || !('isAdmin' in token)) {
+    return;
+  }
+
   if (req.method === 'PUT') {
     return editEmployeeCallOutApiHandler(req, res, token as JwtPayload);
   }

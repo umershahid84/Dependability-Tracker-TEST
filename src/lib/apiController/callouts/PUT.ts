@@ -55,13 +55,25 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     const callDateTime = new Date(callTime);
     const shiftDateTime = new Date(shiftTime);
 
+    // Validate that the parsed dates are valid
+    if (isNaN(callDateTime.getTime()) || isNaN(shiftDateTime.getTime())) {
+      return res.status(400).json({
+        error: 'Invalid date/time format. Please ensure all dates and times are valid.'
+      });
+    }
+
     const supervisorId = (token as JwtPayload).supervisorId;
 
     // Parse date strings as local dates, not UTC
     const parseLocalDate = (dateStr: string | Date): Date => {
       if (dateStr instanceof Date) return dateStr;
       const [year, month, day] = dateStr.split('-').map(Number);
-      return new Date(year, month - 1, day);
+      const date = new Date(year, month - 1, day);
+      // Validate the parsed date
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid date format');
+      }
+      return date;
     };
 
     const callOutData: EditableCalloutProps = {
