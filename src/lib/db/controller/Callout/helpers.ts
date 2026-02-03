@@ -262,20 +262,32 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
     throw new Error('No properties to update');
   }
 
-  if (props.shift_date && !(new Date(props.shift_date) instanceof Date)) {
-    throw new Error('Invalid shift_date');
+  if (props.shift_date) {
+    const date = new Date(props.shift_date);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid shift_date');
+    }
   }
 
-  if (props.shift_time && !(new Date(props.shift_time) instanceof Date)) {
-    throw new Error('Invalid shift_time');
+  if (props.shift_time) {
+    const date = new Date(props.shift_time);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid shift_time');
+    }
   }
 
-  if (props.callout_date && !(new Date(props.callout_date) instanceof Date)) {
-    throw new Error('Invalid callout_date');
+  if (props.callout_date) {
+    const date = new Date(props.callout_date);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid callout_date');
+    }
   }
 
-  if (props.callout_time && !(new Date(props.callout_time) instanceof Date)) {
-    throw new Error('Invalid callout_time');
+  if (props.callout_time) {
+    const date = new Date(props.callout_time);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid callout_time');
+    }
   }
 
   if (props.employee_id && !uuidV4Regex.test(props.employee_id)) {

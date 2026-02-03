@@ -69,8 +69,9 @@ export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): str
 
 export const dateTo_YYYY_MM_DD = (date: Date | string | undefined): string => {
   if (!date) return '';
-  if (typeof date === 'string') return date;
   const d = new Date(date);
+  // Check if the date is valid
+  if (isNaN(d.getTime())) return '';
   // Use UTC methods to avoid timezone shifts for date-only values stored in DB
   const year = d.getUTCFullYear();
   const month = String(d.getUTCMonth() + 1).padStart(2, '0');
