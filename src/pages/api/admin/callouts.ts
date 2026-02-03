@@ -4,6 +4,13 @@ import {enforceAdminOnly, JwtPayload} from '../../../auth';
 import deleteEmployeeCallOutApiHandler from '../../../lib/apiController/callouts/DELETE';
 import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib/apiController';
 
+/**
+ * Type guard to check if the token is a valid JwtPayload
+ */
+function isValidJwtPayload(token: any): token is JwtPayload {
+  return token && typeof token === 'object' && 'isAdmin' in token && token.isAdmin === true;
+}
+
 export default async function handler(req: Request, res: Response) {
   // allow admins and supervisors to access this route
   if (req.method === 'GET') {
@@ -11,16 +18,15 @@ export default async function handler(req: Request, res: Response) {
   }
 
   // If not a GET request, then the user must be an admin
-  const token: JwtPayload | undefined | Response<any, Record<string, any>> | void =
-    await enforceAdminOnly(req, res);
+  const token = await enforceAdminOnly(req, res);
 
   // If enforceAdminOnly failed, it already sent a response, so return early
-  if (!token || typeof token !== 'object' || !('isAdmin' in token)) {
+  if (!isValidJwtPayload(token)) {
     return;
   }
 
   if (req.method === 'PUT') {
-    return editEmployeeCallOutApiHandler(req, res, token as JwtPayload);
+    return editEmployeeCallOutApiHandler(req, res, token);
   }
 
   if (req.method === 'DELETE') {

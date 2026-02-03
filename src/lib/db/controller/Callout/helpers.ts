@@ -246,6 +246,20 @@ export const buildEditableCalloutProps = async (
   return [withProps, existingCallout as CallOut];
 };
 
+/**
+ * Helper function to validate a date property
+ * @param value - The value to validate as a date
+ * @param fieldName - The name of the field for error messages
+ * @throws Error if the date is invalid
+ */
+const validateDateProp = (value: Date | undefined, fieldName: string): void => {
+  if (!value) return;
+  const date = new Date(value);
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+};
+
 export const validateEditableCalloutProps = (props: EditableCalloutProps): boolean => {
   if (
     !props.shift_date &&
@@ -262,33 +276,10 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
     throw new Error('No properties to update');
   }
 
-  if (props.shift_date) {
-    const date = new Date(props.shift_date);
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid shift_date');
-    }
-  }
-
-  if (props.shift_time) {
-    const date = new Date(props.shift_time);
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid shift_time');
-    }
-  }
-
-  if (props.callout_date) {
-    const date = new Date(props.callout_date);
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid callout_date');
-    }
-  }
-
-  if (props.callout_time) {
-    const date = new Date(props.callout_time);
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid callout_time');
-    }
-  }
+  validateDateProp(props.shift_date, 'shift_date');
+  validateDateProp(props.shift_time, 'shift_time');
+  validateDateProp(props.callout_date, 'callout_date');
+  validateDateProp(props.callout_time, 'callout_time');
 
   if (props.employee_id && !uuidV4Regex.test(props.employee_id)) {
     throw new Error('Invalid employee_id');
