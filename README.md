@@ -16,6 +16,7 @@ Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,
   - [Send Default Admin Their Sign-Up Invite](#7-send-the-create-credential-email-invite-to-the-default-admin)
 - [Updating](#updating)
 - [Remove Service](#uninstall-service)
+- [Apache Reverse Proxy Configuration](#apache-reverse-proxy-configuration)
 
 ## Installation
 
@@ -235,3 +236,49 @@ sudo systemctl stop dependability
 ```bash
 This is just a test to update.
 ```
+
+## Apache Reverse Proxy Configuration
+
+If you want to deploy the Dependability Tracker behind an Apache web server as a reverse proxy with SSL/HTTPS support, an Apache VirtualHost configuration file is provided.
+
+### Location
+
+The Apache configuration file is located at:
+```
+config/apache/dependability-tracker.conf
+```
+
+### What It Does
+
+This configuration sets up Apache to:
+- Serve the application over HTTPS (port 443)
+- Proxy requests to the Node.js application running on port 3000
+- Handle Next.js static assets (`/_next/*`)
+- Proxy API requests (`/api/*`)
+- Serve the application under the `/dc/` path
+
+### Installation
+
+For detailed installation instructions, see the [config/README.md](config/README.md) file.
+
+**Quick setup:**
+
+1. Copy the configuration to Apache's sites-available:
+   ```bash
+   sudo cp config/apache/dependability-tracker.conf /etc/apache2/sites-available/
+   ```
+
+2. Enable required modules:
+   ```bash
+   sudo a2enmod ssl proxy proxy_http rewrite
+   ```
+
+3. Configure your SSL certificates in the file
+
+4. Enable the site and restart Apache:
+   ```bash
+   sudo a2ensite dependability-tracker.conf
+   sudo systemctl restart apache2
+   ```
+
+For more details and prerequisites, refer to [config/README.md](config/README.md).
