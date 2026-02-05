@@ -18,6 +18,8 @@ This Apache VirtualHost configuration file sets up a reverse proxy to the Depend
 
 ### Installation Instructions
 
+**Important:** This configuration file is a template. You must customize it for your environment before use.
+
 1. **Copy the configuration file to Apache's sites-available directory:**
    ```bash
    sudo cp config/apache/dependability-tracker.conf /etc/apache2/sites-available/
@@ -31,28 +33,31 @@ This Apache VirtualHost configuration file sets up a reverse proxy to the Depend
    sudo a2enmod rewrite
    ```
 
-3. **Configure SSL certificates:**
-   - Edit the configuration file to add your SSL certificate paths:
-     ```apache
-     SSLCertificateFile /path/to/your/certificate.crt
-     SSLCertificateKeyFile /path/to/your/private.key
-     SSLCertificateChainFile /path/to/your/chain.crt  # if applicable
-     ```
+3. **Edit the configuration file to customize for your environment:**
+   ```bash
+   sudo nano /etc/apache2/sites-available/dependability-tracker.conf
+   ```
+   
+   Update the following:
+   - **ServerName**: Replace `your-domain.com` with your actual domain name or IP address
+   - **SSLCertificateFile**: Path to your SSL certificate file
+   - **SSLCertificateKeyFile**: Path to your SSL private key file
+   - **SSLCertificateChainFile**: Uncomment and set if you have a certificate chain file
+   ```bash
+   sudo a2ensite dependability-tracker.conf
+   ```
 
-4. **Update ServerName if needed:**
-   - Modify the `ServerName` directive to match your server's hostname or IP address
+4. **Test the configuration:**
+   ```bash
+   sudo apache2ctl configtest
+   ```
 
 5. **Enable the site:**
    ```bash
    sudo a2ensite dependability-tracker.conf
    ```
 
-6. **Test the configuration:**
-   ```bash
-   sudo apache2ctl configtest
-   ```
-
-7. **Restart Apache:**
+6. **Restart Apache:**
    ```bash
    sudo systemctl restart apache2
    ```

@@ -257,6 +257,8 @@ This configuration sets up Apache to:
 - Proxy API requests (`/api/*`)
 - Serve the application under the `/dc/` path
 
+**Note:** The configuration file is a template and requires customization (ServerName, SSL certificates) before use.
+
 ### Installation
 
 For detailed installation instructions, see the [config/README.md](config/README.md) file.
@@ -275,7 +277,9 @@ For detailed installation instructions, see the [config/README.md](config/README
 
 3. Configure your SSL certificates in the file
 
-4. Enable the site and restart Apache:
+4. Update the ServerName to match your domain or IP address
+
+5. Enable the site and restart Apache:
    ```bash
    sudo a2ensite dependability-tracker.conf
    sudo systemctl restart apache2
