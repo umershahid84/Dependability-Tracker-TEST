@@ -43,9 +43,6 @@ This Apache VirtualHost configuration file sets up a reverse proxy to the Depend
    - **SSLCertificateFile**: Path to your SSL certificate file
    - **SSLCertificateKeyFile**: Path to your SSL private key file
    - **SSLCertificateChainFile**: Uncomment and set if you have a certificate chain file
-   ```bash
-   sudo a2ensite dependability-tracker.conf
-   ```
 
 4. **Test the configuration:**
    ```bash
