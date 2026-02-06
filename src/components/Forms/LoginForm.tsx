@@ -15,6 +15,21 @@ export default function LoginForm(): React.ReactElement {
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
   const [formState, setFormState] = useState<LoginFormState>(defaultLoginFormState);
 
+  // Load saved credentials on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedEmail = localStorage.getItem('savedEmail');
+      const savedPassword = localStorage.getItem('savedPassword');
+      if (savedEmail && savedPassword) {
+        setFormState({
+          email: savedEmail,
+          password: savedPassword,
+          rememberMe: true
+        });
+      }
+    }
+  }, []);
+
   const validatedEmail: IUseValidators = useInputValidation({
     property: 'email',
     value: formState.email
@@ -30,6 +45,10 @@ export default function LoginForm(): React.ReactElement {
     const {value} = e.target;
     const name = e?.target?.getAttribute('id') ?? '';
     setFormState({...formState, [name]: value});
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setFormState({...formState, rememberMe: e.target.checked});
   };
 
   const handleLogin = async (e: React.SyntheticEvent): Promise<void> => {
@@ -129,6 +148,19 @@ export default function LoginForm(): React.ReactElement {
         onBlur={validatedPassword.validate}
         errors={passwordErrors ?? []}
       />
+
+      <div className="flex items-center mb-4">
+        <input
+          type="checkbox"
+          id="rememberMe"
+          checked={formState.rememberMe}
+          onChange={handleCheckboxChange}
+          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+        />
+        <label htmlFor="rememberMe" className="ml-2 text-sm font-medium text-gray-900">
+          Remember me
+        </label>
+      </div>
 
       <FormAction
         label="Login"
