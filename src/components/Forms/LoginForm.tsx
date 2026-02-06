@@ -21,8 +21,8 @@ export default function LoginForm(): React.ReactElement {
       const savedEmail = localStorage.getItem('savedEmail');
       if (savedEmail) {
         setFormState({
+          ...defaultLoginFormState,
           email: savedEmail,
-          password: '',
           rememberMe: true
         });
       }
@@ -149,15 +149,17 @@ export default function LoginForm(): React.ReactElement {
       />
 
       <div className="flex items-center mb-4">
-        <input
-          type="checkbox"
-          id="rememberMe"
-          checked={formState.rememberMe}
-          onChange={handleCheckboxChange}
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-        />
-        <label htmlFor="rememberMe" className="ml-2 text-sm font-medium text-gray-900">
-          Remember me
+        <label htmlFor="rememberMe" className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={formState.rememberMe}
+            onChange={handleCheckboxChange}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-sm font-medium text-gray-900">
+            Remember me
+          </span>
         </label>
       </div>
 
