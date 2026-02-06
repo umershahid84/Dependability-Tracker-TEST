@@ -36,14 +36,15 @@ export const Login = async ({
     } else {
       const data = await response.json();
 
-      // Save credentials to localStorage if remember me is checked
-      if (formState.rememberMe) {
-        localStorage.setItem('savedEmail', formState.email);
-        localStorage.setItem('savedPassword', formState.password);
-      } else {
-        // Clear saved credentials if remember me is unchecked
-        localStorage.removeItem('savedEmail');
-        localStorage.removeItem('savedPassword');
+      // Save email to localStorage if remember me is checked
+      // Note: We only save email for security reasons, never save passwords
+      if (typeof window !== 'undefined') {
+        if (formState.rememberMe) {
+          localStorage.setItem('savedEmail', formState.email);
+        } else {
+          // Clear saved email if remember me is unchecked
+          localStorage.removeItem('savedEmail');
+        }
       }
 
       makeToast({

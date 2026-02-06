@@ -15,15 +15,14 @@ export default function LoginForm(): React.ReactElement {
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
   const [formState, setFormState] = useState<LoginFormState>(defaultLoginFormState);
 
-  // Load saved credentials on mount
+  // Load saved email on mount (password is never saved for security)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedEmail = localStorage.getItem('savedEmail');
-      const savedPassword = localStorage.getItem('savedPassword');
-      if (savedEmail && savedPassword) {
+      if (savedEmail) {
         setFormState({
           email: savedEmail,
-          password: savedPassword,
+          password: '',
           rememberMe: true
         });
       }
