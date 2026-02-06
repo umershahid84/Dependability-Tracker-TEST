@@ -4,7 +4,6 @@ import {makeToast, ToastTypes} from '../../components';
 export type LoginFormState = {
   email: string;
   password: string;
-  rememberMe: boolean;
 };
 
 export type LoginProps = {
@@ -14,7 +13,7 @@ export type LoginProps = {
   setFormState: React.Dispatch<React.SetStateAction<LoginFormState>>;
 };
 
-export const defaultLoginFormState: LoginFormState = {email: '', password: '', rememberMe: false};
+export const defaultLoginFormState: LoginFormState = {email: '', password: ''};
 
 export const Login = async ({
   router,
@@ -28,24 +27,13 @@ export const Login = async ({
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({email: formState.email, password: formState.password})
+      body: JSON.stringify(formState)
     });
 
     if (!response.ok) {
       throw new Error('Unauthorized request');
     } else {
       const data = await response.json();
-
-      // Save email to localStorage if remember me is checked
-      // Note: We only save email for security reasons, never save passwords
-      if (typeof window !== 'undefined') {
-        if (formState.rememberMe) {
-          localStorage.setItem('savedEmail', formState.email);
-        } else {
-          // Clear saved email if remember me is unchecked
-          localStorage.removeItem('savedEmail');
-        }
-      }
 
       makeToast({
         title: 'Success',
