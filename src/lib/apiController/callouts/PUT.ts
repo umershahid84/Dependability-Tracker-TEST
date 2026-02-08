@@ -52,9 +52,6 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
     }
 
-    const callDateTime = new Date(callTime);
-    const shiftDateTime = new Date(shiftTime);
-
     const supervisorId = (token as JwtPayload).supervisorId;
 
     // Parse date strings as local dates, not UTC
@@ -63,6 +60,37 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       const [year, month, day] = dateStr.split('-').map(Number);
       return new Date(year, month - 1, day);
     };
+
+    const parseDateTime = (dateStr: string | Date, timeStr: string): Date => {
+      // Accept ISO timestamps or time-only strings; prefer combining date+time for time-only.
+      if (timeStr.includes('T')) {
+        const isoDate = new Date(timeStr);
+        if (!Number.isNaN(isoDate.getTime())) {
+          return isoDate;
+        }
+      }
+
+      const baseDate = parseLocalDate(dateStr);
+      const [hh, mm, ss = '0'] = timeStr.split(':');
+      const hours = Number(hh);
+      const minutes = Number(mm);
+      const seconds = Number(ss);
+      return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        hours,
+        minutes,
+        seconds
+      );
+    };
+
+    const callDateTime = parseDateTime(callDate, callTime);
+    const shiftDateTime = parseDateTime(shiftDate, shiftTime);
+
+    if (Number.isNaN(callDateTime.getTime()) || Number.isNaN(shiftDateTime.getTime())) {
+      return res.status(400).json({error: 'Invalid date or time values provided'});
+    }
 
     const callOutData: EditableCalloutProps = {
       shift_date: parseLocalDate(shiftDate),

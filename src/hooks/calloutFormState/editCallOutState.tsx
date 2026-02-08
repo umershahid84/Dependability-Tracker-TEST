@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {validateEmployeeCallOut} from './helpers';
+import {localDateAndTimeToUTC} from './createCallOutState';
 import {makeToast, ToastTypes} from '../../components';
 import {EditCallOut} from '../../client-api/callouts';
 import {DefaultCallOutFormData} from '../../client-api/employees';
@@ -40,7 +41,13 @@ export function useEditCallOutFormState(
     }
 
     try {
-      const {data, message, error} = await EditCallOut(calloutId, formData);
+      const normalizedFormData: DefaultCallOutFormData = {
+        ...formData,
+        callTime: localDateAndTimeToUTC(formData.callDate, formData.callTime),
+        shiftTime: localDateAndTimeToUTC(formData.shiftDate, formData.shiftTime)
+      };
+
+      const {data, message, error} = await EditCallOut(calloutId, normalizedFormData);
 
       if (!data) {
         throw new Error(error ?? 'Failed to Edit Callout');

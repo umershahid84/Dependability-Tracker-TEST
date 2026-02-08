@@ -44,20 +44,20 @@ export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boole
       );
     }
 
-    // make sure the shift date is not before the call date
-    // find the difference between the shift date and call date
-    const callDate = new Date(formData.callDate);
-    const shiftDate = new Date(formData.shiftDate);
+    // // make sure the shift date is not before the call date
+    // // find the difference between the shift date and call date
+    // const callDate = new Date(formData.callDate);
+    // const shiftDate = new Date(formData.shiftDate);
 
-    // Reset time components to compare dates only
-    callDate.setHours(0, 0, 0, 0);
-    shiftDate.setHours(0, 0, 0, 0);
+    // // Reset time components to compare dates only
+    // callDate.setHours(0, 0, 0, 0);
+    // shiftDate.setHours(0, 0, 0, 0);
 
-    if (shiftDate < callDate) {
-      console.log({callDate, shiftDate});
+    // if (shiftDate < callDate) {
+    //   console.log({callDate, shiftDate});
 
-      throw new Error('Shift Date cannot be before the Call Date');
-    }
+    //   throw new Error('Shift Date cannot be before the Call Date');
+    // }
 
     // if leave type is Left Early, check if left early minutes are missing
     if (
