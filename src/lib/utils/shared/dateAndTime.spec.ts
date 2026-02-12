@@ -3,6 +3,7 @@ import {
   formatTimeNoSeconds_TZ,
   getTime,
   getTimeNoSeconds,
+  formatTime24Hour,
   formatTimeWithAmPm
 } from './dateAndTime';
 
@@ -58,15 +59,22 @@ describe('dateAndTime - Military Time Format', () => {
     });
   });
 
-  describe('formatTimeWithAmPm', () => {
+  describe('formatTime24Hour', () => {
     it('should convert time string to military format with zero padding', () => {
-      const result = formatTimeWithAmPm('9:30');
+      const result = formatTime24Hour('9:30');
       expect(result).toBe('09:30');
     });
 
     it('should handle already padded hours', () => {
-      const result = formatTimeWithAmPm('14:45');
+      const result = formatTime24Hour('14:45');
       expect(result).toBe('14:45');
+    });
+  });
+
+  describe('formatTimeWithAmPm (backward compatibility alias)', () => {
+    it('should work the same as formatTime24Hour', () => {
+      expect(formatTimeWithAmPm('9:30')).toBe('09:30');
+      expect(formatTimeWithAmPm('14:45')).toBe('14:45');
     });
   });
 });

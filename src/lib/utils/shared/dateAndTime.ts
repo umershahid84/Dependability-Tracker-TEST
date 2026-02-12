@@ -120,11 +120,14 @@ export const addTimeToDate = (date: Date, time: string) => {
   return date;
 };
 
-export const formatTimeWithAmPm = (time: string): string => {
-  // Convert to military time format (24-hour)
+export const formatTime24Hour = (time: string): string => {
+  // Format time in 24-hour military time format with zero padding
   const [hours, minutes] = time.split(':');
   const paddedHours = hours.padStart(2, '0');
   return `${paddedHours}:${minutes}`;
 };
+
+// Alias for backward compatibility - use formatTime24Hour instead
+export const formatTimeWithAmPm = formatTime24Hour;
 
 export const makeDate = (date: Date | string) => new Date(date);
