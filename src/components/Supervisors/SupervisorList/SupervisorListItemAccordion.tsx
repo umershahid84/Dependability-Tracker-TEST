@@ -50,10 +50,10 @@ export function SupervisorListItemAccordion({
           />
           <span className={styles.span}>
             Created at: {new Date(supervisor.createdAt).toLocaleDateString()} @{' '}
-            {new Date(supervisor.createdAt).toLocaleTimeString()}
+            {new Date(supervisor.createdAt).toLocaleTimeString('en-US', {hour12: false})}
             <br />
             Updated at: {new Date(supervisor.updatedAt).toLocaleDateString()} @{' '}
-            {new Date(supervisor.updatedAt).toLocaleTimeString()}
+            {new Date(supervisor.updatedAt).toLocaleTimeString('en-US', {hour12: false})}
           </span>
         </div>
       </div>

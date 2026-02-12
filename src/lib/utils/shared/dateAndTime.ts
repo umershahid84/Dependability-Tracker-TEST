@@ -48,10 +48,10 @@ export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ()): str
   if (Number.isNaN(d.getTime())) return '';
   return new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
-    hour: 'numeric',
+    hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: true
+    hour12: false
   }).format(d);
 };
 
@@ -61,9 +61,9 @@ export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): str
   if (Number.isNaN(d.getTime())) return '';
   return new Intl.DateTimeFormat('en-US', {
     timeZone: tz,
-    hour: 'numeric',
+    hour: '2-digit',
     minute: '2-digit',
-    hour12: true
+    hour12: false
   }).format(d);
 };
 
@@ -86,29 +86,16 @@ export const getDate = (date: Date): string => {
 };
 
 export const getTime = (date: Date): string => {
-  return new Date(date).toLocaleTimeString();
+  return new Date(date).toLocaleTimeString('en-US', {hour12: false});
 };
 
 export const getTimeNoSeconds = (date: Date): string => {
   date = new Date(date);
-  let dateString = `${date.toLocaleTimeString().slice(0, 5)} ${
-    date.toLocaleTimeString().split(' ')[1]
-  }`;
-
-  let numberOfColons = dateString.split(':').length - 1;
-
-  if (numberOfColons === 2) {
-    const timeOfDay = dateString.split(' ')[1]?.trim();
-    let [time] = dateString.split(timeOfDay);
-    time = time.trim();
-
-    if (time.endsWith(':')) {
-      time = time.slice(0, -1);
-    }
-    return `${time.trim()} ${timeOfDay.trim()}`;
-  }
-
-  return dateString;
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
 };
 
 // Function to normalize date to the beginning of the day in UTC
@@ -134,9 +121,10 @@ export const addTimeToDate = (date: Date, time: string) => {
 };
 
 export const formatTimeWithAmPm = (time: string): string => {
+  // Convert to military time format (24-hour)
   const [hours, minutes] = time.split(':');
-  const amOrPm = parseInt(hours) > 12 ? 'pm' : 'am';
-  return `${parseInt(hours) % 12}:${minutes} ${amOrPm}`;
+  const paddedHours = hours.padStart(2, '0');
+  return `${paddedHours}:${minutes}`;
 };
 
 export const makeDate = (date: Date | string) => new Date(date);
