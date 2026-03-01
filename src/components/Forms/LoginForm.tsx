@@ -6,6 +6,9 @@ import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
 import {type LoginFormState, defaultLoginFormState} from '../../client-api/supervisors';
 import {Login} from '../../client-api/supervisors';
 
+const REMEMBER_ME_KEY = 'rememberMe';
+const SAVED_EMAIL_KEY = 'savedEmail';
+
 export default function LoginForm(): React.ReactElement {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
@@ -14,6 +17,20 @@ export default function LoginForm(): React.ReactElement {
   const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
   const [formState, setFormState] = useState<LoginFormState>(defaultLoginFormState);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+  // Load saved email on mount if remember me was previously checked
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedRememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+      const savedEmail = localStorage.getItem(SAVED_EMAIL_KEY) ?? '';
+      if (savedRememberMe && savedEmail) {
+        setRememberMe(true);
+        setFormState(prev => ({...prev, email: savedEmail}));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const validatedEmail: IUseValidators = useInputValidation({
     property: 'email',
@@ -35,6 +52,16 @@ export default function LoginForm(): React.ReactElement {
   const handleLogin = async (e: React.SyntheticEvent): Promise<void> => {
     e?.preventDefault();
     e?.stopPropagation();
+
+    if (typeof window !== 'undefined') {
+      if (rememberMe) {
+        localStorage.setItem(REMEMBER_ME_KEY, 'true');
+        localStorage.setItem(SAVED_EMAIL_KEY, formState.email);
+      } else {
+        localStorage.removeItem(REMEMBER_ME_KEY);
+        localStorage.removeItem(SAVED_EMAIL_KEY);
+      }
+    }
 
     await Login({
       router,
@@ -107,6 +134,7 @@ export default function LoginForm(): React.ReactElement {
         type="text"
         id="email"
         required
+        autoComplete="email"
         placeholder="Enter your email"
         value={formState.email ?? ''}
         // eslint-disable-next-line
@@ -121,6 +149,7 @@ export default function LoginForm(): React.ReactElement {
         type="password"
         id="password"
         required
+        autoComplete="current-password"
         placeholder="Enter your password"
         value={formState.password ?? ''}
         // eslint-disable-next-line
@@ -129,6 +158,19 @@ export default function LoginForm(): React.ReactElement {
         onBlur={validatedPassword.validate}
         errors={passwordErrors ?? []}
       />
+
+      <div className="w-full flex items-center gap-2 px-2">
+        <input
+          type="checkbox"
+          id="rememberMe"
+          checked={rememberMe}
+          onChange={e => setRememberMe(e.target.checked)}
+          className="w-4 h-4 cursor-pointer accent-blue-500"
+        />
+        <label htmlFor="rememberMe" className="text-sm cursor-pointer select-none">
+          Remember me
+        </label>
+      </div>
 
       <FormAction
         label="Login"
