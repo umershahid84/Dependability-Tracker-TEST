@@ -159,15 +159,26 @@ export default function LoginForm(): React.ReactElement {
         errors={passwordErrors ?? []}
       />
 
-      <div className="w-full flex items-center gap-2 px-2">
-        <input
-          type="checkbox"
-          id="rememberMe"
-          checked={rememberMe}
-          onChange={e => setRememberMe(e.target.checked)}
-          className="w-4 h-4 cursor-pointer accent-blue-500"
-        />
-        <label htmlFor="rememberMe" className="text-sm cursor-pointer select-none">
+      <div className="w-full px-2">
+        <label htmlFor="rememberMe" className="flex items-center gap-2 cursor-pointer select-none text-sm">
+          <div className="relative w-4 h-4 flex-shrink-0">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={e => setRememberMe(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="absolute inset-0 rounded border border-gray-500 bg-tertiary peer-checked:bg-blue-500 peer-checked:border-blue-500 transition-colors" />
+            <svg
+              className="absolute inset-0 m-auto w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
+              viewBox="0 0 12 12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5">
+              <polyline points="1.5,6 4.5,9 10.5,3" />
+            </svg>
+          </div>
           Remember me
         </label>
       </div>
