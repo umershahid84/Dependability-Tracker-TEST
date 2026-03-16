@@ -2,6 +2,7 @@
 import {Division} from '../../models';
 import {validateDivisionName} from './helpers';
 import {DivisionAttributes, DivisionCreationAttributes} from '../../models/types';
+import sequelize from '../../connection';
 
 // (C)reate
 export const createDivisionInDB = async (
@@ -37,7 +38,10 @@ export const getDivisionFromDB = {
     try {
       const division: DivisionAttributes | null | undefined = (
         await Division.findOne({
-          where: {name: divisionName}
+          where: sequelize.where(
+            sequelize.fn('LOWER', sequelize.col('name')),
+            divisionName.toLowerCase()
+          )
         })
       )?.get({plain: true});
 

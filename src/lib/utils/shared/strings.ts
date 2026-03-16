@@ -26,15 +26,12 @@ export const formatter = {
 export const getDivisionNameFromPath = (path: string) => {
   const words = path
     .split('/divisions/')[1]
-    .replace('-', ' ')
+    .replace(/-/g, ' ')
     ?.replace('.json', '')
     ?.replace('/reports', '')
     ?.split(' ');
 
-  for (let word of words) {
-    word = word.charAt(0).toUpperCase() + word.slice(1);
-  }
-  return words?.join(' ');
+  return words?.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
 export const capitalizeWords = (text: string) => {
