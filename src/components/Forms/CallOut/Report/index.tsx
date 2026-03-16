@@ -104,7 +104,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
   useEffect(() => {
     const currentDivision = capitalizeWords(getDivisionNameFromPath(router.pathname));
     const currentDivisionId = divisionData.find(
-      (d: DivisionAttributes) => d.name === currentDivision
+      (d: DivisionAttributes) => d.name.toLowerCase() === currentDivision.toLowerCase()
     )?.id;
 
     isMounted && setFormData({...formData, division: currentDivisionId ?? ''});
@@ -120,7 +120,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       (d: DivisionAttributes) => d.id === currentDivisionId
     );
 
-    if (currentDivision !== divisionFromDivisionData?.name) {
+    if (currentDivision.toLowerCase() !== divisionFromDivisionData?.name?.toLowerCase()) {
       switch (divisionFromDivisionData?.name) {
         case 'Employee Parking':
           router.push('/divisions/employee-parking/reports');
@@ -130,6 +130,9 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
           break;
         case 'Ground Transportation':
           router.push('/divisions/ground-transportation/reports');
+          break;
+        case 'CTC Employees':
+          router.push('/divisions/ctc-employees/reports');
           break;
       }
     }

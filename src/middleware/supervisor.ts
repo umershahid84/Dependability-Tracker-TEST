@@ -6,9 +6,11 @@ export const supervisorPaths: string[] = [
   '/divisions/public-parking',
   '/divisions/employee-parking',
   '/divisions/ground-transportation',
+  '/divisions/ctc-employees',
   '/divisions/public-parking/reports',
   '/divisions/employee-parking/reports',
-  '/divisions/ground-transportation/reports'
+  '/divisions/ground-transportation/reports',
+  '/divisions/ctc-employees/reports'
 ];
 
 export const supervisorOnly = (authToken: JwtPayload | undefined, request: NextRequest) => {
