@@ -4,7 +4,8 @@ import { Division, DefaultDivisions } from '../models';
 const defaultDivisions: DefaultDivisions[] = [
   DefaultDivisions.PUBLIC_PARKING,
   DefaultDivisions.EMPLOYEE_PARKING,
-  DefaultDivisions.GROUND_TRANSPORTATION
+  DefaultDivisions.GROUND_TRANSPORTATION,
+  DefaultDivisions.CTC_EMPLOYEES
 ];
 
 export default async function seedDivisions() {
