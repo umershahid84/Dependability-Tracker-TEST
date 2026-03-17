@@ -12,30 +12,6 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: rgb(255, 255, 255) !important;
 }
 
-input:-moz-autofill,
-input:-moz-autofill:hover,
-input:-moz-autofill:focus,
-input:-moz-autofill:active {
-  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
-  -moz-text-fill-color: rgb(255, 255, 255) !important;
-}
-
-input:-ms-autofill,
-input:-ms-autofill:hover,
-input:-ms-autofill:focus,
-input:-ms-autofill:active {
-  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
-  -ms-text-fill-color: rgb(255, 255, 255) !important;
-}
-
-input:-o-autofill,
-input:-o-autofill:hover,
-input:-o-autofill:focus,
-input:-o-autofill:active {
-  box-shadow: 0 0 0px 1000px rgb(51 65 85) inset !important;
-  -o-text-fill-color: rgb(255, 255, 255) !important;
-}
-
 :root {
   --green: #4aca00;
 
