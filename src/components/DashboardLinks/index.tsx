@@ -13,7 +13,8 @@ const styles = {
 const links: { href: string; text: string }[] = [
   { href: '/divisions/public-parking', text: 'Public <br /> Parking' },
   { href: '/divisions/employee-parking', text: 'Employee Parking' },
-  { href: '/divisions/ground-transportation', text: 'Ground Transportation' }
+  { href: '/divisions/ground-transportation', text: 'Ground Transportation' },
+  { href: '/divisions/ctc-employees', text: 'CTC Employees' }
 ];
 
 const linkClasses: string = trim(styles.link);

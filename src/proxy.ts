@@ -42,9 +42,11 @@ export const config = {
     {source: '/divisions/public-parking'},
     {source: '/divisions/employee-parking'},
     {source: '/divisions/ground-transportation'},
+    {source: '/divisions/ctc-employees'},
     {source: '/divisions/public-parking/reports'},
     {source: '/divisions/employee-parking/reports'},
-    {source: '/divisions/ground-transportation/reports'}
+    {source: '/divisions/ground-transportation/reports'},
+    {source: '/divisions/ctc-employees/reports'}
   ],
   api: {
     externalResolver: true,

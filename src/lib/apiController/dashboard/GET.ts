@@ -90,8 +90,8 @@ export const getDashboardData = async (): Promise<AdminDashboardData | null> => 
         const employeeId = employee.id;
         employeeCallOutFrequency[employeeId] = (employeeCallOutFrequency[employeeId] || 0) + 1;
 
-        // Call-outs within the last twelve hours
-        if (callOut.callout_date >= twelveHoursAgo) {
+        // Call-outs within the last twelve hours (check when the record was submitted)
+        if (callOut.createdAt >= twelveHoursAgo) {
           callOutsWithinLastTwelveHours.push({...callOut, employee});
         }
 

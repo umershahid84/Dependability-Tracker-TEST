@@ -4,11 +4,13 @@ import Loading from '../../components/Loading';
 import {CallOutTrendsChart} from '../../components';
 import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../lib/utils';
 import {useDashboardData, UseDashboardData} from '../../hooks/useDashboardData';
+import {useIsMounted} from '../../hooks';
 
 export function DashboardStats(): React.ReactElement {
+  const isMounted = useIsMounted();
   const {loading, adminData}: UseDashboardData = useDashboardData();
 
-  if (typeof window === 'undefined') {
+  if (!isMounted) {
     return <></>;
   }
 

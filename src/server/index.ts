@@ -9,6 +9,8 @@ import * as path from 'path';
 import sequelize from '../lib/db/connection';
 import express, {Express, Request, Response} from 'express';
 import {logTemplate} from '../lib/utils/server';
+import seedDivisions from '../lib/db/seeds/divisions';
+import seedLeaveTypes from '../lib/db/seeds/leaveTypes';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -89,6 +91,9 @@ export const startServer = async () => {
 
   // await successful connection to the database
   await sequelize.sync({force: false, logging: false});
+  // ensure all default divisions and leave types exist in the database
+  // (safe to call on every startup - uses ignoreDuplicates to avoid overwriting existing data)
+  await Promise.all([seedDivisions(), seedLeaveTypes()]);
   // start the next functionality and bootstrap it to the express server
   await nextExpress(app);
 

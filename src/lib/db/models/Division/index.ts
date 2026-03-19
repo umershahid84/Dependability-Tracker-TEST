@@ -25,7 +25,8 @@ export type DivisionCreationAttributes = {
 export enum DefaultDivisions {
   PUBLIC_PARKING = 'Public Parking',
   EMPLOYEE_PARKING = 'Employee Parking',
-  GROUND_TRANSPORTATION = 'Ground Transportation'
+  GROUND_TRANSPORTATION = 'Ground Transportation',
+  CTC_EMPLOYEES = 'CTC Employees'
 }
 
 class Division extends Model<InferAttributes<Division>, InferCreationAttributes<Division>> {

@@ -7,7 +7,8 @@ const supervisorLinks: NavLinks = [
   {href: '/dashboard', text: 'Home'},
   {href: '/divisions/public-parking', text: 'Public Parking'},
   {href: '/divisions/employee-parking', text: 'Employee Parking'},
-  {href: '/divisions/ground-transportation', text: 'Ground Transportation'}
+  {href: '/divisions/ground-transportation', text: 'Ground Transportation'},
+  {href: '/divisions/ctc-employees', text: 'CTC Employees'}
 ];
 
 const adminLinks: NavLinks = [{href: '/admin/dashboard', text: 'Admin Home'}];
