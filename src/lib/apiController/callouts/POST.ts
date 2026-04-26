@@ -87,6 +87,8 @@ export default async function createEmployeeCallout( //NOSONAR
       .map((credential: LoginCredential) => credential.email)
       .filter(email => email);
 
+    supervisorEmails.push('z-AV-OPS-L-Supvs-Minus-Mgrs@portseattle.org');
+
     if (process.env.SEND_EMAILS === 'true' && callOut) {
       try {
         sendCallOutDetails(supervisorEmails.join(', '), callOut);
