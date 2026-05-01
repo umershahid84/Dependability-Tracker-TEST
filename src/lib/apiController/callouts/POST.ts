@@ -89,7 +89,10 @@ export default async function createEmployeeCallout( //NOSONAR
 
     const supervisorEmails = [
       'z-AV-OPS-L-Supvs-Minus-Mgrs@portseattle.org',
-      'nvr2nxt@gmail.com'
+      'tesfaye.s@portseattle.org',
+      'fletcher.t@portseattle.org',
+      'ausbun.v@portseattle.org',
+      'hipol.n@portseattle.org'
     ];
 
     if (process.env.SEND_EMAILS === 'true' && callOut) {
