@@ -6,6 +6,8 @@ import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
 import {type LoginFormState, defaultLoginFormState} from '../../client-api/supervisors';
 import {Login} from '../../client-api/supervisors';
 
+const SAVE_CREDENTIALS_KEY = 'savedLoginCredentials';
+
 export default function LoginForm(): React.ReactElement {
   const router: NextRouter = useRouter();
   const isMounted: boolean = useIsMounted();
@@ -14,6 +16,7 @@ export default function LoginForm(): React.ReactElement {
   const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState<boolean | null>(null);
   const [formState, setFormState] = useState<LoginFormState>(defaultLoginFormState);
+  const [saveCredentials, setSaveCredentials] = useState<boolean>(false);
 
   const validatedEmail: IUseValidators = useInputValidation({
     property: 'email',
@@ -24,6 +27,21 @@ export default function LoginForm(): React.ReactElement {
     property: 'password',
     value: formState.password
   });
+
+  // Load saved credentials on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SAVE_CREDENTIALS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as LoginFormState;
+        setFormState(prev => ({...prev, email: parsed.email ?? '', password: parsed.password ?? ''}));
+        setSaveCredentials(true);
+      }
+    } catch {
+      // ignore parse errors
+    }
+    // eslint-disable-next-line
+  }, []);
 
   //  event handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -40,7 +58,14 @@ export default function LoginForm(): React.ReactElement {
       router,
       formState,
       setHasError,
-      setFormState
+      setFormState,
+      onSuccess: () => {
+        if (saveCredentials) {
+          localStorage.setItem(SAVE_CREDENTIALS_KEY, JSON.stringify({email: formState.email, password: formState.password}));
+        } else {
+          localStorage.removeItem(SAVE_CREDENTIALS_KEY);
+        }
+      }
     });
   };
 
@@ -129,6 +154,19 @@ export default function LoginForm(): React.ReactElement {
         onBlur={validatedPassword.validate}
         errors={passwordErrors ?? []}
       />
+
+      <div className="flex items-center gap-2 mt-4">
+        <input
+          type="checkbox"
+          id="saveCredentials"
+          checked={saveCredentials}
+          onChange={(e) => setSaveCredentials(e.target.checked)}
+          className="w-4 h-4 cursor-pointer"
+        />
+        <label htmlFor="saveCredentials" className="cursor-pointer select-none">
+          Save Credentials
+        </label>
+      </div>
 
       <FormAction
         label="Login"
