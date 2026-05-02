@@ -92,6 +92,7 @@ export default async function createEmployeeCallout( //NOSONAR
       'tesfaye.s@portseattle.org',
       'fletcher.t@portseattle.org',
       'ausbun.v@portseattle.org',
+      'brester.r@portseattle.org',
       'hipol.n@portseattle.org'
     ];
 
