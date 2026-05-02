@@ -28,13 +28,13 @@ export default function LoginForm(): React.ReactElement {
     value: formState.password
   });
 
-  // Load saved email on mount
+  // Load saved credentials on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(SAVE_CREDENTIALS_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved) as Pick<LoginFormState, 'email'>;
-        setFormState(prev => ({...prev, email: parsed.email ?? ''}));
+        const parsed = JSON.parse(saved) as LoginFormState;
+        setFormState(prev => ({...prev, email: parsed.email ?? '', password: parsed.password ?? ''}));
         setSaveCredentials(true);
       }
     } catch {
@@ -61,7 +61,7 @@ export default function LoginForm(): React.ReactElement {
       setFormState,
       onSuccess: () => {
         if (saveCredentials) {
-          localStorage.setItem(SAVE_CREDENTIALS_KEY, JSON.stringify({email: formState.email}));
+          localStorage.setItem(SAVE_CREDENTIALS_KEY, JSON.stringify({email: formState.email, password: formState.password}));
         } else {
           localStorage.removeItem(SAVE_CREDENTIALS_KEY);
         }
