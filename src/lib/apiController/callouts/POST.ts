@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
 import {JwtPayload} from '../../../auth';
-import {LoginCredential} from '../../db';
+// import {LoginCredential} from '../../db';
 import type {ApiData} from '../../../lib/apiController';
 import {createCallOutInDB} from '../../../lib/db/controller';
 import {sendCallOutDetails} from '../../email/sendCallOutDetails';
@@ -83,9 +83,18 @@ export default async function createEmployeeCallout( //NOSONAR
     }
 
     // email the callout details to all supervisors, only include email
-    const supervisorEmails = (await LoginCredential.findAll())
-      .map((credential: LoginCredential) => credential.email)
-      .filter(email => email);
+    // const supervisorEmails = (await LoginCredential.findAll())
+    //   .map((credential: LoginCredential) => credential.email)
+    //   .filter(email => email);
+
+    const supervisorEmails = [
+      'z-AV-OPS-L-Supvs-Minus-Mgrs@portseattle.org',
+      'tesfaye.s@portseattle.org',
+      'fletcher.t@portseattle.org',
+      'ausbun.v@portseattle.org',
+      'brester.r@portseattle.org',
+      'hipol.n@portseattle.org'
+    ];
 
     if (process.env.SEND_EMAILS === 'true' && callOut) {
       try {
