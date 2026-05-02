@@ -11,6 +11,7 @@ export type LoginProps = {
   formState: LoginFormState;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   setFormState: React.Dispatch<React.SetStateAction<LoginFormState>>;
+  onSuccess?: () => void;
 };
 
 export const defaultLoginFormState: LoginFormState = {email: '', password: ''};
@@ -19,7 +20,8 @@ export const Login = async ({
   router,
   formState,
   setHasError,
-  setFormState
+  setFormState,
+  onSuccess
 }: LoginProps): Promise<void> => {
   try {
     const response = await fetch('/api/login', {
@@ -34,6 +36,8 @@ export const Login = async ({
       throw new Error('Unauthorized request');
     } else {
       const data = await response.json();
+
+      onSuccess?.();
 
       makeToast({
         title: 'Success',

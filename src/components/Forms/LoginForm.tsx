@@ -28,13 +28,13 @@ export default function LoginForm(): React.ReactElement {
     value: formState.password
   });
 
-  // Load saved credentials on mount
+  // Load saved email on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(SAVE_CREDENTIALS_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved) as LoginFormState;
-        setFormState(parsed);
+        const parsed = JSON.parse(saved) as Pick<LoginFormState, 'email'>;
+        setFormState(prev => ({...prev, email: parsed.email ?? ''}));
         setSaveCredentials(true);
       }
     } catch {
@@ -54,17 +54,18 @@ export default function LoginForm(): React.ReactElement {
     e?.preventDefault();
     e?.stopPropagation();
 
-    if (saveCredentials) {
-      localStorage.setItem(SAVE_CREDENTIALS_KEY, JSON.stringify(formState));
-    } else {
-      localStorage.removeItem(SAVE_CREDENTIALS_KEY);
-    }
-
     await Login({
       router,
       formState,
       setHasError,
-      setFormState
+      setFormState,
+      onSuccess: () => {
+        if (saveCredentials) {
+          localStorage.setItem(SAVE_CREDENTIALS_KEY, JSON.stringify({email: formState.email}));
+        } else {
+          localStorage.removeItem(SAVE_CREDENTIALS_KEY);
+        }
+      }
     });
   };
 
