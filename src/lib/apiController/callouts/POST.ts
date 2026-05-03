@@ -7,6 +7,7 @@ import {createCallOutInDB} from '../../../lib/db/controller';
 import {sendCallOutDetails} from '../../email/sendCallOutDetails';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {logTemplate} from '../../utils/server';
+import {SUPERVISOR_COMMENTS_MAX_LENGTH} from '../../utils/shared/validators';
 
 // inviteToken, password, email
 
@@ -49,6 +50,10 @@ export default async function createEmployeeCallout( //NOSONAR
       if (!comment) missingFields.push('Supervisor Comments');
 
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
+    }
+
+    if (comment.length > SUPERVISOR_COMMENTS_MAX_LENGTH) {
+      return res.status(400).json({error: `Supervisor Comments must not exceed ${SUPERVISOR_COMMENTS_MAX_LENGTH} characters`});
     }
 
     const shiftDateTime = new Date(shiftTime);

@@ -1,5 +1,7 @@
 export type IValidator = (value: string, ...args: any[]) => boolean;
 
+export const SUPERVISOR_COMMENTS_MAX_LENGTH = 2000;
+
 export const validators = {
   //  return true or false
   required: (value: string) =>
