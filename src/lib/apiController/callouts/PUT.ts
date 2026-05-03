@@ -7,6 +7,7 @@ import {updateCallOutInDB} from '../../../lib/db/controller';
 import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {EditableCalloutProps} from '../../db/controller/Callout/helpers';
 import {logTemplate} from '../../utils/server';
+import {SUPERVISOR_COMMENTS_MAX_LENGTH} from '../../utils/shared/validators';
 
 // inviteToken, password, email
 export default async function editEmployeeCallOutApiHandler( //NOSONAR
@@ -50,6 +51,10 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       if (!comment) missingFields.push('Supervisor Comments');
 
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
+    }
+
+    if (comment.length > SUPERVISOR_COMMENTS_MAX_LENGTH) {
+      return res.status(400).json({error: `Supervisor Comments must not exceed ${SUPERVISOR_COMMENTS_MAX_LENGTH} characters`});
     }
 
     const supervisorId = (token as JwtPayload).supervisorId;

@@ -132,7 +132,7 @@ CallOut.init(
       allowNull: true
     },
     supervisor_comments: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false
     },
     employee_id: {
