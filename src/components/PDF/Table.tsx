@@ -85,7 +85,7 @@ const TablePdfDocument = ({callOuts}: {callOuts: CallOutWithAssociations[]}) => 
               <Text>
                 {makeDate(callOut.shift_date).toLocaleDateString('en-US', {timeZone: 'UTC'})}
                 {callOut.shift_date_to
-                  ? ` – ${makeDate(callOut.shift_date_to).toLocaleDateString('en-US', {timeZone: 'UTC'})}`
+                  ? ` - ${makeDate(callOut.shift_date_to).toLocaleDateString('en-US', {timeZone: 'UTC'})}`
                   : ''}
               </Text>
               {!callOut.shift_date_to && (

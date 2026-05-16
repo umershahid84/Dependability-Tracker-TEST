@@ -85,7 +85,7 @@ export function CallOutsListItemAccordion({
             <p>
               Shift Date:{' '}
               {callOut.shift_date_to
-                ? `${getDate(callOut.shift_date)} – ${getDate(callOut.shift_date_to)}`
+                ? `${getDate(callOut.shift_date)} - ${getDate(callOut.shift_date_to)}`
                 : `${getDate(callOut.shift_date)} @ ${getTimeNoSeconds(callOut.shift_time)}`}
             </p>
             <p>Reason: {callOut.leaveType.reason}</p>
