@@ -83,7 +83,10 @@ export function CallOutsListItemAccordion({
               Division(s): {callOut.employee.divisions.map(division => division.name).join(', ')}
             </p>
             <p>
-              Shift Date: {getDate(callOut.shift_date)} @ {getTimeNoSeconds(callOut.shift_time)}
+              Shift Date:{' '}
+              {callOut.shift_date_to
+                ? `${getDate(callOut.shift_date)} – ${getDate(callOut.shift_date_to)}`
+                : `${getDate(callOut.shift_date)} @ ${getTimeNoSeconds(callOut.shift_time)}`}
             </p>
             <p>Reason: {callOut.leaveType.reason}</p>
             {(callOut?.left_early_mins ?? 0) > 0 && (

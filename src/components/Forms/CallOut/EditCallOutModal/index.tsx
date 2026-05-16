@@ -33,6 +33,7 @@ export function EditCallOutModal({
   const defaultFormData: DefaultCallOutFormData = {
     comment: callOutData.supervisor_comments,
     shiftDate: makeDate(callOutData.shift_date),
+    shiftDateTo: callOutData.shift_date_to ? makeDate(callOutData.shift_date_to) : '',
     callDate: makeDate(callOutData.callout_date),
     leaveType: callOutData.leaveType.id.toString(),
     employeeName: callOutData.employee.id.toString(),
@@ -85,9 +86,18 @@ export function EditCallOutModal({
 
           <DateInput
             name="shiftDate"
-            label="Shift Date"
+            label="Shift Date From"
             className={styles.input}
             date={formData.shiftDate}
+            onChangeHandler={onChangeHandler}
+          />
+
+          <DateInput
+            name="shiftDateTo"
+            label="Shift Date To"
+            required={false}
+            className={styles.input}
+            date={formData.shiftDateTo}
             onChangeHandler={onChangeHandler}
           />
 

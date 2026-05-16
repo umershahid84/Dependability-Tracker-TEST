@@ -85,9 +85,18 @@ export function CreateCallOutForm({
 
         <DateInput
           name="shiftDate"
-          label="Shift Date"
+          label="Shift Date From"
           className={styles.input}
           date={formData.shiftDate}
+          onChangeHandler={onChangeHandler}
+        />
+
+        <DateInput
+          name="shiftDateTo"
+          label="Shift Date To"
+          required={false}
+          className={styles.input}
+          date={formData.shiftDateTo}
           onChangeHandler={onChangeHandler}
         />
 
