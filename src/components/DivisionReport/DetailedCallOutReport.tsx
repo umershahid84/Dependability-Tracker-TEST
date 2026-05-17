@@ -110,7 +110,11 @@ export function DetailedCallOutHistory({
                 )}
 
                 {renderCell(
-                  formatDate_YYYY_MM_DD_TZ(callOut.shift_date, 'UTC'),
+                  `${formatDate_YYYY_MM_DD_TZ(callOut.shift_date, 'UTC')}${
+                    callOut.shift_date_to
+                      ? ` - ${formatDate_YYYY_MM_DD_TZ(callOut.shift_date_to, 'UTC')}`
+                      : ''
+                  }`,
                   `Shift Time: ${formatTimeNoSeconds_TZ(callOut.shift_time)}`
                 )}
                 {renderCell(

@@ -43,6 +43,7 @@ export type GetAllCallOutOptions = {
 
 export type EditableCalloutProps = {
   shift_date?: Date;
+  shift_date_to?: Date | null;
   shift_time?: Date;
   callout_date?: Date;
   callout_time?: Date;
@@ -607,6 +608,7 @@ export const populateCallOutAssociations = async (
     createdAt: props.createdAt,
     updatedAt: props.updatedAt,
     shift_date: props.shift_date,
+    shift_date_to: props.shift_date_to ?? null,
     shift_time: props.shift_time,
     callout_date: props.callout_date,
     callout_time: props.callout_time,

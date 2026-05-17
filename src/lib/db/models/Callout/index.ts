@@ -22,6 +22,7 @@ export type CallOutAttributes = {
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
+  shift_date_to: Date | null;
   shift_time: Date;
   callout_date: Date;
   callout_time: Date;
@@ -41,6 +42,7 @@ export type CallOutCreationAttributes = {
   createdAt?: Date;
   updatedAt?: Date;
   shift_date: Date;
+  shift_date_to?: Date | null;
   shift_time: Date;
   callout_date: Date;
   callout_time: Date;
@@ -60,6 +62,7 @@ export type CallOutWithAssociations = {
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
+  shift_date_to: Date | null;
   shift_time: Date;
   callout_date: Date;
   callout_time: Date;
@@ -77,6 +80,7 @@ class CallOut
 {
   declare id: CreationOptional<string>;
   declare shift_date: Date;
+  declare shift_date_to: Date | null;
   declare shift_time: Date;
   declare callout_date: Date;
   declare callout_time: Date;
@@ -110,6 +114,10 @@ CallOut.init(
     shift_date: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    shift_date_to: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     shift_time: {
       type: DataTypes.DATE,

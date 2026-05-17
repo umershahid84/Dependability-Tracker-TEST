@@ -21,12 +21,13 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       callTime,
       comment,
       shiftDate,
+      shiftDateTo,
       shiftTime,
       leaveType,
       employeeName,
       leftEarlyMinutes,
       lateArrivalMinutes
-    } = req.body.formData as DefaultCallOutFormData & {callDate: string; shiftDate: string};
+    } = req.body.formData as DefaultCallOutFormData & {callDate: string; shiftDate: string; shiftDateTo?: string};
 
     const id = req.body.id as string;
 
@@ -94,6 +95,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
 
     const callOutData: EditableCalloutProps = {
       shift_date: parseLocalDate(shiftDate),
+      shift_date_to: shiftDateTo ? parseLocalDate(shiftDateTo) : null,
       callout_date: parseLocalDate(callDate),
       leave_type_id: leaveType,
       employee_id: employeeName,

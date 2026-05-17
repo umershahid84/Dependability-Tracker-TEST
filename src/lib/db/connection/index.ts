@@ -1,4 +1,4 @@
-import {Dialect, Sequelize} from 'sequelize';
+import {DataTypes, Dialect, Sequelize} from 'sequelize';
 
 export type SequelizeConfig = {
   dbName: string;
@@ -111,6 +111,45 @@ export function getSequelize(props?: SequelizeConfig): Sequelize {
     }
   );
 }
+
+export const ensureCalloutShiftDateToColumn = async (db: Sequelize): Promise<void> => {
+  const dialect = db.getDialect();
+  if (dialect !== 'mysql' && dialect !== 'mariadb') {
+    return;
+  }
+
+  try {
+    const queryInterface = db.getQueryInterface();
+    const tableDefinition = await queryInterface.describeTable('callouts');
+
+    if (!tableDefinition.shift_date_to) {
+      try {
+        await queryInterface.addColumn('callouts', 'shift_date_to', {
+          type: DataTypes.DATE,
+          allowNull: true
+        });
+      } catch (error) {
+        const dbError = error as {
+          original?: {code?: string};
+          parent?: {code?: string};
+        };
+        const code = dbError.original?.code ?? dbError.parent?.code;
+        if (code !== 'ER_DUP_FIELDNAME') {
+          throw error;
+        }
+      }
+    }
+  } catch (error) {
+    const dbError = error as {
+      original?: {code?: string};
+      parent?: {code?: string};
+    };
+    const code = dbError.original?.code ?? dbError.parent?.code;
+    if (code !== 'ER_NO_SUCH_TABLE') {
+      throw error;
+    }
+  }
+};
 /**
  * The default sequelize object with default values
  */

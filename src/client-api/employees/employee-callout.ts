@@ -7,6 +7,7 @@ export type DefaultCallOutFormData = {
   callTime: string;
   comment: string;
   shiftDate: Date | string;
+  shiftDateTo: Date | string;
   shiftTime: string;
   leaveType: string;
   employeeName: string;
@@ -27,6 +28,7 @@ export const getDefaultCallOutFormData = (): DefaultCallOutFormData => {
     leaveType: '',
     callDate: todayStr,
     shiftDate: todayStr,
+    shiftDateTo: '',
     employeeName: '',
     leftEarlyMinutes: 0,
     lateArrivalMinutes: 0,
@@ -60,6 +62,7 @@ export const CreateEmployeeCallOut = async ({
         lateArrivalMinutes: formData.lateArrivalMinutes,
         callDate: formData.callDate,
         shiftDate: formData.shiftDate,
+        shiftDateTo: formData.shiftDateTo === '' ? null : formData.shiftDateTo,
         callTime,
         shiftTime
       })

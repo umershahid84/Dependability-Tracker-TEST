@@ -22,6 +22,7 @@ export default async function createEmployeeCallout( //NOSONAR
       callTime,
       comment,
       shiftDate,
+      shiftDateTo,
       shiftTime,
       leaveType,
       employeeName,
@@ -65,6 +66,7 @@ export default async function createEmployeeCallout( //NOSONAR
 
     const callOutData: CallOutCreationAttributes = {
       shift_date: parseLocalDate(shiftDate),
+      shift_date_to: shiftDateTo ? parseLocalDate(shiftDateTo) : null,
       callout_date: parseLocalDate(callDate),
       leave_type_id: leaveType,
       employee_id: employeeName,

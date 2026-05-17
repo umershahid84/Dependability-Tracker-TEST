@@ -83,14 +83,6 @@ export function CreateCallOutForm({
           onChangeHandler={handleCallTimeChange}
         />
 
-        <DateInput
-          name="shiftDate"
-          label="Shift Date"
-          className={styles.input}
-          date={formData.shiftDate}
-          onChangeHandler={onChangeHandler}
-        />
-
         <TimeInput
           name="shiftTime"
           time={shiftTime}
@@ -99,9 +91,26 @@ export function CreateCallOutForm({
           onChangeHandler={handleShiftTimeChange}
         />
 
+        <DateInput
+          name="shiftDate"
+          label="Shift Date From"
+          className={styles.input}
+          date={formData.shiftDate}
+          onChangeHandler={onChangeHandler}
+        />
+
+        <DateInput
+          name="shiftDateTo"
+          label="Shift Date To"
+          required={false}
+          className={styles.input}
+          date={formData.shiftDateTo}
+          onChangeHandler={onChangeHandler}
+        />
+
         <SelectLeaveTypeReason
           leaveTypes={leaveTypes}
-          className={styles.input}
+          className={`${styles.input} md:col-span-2`}
           leaveType={formData.leaveType}
           onChangeHandler={onChangeHandler}
         />
