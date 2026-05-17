@@ -113,14 +113,28 @@ export function getSequelize(props?: SequelizeConfig): Sequelize {
 }
 
 export const ensureCalloutShiftDateToColumn = async (db: Sequelize): Promise<void> => {
-  const queryInterface = db.getQueryInterface();
-  const tableDefinition = await queryInterface.describeTable('callouts');
+  try {
+    const queryInterface = db.getQueryInterface();
+    const tableDefinition = await queryInterface.describeTable('callouts');
 
-  if (!tableDefinition.shift_date_to) {
-    await queryInterface.addColumn('callouts', 'shift_date_to', {
-      type: DataTypes.DATE,
-      allowNull: true
-    });
+    if (!tableDefinition.shift_date_to) {
+      try {
+        await queryInterface.addColumn('callouts', 'shift_date_to', {
+          type: DataTypes.DATE,
+          allowNull: true
+        });
+      } catch (error) {
+        const err = String(error);
+        if (!err.includes('ER_DUP_FIELDNAME') && !err.includes('Duplicate column')) {
+          throw error;
+        }
+      }
+    }
+  } catch (error) {
+    const err = String(error);
+    if (!err.includes('ER_NO_SUCH_TABLE') && !err.includes("doesn't exist")) {
+      throw error;
+    }
   }
 };
 /**
