@@ -29,7 +29,7 @@ export function EmployeeScheduleCalendar({
         {calendar.schedule
           ? `Shift ${calendar.schedule.shift_start_time}-${calendar.schedule.shift_end_time} • ${
               calendar.schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'
-            } • ${calendar.schedule.days_off_type.replaceAll('_', ' ')}`
+            } • ${calendar.schedule.days_off_type.replace(/_/g, ' ')}`
           : 'No active schedule'}
       </p>
       <div className="grid grid-cols-7 gap-1 mb-1">

@@ -25,7 +25,7 @@ export default async function createEmployeeCallout( //NOSONAR
       shiftDateTo,
       shiftTime,
       leaveType,
-      employeeName: employeeId,
+      employeeName: selectedEmployeeId,
       leftEarlyMinutes,
       lateArrivalMinutes
     } = req.body;
@@ -36,7 +36,7 @@ export default async function createEmployeeCallout( //NOSONAR
       !shiftDate ||
       !shiftTime ||
       !leaveType ||
-      !employeeId ||
+      !selectedEmployeeId ||
       !comment
     ) {
       let missingFields = [];
@@ -46,7 +46,7 @@ export default async function createEmployeeCallout( //NOSONAR
       if (!shiftDate) missingFields.push('Shift Date');
       if (!shiftTime) missingFields.push('Shift Time');
       if (!leaveType) missingFields.push('Leave Type');
-      if (!employeeId) missingFields.push('Employee Name');
+      if (!selectedEmployeeId) missingFields.push('Employee Name');
       if (!comment) missingFields.push('Supervisor Comments');
 
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
@@ -69,7 +69,7 @@ export default async function createEmployeeCallout( //NOSONAR
       shift_date_to: shiftDateTo ? parseLocalDate(shiftDateTo) : null,
       callout_date: parseLocalDate(callDate),
       leave_type_id: leaveType,
-      employee_id: employeeId,
+      employee_id: selectedEmployeeId,
       shift_time: shiftDateTime,
       callout_time: callDateTime,
       supervisor_id: supervisorId,
@@ -78,7 +78,7 @@ export default async function createEmployeeCallout( //NOSONAR
       arrived_late_mins: lateArrivalMinutes
     };
 
-    const activeSchedule = await getEmployeeScheduleFromDB.activeByEmployeeId(employeeId);
+    const activeSchedule = await getEmployeeScheduleFromDB.activeByEmployeeId(selectedEmployeeId);
     if (!activeSchedule) {
       return res.status(400).json({
         error:

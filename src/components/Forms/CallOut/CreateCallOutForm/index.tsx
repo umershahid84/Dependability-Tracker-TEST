@@ -16,6 +16,7 @@ import { CallOutFormActionButtons } from '../../FormInputs/CallOutFormActionButt
 import { UseCreateCallOutFormState, useCreateCallOutFormState } from '../../../../hooks';
 import {EmployeeScheduleCalendar} from '../../../Calendar';
 import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
+import {getMonthDateRange} from '../../../../lib/utils';
 
 const styles = {
   input: 'border p-2 rounded-md bg-tertiary',
@@ -55,19 +56,6 @@ export function CreateCallOutForm({
     handleShiftTimeChange
   }: UseCreateCallOutFormState = useCreateCallOutFormState(wrappedCallback);
 
-  const getMonthRange = (dateValue: Date | string) => {
-    const date = typeof dateValue === 'string' ? new Date(`${dateValue}T00:00:00`) : new Date(dateValue);
-    const start = new Date(date.getFullYear(), date.getMonth(), 1);
-    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-    const format = (d: Date) =>
-      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-        d.getDate()
-      ).padStart(2, '0')}`;
-
-    return {startDate: format(start), endDate: format(end)};
-  };
-
   useEffect(() => {
     if (!formData.employeeName) {
       setCalendar(null);
@@ -75,7 +63,7 @@ export function CreateCallOutForm({
     }
 
     (async () => {
-      const {startDate, endDate} = getMonthRange(formData.callDate);
+      const {startDate, endDate} = getMonthDateRange(formData.callDate);
       const response = await GetEmployeeCalendar({
         employeeId: formData.employeeName,
         startDate,

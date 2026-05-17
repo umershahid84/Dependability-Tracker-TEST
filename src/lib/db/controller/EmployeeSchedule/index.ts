@@ -8,6 +8,7 @@ import {
 } from '../../models/EmployeeSchedule';
 import {getCallOutFromDB} from '../Callout';
 import {CallOutWithAssociations} from '../../models/Callout';
+import {isValid24HourTimeHHMM} from '../../../utils';
 
 export type EmployeeScheduleFormData = {
   shiftStartTime: string;
@@ -30,8 +31,6 @@ export type EmployeeCalendarProjection = {
   schedule: EmployeeScheduleAttributes | null;
   days: EmployeeCalendarDay[];
 };
-
-const isValidTime = (value: string): boolean => /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
 
 const daysOffCountMap: Record<DaysOffType, number> = {
   '2_DAYS_OFF': 2,
@@ -56,11 +55,11 @@ const toDateKey = (value: Date): string => {
 };
 
 export const validateEmployeeScheduleFormData = (formData: EmployeeScheduleFormData): void => {
-  if (!isValidTime(formData.shiftStartTime)) {
+  if (!isValid24HourTimeHHMM(formData.shiftStartTime)) {
     throw new Error('Invalid shift start time. Expected HH:MM.');
   }
 
-  if (!isValidTime(formData.shiftEndTime)) {
+  if (!isValid24HourTimeHHMM(formData.shiftEndTime)) {
     throw new Error('Invalid shift end time. Expected HH:MM.');
   }
 

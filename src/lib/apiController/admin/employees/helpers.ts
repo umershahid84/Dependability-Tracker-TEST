@@ -1,5 +1,6 @@
 import {EmployeeFormData} from '../../../../client-api/employees';
 import {getDivisionFromDB} from '../../../db/controller';
+import {isValid24HourTimeHHMM} from '../../../utils';
 
 export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   {
@@ -64,12 +65,12 @@ export const validateAddEmployeeForm = async (
       throw new Error('Admins must be supervisors');
     }
 
-    if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(formData.shiftStartTime)) {
+    if (!isValid24HourTimeHHMM(formData.shiftStartTime)) {
       validated = false;
       throw new Error('Shift Start Time must be in HH:MM format');
     }
 
-    if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(formData.shiftEndTime)) {
+    if (!isValid24HourTimeHHMM(formData.shiftEndTime)) {
       validated = false;
       throw new Error('Shift End Time must be in HH:MM format');
     }
