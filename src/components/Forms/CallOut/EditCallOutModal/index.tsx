@@ -84,6 +84,14 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
           />
 
+          <TimeInput
+            name="shiftTime"
+            label="Shift Time"
+            className={styles.input}
+            time={formData.shiftTime}
+            onChangeHandler={onChangeHandler}
+          />
+
           <DateInput
             name="shiftDate"
             label="Shift Date From"
@@ -98,14 +106,6 @@ export function EditCallOutModal({
             required={false}
             className={styles.input}
             date={formData.shiftDateTo}
-            onChangeHandler={onChangeHandler}
-          />
-
-          <TimeInput
-            name="shiftTime"
-            label="Shift Time"
-            className={styles.input}
-            time={formData.shiftTime}
             onChangeHandler={onChangeHandler}
           />
 

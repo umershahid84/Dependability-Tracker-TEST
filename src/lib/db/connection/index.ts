@@ -1,4 +1,4 @@
-import {Dialect, Sequelize} from 'sequelize';
+import {DataTypes, Dialect, Sequelize} from 'sequelize';
 
 export type SequelizeConfig = {
   dbName: string;
@@ -111,6 +111,18 @@ export function getSequelize(props?: SequelizeConfig): Sequelize {
     }
   );
 }
+
+export const ensureCalloutShiftDateToColumn = async (db: Sequelize): Promise<void> => {
+  const queryInterface = db.getQueryInterface();
+  const tableDefinition = await queryInterface.describeTable('callouts');
+
+  if (!tableDefinition.shift_date_to) {
+    await queryInterface.addColumn('callouts', 'shift_date_to', {
+      type: DataTypes.DATE,
+      allowNull: true
+    });
+  }
+};
 /**
  * The default sequelize object with default values
  */
