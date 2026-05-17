@@ -88,12 +88,7 @@ const TablePdfDocument = ({callOuts}: {callOuts: CallOutWithAssociations[]}) => 
                   ? ` - ${makeDate(callOut.shift_date_to).toLocaleDateString('en-US', {timeZone: 'UTC'})}`
                   : ''}
               </Text>
-              {!callOut.shift_date_to && (
-                <Text
-                  style={
-                    styles.subCell
-                  }>{`Shift Time: ${getTimeNoSeconds(callOut.shift_time)}`}</Text>
-              )}
+              <Text style={styles.subCell}>{`Shift Time: ${getTimeNoSeconds(callOut.shift_time)}`}</Text>
             </View>
             <View style={styles.tableCell}>
               <Text>{callOut.leaveType?.reason}</Text>
