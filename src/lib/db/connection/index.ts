@@ -113,6 +113,11 @@ export function getSequelize(props?: SequelizeConfig): Sequelize {
 }
 
 export const ensureCalloutShiftDateToColumn = async (db: Sequelize): Promise<void> => {
+  const dialect = db.getDialect();
+  if (dialect !== 'mysql' && dialect !== 'mariadb') {
+    return;
+  }
+
   try {
     const queryInterface = db.getQueryInterface();
     const tableDefinition = await queryInterface.describeTable('callouts');
