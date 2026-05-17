@@ -4,12 +4,14 @@ import {useEffect, useState} from 'react';
 import DownloadPDF from '../PDF/DownloadPdfButton';
 import {NextRouter, useRouter} from 'next/router';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {EmployeeCalendarProjection} from '../../client-api/employees';
 import {
   formatDate_YYYY_MM_DD_TZ,
   formatTimeNoSeconds_TZ,
   formatTime_hh_mm_ss_TZ
 } from '../../lib/utils';
 import {getDivisionNameFromPath, headingNormalizer} from '../../lib/utils/shared/strings';
+import {EmployeeScheduleCalendar} from '../Calendar';
 
 const styles = {
   icon: `w-4 h-4`,
@@ -55,8 +57,13 @@ function PrintButton() {
 }
 export function DetailedCallOutHistory({
   callOuts,
+  calendar,
   showDownloadButton = false
-}: Readonly<{callOuts: CallOutWithAssociations[]; showDownloadButton?: boolean}>) {
+}: Readonly<{
+  callOuts: CallOutWithAssociations[];
+  calendar?: EmployeeCalendarProjection | null;
+  showDownloadButton?: boolean;
+}>) {
   const router: NextRouter = useRouter();
   const [mounted, setMounted] = useState(false);
 
@@ -89,7 +96,7 @@ export function DetailedCallOutHistory({
         </h2>
         {showDownloadButton && (
           <span className={styles.buttonContainer}>
-            <DownloadPDF callOuts={callOuts} />
+            <DownloadPDF callOuts={callOuts} calendar={calendar ?? null} />
             <PrintButton />
           </span>
         )}
@@ -138,6 +145,11 @@ export function DetailedCallOutHistory({
           })}
         </tbody>
       </table>
+      {calendar && (
+        <div className="w-full mb-6 max-w-3xl mx-auto">
+          <EmployeeScheduleCalendar calendar={calendar} title="Employee Calendar For Report Period" />
+        </div>
+      )}
     </div>
   );
 }

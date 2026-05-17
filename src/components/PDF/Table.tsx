@@ -2,6 +2,7 @@ import React from 'react';
 import {getTime, getTimeNoSeconds, makeDate} from '../../lib/utils';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {Page, Text, View, Document, StyleSheet} from '@react-pdf/renderer';
+import {EmployeeCalendarProjection} from '../../client-api/employees';
 
 // Define styles
 const styles = StyleSheet.create({
@@ -44,6 +45,18 @@ const styles = StyleSheet.create({
     color: '#888'
   },
   heading: {fontSize: 16, marginBottom: 20, textAlign: 'center'}
+  ,
+  calendarContainer: {
+    marginTop: 10,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000',
+    padding: 6
+  },
+  calendarDayText: {
+    fontSize: 8,
+    marginBottom: 2
+  }
 });
 
 // Define table data
@@ -56,7 +69,13 @@ const headings = [
   'Supervisor Comments'
 ];
 
-const TablePdfDocument = ({callOuts}: {callOuts: CallOutWithAssociations[]}) => (
+const TablePdfDocument = ({
+  callOuts,
+  calendar
+}: {
+  callOuts: CallOutWithAssociations[];
+  calendar?: EmployeeCalendarProjection | null;
+}) => (
   <Document>
     <Page size={'A4'} style={styles.page} orientation="landscape">
       <Text style={styles.heading}>Detailed Callout History</Text>
@@ -107,6 +126,20 @@ const TablePdfDocument = ({callOuts}: {callOuts: CallOutWithAssociations[]}) => 
           </View>
         ))}
       </View>
+      {calendar && (
+        <View style={styles.calendarContainer}>
+          <Text style={{fontSize: 10, marginBottom: 4}}>
+            Employee Calendar ({calendar.startDate} to {calendar.endDate})
+          </Text>
+          <View style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            {calendar.days.map(day => (
+              <Text key={day.date} style={styles.calendarDayText}>
+                {day.date}: {day.isCallOut ? 'Call-out' : day.isDayOff ? 'Day off' : 'Work day'}{'  '}
+              </Text>
+            ))}
+          </View>
+        </View>
+      )}
     </Page>
   </Document>
 );

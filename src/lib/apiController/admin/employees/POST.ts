@@ -1,7 +1,9 @@
 import {
   createEmployeeInDB,
   createSupervisorInDB,
-  EmployeeWithAssociations
+  EmployeeWithAssociations,
+  getEmployeeFromDB,
+  upsertEmployeeScheduleVersionInDB
 } from '../../../db/controller';
 import type { ApiData } from '../../index';
 import { Request, Response } from 'express';
@@ -42,7 +44,7 @@ export default async function postEmployeesApiHandler(
     if (body.isSupervisor) {
       const supervisor: SupervisorWithAssociations | null = await createSupervisorInDB({
         employee_id: newEmployee.id,
-        is_admin: body.isAdmin === '1'
+        is_admin: body.isAdmin
       });
 
       if (!supervisor) {
@@ -52,7 +54,18 @@ export default async function postEmployeesApiHandler(
       }
     }
 
-    return res.status(200).json({ data: newEmployee, message: 'Employee created successfully' });
+    await upsertEmployeeScheduleVersionInDB(newEmployee.id, {
+      shiftStartTime: body.shiftStartTime,
+      shiftEndTime: body.shiftEndTime,
+      daysOffType: body.daysOffType,
+      employeeStatus: body.employeeStatus
+    });
+
+    const createdEmployeeWithSchedule = await getEmployeeFromDB.byId(newEmployee.id);
+
+    return res
+      .status(200)
+      .json({ data: createdEmployeeWithSchedule, message: 'Employee created successfully' });
   } catch (error) {
     const errMessage = '❌ Error in postEmployeesApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

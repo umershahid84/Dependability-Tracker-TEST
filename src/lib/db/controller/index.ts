@@ -6,6 +6,7 @@ export * from './Division';
 export * from './LeaveType';
 export * from './Supervisor';
 export * from './CreateCredentialsInvite';
+export * from './EmployeeSchedule';
 
 export type PaginationQueryParams<T = any> = {
   sortBy?: T;

@@ -271,7 +271,7 @@ export const updateEmployeeInDB = {
         throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
       }
 
-      if (withEmployeeData.isAdmin || withEmployeeData.isSupervisor) {
+      if (withEmployeeData.isAdmin === '1' || withEmployeeData.isSupervisor === '1') {
         const divisionIds = (await getDivisionFromDB.all()).map(division => division.id);
 
         // if the division ids do not equal all the division ids in the database then throw an error

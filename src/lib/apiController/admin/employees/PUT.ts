@@ -1,7 +1,8 @@
 import {
   getEmployeeFromDB,
   updateEmployeeInDB,
-  EmployeeWithAssociations
+  EmployeeWithAssociations,
+  upsertEmployeeScheduleVersionInDB
 } from '../../../db/controller';
 import {Request, Response} from 'express';
 import {logTemplate} from '../../../utils/server';
@@ -23,6 +24,13 @@ export default async function putEmployeesApiHandler(
     if (!updatedEmployee) {
       throw new Error('Error updating employee');
     }
+
+    await upsertEmployeeScheduleVersionInDB(body.id, {
+      shiftStartTime: body.formData.shiftStartTime,
+      shiftEndTime: body.formData.shiftEndTime,
+      daysOffType: body.formData.daysOffType,
+      employeeStatus: body.formData.employeeStatus
+    });
 
     updatedEmployee = await getEmployeeFromDB.byId(body.id);
     return res.status(200).json({

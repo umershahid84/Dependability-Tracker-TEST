@@ -4,6 +4,7 @@ import { DownloadIcon } from '../Icons';
 import { pdf } from '@react-pdf/renderer';
 import { trim } from '../../lib/utils/shared/strings';
 import { CallOutWithAssociations } from '../../lib/db/models/Callout';
+import {EmployeeCalendarProjection} from '../../client-api/employees';
 
 const styles = {
     icon: `w-4 h-4`,
@@ -12,9 +13,15 @@ const styles = {
 }
 
 
-const DownloadPDF = ({ callOuts }: { callOuts: CallOutWithAssociations[] }) => {
+const DownloadPDF = ({
+    callOuts,
+    calendar
+}: {
+    callOuts: CallOutWithAssociations[];
+    calendar?: EmployeeCalendarProjection | null;
+}) => {
     const handleDownload = async () => {
-        const blob = await pdf(<TablePdfDocument callOuts={callOuts} />).toBlob();
+        const blob = await pdf(<TablePdfDocument callOuts={callOuts} calendar={calendar ?? null} />).toBlob();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;

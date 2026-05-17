@@ -5,6 +5,7 @@ import { uuidV4Regex } from '../../../utils';
 import { logTemplate } from '../../../utils/server';
 import { Employee, Division } from '../../models';
 import { EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations } from '../../models/types';
+import {getEmployeeScheduleFromDB} from '../EmployeeSchedule';
 
 /**
  * This is a hack really. There is a way to properly associate the Employee and Division models
@@ -54,7 +55,10 @@ export const populateEmployeeWithDivisions = async (
   employee: EmployeeAttributes
 ): Promise<EmployeeWithAssociations> => {
   // populate the employee object with the division data
-  const divisions = await getEmployeeDivisions(employee.id);
+  const [divisions, activeSchedule] = await Promise.all([
+    getEmployeeDivisions(employee.id),
+    getEmployeeScheduleFromDB.activeByEmployeeId(employee.id)
+  ]);
 
   // istanbul ignore next
   if (divisions.length === 0) {
@@ -66,7 +70,8 @@ export const populateEmployeeWithDivisions = async (
     name: employee.name,
     createdAt: employee.createdAt,
     updatedAt: employee.updatedAt,
-    divisions
+    divisions,
+    activeSchedule
   };
 };
 

@@ -3,7 +3,7 @@ import {Request, Response} from 'express';
 import {JwtPayload} from '../../../auth';
 // import {LoginCredential} from '../../db';
 import type {ApiData} from '../../../lib/apiController';
-import {createCallOutInDB} from '../../../lib/db/controller';
+import {createCallOutInDB, getEmployeeScheduleFromDB} from '../../../lib/db/controller';
 import {sendCallOutDetails} from '../../email/sendCallOutDetails';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {logTemplate} from '../../utils/server';
@@ -77,6 +77,14 @@ export default async function createEmployeeCallout( //NOSONAR
       left_early_mins: leftEarlyMinutes ?? 0,
       arrived_late_mins: lateArrivalMinutes
     };
+
+    const activeSchedule = await getEmployeeScheduleFromDB.activeByEmployeeId(employeeName);
+    if (!activeSchedule) {
+      return res.status(400).json({
+        error:
+          'Selected employee does not have an active schedule. Add or update employee schedule first.'
+      });
+    }
 
     const callOut: CallOutWithAssociations | null = await createCallOutInDB(callOutData);
 

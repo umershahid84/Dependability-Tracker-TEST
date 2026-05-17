@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   LeaveTypeAttributes,
   CallOutWithAssociations,
@@ -14,13 +14,15 @@ import { SelectLeaveTypeReason } from '../../FormInputs/SelectLeaveType';
 import { ArrivedLateWithRange } from '../../FormInputs/ArrivedLateWithRange';
 import { CallOutFormActionButtons } from '../../FormInputs/CallOutFormActionButtons';
 import { UseCreateCallOutFormState, useCreateCallOutFormState } from '../../../../hooks';
+import {EmployeeScheduleCalendar} from '../../../Calendar';
+import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
 
 const styles = {
   input: 'border p-2 rounded-md bg-tertiary',
   textArea: 'border rounded-md w-full bg-tertiary',
   div: 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full',
-  form: `flex flex-col justify-center items-center p-2 bg-tertiary border
-   border-bg-quaternary rounded-md w-full max-w-3xl mx-auto text-sm lg:text-base hide-on-print print:hidden`
+   form: `flex flex-col justify-center items-center p-2 bg-tertiary border
+    border-bg-quaternary rounded-md w-full max-w-6xl mx-auto text-sm lg:text-base hide-on-print print:hidden`
 };
 
 export type CreateCallOutFormProps = {
@@ -34,6 +36,14 @@ export function CreateCallOutForm({
   employees,
   leaveTypes
 }: Readonly<CreateCallOutFormProps>) {
+  const [calendar, setCalendar] = useState<EmployeeCalendarProjection | null>(null);
+  const [calendarRefreshId, setCalendarRefreshId] = useState(0);
+
+  const wrappedCallback = (data: CallOutWithAssociations) => {
+    callback?.(data);
+    setCalendarRefreshId(prev => prev + 1);
+  };
+
   const {
     formData,
     callTime,
@@ -43,7 +53,45 @@ export function CreateCallOutForm({
     handleFormSubmit,
     handleCallTimeChange,
     handleShiftTimeChange
-  }: UseCreateCallOutFormState = useCreateCallOutFormState(callback);
+  }: UseCreateCallOutFormState = useCreateCallOutFormState(wrappedCallback);
+
+  const getMonthRange = (dateValue: Date | string) => {
+    const date = typeof dateValue === 'string' ? new Date(`${dateValue}T00:00:00`) : new Date(dateValue);
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const format = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+        d.getDate()
+      ).padStart(2, '0')}`;
+
+    return {startDate: format(start), endDate: format(end)};
+  };
+
+  useEffect(() => {
+    if (!formData.employeeName) {
+      setCalendar(null);
+      return;
+    }
+
+    (async () => {
+      const {startDate, endDate} = getMonthRange(formData.callDate);
+      const response = await GetEmployeeCalendar({
+        employeeId: formData.employeeName,
+        startDate,
+        endDate
+      });
+
+      setCalendar(response.data ?? null);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.employeeName, formData.callDate, calendarRefreshId]);
+
+  const handleFormValueChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    onChangeHandler(e);
+  };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
@@ -59,21 +107,23 @@ export function CreateCallOutForm({
       className={trim(styles.form)}>
       {' '}
       {/*NOSONAR */}
-      <div className={styles.div}>
-        <SelectEmployeeName
-          employees={employees}
-          className={styles.input}
-          onChangeHandler={onChangeHandler}
-          employeeName={trim(formData.employeeName)}
-        />
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <EmployeeScheduleCalendar calendar={calendar} />
+        <div className={styles.div}>
+          <SelectEmployeeName
+            employees={employees}
+            className={styles.input}
+            onChangeHandler={handleFormValueChange}
+            employeeName={trim(formData.employeeName)}
+          />
 
-        <DateInput
-          name="callDate"
-          label="Call Date"
-          className={styles.input}
-          date={formData.callDate}
-          onChangeHandler={onChangeHandler}
-        />
+          <DateInput
+            name="callDate"
+            label="Call Date"
+            className={styles.input}
+            date={formData.callDate}
+            onChangeHandler={handleFormValueChange}
+          />
 
         <TimeInput
           name="callTime"
@@ -91,36 +141,37 @@ export function CreateCallOutForm({
           onChangeHandler={handleShiftTimeChange}
         />
 
-        <DateInput
-          name="shiftDate"
-          label="Shift Date From"
-          className={styles.input}
-          date={formData.shiftDate}
-          onChangeHandler={onChangeHandler}
-        />
+          <DateInput
+            name="shiftDate"
+            label="Shift Date From"
+            className={styles.input}
+            date={formData.shiftDate}
+            onChangeHandler={handleFormValueChange}
+          />
 
-        <DateInput
-          name="shiftDateTo"
-          label="Shift Date To"
-          required={false}
-          className={styles.input}
-          date={formData.shiftDateTo}
-          onChangeHandler={onChangeHandler}
-        />
+          <DateInput
+            name="shiftDateTo"
+            label="Shift Date To"
+            required={false}
+            className={styles.input}
+            date={formData.shiftDateTo}
+            onChangeHandler={handleFormValueChange}
+          />
 
-        <SelectLeaveTypeReason
-          leaveTypes={leaveTypes}
-          className={`${styles.input} md:col-span-2`}
-          leaveType={formData.leaveType}
-          onChangeHandler={onChangeHandler}
-        />
+          <SelectLeaveTypeReason
+            leaveTypes={leaveTypes}
+            className={`${styles.input} md:col-span-2`}
+            leaveType={formData.leaveType}
+            onChangeHandler={handleFormValueChange}
+          />
 
-        <ArrivedLateWithRange
-          value={formData.lateArrivalMinutes}
-          onChangeHandler={onChangeHandler}
-        />
+          <ArrivedLateWithRange
+            value={formData.lateArrivalMinutes}
+            onChangeHandler={handleFormValueChange}
+          />
 
-        <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={onChangeHandler} />
+          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={handleFormValueChange} />
+        </div>
       </div>
       <div className="w-full p-4">
         <TextArea
@@ -129,7 +180,7 @@ export function CreateCallOutForm({
           label="Comments"
           value={formData.comment}
           className={styles.textArea}
-          onChangeHandler={onChangeHandler}
+          onChangeHandler={handleFormValueChange}
         />
       </div>
       <CallOutFormActionButtons resetFormData={resetFormData} handleFormSubmit={handleFormSubmit} />

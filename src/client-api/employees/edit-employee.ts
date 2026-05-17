@@ -20,7 +20,11 @@ export const EditEmployee = async ({
         name: formData.name,
         division: formData.division,
         isAdmin: formData.isAdmin,
-        isSupervisor: formData.isSupervisor
+        isSupervisor: formData.isSupervisor,
+        shiftStartTime: formData.shiftStartTime,
+        shiftEndTime: formData.shiftEndTime,
+        daysOffType: formData.daysOffType,
+        employeeStatus: formData.employeeStatus
       }
     };
 
