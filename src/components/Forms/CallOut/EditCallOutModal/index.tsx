@@ -113,7 +113,7 @@ export function EditCallOutModal({
             leaveTypes={leaveTypes}
             leaveType={formData.leaveType}
             onChangeHandler={onChangeHandler}
-            className={styles.input + ' p-[10.5px]'}
+            className={styles.input + ' p-[10.5px] md:col-span-2'}
           />
 
           <ArrivedLateWithRange

@@ -110,7 +110,7 @@ export function CreateCallOutForm({
 
         <SelectLeaveTypeReason
           leaveTypes={leaveTypes}
-          className={styles.input}
+          className={`${styles.input} md:col-span-2`}
           leaveType={formData.leaveType}
           onChangeHandler={onChangeHandler}
         />
