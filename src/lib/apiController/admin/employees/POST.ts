@@ -23,8 +23,8 @@ export default async function postEmployeesApiHandler(
 
     await validateAddEmployeeForm(body);
 
-    body.isAdmin = body.isAdmin === '1';
-    body.isSupervisor = body.isSupervisor === '1';
+    const isAdmin = body.isAdmin === true || body.isAdmin === '1';
+    const isSupervisor = body.isSupervisor === true || body.isSupervisor === '1';
 
     const newEmployee: EmployeeWithAssociations | null = await createEmployeeInDB({
       name: body.name,
@@ -35,16 +35,16 @@ export default async function postEmployeesApiHandler(
       return res.status(500).json({ error: 'Error creating employee' });
     }
 
-    if (body.isAdmin && !body.isSupervisor) {
+    if (isAdmin && !isSupervisor) {
       return res
         .status(400)
         .json({ error: 'Cannot create an admin employee without being a supervisor' });
     }
 
-    if (body.isSupervisor) {
+    if (isSupervisor) {
       const supervisor: SupervisorWithAssociations | null = await createSupervisorInDB({
         employee_id: newEmployee.id,
-        is_admin: body.isAdmin
+        is_admin: isAdmin
       });
 
       if (!supervisor) {
