@@ -124,15 +124,23 @@ export const ensureCalloutShiftDateToColumn = async (db: Sequelize): Promise<voi
           allowNull: true
         });
       } catch (error) {
-        const err = String(error);
-        if (!err.includes('ER_DUP_FIELDNAME') && !err.includes('Duplicate column')) {
+        const dbError = error as {
+          original?: {code?: string};
+          parent?: {code?: string};
+        };
+        const code = dbError.original?.code ?? dbError.parent?.code;
+        if (code !== 'ER_DUP_FIELDNAME') {
           throw error;
         }
       }
     }
   } catch (error) {
-    const err = String(error);
-    if (!err.includes('ER_NO_SUCH_TABLE') && !err.includes("doesn't exist")) {
+    const dbError = error as {
+      original?: {code?: string};
+      parent?: {code?: string};
+    };
+    const code = dbError.original?.code ?? dbError.parent?.code;
+    if (code !== 'ER_NO_SUCH_TABLE') {
       throw error;
     }
   }

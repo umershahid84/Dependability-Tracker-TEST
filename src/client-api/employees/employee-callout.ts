@@ -62,7 +62,7 @@ export const CreateEmployeeCallOut = async ({
         lateArrivalMinutes: formData.lateArrivalMinutes,
         callDate: formData.callDate,
         shiftDate: formData.shiftDate,
-        shiftDateTo: formData.shiftDateTo || null,
+        shiftDateTo: formData.shiftDateTo === '' ? null : formData.shiftDateTo,
         callTime,
         shiftTime
       })
