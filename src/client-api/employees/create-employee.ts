@@ -11,6 +11,7 @@ export type EmployeeFormData = {
   isSupervisor: '0' | '1';
   shiftStartTime: string;
   shiftEndTime: string;
+  daysOff: string;
   daysOffType: '2_DAYS_OFF' | '3_DAYS_OFF' | '4_DAYS_OFF';
   employeeStatus: 'FULL_TIME' | 'PART_TIME';
 };
@@ -22,6 +23,7 @@ export const defaultEmployeeFormData: EmployeeFormData = {
   isSupervisor: '0',
   shiftStartTime: '07:00',
   shiftEndTime: '15:00',
+  daysOff: '0,6',
   daysOffType: '2_DAYS_OFF',
   employeeStatus: 'FULL_TIME'
 };

@@ -24,6 +24,7 @@ export type CallOutAttributes = {
   shift_date: Date;
   shift_date_to: Date | null;
   shift_time: Date;
+  shift_type: string | null;
   callout_date: Date;
   callout_time: Date;
   employee_id: string;
@@ -44,6 +45,7 @@ export type CallOutCreationAttributes = {
   shift_date: Date;
   shift_date_to?: Date | null;
   shift_time: Date;
+  shift_type?: string | null;
   callout_date: Date;
   callout_time: Date;
   employee_id: string;
@@ -64,6 +66,7 @@ export type CallOutWithAssociations = {
   shift_date: Date;
   shift_date_to: Date | null;
   shift_time: Date;
+  shift_type: string | null;
   callout_date: Date;
   callout_time: Date;
   supervisor_comments: string;
@@ -82,6 +85,7 @@ class CallOut
   declare shift_date: Date;
   declare shift_date_to: Date | null;
   declare shift_time: Date;
+  declare shift_type: string | null;
   declare callout_date: Date;
   declare callout_time: Date;
   declare supervisor_comments: string;
@@ -117,6 +121,10 @@ CallOut.init(
     },
     shift_date_to: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    shift_type: {
+      type: DataTypes.STRING,
       allowNull: true
     },
     shift_time: {

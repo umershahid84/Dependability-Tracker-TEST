@@ -5,6 +5,7 @@ export type EmployeeCalendarDay = {
   isCallOut: boolean;
   isDayOff: boolean;
   isScheduledWorkDay: boolean;
+  callOutType: string | null;
 };
 
 export type EmployeeCalendarProjection = {
@@ -15,6 +16,7 @@ export type EmployeeCalendarProjection = {
     shift_start_time: string;
     shift_end_time: string;
     days_off_type: '2_DAYS_OFF' | '3_DAYS_OFF' | '4_DAYS_OFF';
+    days_off: number[] | null;
     employee_status: 'FULL_TIME' | 'PART_TIME';
   } | null;
   days: EmployeeCalendarDay[];

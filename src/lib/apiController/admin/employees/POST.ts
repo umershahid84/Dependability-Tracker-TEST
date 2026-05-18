@@ -57,7 +57,10 @@ export default async function postEmployeesApiHandler(
     await upsertEmployeeScheduleVersionInDB(newEmployee.id, {
       shiftStartTime: body.shiftStartTime,
       shiftEndTime: body.shiftEndTime,
-      daysOffType: body.daysOffType,
+      daysOffType: body.daysOffType ?? '2_DAYS_OFF',
+      daysOff: body.daysOff
+        ? String(body.daysOff).split(',').map((d: string) => parseInt(d.trim(), 10)).filter((d: number) => !isNaN(d))
+        : null,
       employeeStatus: body.employeeStatus
     });
 

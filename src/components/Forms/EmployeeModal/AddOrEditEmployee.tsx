@@ -81,6 +81,9 @@ export function AddOrEditEmployeeForm({
         division: employeeData?.divisions.map(({id}) => id.toString()).join(',') ?? '',
         shiftStartTime: employeeData?.activeSchedule?.shift_start_time ?? '07:00',
         shiftEndTime: employeeData?.activeSchedule?.shift_end_time ?? '15:00',
+        daysOff: employeeData?.activeSchedule?.days_off
+          ? employeeData.activeSchedule.days_off.join(',')
+          : '0,6',
         daysOffType: employeeData?.activeSchedule?.days_off_type ?? '2_DAYS_OFF',
         employeeStatus: employeeData?.activeSchedule?.employee_status ?? 'FULL_TIME'
       });

@@ -14,6 +14,7 @@ export type EmployeeScheduleFormData = {
   shiftStartTime: string;
   shiftEndTime: string;
   daysOffType: DaysOffType;
+  daysOff?: number[] | null;
   employeeStatus: EmployeeStatusType;
 };
 
@@ -22,6 +23,7 @@ export type EmployeeCalendarDay = {
   isCallOut: boolean;
   isDayOff: boolean;
   isScheduledWorkDay: boolean;
+  callOutType: string | null;
 };
 
 export type EmployeeCalendarProjection = {
@@ -36,6 +38,14 @@ const daysOffCountMap: Record<DaysOffType, number> = {
   '2_DAYS_OFF': 2,
   '3_DAYS_OFF': 3,
   '4_DAYS_OFF': 4
+};
+
+const deriveDaysOffType = (daysOff: number[] | null | undefined): DaysOffType | null => {
+  if (!daysOff || daysOff.length === 0) return null;
+  const count = daysOff.length;
+  if (count <= 2) return '2_DAYS_OFF';
+  if (count === 3) return '3_DAYS_OFF';
+  return '4_DAYS_OFF';
 };
 
 const parseDateInput = (value: string | Date): Date => {
@@ -63,7 +73,11 @@ export const validateEmployeeScheduleFormData = (formData: EmployeeScheduleFormD
     throw new Error('Invalid shift end time. Expected HH:MM.');
   }
 
-  if (!['2_DAYS_OFF', '3_DAYS_OFF', '4_DAYS_OFF'].includes(formData.daysOffType)) {
+  if (formData.daysOff && formData.daysOff.length > 0) {
+    if (formData.daysOff.some(d => d < 0 || d > 6 || !Number.isInteger(d))) {
+      throw new Error('Invalid days off selection. Days must be integers between 0 (Sun) and 6 (Sat).');
+    }
+  } else if (!['2_DAYS_OFF', '3_DAYS_OFF', '4_DAYS_OFF'].includes(formData.daysOffType)) {
     throw new Error('Invalid days off selection.');
   }
 
@@ -80,10 +94,16 @@ const isSameSchedule = (
     return false;
   }
 
+  const sameDaysOff =
+    nextData.daysOff && nextData.daysOff.length > 0
+      ? JSON.stringify([...(nextData.daysOff ?? [])].sort()) ===
+        JSON.stringify([...(current.days_off ?? [])].sort())
+      : current.days_off_type === nextData.daysOffType;
+
   return (
     current.shift_start_time === nextData.shiftStartTime &&
     current.shift_end_time === nextData.shiftEndTime &&
-    current.days_off_type === nextData.daysOffType &&
+    sameDaysOff &&
     current.employee_status === nextData.employeeStatus
   );
 };
@@ -147,11 +167,14 @@ export const upsertEmployeeScheduleVersionInDB = async (
     );
   }
 
+  const derivedDaysOffType = deriveDaysOffType(formData.daysOff);
+
   return createEmployeeScheduleInDB({
     employee_id: employeeId,
     shift_start_time: formData.shiftStartTime,
     shift_end_time: formData.shiftEndTime,
-    days_off_type: formData.daysOffType,
+    days_off_type: derivedDaysOffType ?? formData.daysOffType,
+    days_off: formData.daysOff ?? null,
     employee_status: formData.employeeStatus,
     effective_start: new Date(),
     effective_end: null,
@@ -160,6 +183,11 @@ export const upsertEmployeeScheduleVersionInDB = async (
 };
 
 const buildCycleDayType = (targetDate: Date, schedule: EmployeeScheduleAttributes) => {
+  // If specific days of week are configured, use them directly
+  if (schedule.days_off && schedule.days_off.length > 0) {
+    return schedule.days_off.includes(targetDate.getDay()) ? 'DAY_OFF' : 'WORK_DAY';
+  }
+
   const scheduleStart = new Date(schedule.effective_start);
   const normalizedStart = new Date(
     scheduleStart.getFullYear(),
@@ -206,12 +234,12 @@ export const buildEmployeeCalendarProjection = async ({
     }) as Promise<CallOutWithAssociations[]>
   ]);
 
-  const calloutDateSet = new Set(
-    (callouts ?? []).map(callout => {
-      const date = new Date(callout.callout_date);
-      return toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
-    })
-  );
+  const calloutDateMap = new Map<string, string>();
+  for (const callout of callouts ?? []) {
+    const date = new Date(callout.callout_date);
+    const key = toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
+    calloutDateMap.set(key, callout.leaveType?.reason ?? '');
+  }
 
   const days: EmployeeCalendarDay[] = [];
   const cursor = new Date(start);
@@ -219,13 +247,15 @@ export const buildEmployeeCalendarProjection = async ({
     const dateKey = toDateKey(cursor);
     const dayType = schedule ? buildCycleDayType(cursor, schedule) : 'WORK_DAY';
     const isDayOff = dayType === 'DAY_OFF';
-    const isCallOut = calloutDateSet.has(dateKey);
+    const callOutType = calloutDateMap.get(dateKey) ?? null;
+    const isCallOut = callOutType !== null;
 
     days.push({
       date: dateKey,
       isCallOut,
       isDayOff,
-      isScheduledWorkDay: !isDayOff
+      isScheduledWorkDay: !isDayOff,
+      callOutType
     });
 
     cursor.setDate(cursor.getDate() + 1);

@@ -163,18 +163,38 @@ export function EmployeeCrudFromModalLayout({
         </FormLabelContainer>
 
         <FormLabelContainer>
-          <FormLabel label="Days Off" htmlFor="daysOffType" />
-          <select
-            required
-            name="daysOffType"
-            title="Days Off Type"
-            className={styles.input}
-            value={formData.daysOffType}
-            onChange={onChange}>
-            <option value="2_DAYS_OFF">2 Days Off</option>
-            <option value="3_DAYS_OFF">3 Days Off</option>
-            <option value="4_DAYS_OFF">4 Days Off</option>
-          </select>
+          <FormLabel label="Days Off" htmlFor="daysOff" />
+          <div className="flex flex-wrap gap-3 mt-1">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => {
+              const selectedDays = formData.daysOff
+                ? formData.daysOff.split(',').map(d => d.trim()).filter(Boolean).map(Number)
+                : [];
+              const isChecked = selectedDays.includes(index);
+              return (
+                <label key={day} className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    name="daysOff"
+                    value={String(index)}
+                    checked={isChecked}
+                    onChange={e => {
+                      const current = formData.daysOff
+                        ? formData.daysOff.split(',').map(d => d.trim()).filter(Boolean).map(Number)
+                        : [];
+                      const updated = e.target.checked
+                        ? [...current, index]
+                        : current.filter(d => d !== index);
+                      onChange({
+                        target: {name: 'daysOff', value: updated.sort().join(',')}
+                      } as React.ChangeEvent<HTMLInputElement>);
+                    }}
+                    className="h-4 w-4 border-gray-300 rounded bg-tertiary"
+                  />
+                  {day}
+                </label>
+              );
+            })}
+          </div>
         </FormLabelContainer>
 
         <FormLabelContainer>
