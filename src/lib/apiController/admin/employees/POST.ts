@@ -63,7 +63,9 @@ export default async function postEmployeesApiHandler(
 
     const createdEmployeeWithSchedule = await getEmployeeFromDB.byId(newEmployee.id);
     if (!createdEmployeeWithSchedule) {
-      return res.status(500).json({ error: 'Error fetching created employee' });
+      return res
+        .status(500)
+        .json({ error: 'Failed to retrieve newly created employee - database inconsistency detected' });
     }
 
     return res
