@@ -65,7 +65,7 @@ export default async function postEmployeesApiHandler(
     if (!createdEmployeeWithSchedule) {
       return res
         .status(500)
-        .json({ error: 'Failed to retrieve newly created employee - database inconsistency detected' });
+        .json({ error: 'Failed to retrieve newly created employee after creation' });
     }
 
     return res
