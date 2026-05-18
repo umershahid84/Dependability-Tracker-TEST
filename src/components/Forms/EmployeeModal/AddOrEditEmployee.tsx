@@ -78,7 +78,11 @@ export function AddOrEditEmployeeForm({
         name: employeeData?.name ?? '',
         isAdmin: employeeData?.role?.includes('Admin') ? '1' : '0',
         isSupervisor: employeeData?.role?.includes('Supervisor') ? '1' : '0',
-        division: employeeData?.divisions.map(({id}) => id.toString()).join(',') ?? ''
+        division: employeeData?.divisions.map(({id}) => id.toString()).join(',') ?? '',
+        shiftStartTime: employeeData?.activeSchedule?.shift_start_time ?? '07:00',
+        shiftEndTime: employeeData?.activeSchedule?.shift_end_time ?? '15:00',
+        daysOffType: employeeData?.activeSchedule?.days_off_type ?? '2_DAYS_OFF',
+        employeeStatus: employeeData?.activeSchedule?.employee_status ?? 'FULL_TIME'
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

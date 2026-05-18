@@ -17,6 +17,8 @@ import {SelectEmployeeName} from '../../../Forms/FormInputs/SelectEmployeeName';
 import {SelectLeaveTypeReason} from '../../../Forms/FormInputs/SelectLeaveType';
 import {capitalizeWords, getDivisionNameFromPath} from '../../../../lib/utils/shared/strings';
 import {GetCallOuts} from '../../../../client-api/callouts';
+import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
+import {formatDateToISODateOnly} from '../../../../lib/utils';
 
 export type DivisionCalloutReportFormData = {
   endDate: Date;
@@ -43,6 +45,7 @@ export type DivisionReportProps = {
   leaveTypes: string;
   setIsLoading: (isLoading: boolean) => void;
   setCallOuts: (callOuts: CallOutWithAssociations[]) => void;
+  setCalendar: (calendar: EmployeeCalendarProjection | null) => void;
 };
 
 export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
@@ -88,6 +91,18 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       );
 
       props.setCallOuts(callOuts?.data?.data ?? []);
+
+      if (formData.employeeId && formData.employeeId !== 'all') {
+        const calendar = await GetEmployeeCalendar({
+          employeeId: formData.employeeId,
+          startDate: formatDateToISODateOnly(new Date(formData.startDate)),
+          endDate: formatDateToISODateOnly(new Date(formData.endDate))
+        });
+
+        props.setCalendar(calendar.data ?? null);
+      } else {
+        props.setCalendar(null);
+      }
 
       props.setIsLoading(false);
     } catch (error) {

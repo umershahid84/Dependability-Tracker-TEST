@@ -6,6 +6,7 @@ import LoginCredential from './LoginCredential';
 import Division, {DefaultDivisions} from './Division';
 import LeaveType, {DefaultLeaveTypes} from './LeaveType';
 import CreateCredentialsInvite from './CreateCredentialsInvite';
+import EmployeeSchedule from './EmployeeSchedule';
 
 CallOut.belongsTo(Employee, {
   foreignKey: 'employee_id',
@@ -32,6 +33,18 @@ Employee.hasMany(CallOut, {
   sourceKey: 'id',
   foreignKey: 'employee_id',
   as: 'callouts'
+});
+
+Employee.hasMany(EmployeeSchedule, {
+  sourceKey: 'id',
+  foreignKey: 'employee_id',
+  as: 'schedules'
+});
+
+EmployeeSchedule.belongsTo(Employee, {
+  foreignKey: 'employee_id',
+  as: 'employee',
+  onDelete: 'CASCADE'
 });
 
 LoginCredential.belongsTo(Supervisor, {
@@ -84,6 +97,7 @@ const models = {
   Employee,
   LeaveType,
   Supervisor,
+  EmployeeSchedule,
   LoginCredential,
   CreateCredentialsInvite
 };
@@ -96,6 +110,7 @@ export {
   Employee,
   LeaveType,
   Supervisor,
+  EmployeeSchedule,
   LoginCredential,
   DefaultDivisions,
   DefaultLeaveTypes,

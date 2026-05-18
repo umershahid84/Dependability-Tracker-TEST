@@ -22,6 +22,7 @@ import CallOut, { CallOutAttributes, CallOutWithAssociations } from '../Callout'
 import sequelize from '../../connection';
 import { DivisionAttributes } from '../Division';
 import { uuid } from '../../../utils/shared/uuid';
+import {EmployeeScheduleAttributes} from '../EmployeeSchedule';
 
 export interface EmployeeAttributes {
   id: string;
@@ -30,6 +31,7 @@ export interface EmployeeAttributes {
   updatedAt: Date;
   division_ids: string[];
   callouts?: (CallOutAttributes | CallOutWithAssociations)[];
+  activeSchedule?: EmployeeScheduleAttributes | null;
 }
 
 export type EmployeeWithAssociations = {
@@ -40,6 +42,7 @@ export type EmployeeWithAssociations = {
   updatedAt: Date;
   divisions: DivisionAttributes[];
   callouts?: (CallOutAttributes | CallOutWithAssociations)[];
+  activeSchedule?: EmployeeScheduleAttributes | null;
 };
 
 export type EmployeeCreationAttributes = {

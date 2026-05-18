@@ -140,3 +140,25 @@ export const formatTimeWithAmPm = (time: string): string => {
 };
 
 export const makeDate = (date: Date | string) => new Date(date);
+
+export const isValid24HourTimeHHMM = (value: string): boolean =>
+  /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
+
+export const formatDateToISODateOnly = (value: Date): string =>
+  `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(
+    value.getDate()
+  ).padStart(2, '0')}`;
+
+export const getMonthDateRange = (
+  dateValue: Date | string
+): {
+  startDate: string;
+  endDate: string;
+} => {
+  const date =
+    typeof dateValue === 'string' ? new Date(`${dateValue}T00:00:00`) : new Date(dateValue);
+  const start = new Date(date.getFullYear(), date.getMonth(), 1);
+  const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  return {startDate: formatDateToISODateOnly(start), endDate: formatDateToISODateOnly(end)};
+};

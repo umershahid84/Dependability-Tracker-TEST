@@ -136,6 +136,61 @@ export function EmployeeCrudFromModalLayout({
           </RadioDivider>
         </FormLabelContainer>
 
+        <FormLabelContainer>
+          <FormLabel label="Shift Start Time" htmlFor="shiftStartTime" />
+          <input
+            required
+            type="time"
+            name="shiftStartTime"
+            title="Shift Start Time"
+            value={formData.shiftStartTime}
+            onChange={onChange}
+            className={styles.input}
+          />
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Shift End Time" htmlFor="shiftEndTime" />
+          <input
+            required
+            type="time"
+            name="shiftEndTime"
+            title="Shift End Time"
+            value={formData.shiftEndTime}
+            onChange={onChange}
+            className={styles.input}
+          />
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Days Off" htmlFor="daysOffType" />
+          <select
+            required
+            name="daysOffType"
+            title="Days Off Type"
+            className={styles.input}
+            value={formData.daysOffType}
+            onChange={onChange}>
+            <option value="2_DAYS_OFF">2 Days Off</option>
+            <option value="3_DAYS_OFF">3 Days Off</option>
+            <option value="4_DAYS_OFF">4 Days Off</option>
+          </select>
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Employee Status" htmlFor="employeeStatus" />
+          <select
+            required
+            name="employeeStatus"
+            title="Employee Status"
+            className={styles.input}
+            value={formData.employeeStatus}
+            onChange={onChange}>
+            <option value="FULL_TIME">Full-Time</option>
+            <option value="PART_TIME">Part-Time</option>
+          </select>
+        </FormLabelContainer>
+
         <div className={styles.buttonContainer}>
           <button type="button" className={styles.button} onClick={onSubmit}>
             Submit

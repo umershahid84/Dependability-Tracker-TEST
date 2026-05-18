@@ -13,7 +13,7 @@ export type UseCreateCallOutFormState = {
   callTime: string;
   shiftTime: string;
   formData: DefaultCallOutFormData;
-  resetFormData: () => void;
+  resetFormData: (employeeId?: string) => void;
   handleFormSubmit: (e: React.SyntheticEvent) => Promise<void>;
   handleCallTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleShiftTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -86,7 +86,7 @@ export function useCreateCallOutFormState(
         type: ToastTypes.Success,
         message: data.message ?? 'Callout Created Successfully'
       });
-      resetFormData();
+      resetFormData(formData.employeeName);
       callback?.(data?.data as CallOutWithAssociations);
     } catch (error) {
       console.error('Error Creating Callout:\n', error);
@@ -105,8 +105,8 @@ export function useCreateCallOutFormState(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
-  const resetFormData = () => {
-    setFormData(defaultFormData);
+  const resetFormData = (employeeId?: string) => {
+    setFormData({...defaultFormData, employeeName: employeeId ?? ''});
     incrementingCallTime.resetTime();
     incrementingShiftTime.resetTime();
   };

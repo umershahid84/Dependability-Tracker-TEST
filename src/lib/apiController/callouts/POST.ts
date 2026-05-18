@@ -3,7 +3,7 @@ import {Request, Response} from 'express';
 import {JwtPayload} from '../../../auth';
 // import {LoginCredential} from '../../db';
 import type {ApiData} from '../../../lib/apiController';
-import {createCallOutInDB} from '../../../lib/db/controller';
+import {createCallOutInDB, getEmployeeScheduleFromDB} from '../../../lib/db/controller';
 import {sendCallOutDetails} from '../../email/sendCallOutDetails';
 import {CallOutCreationAttributes, CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {logTemplate} from '../../utils/server';
@@ -25,7 +25,7 @@ export default async function createEmployeeCallout( //NOSONAR
       shiftDateTo,
       shiftTime,
       leaveType,
-      employeeName,
+      employeeName: selectedEmployeeId,
       leftEarlyMinutes,
       lateArrivalMinutes
     } = req.body;
@@ -36,7 +36,7 @@ export default async function createEmployeeCallout( //NOSONAR
       !shiftDate ||
       !shiftTime ||
       !leaveType ||
-      !employeeName ||
+      !selectedEmployeeId ||
       !comment
     ) {
       let missingFields = [];
@@ -46,7 +46,7 @@ export default async function createEmployeeCallout( //NOSONAR
       if (!shiftDate) missingFields.push('Shift Date');
       if (!shiftTime) missingFields.push('Shift Time');
       if (!leaveType) missingFields.push('Leave Type');
-      if (!employeeName) missingFields.push('Employee Name');
+      if (!selectedEmployeeId) missingFields.push('Employee Name');
       if (!comment) missingFields.push('Supervisor Comments');
 
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
@@ -69,7 +69,7 @@ export default async function createEmployeeCallout( //NOSONAR
       shift_date_to: shiftDateTo ? parseLocalDate(shiftDateTo) : null,
       callout_date: parseLocalDate(callDate),
       leave_type_id: leaveType,
-      employee_id: employeeName,
+      employee_id: selectedEmployeeId,
       shift_time: shiftDateTime,
       callout_time: callDateTime,
       supervisor_id: supervisorId,
@@ -77,6 +77,14 @@ export default async function createEmployeeCallout( //NOSONAR
       left_early_mins: leftEarlyMinutes ?? 0,
       arrived_late_mins: lateArrivalMinutes
     };
+
+    const activeSchedule = await getEmployeeScheduleFromDB.activeByEmployeeId(selectedEmployeeId);
+    if (!activeSchedule) {
+      return res.status(400).json({
+        error:
+          'Selected employee does not have an active schedule. Add or update employee schedule first.'
+      });
+    }
 
     const callOut: CallOutWithAssociations | null = await createCallOutInDB(callOutData);
 
