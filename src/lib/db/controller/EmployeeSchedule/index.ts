@@ -226,10 +226,14 @@ export const buildEmployeeCalendarProjection = async ({
     throw new Error('Calendar date range cannot exceed 365 days.');
   }
 
+  const queryStart = new Date(start);
+  queryStart.setDate(queryStart.getDate() - 365);
+
   const [schedule, callouts] = await Promise.all([
     getEmployeeScheduleFromDB.activeByEmployeeId(employeeId),
     getCallOutFromDB.all({
-      employee_id: employeeId
+      employee_id: employeeId,
+      shift_date_range: [queryStart, end]
     }) as Promise<CallOutWithAssociations[]>
   ]);
 
@@ -244,7 +248,7 @@ export const buildEmployeeCalendarProjection = async ({
 
     const rangeStart = startDate < start ? new Date(start) : new Date(startDate);
     const rangeEnd = endDate > end ? new Date(end) : new Date(endDate);
-    const calloutType = callout.leaveType?.reason ?? '';
+    const calloutType = callout.leaveType?.reason?.trim() || 'Other Call-out';
 
     for (const cursor = new Date(rangeStart); cursor <= rangeEnd; cursor.setDate(cursor.getDate() + 1)) {
       calloutDateMap.set(toDateKey(cursor), calloutType);
