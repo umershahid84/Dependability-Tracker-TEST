@@ -56,10 +56,16 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     const supervisorId = (token as JwtPayload).supervisorId;
 
     // Parse date strings as local dates, not UTC
-    const parseLocalDate = (dateStr: string | Date): Date => {
-      if (dateStr instanceof Date) return dateStr;
-      const [year, month, day] = dateStr.split('-').map(Number);
-      return new Date(year, month - 1, day);
+    const parseLocalDate = (dateStr: string | Date): Date | null => {
+      if (dateStr instanceof Date) {
+        return Number.isNaN(dateStr.getTime()) ? null : dateStr;
+      }
+      const normalized = dateStr.trim();
+      if (!normalized || normalized.toLowerCase() === 'invalid date') return null;
+      const [year, month, day] = normalized.split('-').map(Number);
+      if ([year, month, day].some(Number.isNaN)) return null;
+      const parsed = new Date(year, month - 1, day);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
     };
 
     const parseDateTime = (dateStr: string | Date, timeStr: string): Date => {
@@ -72,10 +78,16 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       }
 
       const baseDate = parseLocalDate(dateStr);
+      if (!baseDate) {
+        return new Date(Number.NaN);
+      }
       const [hh, mm, ss = '0'] = timeStr.split(':');
       const hours = Number(hh);
       const minutes = Number(mm);
       const seconds = Number(ss);
+      if ([hours, minutes, seconds].some(Number.isNaN)) {
+        return new Date(Number.NaN);
+      }
       return new Date(
         baseDate.getFullYear(),
         baseDate.getMonth(),
@@ -86,17 +98,28 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       );
     };
 
+    const parsedCallDate = parseLocalDate(callDate);
+    const parsedShiftDate = parseLocalDate(shiftDate);
+    const normalizedShiftDateTo =
+      typeof shiftDateTo === 'string' ? shiftDateTo.trim() : (shiftDateTo as string | undefined);
+    const parsedShiftDateTo = normalizedShiftDateTo ? parseLocalDate(normalizedShiftDateTo) : null;
     const callDateTime = parseDateTime(callDate, callTime);
     const shiftDateTime = parseDateTime(shiftDate, shiftTime);
 
-    if (Number.isNaN(callDateTime.getTime()) || Number.isNaN(shiftDateTime.getTime())) {
+    if (
+      !parsedCallDate ||
+      !parsedShiftDate ||
+      (normalizedShiftDateTo && !parsedShiftDateTo) ||
+      Number.isNaN(callDateTime.getTime()) ||
+      Number.isNaN(shiftDateTime.getTime())
+    ) {
       return res.status(400).json({error: 'Invalid date or time values provided'});
     }
 
     const callOutData: EditableCalloutProps = {
-      shift_date: parseLocalDate(shiftDate),
-      shift_date_to: shiftDateTo ? parseLocalDate(shiftDateTo) : null,
-      callout_date: parseLocalDate(callDate),
+      shift_date: parsedShiftDate,
+      shift_date_to: parsedShiftDateTo,
+      callout_date: parsedCallDate,
       leave_type_id: leaveType,
       employee_id: employeeName,
       shift_time: shiftDateTime,
