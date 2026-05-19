@@ -68,7 +68,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       return Number.isNaN(parsed.getTime()) ? null : parsed;
     };
 
-    const parseDateTime = (dateStr: string | Date, timeStr: string): Date => {
+    const parseDateTime = (dateStr: string | Date, timeStr: string): Date | null => {
       // Accept ISO timestamps or time-only strings; prefer combining date+time for time-only.
       if (timeStr.includes('T')) {
         const isoDate = new Date(timeStr);
@@ -79,14 +79,14 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
 
       const baseDate = parseLocalDate(dateStr);
       if (!baseDate) {
-        return new Date(Number.NaN);
+        return null;
       }
       const [hh, mm, ss = '0'] = timeStr.split(':');
       const hours = Number(hh);
       const minutes = Number(mm);
       const seconds = Number(ss);
       if ([hours, minutes, seconds].some(Number.isNaN)) {
-        return new Date(Number.NaN);
+        return null;
       }
       return new Date(
         baseDate.getFullYear(),
@@ -100,8 +100,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
 
     const parsedCallDate = parseLocalDate(callDate);
     const parsedShiftDate = parseLocalDate(shiftDate);
-    const normalizedShiftDateTo =
-      typeof shiftDateTo === 'string' ? shiftDateTo.trim() : (shiftDateTo as string | undefined);
+    const normalizedShiftDateTo = typeof shiftDateTo === 'string' ? shiftDateTo.trim() : undefined;
     const parsedShiftDateTo = normalizedShiftDateTo ? parseLocalDate(normalizedShiftDateTo) : null;
     const callDateTime = parseDateTime(callDate, callTime);
     const shiftDateTime = parseDateTime(shiftDate, shiftTime);
@@ -110,6 +109,8 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       !parsedCallDate ||
       !parsedShiftDate ||
       (normalizedShiftDateTo && !parsedShiftDateTo) ||
+      !callDateTime ||
+      !shiftDateTime ||
       Number.isNaN(callDateTime.getTime()) ||
       Number.isNaN(shiftDateTime.getTime())
     ) {

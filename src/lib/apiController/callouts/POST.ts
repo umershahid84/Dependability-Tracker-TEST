@@ -72,8 +72,7 @@ export default async function createEmployeeCallout( //NOSONAR
 
     const parsedCallDate = parseLocalDate(callDate);
     const parsedShiftDate = parseLocalDate(shiftDate);
-    const normalizedShiftDateTo =
-      typeof shiftDateTo === 'string' ? shiftDateTo.trim() : (shiftDateTo as string | undefined);
+    const normalizedShiftDateTo = typeof shiftDateTo === 'string' ? shiftDateTo.trim() : undefined;
     const parsedShiftDateTo = normalizedShiftDateTo ? parseLocalDate(normalizedShiftDateTo) : null;
 
     if (
