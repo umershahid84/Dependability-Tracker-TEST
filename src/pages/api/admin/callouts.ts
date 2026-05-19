@@ -21,7 +21,7 @@ export default async function handler(req: Request, res: Response) {
   if (req.method === 'DELETE') {
     // Deletion remains admin-only.
     const token = await enforceAdminOnly(req, res);
-    if (!token || !('supervisorId' in (token as JwtPayload))) {
+    if (!token || !(token as JwtPayload).isAdmin) {
       return;
     }
     return deleteEmployeeCallOutApiHandler(req, res);
