@@ -100,6 +100,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       leave_type_id: leaveType,
       employee_id: employeeName,
       shift_time: shiftDateTime,
+      shift_type: null,
       callout_time: callDateTime,
       supervisor_id: supervisorId,
       supervisor_comments: comment,
