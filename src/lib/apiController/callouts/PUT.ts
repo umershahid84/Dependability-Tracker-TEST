@@ -118,9 +118,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
   } catch (error) {
     const errMessage = '❌ Error in editEmployeeCallOutApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));
-    return {
-      error: String(error)
-    };
+    return res.status(500).json({error: String(error)});
   }
 }
 
