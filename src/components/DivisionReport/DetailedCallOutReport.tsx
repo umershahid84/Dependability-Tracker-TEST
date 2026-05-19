@@ -12,6 +12,7 @@ import {
 } from '../../lib/utils';
 import {getDivisionNameFromPath, headingNormalizer} from '../../lib/utils/shared/strings';
 import {EmployeeScheduleCalendar} from '../Calendar';
+import {ModalAction, ModalType} from '../Modal';
 
 const styles = {
   icon: `w-4 h-4`,
@@ -37,7 +38,8 @@ const headings = [
   'Shift Date',
   'Leave Type',
   'Created By',
-  'Supervisor Comments'
+  'Supervisor Comments',
+  'Actions'
 ];
 
 function PrintButton() {
@@ -58,14 +60,17 @@ function PrintButton() {
 export function DetailedCallOutHistory({
   callOuts,
   calendar,
-  showDownloadButton = false
+  showDownloadButton = false,
+  onModalEditCallBack
 }: Readonly<{
   callOuts: CallOutWithAssociations[];
   calendar?: EmployeeCalendarProjection | null;
   showDownloadButton?: boolean;
+  onModalEditCallBack?: (callOut: CallOutWithAssociations) => void;
 }>) {
   const router: NextRouter = useRouter();
   const [mounted, setMounted] = useState(false);
+  const canEditCallOuts = Boolean(onModalEditCallBack);
 
   useEffect(() => {
     setMounted(true);
@@ -83,10 +88,34 @@ export function DetailedCallOutHistory({
   );
 
   const renderHead = (value: string, center = false) => (
-    <th key={value} className={!center ? styles.th : `${styles.th} text-center`}>
+    <th
+      key={value}
+      className={`${!center ? styles.th : `${styles.th} text-center`} ${
+        value === 'Actions' ? 'hide-on-print' : ''
+      }`}>
       {value}
     </th>
   );
+
+  const handleEditClick = (callOut: CallOutWithAssociations) => {
+    if (!onModalEditCallBack) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent('modalEvent', {
+        detail: {
+          action: ModalAction.OPEN,
+          type: ModalType.EDIT_CALL_OUT,
+          payload: {
+            callOut,
+            onModalEditCallBack,
+            modalClasses: 'bg-tertiary rounded-md shadow-lg relative w-auto'
+          }
+        }
+      })
+    );
+  };
 
   return (
     <div className={styles.div}>
@@ -104,7 +133,11 @@ export function DetailedCallOutHistory({
 
       <table className={styles.table}>
         <thead className={styles.th}>
-          <tr className={styles.headerTr}>{headings.map(h => renderHead(h, true))}</tr>
+          <tr className={styles.headerTr}>
+            {headings
+              .filter(heading => canEditCallOuts || heading !== 'Actions')
+              .map(h => renderHead(h, true))}
+          </tr>
         </thead>
         <tbody>
           {callOuts?.map(callOut => {
@@ -127,18 +160,28 @@ export function DetailedCallOutHistory({
                 {renderCell(
                   callOut.leaveType?.reason,
                   `${
-                    (callOut?.left_early_mins ?? 0) > 0
-                      ? `Left Early: ${callOut.left_early_mins} mins`
-                      : ''
-                  } ${
                     (callOut?.arrived_late_mins ?? 0) > 0
                       ? `Arrived Late: ${callOut.arrived_late_mins} mins`
+                      : ''
+                  } ${
+                    (callOut?.left_early_mins ?? 0) > 0
+                      ? `Left Early: ${callOut.left_early_mins} mins`
                       : ''
                   }`.trim()
                 )}
                 {renderCell(callOut.supervisor?.supervisor_info?.name)}
                 {renderCell(
                   callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : 'N/A'
+                )}
+                {canEditCallOuts && (
+                  <td className={`${styles.td} text-center hide-on-print`}>
+                    <button
+                      type="button"
+                      className="px-2 py-1 bg-quaternary hover:bg-amber-500 text-primary rounded"
+                      onClick={() => handleEditClick(callOut)}>
+                      Edit
+                    </button>
+                  </td>
                 )}
               </tr>
             );
