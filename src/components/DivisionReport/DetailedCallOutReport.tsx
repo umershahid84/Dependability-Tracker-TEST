@@ -29,7 +29,8 @@ const styles = {
   headingSpan:
     'w-full flex flex-col lg:flex-wrap lg:flex-row items-center justify-center relative mb-6 lg:mb-0',
   printButton:
-    'rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm flex flex-row justify-start items'
+    'rounded-md bg-tertiary hover:bg-blue-600 text-primary px-4 py-2 w-auto text-sm flex flex-row justify-start items',
+  modalClasses: 'bg-tertiary rounded-md shadow-lg relative w-auto'
 };
 
 const headings = [
@@ -110,7 +111,7 @@ export function DetailedCallOutHistory({
           payload: {
             callOut,
             onModalEditCallBack,
-            modalClasses: 'bg-tertiary rounded-md shadow-lg relative w-auto'
+            modalClasses: styles.modalClasses
           }
         }
       })

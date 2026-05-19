@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
-import {enforceAdminOnly, getJwtTokenForAPI, JwtPayload} from '../../../auth';
+import {getJwtTokenForAPI, JwtPayload} from '../../../auth';
 import deleteEmployeeCallOutApiHandler from '../../../lib/apiController/callouts/DELETE';
 import {editEmployeeCallOutApiHandler, getCallOutsApiHandler} from '../../../lib/apiController';
 
@@ -20,8 +20,9 @@ export default async function handler(req: Request, res: Response) {
 
   if (req.method === 'DELETE') {
     // Deletion remains admin-only.
-    const token = await enforceAdminOnly(req, res);
-    if (!token || !(token as JwtPayload).isAdmin) {
+    const token = await getJwtTokenForAPI(req, res);
+    if (!token?.isAdmin) {
+      res.status(401).json({error: 'Unauthorized request'});
       return;
     }
     return deleteEmployeeCallOutApiHandler(req, res);
