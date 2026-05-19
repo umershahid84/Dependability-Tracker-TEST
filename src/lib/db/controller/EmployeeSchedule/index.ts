@@ -39,6 +39,7 @@ const daysOffCountMap: Record<DaysOffType, number> = {
   '3_DAYS_OFF': 3,
   '4_DAYS_OFF': 4
 };
+const CALLOUT_LOOKBACK_DAYS = 365;
 
 const deriveDaysOffType = (daysOff: number[] | null | undefined): DaysOffType | null => {
   if (!daysOff || daysOff.length === 0) return null;
@@ -227,7 +228,7 @@ export const buildEmployeeCalendarProjection = async ({
   }
 
   const queryStart = new Date(start);
-  queryStart.setDate(queryStart.getDate() - 365);
+  queryStart.setDate(queryStart.getDate() - CALLOUT_LOOKBACK_DAYS);
 
   const [schedule, callouts] = await Promise.all([
     getEmployeeScheduleFromDB.activeByEmployeeId(employeeId),
