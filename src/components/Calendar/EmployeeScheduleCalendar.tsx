@@ -8,8 +8,9 @@ const getCallOutBgClass = (callOutType: string | null): string => {
   const lower = callOutType.toLowerCase();
   if (lower === 'sick') return 'bg-red-600 text-white';
   if (lower === 'fmla') return 'bg-purple-600 text-white';
-  if (lower === 'tardiness') return 'bg-green-300 text-black';
-  if (lower === 'left early') return 'bg-yellow-200 text-black';
+  if (lower === 'tardiness' || lower === 'late arrival') return 'bg-green-300 text-black';
+  if (lower === 'left early' || lower === 'leaving early') return 'bg-yellow-200 text-black';
+  if (lower === 'pto') return 'bg-green-700 text-white';
   return 'bg-orange-500 text-white';
 };
 
@@ -53,6 +54,7 @@ export function EmployeeScheduleCalendar({
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-purple-600"></span>FMLA</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-300"></span>Late Arrival</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-yellow-200 border"></span>Left Early</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-700"></span>PTO</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-orange-500"></span>Other Call-out</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-yellow-600"></span>Day Off</span>
       </div>

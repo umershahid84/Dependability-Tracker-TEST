@@ -229,16 +229,26 @@ export const buildEmployeeCalendarProjection = async ({
   const [schedule, callouts] = await Promise.all([
     getEmployeeScheduleFromDB.activeByEmployeeId(employeeId),
     getCallOutFromDB.all({
-      employee_id: employeeId,
-      callout_date_range: [start, end]
+      employee_id: employeeId
     }) as Promise<CallOutWithAssociations[]>
   ]);
 
   const calloutDateMap = new Map<string, string>();
   for (const callout of callouts ?? []) {
-    const date = new Date(callout.callout_date);
-    const key = toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
-    calloutDateMap.set(key, callout.leaveType?.reason ?? '');
+    const startDate = parseDateInput(callout.shift_date ?? callout.callout_date);
+    const endDate = parseDateInput(callout.shift_date_to ?? callout.shift_date ?? callout.callout_date);
+
+    if (endDate < start || startDate > end) {
+      continue;
+    }
+
+    const rangeStart = startDate < start ? new Date(start) : new Date(startDate);
+    const rangeEnd = endDate > end ? new Date(end) : new Date(endDate);
+    const calloutType = callout.leaveType?.reason ?? '';
+
+    for (const cursor = new Date(rangeStart); cursor <= rangeEnd; cursor.setDate(cursor.getDate() + 1)) {
+      calloutDateMap.set(toDateKey(cursor), calloutType);
+    }
   }
 
   const days: EmployeeCalendarDay[] = [];
