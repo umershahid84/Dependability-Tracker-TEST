@@ -116,12 +116,12 @@ export function EditCallOutModal({
             className={styles.input + ' p-[10.5px] md:col-span-2'}
           />
 
+          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={onChangeHandler} />
+
           <ArrivedLateWithRange
             value={formData.lateArrivalMinutes}
             onChangeHandler={onChangeHandler}
           />
-
-          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={onChangeHandler} />
         </div>
         <div className="w-full p-4">
           <TextArea

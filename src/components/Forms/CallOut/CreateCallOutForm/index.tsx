@@ -152,12 +152,12 @@ export function CreateCallOutForm({
             onChangeHandler={handleFormValueChange}
           />
 
+          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={handleFormValueChange} />
+
           <ArrivedLateWithRange
             value={formData.lateArrivalMinutes}
             onChangeHandler={handleFormValueChange}
           />
-
-          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={handleFormValueChange} />
         </div>
         <EmployeeScheduleCalendar calendar={calendar} />
       </div>
