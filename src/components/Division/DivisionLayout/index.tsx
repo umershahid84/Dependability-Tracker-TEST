@@ -2,6 +2,8 @@ import React, {useEffect} from 'react';
 import {NavBar, NavLinks} from '../../NavBar';
 import {NextRouter, useRouter} from 'next/router';
 import {SupervisorLayout} from '../../SupervisorLayout';
+import {ModalViewer} from '../../Modal';
+import {CallOutAdvancedSearchProvider} from '../../../providers';
 
 const supervisorLinks: NavLinks = [
   {href: '/dashboard', text: 'Home'},
@@ -37,14 +39,17 @@ export function DivisionLayout({
   }, [router.pathname]);
 
   return (
-    <SupervisorLayout>
-      <NavBar
-        navLinks={navLinks}
-        hideOnPath="/dashboard"
-        showSecondary={isAdmin}
-        secondaryLinks={adminLinks}
-      />
-      {children}
-    </SupervisorLayout>
+    <CallOutAdvancedSearchProvider>
+      <ModalViewer />
+      <SupervisorLayout>
+        <NavBar
+          navLinks={navLinks}
+          hideOnPath="/dashboard"
+          showSecondary={isAdmin}
+          secondaryLinks={adminLinks}
+        />
+        {children}
+      </SupervisorLayout>
+    </CallOutAdvancedSearchProvider>
   );
 }

@@ -12,17 +12,30 @@ export function CallOutPageContainer(
   }>
 ) {
   const [callOuts, setCallOuts] = useState<CallOutWithAssociations[]>(JSON.parse(props.callOuts));
+  const employees = JSON.parse(props.employees);
+  const leaveTypes = JSON.parse(props.leaveTypes);
+
   const addCallout = (callOut: CallOutWithAssociations) => {
     setCallOuts([callOut, ...callOuts]);
   };
+
+  const editCallOut = (editedCallOut: CallOutWithAssociations) => {
+    setCallOuts(prevCallOuts =>
+      prevCallOuts.map(callOut => (callOut.id === editedCallOut.id ? editedCallOut : callOut))
+    );
+  };
+
   return (
     <DivisionPageContainer isAdmin={props.isAdmin ?? false}>
       <CreateCallOutForm
         callback={addCallout}
-        employees={JSON.parse(props.employees)}
-        leaveTypes={JSON.parse(props.leaveTypes)}
+        employees={employees}
+        leaveTypes={leaveTypes}
       />
-      <TwoWeekCallOutHistory callOuts={callOuts} />
+      <TwoWeekCallOutHistory
+        callOuts={callOuts}
+        onModalEditCallBack={editCallOut}
+      />
     </DivisionPageContainer>
   );
 }
