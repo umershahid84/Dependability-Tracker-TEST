@@ -9,6 +9,7 @@ describe('Email Verification Template', () => {
     shift_date: new Date('2021-08-01'),
     shift_date_to: null,
     shift_time: new Date('2021-08-01T08:00:00'),
+    shift_type: null,
     employee: {
       name: 'Testy McTestface',
       id: '1234',

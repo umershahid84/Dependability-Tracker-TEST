@@ -6,7 +6,7 @@ import {ip} from './ip';
 import * as fs from 'fs';
 import {parse} from 'url';
 import * as path from 'path';
-import sequelize, {ensureCalloutShiftDateToColumn} from '../lib/db/connection';
+import sequelize, {ensureCalloutShiftDateToColumn, ensureCalloutShiftTypeColumn, ensureEmployeeScheduleDaysOffColumn} from '../lib/db/connection';
 import express, {Express, Request, Response} from 'express';
 import {logTemplate} from '../lib/utils/server';
 
@@ -90,6 +90,8 @@ export const startServer = async () => {
   // await successful connection to the database
   await sequelize.sync({force: false, logging: false});
   await ensureCalloutShiftDateToColumn(sequelize);
+  await ensureCalloutShiftTypeColumn(sequelize);
+  await ensureEmployeeScheduleDaysOffColumn(sequelize);
   // start the next functionality and bootstrap it to the express server
   await nextExpress(app);
 

@@ -20,6 +20,7 @@ export type EmployeeScheduleAttributes = {
   shift_start_time: string;
   shift_end_time: string;
   days_off_type: DaysOffType;
+  days_off: number[] | null;
   employee_status: EmployeeStatusType;
   effective_start: Date;
   effective_end: Date | null;
@@ -34,6 +35,7 @@ export type EmployeeScheduleCreationAttributes = {
   shift_start_time: string;
   shift_end_time: string;
   days_off_type: DaysOffType;
+  days_off?: number[] | null;
   employee_status: EmployeeStatusType;
   effective_start?: Date;
   effective_end?: Date | null;
@@ -51,6 +53,7 @@ class EmployeeSchedule
   declare shift_start_time: string;
   declare shift_end_time: string;
   declare days_off_type: DaysOffType;
+  declare days_off: number[] | null;
   declare employee_status: EmployeeStatusType;
   declare effective_start: CreationOptional<Date>;
   declare effective_end: Date | null;
@@ -94,6 +97,11 @@ EmployeeSchedule.init(
     days_off_type: {
       type: DataTypes.ENUM('2_DAYS_OFF', '3_DAYS_OFF', '4_DAYS_OFF'),
       allowNull: false
+    },
+    days_off: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null
     },
     employee_status: {
       type: DataTypes.ENUM('FULL_TIME', 'PART_TIME'),

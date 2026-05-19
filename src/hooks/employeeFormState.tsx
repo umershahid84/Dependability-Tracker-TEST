@@ -8,6 +8,7 @@ export const defaultEmployeeFormData: EmployeeFormData = {
   isSupervisor: '0',
   shiftStartTime: '07:00',
   shiftEndTime: '15:00',
+  daysOff: '0,6',
   daysOffType: '2_DAYS_OFF',
   employeeStatus: 'FULL_TIME'
 };

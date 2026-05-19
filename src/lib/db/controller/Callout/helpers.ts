@@ -45,6 +45,7 @@ export type EditableCalloutProps = {
   shift_date?: Date;
   shift_date_to?: Date | null;
   shift_time?: Date;
+  shift_type?: string | null;
   callout_date?: Date;
   callout_time?: Date;
   employee_id?: string;
@@ -610,6 +611,7 @@ export const populateCallOutAssociations = async (
     shift_date: props.shift_date,
     shift_date_to: props.shift_date_to ?? null,
     shift_time: props.shift_time,
+    shift_type: (props as {shift_type?: string | null}).shift_type ?? null,
     callout_date: props.callout_date,
     callout_time: props.callout_time,
     left_early_mins: props.left_early_mins,
