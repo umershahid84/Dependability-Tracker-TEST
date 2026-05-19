@@ -145,21 +145,6 @@ export function CreateCallOutForm({
             onChangeHandler={handleFormValueChange}
           />
 
-          <div className="flex flex-col gap-1 md:col-span-2">
-            <label className="text-sm font-medium" htmlFor="shiftType">Shift Type</label>
-            <select
-              id="shiftType"
-              name="shiftType"
-              className={`${styles.input} w-full`}
-              value={formData.shiftType}
-              onChange={handleFormValueChange}>
-              <option value="">Select Shift Type</option>
-              <option value="MORNING">Morning Shift</option>
-              <option value="SWING">Swing Shift</option>
-              <option value="GRAVEYARD">Graveyard Shift</option>
-            </select>
-          </div>
-
           <SelectLeaveTypeReason
             leaveTypes={leaveTypes}
             className={`${styles.input} md:col-span-2`}

@@ -38,7 +38,6 @@ export function EditCallOutModal({
     leaveType: callOutData.leaveType.id.toString(),
     employeeName: callOutData.employee.id.toString(),
     shiftTime: dateTo_HH_MM_SS(callOutData.shift_time),
-    shiftType: callOutData.shift_type ?? '',
     leftEarlyMinutes: callOutData?.left_early_mins ?? 0,
     callTime: dateTo_HH_MM_SS(callOutData.callout_time),
     lateArrivalMinutes: callOutData?.arrived_late_mins ?? 0
@@ -116,21 +115,6 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
             className={styles.input + ' p-[10.5px] md:col-span-2'}
           />
-
-          <div className="flex flex-col gap-1 md:col-span-2">
-            <label className="text-sm font-medium" htmlFor="shiftType">Shift Type</label>
-            <select
-              id="shiftType"
-              name="shiftType"
-              className={styles.input + ' p-[10.5px] w-full'}
-              value={formData.shiftType}
-              onChange={onChangeHandler}>
-              <option value="">Select Shift Type</option>
-              <option value="MORNING">Morning Shift</option>
-              <option value="SWING">Swing Shift</option>
-              <option value="GRAVEYARD">Graveyard Shift</option>
-            </select>
-          </div>
 
           <ArrivedLateWithRange
             value={formData.lateArrivalMinutes}
