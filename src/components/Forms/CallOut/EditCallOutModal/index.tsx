@@ -1,17 +1,18 @@
-import {TextArea} from '../../FormInputs/TextArea';
+import {CallOutFormActionButtons} from '../../FormInputs/CallOutFormActionButtons';
 import {DateInput} from '../../FormInputs/DateInput';
-import {TimeInput} from '../../FormInputs/TimeInput';
-import {trim} from '../../../../lib/utils/shared/strings';
-import {dateTo_HH_MM_SS, makeDate} from '../../../../lib/utils';
-import {useCallOutAdvancedSearchContext} from '../../../../providers';
+import {ArrivedLateWithRange} from '../../FormInputs/ArrivedLateWithRange';
 import {LeftEarlyWithRange} from '../../FormInputs/LeftEarlyWithRange';
 import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
 import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
-import {CallOutWithAssociations} from '../../../../lib/db/models/types';
-import {ArrivedLateWithRange} from '../../FormInputs/ArrivedLateWithRange';
-import {CallOutFormActionButtons} from '../../FormInputs/CallOutFormActionButtons';
-import {UseEditCallOutFormState, useEditCallOutFormState} from '../../../../hooks';
+import {TextArea} from '../../FormInputs/TextArea';
+import {TimeInput} from '../../FormInputs/TimeInput';
+import {ModalAction} from '../../../Modal';
 import {DefaultCallOutFormData} from '../../../../client-api/employees/employee-callout';
+import {UseEditCallOutFormState, useEditCallOutFormState} from '../../../../hooks';
+import {CallOutWithAssociations} from '../../../../lib/db/models/types';
+import {dateTo_HH_MM_SS, makeDate} from '../../../../lib/utils';
+import {trim} from '../../../../lib/utils/shared/strings';
+import {useCallOutAdvancedSearchContext} from '../../../../providers';
 
 export type EditCallOutModalProps = {
   callOutData: CallOutWithAssociations;
@@ -30,6 +31,11 @@ export function EditCallOutModal({
   callOutData,
   onModalEditCallBack
 }: Readonly<EditCallOutModalProps>) {
+  const onSuccessfulEdit = (updatedCallOut: CallOutWithAssociations) => {
+    onModalEditCallBack(updatedCallOut);
+    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+  };
+
   const defaultFormData: DefaultCallOutFormData = {
     comment: callOutData.supervisor_comments,
     shiftDate: makeDate(callOutData.shift_date),
@@ -44,7 +50,7 @@ export function EditCallOutModal({
   };
   const {employees, leaveTypes} = useCallOutAdvancedSearchContext();
   const {formData, resetFormData, onChangeHandler, handleFormSubmit}: UseEditCallOutFormState =
-    useEditCallOutFormState(callOutData.id, defaultFormData, onModalEditCallBack);
+    useEditCallOutFormState(callOutData.id, defaultFormData, onSuccessfulEdit);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {

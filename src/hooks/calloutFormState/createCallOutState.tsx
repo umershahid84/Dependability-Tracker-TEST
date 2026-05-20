@@ -86,7 +86,7 @@ export function useCreateCallOutFormState(
         type: ToastTypes.Success,
         message: data.message ?? 'Callout Created Successfully'
       });
-      resetFormData(formData.employeeName);
+      resetFormData();
       callback?.(data?.data as CallOutWithAssociations);
     } catch (error) {
       console.error('Error Creating Callout:\n', error);
