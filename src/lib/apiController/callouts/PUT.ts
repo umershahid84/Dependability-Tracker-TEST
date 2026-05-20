@@ -62,7 +62,12 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       }
       const normalized = dateStr.trim();
       if (!normalized || normalized.toLowerCase() === 'invalid date') return null;
-      const [year, month, day] = normalized.split('-').map(Number);
+      const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!match) return null;
+      const [, yearStr, monthStr, dayStr] = match;
+      const year = Number(yearStr);
+      const month = Number(monthStr);
+      const day = Number(dayStr);
       if ([year, month, day].some(Number.isNaN)) return null;
       const parsed = new Date(year, month - 1, day);
       return Number.isNaN(parsed.getTime()) ? null : parsed;
