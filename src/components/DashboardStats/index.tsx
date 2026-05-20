@@ -8,10 +8,6 @@ import {useDashboardData, UseDashboardData} from '../../hooks/useDashboardData';
 export function DashboardStats(): React.ReactElement {
   const {loading, adminData}: UseDashboardData = useDashboardData();
 
-  if (typeof window === 'undefined') {
-    return <></>;
-  }
-
   return (
     <>
       {loading ? (
