@@ -60,8 +60,13 @@ export function CreateCredentialInviteAndEmailItToSupervisor({
 
       makeToast({
         title: 'Success',
-        type: ToastTypes.Success,
-        message: 'Invite sent to ' + data.data?.create_credentials_invite?.email
+        type:
+          data.message?.includes('disabled') || data.message?.includes('not true')
+            ? ToastTypes.Warning
+            : ToastTypes.Success,
+        message:
+          data.message ??
+          ('Invite sent to ' + (data.data?.create_credentials_invite?.email ?? email))
       });
       setLoading(false);
 

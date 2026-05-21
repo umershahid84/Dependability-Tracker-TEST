@@ -55,7 +55,9 @@ export default async function handler(req: Request, res: Response) {
         throw new Error('Error creating invite');
       }
 
-      if (process.env.SEND_EMAILS === 'true') {
+      const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+      if (shouldSendEmails) {
         const emailSent = await sendCredentialInvite(
           adminsCredentials.email,
           credentialInvite.invite_token,
@@ -68,7 +70,11 @@ export default async function handler(req: Request, res: Response) {
         }
       }
 
-      return res.status(200).json({ data: true });
+      const message = shouldSendEmails
+        ? 'Credential reset invite sent successfully'
+        : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
+
+      return res.status(200).json({ data: true, message });
     } catch (error) {
       console.error(logTemplate('❌ Error in handler: ' + (error as Error).message, 'error'));
       return res.status(500).json({ error: (error as Error).message });

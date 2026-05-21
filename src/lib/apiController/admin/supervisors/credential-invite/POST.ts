@@ -44,7 +44,9 @@ export default async function postSupervisorCredentialInviteApiHandler(
       throw new Error('Error creating invite');
     }
 
-    if (process.env.SEND_EMAILS === 'true') {
+    const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+    if (shouldSendEmails) {
       const emailSent = await sendCredentialInvite(
         supervisorEmail,
         credentialInvite.invite_token,
@@ -66,7 +68,11 @@ export default async function postSupervisorCredentialInviteApiHandler(
       }
     );
 
-    return res.status(200).json({ message: 'Invite created successfully', data: updatedData });
+    const message = shouldSendEmails
+      ? 'Invite created and email sent successfully'
+      : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
+
+    return res.status(200).json({ message, data: updatedData });
   } catch (error) {
     const errMessage = '❌ Error in postSupervisorCredentialInviteApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

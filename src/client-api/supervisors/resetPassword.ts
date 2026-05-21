@@ -16,9 +16,13 @@ export async function ResetPassword(formState: ResetPasswordFormState): Promise<
     }
 
     makeToast({
-      type: ToastTypes.Success,
+      type:
+        payload?.message?.includes('disabled') || payload?.message?.includes('not true')
+          ? ToastTypes.Warning
+          : ToastTypes.Success,
       title: 'Password Reset',
-      message: 'A credential-creation invite has been sent to your registered email.'
+      message:
+        payload?.message ?? 'A credential-creation invite has been sent to your registered email.'
     });
 
     return;
