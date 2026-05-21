@@ -10,6 +10,10 @@ export default async function handler(req: Request, res: Response) {
   const token: JwtPayload | undefined | Response<any, Record<string, any>> | void =
     await enforceAdminOnly(req, res);
 
+  if (!token || 'status' in token) {
+    return;
+  }
+
   if (req.method === 'POST') {
     return postSupervisorCredentialInviteApiHandler(req, res, token as JwtPayload);
   }
