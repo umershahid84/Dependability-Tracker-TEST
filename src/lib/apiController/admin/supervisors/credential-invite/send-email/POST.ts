@@ -8,10 +8,11 @@ import type { ApiData } from '../../../../index';
 import { LoginCredential } from '../../../../../db';
 import { sendCredentialInvite } from '../../../../../email';
 import { logTemplate } from '../../../../../utils/server';
+import { SupervisorWithAssociations } from '../../../../../db/models/Supervisor';
 
 export default async function postSupervisorEmailCredentialInviteApiHandler(
   req: Request,
-  res: Response<ApiData<{ email: string }>>
+  res: Response<ApiData<SupervisorWithAssociations | null>>
 ) {
   try {
     const { body } = req as { body: { supervisorsEmail: string; forSupervisor: string } };
@@ -64,9 +65,17 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       }
     }
 
+    const updatedData: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
+      forSupervisorId,
+      {
+        showCredentials: true,
+        showCreateCredentialsInvite: true
+      }
+    );
+
     return res
       .status(200)
-      .json({ message: 'Email sent successfully', data: { email: supervisorEmail } });
+      .json({ message: 'Email sent successfully', data: updatedData });
   } catch (error) {
     const errMessage = '❌ Error in postSupervisorEmailCredentialInviteApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

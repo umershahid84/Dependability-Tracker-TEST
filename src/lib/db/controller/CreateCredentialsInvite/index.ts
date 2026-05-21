@@ -100,6 +100,7 @@ export const updateCreateCredentialsInviteInDB = async (props: {
     if (rowsAffected === 0) return null;
 
     const createCredentialsInvite = await getCreateCredentialsInviteFromDB({
+      id: props.id,
       supervisor_id: props.supervisor_id
     });
     if (!createCredentialsInvite) return null;
