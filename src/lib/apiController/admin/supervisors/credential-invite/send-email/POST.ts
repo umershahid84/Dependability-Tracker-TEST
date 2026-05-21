@@ -73,6 +73,10 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       }
     );
 
+    if (!updatedData) {
+      throw new Error('Email sent, but failed to load updated supervisor data');
+    }
+
     return res
       .status(200)
       .json({ message: 'Email sent successfully', data: updatedData });
