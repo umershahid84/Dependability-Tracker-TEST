@@ -5,17 +5,23 @@ import {
   deleteEmployeesApiHandler
 } from '../../../lib/apiController';
 import {Request, Response} from 'express';
-import {enforceAdminOnly} from '../../../auth';
+import {enforceAdminOnly, getJwtTokenForAPI} from '../../../auth';
 
 export default async function handler(req: Request, res: Response) {
+  if (req.method === 'GET') {
+    const authToken = await getJwtTokenForAPI(req, res);
+
+    if (!authToken) {
+      return;
+    }
+
+    return getEmployeesApiHandler(req, res);
+  }
+
   const authToken = await enforceAdminOnly(req, res);
 
   if (!authToken) {
     return;
-  }
-
-  if (req.method === 'GET') {
-    return getEmployeesApiHandler(req, res);
   }
 
   if (req.method === 'POST') {
