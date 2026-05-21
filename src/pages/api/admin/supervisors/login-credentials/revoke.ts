@@ -7,12 +7,12 @@ export default async function handler(req: Request, res: Response) {
   const token: JwtPayload | undefined | Response<any, Record<string, any>> | void =
     await enforceAdminOnly(req, res);
 
-  if (!token || 'status' in token) {
+  if (!token || !('email' in token)) {
     return;
   }
 
   if (req.method === 'POST') {
-    return revokeSupervisorLoginCredentials(req, res, token as JwtPayload);
+    return revokeSupervisorLoginCredentials(req, res, token);
   }
   return res.status(405).json({error: 'Method not allowed'});
 }

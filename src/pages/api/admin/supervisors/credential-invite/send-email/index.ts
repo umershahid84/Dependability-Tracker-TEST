@@ -6,7 +6,7 @@ import {postSupervisorEmailCredentialInviteApiHandler} from '../../../../../../l
 export default async function handler(req: Request, res: Response) {
   const token = await enforceAdminOnly(req, res);
 
-  if (!token || 'status' in token) {
+  if (!token || !('email' in token)) {
     return;
   }
 
