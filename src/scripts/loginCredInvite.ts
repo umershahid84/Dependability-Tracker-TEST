@@ -7,7 +7,8 @@ import {
 } from '../lib/db/controller';
 
 if (require.main === module) {
-  const [, , email, supervisorName = 'Umer Shahid'] = process.argv;
+  const defaultSupervisorName = process.env.SEND_INVITE_DEFAULT_SUPERVISOR_NAME ?? 'Umer Shahid';
+  const [, , email, supervisorName = defaultSupervisorName] = process.argv;
 
   if (!email) {
     console.error('❌ Missing required arguments: email');
