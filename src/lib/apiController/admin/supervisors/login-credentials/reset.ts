@@ -89,7 +89,7 @@ export default async function resetSupervisorLoginCredentials(
       ? 'Invite created and email sent successfully'
       : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
 
-    return res.status(200).json({message, data: updatedSupervisor});
+    return res.status(200).json({message, emailSent: shouldSendEmails, data: updatedSupervisor});
   } catch (error) {
     console.error('Error creating invite:', error);
     return res.status(500).json({error: String(error)});

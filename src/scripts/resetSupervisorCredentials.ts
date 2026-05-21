@@ -12,11 +12,19 @@ import {
 } from '../lib/db/controller/LoginCredential';
 
 if (require.main === module) {
-  const defaultSupervisorName = process.env.SEND_INVITE_DEFAULT_SUPERVISOR_NAME ?? 'Umer Shahid';
-  const [, , email, supervisorName = defaultSupervisorName] = process.argv;
+  const defaultSupervisorName = process.env.SEND_INVITE_DEFAULT_SUPERVISOR_NAME;
+  const [, , email, supervisorNameArg] = process.argv;
+  const supervisorName = supervisorNameArg ?? defaultSupervisorName;
 
   if (!email) {
     console.error('❌ Missing required arguments: email');
+    process.exit(1);
+  }
+
+  if (!supervisorName) {
+    console.error(
+      '❌ Missing required arguments: supervisorName (or set SEND_INVITE_DEFAULT_SUPERVISOR_NAME)'
+    );
     process.exit(1);
   }
 
@@ -79,9 +87,9 @@ if (require.main === module) {
         await sendCredentialInvite(email, token, inviteId, username);
         console.log('✅ Credential reset/update invite sent successfully to:', email);
       } else {
-        const URL = `/sign-up/?invite-id=${inviteId}&token=${token}`;
+        const url = `/sign-up/?invite-id=${inviteId}&token=${token}`;
         console.log('⚠️  Email sending is disabled. Set SEND_EMAILS=true to enable email sending.');
-        console.log(`Create or update credentials using the following link: ${URL}`);
+        console.log(`Create or update credentials using the following link: ${url}`);
       }
     })();
   } catch (error) {

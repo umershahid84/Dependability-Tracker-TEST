@@ -72,7 +72,7 @@ export default async function postSupervisorCredentialInviteApiHandler(
       ? 'Invite created and email sent successfully'
       : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
 
-    return res.status(200).json({ message, data: updatedData });
+    return res.status(200).json({ message, emailSent: shouldSendEmails, data: updatedData });
   } catch (error) {
     const errMessage = '❌ Error in postSupervisorCredentialInviteApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

@@ -59,10 +59,7 @@ export function ResendCreateCredentialInviteByEmail({
 
       makeToast({
         title: 'Success',
-        type:
-          data.message?.includes('disabled') || data.message?.includes('not true')
-            ? ToastTypes.Warning
-            : ToastTypes.Success,
+        type: data.emailSent === false ? ToastTypes.Warning : ToastTypes.Success,
         message: data.message ?? 'Invite sent to ' + email
       });
 

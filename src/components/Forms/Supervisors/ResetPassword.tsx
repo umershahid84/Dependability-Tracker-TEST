@@ -47,10 +47,7 @@ export function ResetSupervisorPassword({
         throw new Error(data.error ?? 'Unable to reset credentials');
       } else {
         makeToast({
-          type:
-            data.message?.includes('disabled') || data.message?.includes('not true')
-              ? ToastTypes.Warning
-              : ToastTypes.Success,
+          type: data.emailSent === false ? ToastTypes.Warning : ToastTypes.Success,
           title: 'Success',
           message:
             data.message ??
