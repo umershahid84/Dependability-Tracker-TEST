@@ -78,7 +78,7 @@ if (require.main === module) {
         throw new Error('Failed to create or retrieve credential invite');
       }
 
-      const username = employee.name ?? '';
+      const username = employee.name?.trim() || supervisorName;
       const inviteId = credentialInvite.id;
       const token = credentialInvite.invite_token;
 
