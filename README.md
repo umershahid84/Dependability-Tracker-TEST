@@ -182,10 +182,10 @@ npm run seed
 
 ### 7. Send the Create Credential Email Invite to the Default Admin
 
-To send the email invite so the Admin can generate their login credentials, open a new terminal and navigate to the project root. (Make sure the server is running) Then type the following command, be sure to replace `<emailAddress>` with the administrator's email address. Currently only `@portseattle.org` addresses are supported.
+To send the email invite so a supervisor can generate login credentials, open a new terminal and navigate to the project root. (Make sure the server is running) Then type the following command, replacing `<emailAddress>` with the destination email and `<supervisorName>` with the supervisor's employee name. If `<supervisorName>` is omitted, it defaults to `Umer Shahid`. Currently only `@portseattle.org` addresses are supported.
 
 ```bash
-npm run sendInvite -- <emailAddress>
+npm run sendInvite -- <emailAddress> "<supervisorName>"
 ```
 
 ## Updating

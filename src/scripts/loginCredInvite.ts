@@ -1,10 +1,13 @@
 import 'dotenv/config';
 import {Employee, Supervisor} from '../lib/db';
 import {sendCredentialInvite} from '../lib/email';
-import {getCreateCredentialsInviteFromDB} from '../lib/db/controller';
+import {
+  createCreateCredentialsInviteInDB,
+  getCreateCredentialsInviteFromDB
+} from '../lib/db/controller';
 
 if (require.main === module) {
-  const [, , email] = process.argv;
+  const [, , email, supervisorName = 'Umer Shahid'] = process.argv;
 
   if (!email) {
     console.error('❌ Missing required arguments: email');
@@ -14,15 +17,43 @@ if (require.main === module) {
   try {
     (async () => {
       console.log('🔍 Searching for Database Credentials...');
-      const employee = await Employee.findOne({where: {name: 'Umer Shahid'}});
+      const employee = await Employee.findOne({where: {name: supervisorName}});
+
+      if (!employee) {
+        throw new Error(`Supervisor employee record not found for "${supervisorName}"`);
+      }
+
       const supervisor = await Supervisor.findOne({where: {employee_id: employee?.id}});
-      const existingInvite = await getCreateCredentialsInviteFromDB({
-        supervisor_id: supervisor?.id
+
+      if (!supervisor) {
+        throw new Error(`Supervisor record not found for "${supervisorName}"`);
+      }
+
+      let credentialInvite = await getCreateCredentialsInviteFromDB({
+        supervisor_id: supervisor.id
       });
 
+      if (!credentialInvite) {
+        const adminSupervisor = await Supervisor.findOne({where: {is_admin: true}});
+
+        if (!adminSupervisor) {
+          throw new Error('Admin supervisor not found');
+        }
+
+        credentialInvite = await createCreateCredentialsInviteInDB({
+          email,
+          created_by: adminSupervisor.id,
+          supervisor_id: supervisor.id
+        });
+      }
+
+      if (!credentialInvite) {
+        throw new Error('Failed to create or retrieve credential invite');
+      }
+
       const username = employee?.name ?? '';
-      const inviteId = existingInvite?.id ?? '';
-      const token = existingInvite?.invite_token ?? '';
+      const inviteId = credentialInvite.id;
+      const token = credentialInvite.invite_token;
 
       console.log('📧 Sending email...');
       if (process.env.SEND_EMAILS == 'true') {
