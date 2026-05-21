@@ -62,7 +62,7 @@ export default function Spinner(props: Readonly<SpinnerProps>): React.ReactEleme
           textColor
         )}`}>
         <path d={trim(svgPathData.p1)} fill="currentColor" />
-        <path d={trim(svgPathData.p2)} fill="currentFill" />
+        <path d={trim(svgPathData.p2)} fill="currentColor" />
       </svg>
       <span>{props.label ?? 'Loading...'}</span>
     </output>

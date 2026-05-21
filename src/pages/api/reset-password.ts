@@ -8,12 +8,23 @@ import { sendCredentialInvite } from '../../lib/email';
 import { createCreateCredentialsInviteInDB } from '../../lib/db/controller';
 import { logTemplate } from '../../lib/utils/server';
 
+const normalize = (value: string): string =>
+  value
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\s+/g, ' ');
+
 export default async function handler(req: Request, res: Response) {
   if (req.method === 'POST') {
     try {
       const { body } = req as { body: { email: string; username: string } };
 
-      const { email, username } = body;
+      const email = body?.email?.trim().toLocaleLowerCase();
+      const username = body?.username ?? '';
+
+      if (!email || !username?.trim()) {
+        return res.status(400).json({ error: 'Email and username are required' });
+      }
 
       // look for admin credentials with the email
       const adminsCredentials = await getLoginCredentialFromDB.byEmail(email);
@@ -23,10 +34,10 @@ export default async function handler(req: Request, res: Response) {
       }
 
       // compare the names
-      if (
-        adminsCredentials?.supervisor_info?.supervisor_info?.name?.toLocaleLowerCase() !==
-        username?.toLocaleLowerCase()
-      ) {
+      const expectedName = normalize(adminsCredentials?.supervisor_info?.supervisor_info?.name ?? '');
+      const receivedName = normalize(username);
+
+      if (expectedName !== receivedName) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
