@@ -52,7 +52,9 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       });
     }
 
-    if (process.env.SEND_EMAILS === 'true') {
+    const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+    if (shouldSendEmails) {
       const emailSent = await sendCredentialInvite(
         supervisorEmail,
         credentialInvite.invite_token,
@@ -77,9 +79,11 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       throw new Error('Email sent, but failed to load updated supervisor data');
     }
 
-    return res
-      .status(200)
-      .json({ message: 'Email sent successfully', data: updatedData });
+    const message = shouldSendEmails
+      ? 'Email sent successfully'
+      : 'Invite is ready, but email sending is disabled (SEND_EMAILS is not true)';
+
+    return res.status(200).json({ message, emailSent: shouldSendEmails, data: updatedData });
   } catch (error) {
     const errMessage = '❌ Error in postSupervisorEmailCredentialInviteApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

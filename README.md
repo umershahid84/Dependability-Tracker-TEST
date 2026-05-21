@@ -188,6 +188,20 @@ To send the email invite so a supervisor can generate login credentials, open a 
 npm run sendInvite -- <emailAddress> "<supervisorName>"
 ```
 
+### 8. Reset or Update a Supervisor Password From CLI
+
+To reset an existing supervisor password (or update credentials by issuing a fresh invite), run:
+
+```bash
+npm run resetPassword -- <emailAddress> "<supervisorName>"
+```
+
+`updatePassword` is also available as an alias:
+
+```bash
+npm run updatePassword -- <emailAddress> "<supervisorName>"
+```
+
 ## Updating
 
 To check for updates and rebuild upon any changes:
