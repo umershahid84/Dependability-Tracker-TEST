@@ -38,8 +38,8 @@ export function DivisionLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname]);
 
-  return (
-    <CallOutAdvancedSearchProvider>
+  const layoutContent = (
+    <>
       <ModalViewer />
       <SupervisorLayout>
         <NavBar
@@ -50,6 +50,16 @@ export function DivisionLayout({
         />
         {children}
       </SupervisorLayout>
+    </>
+  );
+
+  if (router.pathname === '/dashboard') {
+    return layoutContent;
+  }
+
+  return (
+    <CallOutAdvancedSearchProvider>
+      {layoutContent}
     </CallOutAdvancedSearchProvider>
   );
 }
