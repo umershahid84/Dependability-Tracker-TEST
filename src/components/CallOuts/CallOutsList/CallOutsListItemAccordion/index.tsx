@@ -68,6 +68,11 @@ export function CallOutsListItemAccordion({
       );
     }
   };
+
+  const editedBy = callOut.editedBySupervisor
+    ? `${callOut.editedBySupervisor.supervisor_info.name} (${getDate(callOut.updatedAt)} @ ${getTime(callOut.updatedAt)})`
+    : '-';
+
   return (
     show && (
       <div className={trim(styles.div)}>
@@ -77,6 +82,7 @@ export function CallOutsListItemAccordion({
               Call Date: {getDate(callOut.callout_date)} @ {getTimeNoSeconds(callOut.callout_time)}
             </p>
             <p>Entered By: {callOut.supervisor.supervisor_info.name} </p>
+            <p>Edited By: {editedBy}</p>
             <p>Employee: {callOut.employee.name}</p>
 
             <p>

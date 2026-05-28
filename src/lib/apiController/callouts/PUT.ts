@@ -131,7 +131,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       shift_time: shiftDateTime,
       shift_type: null,
       callout_time: callDateTime,
-      supervisor_id: supervisorId,
+      edited_by_supervisor_id: supervisorId,
       supervisor_comments: comment,
       left_early_mins: Number(leftEarlyMinutes ?? 0),
       arrived_late_mins: Number(lateArrivalMinutes ?? 0)
