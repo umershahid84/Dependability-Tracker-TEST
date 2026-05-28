@@ -29,6 +29,7 @@ export type CallOutAttributes = {
   callout_time: Date;
   employee_id: string;
   supervisor_id: string;
+  edited_by_supervisor_id: string | null;
   leave_type_id: string;
   supervisor_comments: string;
   left_early_mins: number | null;
@@ -50,6 +51,7 @@ export type CallOutCreationAttributes = {
   callout_time: Date;
   employee_id: string;
   supervisor_id: string;
+  edited_by_supervisor_id?: string | null;
   leave_type_id: string;
   supervisor_comments: string;
   left_early_mins?: number | null;
@@ -75,6 +77,7 @@ export type CallOutWithAssociations = {
   arrived_late_mins: number | null;
   employee: EmployeeWithAssociations;
   supervisor: SupervisorWithAssociations;
+  editedBySupervisor: SupervisorWithAssociations | null;
 };
 
 class CallOut
@@ -93,6 +96,7 @@ class CallOut
   declare arrived_late_mins: number | null;
   declare employee_id: ForeignKey<string>;
   declare supervisor_id: ForeignKey<string>;
+  declare edited_by_supervisor_id: ForeignKey<string> | null;
   declare leave_type_id: ForeignKey<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -165,6 +169,17 @@ CallOut.init(
     supervisor_id: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isUUID: 4
+      },
+      references: {
+        model: 'supervisors',
+        key: 'id'
+      }
+    },
+    edited_by_supervisor_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
         isUUID: 4
       },

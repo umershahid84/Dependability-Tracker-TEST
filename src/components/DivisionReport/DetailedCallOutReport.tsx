@@ -39,6 +39,7 @@ const headings = [
   'Shift Date',
   'Leave Type',
   'Created By',
+  'Edited By',
   'Supervisor Comments',
   'Actions'
 ];
@@ -171,6 +172,14 @@ export function DetailedCallOutHistory({
                   }`.trim()
                 )}
                 {renderCell(callOut.supervisor?.supervisor_info?.name)}
+                {renderCell(
+                  callOut.editedBySupervisor?.supervisor_info?.name ?? '-',
+                  callOut.editedBySupervisor
+                    ? `${formatDate_YYYY_MM_DD_TZ(callOut.updatedAt, 'UTC')} @ ${formatTime_hh_mm_ss_TZ(
+                        callOut.updatedAt
+                      )}`
+                    : undefined
+                )}
                 {renderCell(
                   callOut.supervisor_comments !== ' ' ? callOut.supervisor_comments : 'N/A'
                 )}

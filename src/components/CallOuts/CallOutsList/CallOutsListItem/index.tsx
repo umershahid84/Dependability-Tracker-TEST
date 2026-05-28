@@ -54,6 +54,10 @@ export function CallOutsListItem({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted, callOut]);
 
+  const editedBy = callOut.editedBySupervisor
+    ? `${callOut.editedBySupervisor.supervisor_info.name} (${getDate(callOut.updatedAt)} @ ${getTime(callOut.updatedAt)})`
+    : '-';
+
   return (
     <div className={styles.div}>
       <div className={styles.flex}>
@@ -63,6 +67,7 @@ export function CallOutsListItem({
           </p>{' '}
           <p>Employee: {callOut.employee.name}</p>
           <p>Entered By: {callOut.supervisor.supervisor_info.name}</p>
+          <p>Edited By: {editedBy}</p>
           <p>Reason: {callOut.leaveType.reason}</p>
           <br />
           <p className="text-tertiary text-sm">

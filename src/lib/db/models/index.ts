@@ -19,6 +19,12 @@ CallOut.belongsTo(Supervisor, {
   onDelete: 'CASCADE'
 });
 
+CallOut.belongsTo(Supervisor, {
+  foreignKey: 'edited_by_supervisor_id',
+  as: 'editedBySupervisor',
+  onDelete: 'SET NULL'
+});
+
 CallOut.belongsTo(Employee, {
   foreignKey: 'employee_id',
   onDelete: 'CASCADE'

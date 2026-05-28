@@ -66,6 +66,7 @@ const headings = [
   'Shift Date',
   'Leave Type',
   'Created By',
+  'Edited By',
   'Supervisor Comments'
 ];
 
@@ -117,6 +118,15 @@ const TablePdfDocument = ({
             </View>
             <View style={styles.tableCell}>
               <Text>{callOut.supervisor?.supervisor_info?.name}</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>{callOut.editedBySupervisor?.supervisor_info?.name ?? '-'}</Text>
+              {callOut.editedBySupervisor && (
+                <Text style={styles.subCell}>{`${makeDate(callOut.updatedAt).toLocaleDateString(
+                  'en-US',
+                  {timeZone: 'UTC'}
+                )} @ ${getTime(callOut.updatedAt)}`}</Text>
+              )}
             </View>
             <View style={styles.tableCell}>
               <Text wrap>

@@ -50,6 +50,7 @@ export type EditableCalloutProps = {
   callout_time?: Date;
   employee_id?: string;
   supervisor_id?: string;
+  edited_by_supervisor_id?: string | null;
   leave_type_id?: string;
   supervisor_comments?: string;
   left_early_mins?: number | null;
@@ -286,6 +287,10 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
 
   if (props.supervisor_id && !uuidV4Regex.test(props.supervisor_id)) {
     throw new Error('Invalid supervisor_id');
+  }
+
+  if (props.edited_by_supervisor_id && !uuidV4Regex.test(props.edited_by_supervisor_id)) {
+    throw new Error('Invalid edited_by_supervisor_id');
   }
 
   if (props.leave_type_id && !uuidV4Regex.test(props.leave_type_id)) {
@@ -591,10 +596,11 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
 export const populateCallOutAssociations = async (
   props: CallOutAttributes
 ): Promise<CallOutWithAssociations | null> => {
-  const [employee, supervisor, leaveType] = await Promise.all([
+  const [employee, supervisor, leaveType, editedBySupervisor] = await Promise.all([
     getEmployeeFromDB.byId(props.employee_id),
     getSupervisorFromDB.byId(props.supervisor_id),
-    getLeaveTypeFromDB.byId(props.leave_type_id)
+    getLeaveTypeFromDB.byId(props.leave_type_id),
+    props.edited_by_supervisor_id ? getSupervisorFromDB.byId(props.edited_by_supervisor_id) : null
   ]);
 
   // istanbul ignore next
@@ -605,6 +611,7 @@ export const populateCallOutAssociations = async (
   return {
     leaveType,
     supervisor,
+    editedBySupervisor,
     id: props.id,
     createdAt: props.createdAt,
     updatedAt: props.updatedAt,
