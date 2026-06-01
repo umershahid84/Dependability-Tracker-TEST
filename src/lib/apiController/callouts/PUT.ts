@@ -4,6 +4,7 @@ import {Request, Response} from 'express';
 import type {ApiData} from '../../../lib/apiController';
 import {DefaultCallOutFormData} from '../../../client-api/employees';
 import {updateCallOutInDB} from '../../../lib/db/controller';
+import {getLoginCredentialFromDB} from '../../../lib/db/controller/LoginCredential';
 import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
 import {EditableCalloutProps} from '../../db/controller/Callout/helpers';
 import {logTemplate} from '../../utils/server';
@@ -53,7 +54,22 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
     }
 
-    const supervisorId = (token as JwtPayload).supervisorId;
+    const tokenPayload = token as JwtPayload;
+    let supervisorId = tokenPayload.supervisorId;
+    if (!supervisorId) {
+      if (!tokenPayload.email) {
+        return res
+          .status(401)
+          .json({error: 'Unable to determine supervisor ID from authentication token'});
+      }
+      const loginCredential = await getLoginCredentialFromDB.byEmail(tokenPayload.email);
+      supervisorId = loginCredential?.supervisor_info?.id;
+    }
+    if (!supervisorId) {
+      return res
+        .status(401)
+        .json({error: 'Unable to determine supervisor ID from authentication token'});
+    }
 
     // Parse date strings as local dates, not UTC
     const parseLocalDate = (dateStr: string | Date): Date | null => {
