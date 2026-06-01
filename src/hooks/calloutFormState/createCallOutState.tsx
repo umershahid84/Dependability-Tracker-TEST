@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { validateEmployeeCallOut } from './helpers';
-import { makeToast, ToastTypes } from '../../components';
-import { CallOutWithAssociations } from '../../lib/db/models/Callout';
-import { UseIncrementingTime, useIncrementingTime, useIsMounted } from '../../hooks';
-import { ClientAPI, DefaultCallOutFormData, getDefaultCallOutFormData } from '../../client-api';
+import React, {useEffect, useState} from 'react';
+import {validateEmployeeCallOut} from './helpers';
+import {makeToast, ToastTypes} from '../../components';
+import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {UseIncrementingTime, useIncrementingTime, useIsMounted} from '../../hooks';
+import {
+  CreateEmployeeCallOut,
+  DefaultCallOutFormData,
+  getDefaultCallOutFormData
+} from '../../client-api/employees';
 
 export type UseCreateCallOutFormState = {
   callTime: string;
   shiftTime: string;
   formData: DefaultCallOutFormData;
-  resetFormData: () => void;
+  resetFormData: (employeeId?: string) => void;
   handleFormSubmit: (e: React.SyntheticEvent) => Promise<void>;
   handleCallTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleShiftTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -18,6 +22,27 @@ export type UseCreateCallOutFormState = {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
 };
+
+export function localDateAndTimeToUTC(date: Date | string, time: string): string {
+  let dateStr: string;
+
+  if (typeof date === 'string') {
+    // String from date picker - already in YYYY-MM-DD format
+    dateStr = date;
+  } else {
+    // Date object - extract local date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    dateStr = `${year}-${month}-${day}`;
+  }
+
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hh, mm, ss = 0] = time.split(':').map(Number);
+
+  const localDate = new Date(year, month - 1, day, hh, mm, ss);
+  return localDate.toISOString();
+}
 
 export function useCreateCallOutFormState(
   callback?: (data: CallOutWithAssociations) => void
@@ -36,8 +61,8 @@ export function useCreateCallOutFormState(
   ) => {
     incrementingCallTime.clearTimeInterval();
     incrementingShiftTime.clearTimeInterval();
-    const { name, value } = e.target;
-    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+    const {name, value} = e.target;
+    setFormData(prevFormData => ({...prevFormData, [name]: value}));
   };
 
   const handleFormSubmit = async (e: React.SyntheticEvent) => {
@@ -50,10 +75,10 @@ export function useCreateCallOutFormState(
     }
 
     try {
-      const data = await ClientAPI.Employees.CallOuts.Create({
+      const data = await CreateEmployeeCallOut({
         formData,
-        callTime,
-        shiftTime
+        callTime: localDateAndTimeToUTC(formData.callDate, callTime),
+        shiftTime: localDateAndTimeToUTC(formData.shiftDate, shiftTime)
       });
 
       makeToast({
@@ -64,6 +89,7 @@ export function useCreateCallOutFormState(
       resetFormData();
       callback?.(data?.data as CallOutWithAssociations);
     } catch (error) {
+      console.error('Error Creating Callout:\n', error);
       makeToast({
         type: ToastTypes.Error,
         title: 'Error',
@@ -79,8 +105,8 @@ export function useCreateCallOutFormState(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
-  const resetFormData = () => {
-    setFormData(defaultFormData);
+  const resetFormData = (employeeId?: string) => {
+    setFormData({...defaultFormData, employeeName: employeeId ?? ''});
     incrementingCallTime.resetTime();
     incrementingShiftTime.resetTime();
   };

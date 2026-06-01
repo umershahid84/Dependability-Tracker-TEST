@@ -1,10 +1,11 @@
+'use client';
 import React from 'react';
 import Loading from '../../components/Loading';
 import {CallOutTrendsChart} from '../../components';
 import {dateTo_HH_MM_SS, dateTo_YYYY_MM_DD} from '../../lib/utils';
 import {useDashboardData, UseDashboardData} from '../../hooks/useDashboardData';
 
-export function DashboardStats(): React.JSX.Element {
+export function DashboardStats(): React.ReactElement {
   const {loading, adminData}: UseDashboardData = useDashboardData();
 
   return (
@@ -70,7 +71,8 @@ export function DashboardStats(): React.JSX.Element {
                         <strong>Leave Type:</strong> {callout?.leaveType?.reason}
                       </p>
                       <p>
-                        <strong>Supervisor:</strong> {callout?.supervisor?.supervisor_info?.name}{' '}
+                        <strong>Supervisor:</strong>{' '}
+                        {callout?.supervisor?.supervisor_info?.name}{' '}
                       </p>
                     </div>
                   );

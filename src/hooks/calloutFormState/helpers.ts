@@ -1,5 +1,5 @@
-import { makeToast, ToastTypes } from '../../components';
-import { DefaultCallOutFormData } from '../../client-api';
+import {makeToast, ToastTypes} from '../../components';
+import {DefaultCallOutFormData} from '../../client-api/employees';
 
 export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boolean => {
   // validate form data before sending
@@ -44,18 +44,21 @@ export const validateEmployeeCallOut = (formData: DefaultCallOutFormData): boole
       );
     }
 
-    // make sure the shift date is not before the call date
-    // find the difference between the shift date and call date
-    const callDate = new Date(formData.callDate);
-    const shiftDate = new Date(formData.shiftDate);
+    // // make sure the shift date is not before the call date
+    // // find the difference between the shift date and call date
+    // const callDate = new Date(formData.callDate);
+    // const shiftDate = new Date(formData.shiftDate);
 
-    const dayDifference = shiftDate.getDate() - callDate.getDate();
-    const monthDifference = shiftDate.getMonth() - callDate.getMonth();
-    const yearDifference = shiftDate.getFullYear() - callDate.getFullYear();
+    // // Reset time components to compare dates only
+    // callDate.setHours(0, 0, 0, 0);
+    // shiftDate.setHours(0, 0, 0, 0);
 
-    if (yearDifference < 0 || monthDifference < 0 || dayDifference < 0) {
-      throw new Error('Shift Date cannot be before the Call Date');
-    }
+    // if (shiftDate < callDate) {
+    //   console.log({callDate, shiftDate});
+
+    //   throw new Error('Shift Date cannot be before the Call Date');
+    // }
+
     // if leave type is Left Early, check if left early minutes are missing
     if (
       !missingFields.includes('leaveType') &&

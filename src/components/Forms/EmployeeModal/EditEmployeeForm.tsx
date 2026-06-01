@@ -1,5 +1,5 @@
 import React from 'react';
-import {EditEmployee} from '../../../client-api';
+import {EditEmployee} from '../../../client-api/employees';
 import {AddOrEditEmployeeForm} from './AddOrEditEmployee';
 import {EmployeeWithAssociations} from '../../../lib/db/controller';
 

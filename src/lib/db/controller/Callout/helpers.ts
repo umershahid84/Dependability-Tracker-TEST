@@ -43,11 +43,14 @@ export type GetAllCallOutOptions = {
 
 export type EditableCalloutProps = {
   shift_date?: Date;
+  shift_date_to?: Date | null;
   shift_time?: Date;
+  shift_type?: string | null;
   callout_date?: Date;
   callout_time?: Date;
   employee_id?: string;
   supervisor_id?: string;
+  edited_by_supervisor_id?: string | null;
   leave_type_id?: string;
   supervisor_comments?: string;
   left_early_mins?: number | null;
@@ -284,6 +287,10 @@ export const validateEditableCalloutProps = (props: EditableCalloutProps): boole
 
   if (props.supervisor_id && !uuidV4Regex.test(props.supervisor_id)) {
     throw new Error('Invalid supervisor_id');
+  }
+
+  if (props.edited_by_supervisor_id && !uuidV4Regex.test(props.edited_by_supervisor_id)) {
+    throw new Error('Invalid edited_by_supervisor_id');
   }
 
   if (props.leave_type_id && !uuidV4Regex.test(props.leave_type_id)) {
@@ -589,25 +596,29 @@ export const buildCalloutAllQueryOptions = (options: GetAllCallOutOptions) => {
 export const populateCallOutAssociations = async (
   props: CallOutAttributes
 ): Promise<CallOutWithAssociations | null> => {
-  const [employee, supervisor, leaveType] = await Promise.all([
+  const [employee, supervisor, leaveType, editedBySupervisor] = await Promise.all([
     getEmployeeFromDB.byId(props.employee_id),
     getSupervisorFromDB.byId(props.supervisor_id),
-    getLeaveTypeFromDB.byId(props.leave_type_id)
+    getLeaveTypeFromDB.byId(props.leave_type_id),
+    props.edited_by_supervisor_id ? getSupervisorFromDB.byId(props.edited_by_supervisor_id) : null
   ]);
 
   // istanbul ignore next
-  if (!employee || !supervisor ||!leaveType) {
+  if (!employee || !supervisor || !leaveType) {
     return null;
   }
 
   return {
     leaveType,
     supervisor,
+    editedBySupervisor,
     id: props.id,
     createdAt: props.createdAt,
     updatedAt: props.updatedAt,
     shift_date: props.shift_date,
+    shift_date_to: props.shift_date_to ?? null,
     shift_time: props.shift_time,
+    shift_type: (props as {shift_type?: string | null}).shift_type ?? null,
     callout_date: props.callout_date,
     callout_time: props.callout_time,
     left_early_mins: props.left_early_mins,
@@ -644,10 +655,12 @@ export const validateCallOutProps = async (props: CallOutCreationAttributes): Pr
     throw new Error('Invalid supervisor comments');
   }
 
-  // validate date and time
-  if (props.shift_date < props.callout_date) {
-    throw new Error('Shift date cannot be before callout date');
-  }
+  // // validate date and time
+  // if (props.shift_date < props.callout_date) {
+  //   console.log('HELPERS');
+  //   console.log({shift: props.shift_date, call: props.callout_date});
+  //   throw new Error('Shift date cannot be before callout date');
+  // }
 
   // ensure dates are dates
   // istanbul ignore next

@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { formatter, trim } from '../../../lib/utils/shared/strings';
-import { CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon } from '../../Icons';
+import {ReactElement, useState, useEffect} from 'react';
+import {formatter, trim} from '../../../lib/utils/shared/strings';
+import {CloseIcon, WarningIcon, ErrorIcon, SuccessIcon, InfoIcon} from '../../Icons';
 
 export enum ToastTypes {
   Info = 'info',
@@ -66,8 +66,8 @@ export function Toast(props: {
   message: string;
   type: ToastTypes;
   removeInMs?: number;
-}): JSX.Element {
-  const removeInMs: number = props.removeInMs ?? 5000;
+}): ReactElement {
+  const removeInMs: number = props.removeInMs ?? 3000;
 
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -75,7 +75,7 @@ export function Toast(props: {
   const removeToast = (): NodeJS.Timeout => {
     return setTimeout(() => {
       setTimer(null);
-      window.dispatchEvent(new CustomEvent('remove-toast', { detail: { id: props.id } }));
+      window.dispatchEvent(new CustomEvent('remove-toast', {detail: {id: props.id}}));
     }, removeInMs);
   };
 
@@ -100,7 +100,7 @@ export function Toast(props: {
       clearTimeout(timer);
       setTimer(null);
     }
-    window.dispatchEvent(new CustomEvent('remove-toast', { detail: { id: props.id } }));
+    window.dispatchEvent(new CustomEvent('remove-toast', {detail: {id: props.id}}));
   };
 
   const title: string | undefined = props.title !== '' ? props.title : props.type;

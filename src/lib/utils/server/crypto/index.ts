@@ -1,1 +1,1 @@
-export * from 'crypto';
+export * from './aes-256';

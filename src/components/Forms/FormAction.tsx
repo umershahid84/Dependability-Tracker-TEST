@@ -1,7 +1,7 @@
 'use client';
 import Loading from '../Loading';
-import { useEffect, useState } from 'react';
-import { trim } from '../../lib/utils/shared/strings';
+import {useEffect, useState} from 'react';
+import {trim} from '../../lib/utils/shared/strings';
 
 export type FormActionProps = {
   label?: string;
@@ -14,10 +14,11 @@ const defaultStyles = {
   div: 'w-full flex flex-col justify-center items-center mt-4',
   defaultButton: trim(`min-w-36 max-w-42 h-auto p-4 bg-tertiary text-lg rounded-md border
                   hover:bg-accent-primary focus:bg-accent-primary hover:text-primary`),
-  disabled: 'min-w-36 max-w-42 p-4 bg-tertiary border border-quaternary text-lg rounded-md cursor-not-allowed'
+  disabled:
+    'min-w-36 max-w-42 p-4 bg-tertiary border border-quaternary text-lg rounded-md cursor-not-allowed'
 };
 
-export default function FormAction(props: Readonly<FormActionProps>): React.JSX.Element {
+export default function FormAction(props: Readonly<FormActionProps>): React.ReactElement {
   const [styles, setStyles] = useState(defaultStyles);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isClicked, setIsClicked] = useState<boolean>(false);
@@ -64,7 +65,7 @@ export default function FormAction(props: Readonly<FormActionProps>): React.JSX.
         onClick={actionWrapper}
         disabled={!props.isValid}
         className={styles.defaultButton}>
-        {isClicked && isValid ? <Loading label="Processing..." /> : props.label ?? 'Submit'}
+        {isClicked && isValid ? <Loading label="Processing..." /> : (props.label ?? 'Submit')}
       </button>
     </div>
   );

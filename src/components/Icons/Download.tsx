@@ -1,13 +1,14 @@
-import type { IIconProps } from './types';
+import React from 'react';
+import type {IIconProps} from './types';
 
-export default function Download(props: Readonly<IIconProps>): JSX.Element {
+export default function Download(props: Readonly<IIconProps>): React.ReactElement {
   return (
     <svg
       fill="currentColor"
       viewBox="0 0 24 24"
       strokeWidth={'1.5px'}
       xmlns="http://www.w3.org/2000/svg"
-      onClick={props.onClick ?? (() => { })}
+      onClick={props.onClick ?? (() => {})}
       className={props.className ?? ''}>
       <path
         clip-rule="evenodd"

@@ -8,12 +8,23 @@ import { sendCredentialInvite } from '../../lib/email';
 import { createCreateCredentialsInviteInDB } from '../../lib/db/controller';
 import { logTemplate } from '../../lib/utils/server';
 
+const normalize = (value: string): string =>
+  value
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\s+/g, ' ');
+
 export default async function handler(req: Request, res: Response) {
   if (req.method === 'POST') {
     try {
       const { body } = req as { body: { email: string; username: string } };
 
-      const { email, username } = body;
+      const email = body?.email?.trim().toLocaleLowerCase();
+      const username = body?.username ?? '';
+
+      if (!email || !username?.trim()) {
+        return res.status(400).json({ error: 'Email and username are required' });
+      }
 
       // look for admin credentials with the email
       const adminsCredentials = await getLoginCredentialFromDB.byEmail(email);
@@ -23,10 +34,10 @@ export default async function handler(req: Request, res: Response) {
       }
 
       // compare the names
-      if (
-        adminsCredentials?.supervisor_info?.supervisor_info?.name?.toLocaleLowerCase() !==
-        username?.toLocaleLowerCase()
-      ) {
+      const expectedName = normalize(adminsCredentials?.supervisor_info?.supervisor_info?.name ?? '');
+      const receivedName = normalize(username);
+
+      if (expectedName !== receivedName) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
@@ -44,7 +55,9 @@ export default async function handler(req: Request, res: Response) {
         throw new Error('Error creating invite');
       }
 
-      if (process.env.SEND_EMAILS === 'true') {
+      const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+      if (shouldSendEmails) {
         const emailSent = await sendCredentialInvite(
           adminsCredentials.email,
           credentialInvite.invite_token,
@@ -57,7 +70,11 @@ export default async function handler(req: Request, res: Response) {
         }
       }
 
-      return res.status(200).json({ data: true });
+      const message = shouldSendEmails
+        ? 'Credential reset invite sent successfully'
+        : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
+
+      return res.status(200).json({ data: true, message, emailSent: shouldSendEmails });
     } catch (error) {
       console.error(logTemplate('❌ Error in handler: ' + (error as Error).message, 'error'));
       return res.status(500).json({ error: (error as Error).message });

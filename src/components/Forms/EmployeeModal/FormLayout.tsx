@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormLabel } from '../FormInputs/FormLabel';
-import { EmployeeFormData } from '../../../client-api';
-import { DynamicOptions, DynamicOption } from '../FormInputs/DynamicOptions';
-import { DivisionAttributes } from '../../../lib/db/models/Division';
+import {FormLabel} from '../FormInputs/FormLabel';
+import {EmployeeFormData} from '../../../client-api/employees';
+import {DynamicOptions, DynamicOption} from '../FormInputs/DynamicOptions';
+import {DivisionAttributes} from '../../../lib/db/models/Division';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4',
@@ -16,7 +16,7 @@ const styles = {
 export function FormLabelContainer({
   children,
   addClasses
-}: Readonly<{ children: React.ReactNode; addClasses?: string }>): React.ReactElement {
+}: Readonly<{children: React.ReactNode; addClasses?: string}>): React.ReactElement {
   return (
     <div className={'w-full flex flex-col justify-start items-start' + ' ' + (addClasses ?? '')}>
       {children}
@@ -24,7 +24,7 @@ export function FormLabelContainer({
   );
 }
 
-function RadioDivider({ children }: Readonly<{ children: React.ReactNode }>): React.ReactElement {
+function RadioDivider({children}: Readonly<{children: React.ReactNode}>): React.ReactElement {
   return <div className="flex items-center space-x-4">{children}</div>;
 }
 
@@ -134,6 +134,81 @@ export function EmployeeCrudFromModalLayout({
               className={styles.inputWithMargin}
             />
           </RadioDivider>
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Shift Start Time" htmlFor="shiftStartTime" />
+          <input
+            required
+            type="time"
+            name="shiftStartTime"
+            title="Shift Start Time"
+            value={formData.shiftStartTime}
+            onChange={onChange}
+            className={styles.input}
+          />
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Shift End Time" htmlFor="shiftEndTime" />
+          <input
+            required
+            type="time"
+            name="shiftEndTime"
+            title="Shift End Time"
+            value={formData.shiftEndTime}
+            onChange={onChange}
+            className={styles.input}
+          />
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Days Off" htmlFor="daysOff" />
+          <div className="flex flex-wrap gap-3 mt-1">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => {
+              const selectedDays = formData.daysOff
+                ? formData.daysOff.split(',').map(d => d.trim()).filter(Boolean).map(Number)
+                : [];
+              const isChecked = selectedDays.includes(index);
+              return (
+                <label key={day} className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    name="daysOff"
+                    value={String(index)}
+                    checked={isChecked}
+                    onChange={e => {
+                      const current = formData.daysOff
+                        ? formData.daysOff.split(',').map(d => d.trim()).filter(Boolean).map(Number)
+                        : [];
+                      const updated = e.target.checked
+                        ? [...current, index]
+                        : current.filter(d => d !== index);
+                      onChange({
+                        target: {name: 'daysOff', value: updated.sort().join(',')}
+                      } as React.ChangeEvent<HTMLInputElement>);
+                    }}
+                    className="h-4 w-4 border-gray-300 rounded bg-tertiary"
+                  />
+                  {day}
+                </label>
+              );
+            })}
+          </div>
+        </FormLabelContainer>
+
+        <FormLabelContainer>
+          <FormLabel label="Employee Status" htmlFor="employeeStatus" />
+          <select
+            required
+            name="employeeStatus"
+            title="Employee Status"
+            className={styles.input}
+            value={formData.employeeStatus}
+            onChange={onChange}>
+            <option value="FULL_TIME">Full-Time</option>
+            <option value="PART_TIME">Part-Time</option>
+          </select>
         </FormLabelContainer>
 
         <div className={styles.buttonContainer}>

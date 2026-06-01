@@ -1,7 +1,7 @@
-import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {LeaveTypeAttributes} from '../lib/db/models/LeaveType';
+import {getLeaveTypes} from '../client-api/get-leaveTypes';
 
 export type UseLeaveTypes = {
   isLoading: boolean;
@@ -18,7 +18,7 @@ export function useLeaveTypes(): UseLeaveTypes {
 
   const fetchLeaveTypes = async () => {
     try {
-      const data: LeaveTypeAttributes[] = await ClientAPI.LeaveTypes.Read();
+      const data: LeaveTypeAttributes[] = await getLeaveTypes();
 
       setLeaveTypes(data ?? []);
       setIsLoading(false);

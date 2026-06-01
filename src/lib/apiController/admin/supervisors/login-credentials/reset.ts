@@ -62,7 +62,9 @@ export default async function resetSupervisorLoginCredentials(
       throw new Error('Error creating invite');
     }
 
-    if (process.env.SEND_EMAILS === 'true') {
+    const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+    if (shouldSendEmails) {
       const emailSent = await sendCredentialInvite(
         supervisorCredentials.email,
         credentialInvite.invite_token,
@@ -83,7 +85,11 @@ export default async function resetSupervisorLoginCredentials(
       }
     );
 
-    return res.status(200).json({message: 'Invite created successfully', data: updatedSupervisor});
+    const message = shouldSendEmails
+      ? 'Invite created and email sent successfully'
+      : 'Invite created, but email sending is disabled (SEND_EMAILS is not true)';
+
+    return res.status(200).json({message, emailSent: shouldSendEmails, data: updatedSupervisor});
   } catch (error) {
     console.error('Error creating invite:', error);
     return res.status(500).json({error: String(error)});

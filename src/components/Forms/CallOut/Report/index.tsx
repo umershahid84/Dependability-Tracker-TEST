@@ -6,16 +6,19 @@ import {
   CallOutWithAssociations,
   EmployeeWithAssociations
 } from '../../../../lib/db/models/types';
-import { useIsMounted } from '../../../../hooks';
-import { ClientAPI } from '../../../../client-api';
-import React, { useEffect, useState } from 'react';
-import { NextRouter, useRouter } from 'next/router';
-import { DateInput } from '../../FormInputs/DateInput';
-import { makeToast, ToastTypes } from '../../../Toasts';
-import { SelectDivision } from '../../FormInputs/SelectDivision';
-import { SelectEmployeeName } from '../../../Forms/FormInputs/SelectEmployeeName';
-import { SelectLeaveTypeReason } from '../../../Forms/FormInputs/SelectLeaveType';
-import { capitalizeWords, getDivisionNameFromPath } from '../../../../lib/utils/shared/strings';
+import {useIsMounted} from '../../../../hooks';
+
+import React, {useEffect, useState} from 'react';
+import {NextRouter, useRouter} from 'next/router';
+import {DateInput} from '../../FormInputs/DateInput';
+import {makeToast, ToastTypes} from '../../../Toasts';
+import {SelectDivision} from '../../FormInputs/SelectDivision';
+import {SelectEmployeeName} from '../../../Forms/FormInputs/SelectEmployeeName';
+import {SelectLeaveTypeReason} from '../../../Forms/FormInputs/SelectLeaveType';
+import {capitalizeWords, getDivisionNameFromPath} from '../../../../lib/utils/shared/strings';
+import {GetCallOuts} from '../../../../client-api/callouts';
+import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
+import {formatDateToISODateOnly} from '../../../../lib/utils';
 
 export type DivisionCalloutReportFormData = {
   endDate: Date;
@@ -42,6 +45,7 @@ export type DivisionReportProps = {
   leaveTypes: string;
   setIsLoading: (isLoading: boolean) => void;
   setCallOuts: (callOuts: CallOutWithAssociations[]) => void;
+  setCalendar: (calendar: EmployeeCalendarProjection | null) => void;
 };
 
 export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
@@ -77,8 +81,8 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
         : JSON.parse(props.leaveTypes).map((e: LeaveTypeAttributes) => e.id);
 
     try {
-      const callOuts = await ClientAPI.CallOuts.Read(
-        { limit: '-1' },
+      const callOuts = await GetCallOuts(
+        {limit: '-1'},
         {
           employee_id,
           leave_type_id,
@@ -87,6 +91,18 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       );
 
       props.setCallOuts(callOuts?.data?.data ?? []);
+
+      if (formData.employeeId && formData.employeeId !== 'all') {
+        const calendar = await GetEmployeeCalendar({
+          employeeId: formData.employeeId,
+          startDate: formatDateToISODateOnly(new Date(formData.startDate)),
+          endDate: formatDateToISODateOnly(new Date(formData.endDate))
+        });
+
+        props.setCalendar(calendar.data ?? null);
+      } else {
+        props.setCalendar(null);
+      }
 
       props.setIsLoading(false);
     } catch (error) {
@@ -106,7 +122,7 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       (d: DivisionAttributes) => d.name === currentDivision
     )?.id;
 
-    isMounted && setFormData({ ...formData, division: currentDivisionId ?? '' });
+    isMounted && setFormData({...formData, division: currentDivisionId ?? ''});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 

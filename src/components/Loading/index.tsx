@@ -1,5 +1,5 @@
 'use client';
-import {JSX, useEffect, useState} from 'react';
+import {ReactElement, useEffect, useState} from 'react';
 import Spinner, {SpinnerStyles} from '../Spinner';
 
 const THREE_SECONDS = 3000;
@@ -8,7 +8,7 @@ export type LoadingProps = {
   label?: string;
 };
 
-export default function Loading(props: Readonly<LoadingProps>): JSX.Element {
+export default function Loading(props: Readonly<LoadingProps>): ReactElement {
   const [spinnerColor, setSpinnerColor] = useState<string>(SpinnerStyles.greenText);
 
   const threeSecTimeout = (): NodeJS.Timeout =>

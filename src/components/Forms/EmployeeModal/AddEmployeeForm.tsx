@@ -1,6 +1,7 @@
 import React from 'react';
-import {CreateEmployee} from '../../../client-api';
 import {AddOrEditEmployeeForm} from './AddOrEditEmployee';
+
+import {CreateEmployee} from '../../../client-api/employees';
 import type {EmployeeWithAssociations} from '../../../lib/db/controller';
 
 export function AddEmployeeForm({

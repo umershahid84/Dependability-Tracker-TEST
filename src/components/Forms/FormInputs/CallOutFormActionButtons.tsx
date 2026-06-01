@@ -18,7 +18,12 @@ export function CallOutFormActionButtons({
   return (
     <div className={styles.buttonContainer}>
       <input type="button" value="Submit" onClick={handleFormSubmit} className={styles.submit} />
-      <input type="reset" value="Reset" className={trim(styles.reset)} onClick={resetFormData} />
+      <input
+        type="reset"
+        value="Reset"
+        className={trim(styles.reset)}
+        onClick={() => resetFormData()}
+      />
     </div>
   );
 }

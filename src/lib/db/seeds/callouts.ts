@@ -6,15 +6,14 @@ import {
   SupervisorWithAssociations
 } from '../models/types';
 import sequelize from '../connection';
-import { logTemplate } from '../../utils/server';
-import { CallOut, DefaultLeaveTypes } from '../models';
-import { getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB } from '../controller';
-
+import {logTemplate} from '../../utils/server';
+import {CallOut, DefaultLeaveTypes} from '../models';
+import {getEmployeeFromDB, getLeaveTypeFromDB, getSupervisorFromDB} from '../controller';
 
 const numberOfCallouts = 365;
 
 function getRelevantComments(leaveType: DefaultLeaveTypes): string[] {
-  const leaveTypeToComments: { [key in DefaultLeaveTypes]: number[] } = {
+  const leaveTypeToComments: {[key in DefaultLeaveTypes]: number[]} = {
     [DefaultLeaveTypes.SICK]: [6, 15, 19, 24, 28, 31, 33, 38, 48],
     [DefaultLeaveTypes.FCA]: [2, 11, 16, 17, 25],
     [DefaultLeaveTypes.FMLA]: [7, 10, 18, 21, 36, 37],
@@ -112,24 +111,35 @@ function getRelevantShiftDate(calloutDate: Date): Date {
   return shiftDate;
 }
 
-// Function to generate a random time within reasonable working hours (8 AM to 6 PM)
+// // Function to generate a random time within reasonable working hours (8 AM to 6 PM)
+// function getRandomTime(date: Date): Date {
+//   const time = new Date(date);
+//   const year = time.getFullYear();
+//   const month = time.getMonth();
+//   const day = time.getDate();
+//   const hour = Math.floor(Math.random() * 10) + 8; // Hour between 8 AM and 6 PM
+//   const minute = Math.floor(Math.random() * 60);
+//   const seconds = Math.floor(Math.random() * 60);
+//   const milliseconds = Math.floor(Math.random() * 1000);
+
+//   return new Date(year, month, day, hour, minute, seconds, milliseconds);
+// }
 function getRandomTime(date: Date): Date {
   const time = new Date(date);
-  const year = time.getFullYear();
-  const month = time.getMonth();
-  const day = time.getDate();
+  const year = time.getUTCFullYear();
+  const month = time.getUTCMonth();
+  const day = time.getUTCDate();
   const hour = Math.floor(Math.random() * 10) + 8; // Hour between 8 AM and 6 PM
   const minute = Math.floor(Math.random() * 60);
   const seconds = Math.floor(Math.random() * 60);
   const milliseconds = Math.floor(Math.random() * 1000);
 
-  return new Date(year, month, day, hour, minute, seconds, milliseconds);
+  return new Date(Date.UTC(year, month, day, hour, minute, seconds, milliseconds));
 }
-
 // Function to seed callouts
 const seedCallOuts = async (numOfSeeds?: number): Promise<void> => {
   console.log(logTemplate(`🌱 Seeding ${numOfSeeds} CallOuts...`));
-  await sequelize.sync({ force: false });
+  await sequelize.sync({force: false});
   try {
     const leaveTypes: LeaveTypeAttributes[] = await getLeaveTypeFromDB.all();
     const supervisors: SupervisorWithAssociations[] =

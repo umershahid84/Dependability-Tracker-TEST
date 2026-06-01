@@ -1,12 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { JwtPayload } from '../../../auth';
-import { Request, Response } from 'express';
-import type { ApiData } from '../../../lib/apiController';
-import { DefaultCallOutFormData } from '../../../client-api';
-import { updateCallOutInDB } from '../../../lib/db/controller';
-import { CallOutWithAssociations } from '../../../lib/db/models/Callout';
-import { EditableCalloutProps } from '../../db/controller/Callout/helpers';
-import { logTemplate } from '../../utils/server';
+import {JwtPayload} from '../../../auth';
+import {Request, Response} from 'express';
+import type {ApiData} from '../../../lib/apiController';
+import {DefaultCallOutFormData} from '../../../client-api/employees';
+import {updateCallOutInDB} from '../../../lib/db/controller';
+import {getLoginCredentialFromDB} from '../../../lib/db/controller/LoginCredential';
+import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import {EditableCalloutProps} from '../../db/controller/Callout/helpers';
+import {logTemplate} from '../../utils/server';
 
 // inviteToken, password, email
 export default async function editEmployeeCallOutApiHandler( //NOSONAR
@@ -21,12 +22,13 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       callTime,
       comment,
       shiftDate,
+      shiftDateTo,
       shiftTime,
       leaveType,
       employeeName,
       leftEarlyMinutes,
       lateArrivalMinutes
-    } = req.body.formData as DefaultCallOutFormData & { callDate: string; shiftDate: string };
+    } = req.body.formData as DefaultCallOutFormData & {callDate: string; shiftDate: string; shiftDateTo?: string};
 
     const id = req.body.id as string;
 
@@ -49,42 +51,103 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       if (!employeeName) missingFields.push('Employee Name');
       if (!comment) missingFields.push('Supervisor Comments');
 
-      return res.status(400).json({ error: `Missing required fields: ${missingFields.join(', ')}` });
+      return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
     }
 
-    // build the calTime and shiftTime into date objects, using the callDate and shiftDate as the base
-    const callTimeParts = callTime.split(':');
-    const shiftTimeParts = shiftTime.split(':');
+    const tokenPayload = token as JwtPayload;
+    let supervisorId: string | undefined = tokenPayload.supervisorId;
+    if (!supervisorId) {
+      if (!tokenPayload.email) {
+        return res
+          .status(401)
+          .json({error: 'Unable to determine supervisor ID from authentication token'});
+      }
+      const loginCredential = await getLoginCredentialFromDB.byEmail(tokenPayload.email);
+      supervisorId = loginCredential?.supervisor_info?.id;
+    }
+    if (!supervisorId) {
+      return res
+        .status(401)
+        .json({error: 'Unable to determine supervisor ID from authentication token'});
+    }
 
-    const callDateParts = callDate.split('-');
-    const shiftDateParts = shiftDate.split('-');
+    // Parse date strings as local dates, not UTC
+    const parseLocalDate = (dateStr: string | Date): Date | null => {
+      if (dateStr instanceof Date) {
+        return Number.isNaN(dateStr.getTime()) ? null : dateStr;
+      }
+      const normalized = dateStr.trim();
+      if (!normalized || normalized.toLowerCase() === 'invalid date') return null;
+      const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!match) return null;
+      const [, yearStr, monthStr, dayStr] = match;
+      const year = Number(yearStr);
+      const month = Number(monthStr);
+      const day = Number(dayStr);
+      if ([year, month, day].some(Number.isNaN)) return null;
+      const parsed = new Date(year, month - 1, day);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    };
 
-    const callDateTime = new Date(
-      parseInt(callDateParts[0]),
-      parseInt(callDateParts[1]) - 1,
-      parseInt(callDateParts[2]),
-      parseInt(callTimeParts[0]),
-      parseInt(callTimeParts[1])
-    );
+    const parseDateTime = (dateStr: string | Date, timeStr: string): Date | null => {
+      // Accept ISO timestamps or time-only strings; prefer combining date+time for time-only.
+      if (timeStr.includes('T')) {
+        const isoDate = new Date(timeStr);
+        if (!Number.isNaN(isoDate.getTime())) {
+          return isoDate;
+        }
+      }
 
-    const shiftDateTime = new Date(
-      parseInt(shiftDateParts[0]),
-      parseInt(shiftDateParts[1]) - 1,
-      parseInt(shiftDateParts[2]),
-      parseInt(shiftTimeParts[0]),
-      parseInt(shiftTimeParts[1])
-    );
+      const baseDate = parseLocalDate(dateStr);
+      if (!baseDate) {
+        return null;
+      }
+      const [hh, mm, ss = '0'] = timeStr.split(':');
+      const hours = Number(hh);
+      const minutes = Number(mm);
+      const seconds = Number(ss);
+      if ([hours, minutes, seconds].some(Number.isNaN)) {
+        return null;
+      }
+      return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        hours,
+        minutes,
+        seconds
+      );
+    };
 
-    const supervisorId = (token as JwtPayload).supervisorId;
+    const parsedCallDate = parseLocalDate(callDate);
+    const parsedShiftDate = parseLocalDate(shiftDate);
+    const normalizedShiftDateTo = typeof shiftDateTo === 'string' ? shiftDateTo.trim() : undefined;
+    const parsedShiftDateTo = normalizedShiftDateTo ? parseLocalDate(normalizedShiftDateTo) : null;
+    const callDateTime = parseDateTime(callDate, callTime);
+    const shiftDateTime = parseDateTime(shiftDate, shiftTime);
+
+    if (
+      !parsedCallDate ||
+      !parsedShiftDate ||
+      (normalizedShiftDateTo && !parsedShiftDateTo) ||
+      !callDateTime ||
+      !shiftDateTime ||
+      Number.isNaN(callDateTime.getTime()) ||
+      Number.isNaN(shiftDateTime.getTime())
+    ) {
+      return res.status(400).json({error: 'Invalid date or time values provided'});
+    }
 
     const callOutData: EditableCalloutProps = {
-      shift_date: shiftDate,
-      callout_date: callDate,
+      shift_date: parsedShiftDate,
+      shift_date_to: parsedShiftDateTo,
+      callout_date: parsedCallDate,
       leave_type_id: leaveType,
       employee_id: employeeName,
       shift_time: shiftDateTime,
+      shift_type: null,
       callout_time: callDateTime,
-      supervisor_id: supervisorId,
+      edited_by_supervisor_id: supervisorId,
       supervisor_comments: comment,
       left_early_mins: Number(leftEarlyMinutes ?? 0),
       arrived_late_mins: Number(lateArrivalMinutes ?? 0)
@@ -93,17 +156,15 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     const callOut: CallOutWithAssociations | null = await updateCallOutInDB(id, callOutData);
 
     if (!callOut) {
-      return res.status(500).json({ error: 'Failed to update callout' });
+      return res.status(500).json({error: 'Failed to update callout'});
     }
 
-    res.status(200).json({ message: 'Callout Updated Successfully', data: callOut });
+    res.status(200).json({message: 'Callout Updated Successfully', data: callOut});
   } catch (error) {
     const errMessage = '❌ Error in editEmployeeCallOutApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));
-    return {
-      error: String(error)
-    };
+    return res.status(500).json({error: String(error)});
   }
 }
 
-export { editEmployeeCallOutApiHandler };
+export {editEmployeeCallOutApiHandler};

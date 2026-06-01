@@ -1,7 +1,9 @@
 import {
   createEmployeeInDB,
   createSupervisorInDB,
-  EmployeeWithAssociations
+  EmployeeWithAssociations,
+  getEmployeeFromDB,
+  upsertEmployeeScheduleVersionInDB
 } from '../../../db/controller';
 import type { ApiData } from '../../index';
 import { Request, Response } from 'express';
@@ -21,8 +23,8 @@ export default async function postEmployeesApiHandler(
 
     await validateAddEmployeeForm(body);
 
-    body.isAdmin = body.isAdmin === '1';
-    body.isSupervisor = body.isSupervisor === '1';
+    const isAdmin = body.isAdmin === true || body.isAdmin === '1';
+    const isSupervisor = body.isSupervisor === true || body.isSupervisor === '1';
 
     const newEmployee: EmployeeWithAssociations | null = await createEmployeeInDB({
       name: body.name,
@@ -33,16 +35,16 @@ export default async function postEmployeesApiHandler(
       return res.status(500).json({ error: 'Error creating employee' });
     }
 
-    if (body.isAdmin && !body.isSupervisor) {
+    if (isAdmin && !isSupervisor) {
       return res
         .status(400)
         .json({ error: 'Cannot create an admin employee without being a supervisor' });
     }
 
-    if (body.isSupervisor) {
+    if (isSupervisor) {
       const supervisor: SupervisorWithAssociations | null = await createSupervisorInDB({
         employee_id: newEmployee.id,
-        is_admin: body.isAdmin === '1'
+        is_admin: isAdmin
       });
 
       if (!supervisor) {
@@ -52,7 +54,26 @@ export default async function postEmployeesApiHandler(
       }
     }
 
-    return res.status(200).json({ data: newEmployee, message: 'Employee created successfully' });
+    await upsertEmployeeScheduleVersionInDB(newEmployee.id, {
+      shiftStartTime: body.shiftStartTime,
+      shiftEndTime: body.shiftEndTime,
+      daysOffType: body.daysOffType ?? '2_DAYS_OFF',
+      daysOff: body.daysOff
+        ? String(body.daysOff).split(',').map((d: string) => parseInt(d.trim(), 10)).filter((d: number) => !isNaN(d))
+        : null,
+      employeeStatus: body.employeeStatus
+    });
+
+    const createdEmployeeWithSchedule = await getEmployeeFromDB.byId(newEmployee.id);
+    if (!createdEmployeeWithSchedule) {
+      return res
+        .status(500)
+        .json({ error: 'Failed to retrieve newly created employee after creation' });
+    }
+
+    return res
+      .status(200)
+      .json({ data: createdEmployeeWithSchedule, message: 'Employee created successfully' });
   } catch (error) {
     const errMessage = '❌ Error in postEmployeesApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

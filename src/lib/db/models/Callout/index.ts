@@ -22,11 +22,14 @@ export type CallOutAttributes = {
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
+  shift_date_to: Date | null;
   shift_time: Date;
+  shift_type: string | null;
   callout_date: Date;
   callout_time: Date;
   employee_id: string;
   supervisor_id: string;
+  edited_by_supervisor_id: string | null;
   leave_type_id: string;
   supervisor_comments: string;
   left_early_mins: number | null;
@@ -41,11 +44,14 @@ export type CallOutCreationAttributes = {
   createdAt?: Date;
   updatedAt?: Date;
   shift_date: Date;
+  shift_date_to?: Date | null;
   shift_time: Date;
+  shift_type?: string | null;
   callout_date: Date;
   callout_time: Date;
   employee_id: string;
   supervisor_id: string;
+  edited_by_supervisor_id?: string | null;
   leave_type_id: string;
   supervisor_comments: string;
   left_early_mins?: number | null;
@@ -60,7 +66,9 @@ export type CallOutWithAssociations = {
   createdAt: Date;
   updatedAt: Date;
   shift_date: Date;
+  shift_date_to: Date | null;
   shift_time: Date;
+  shift_type: string | null;
   callout_date: Date;
   callout_time: Date;
   supervisor_comments: string;
@@ -69,6 +77,7 @@ export type CallOutWithAssociations = {
   arrived_late_mins: number | null;
   employee: EmployeeWithAssociations;
   supervisor: SupervisorWithAssociations;
+  editedBySupervisor: SupervisorWithAssociations | null;
 };
 
 class CallOut
@@ -77,7 +86,9 @@ class CallOut
 {
   declare id: CreationOptional<string>;
   declare shift_date: Date;
+  declare shift_date_to: Date | null;
   declare shift_time: Date;
+  declare shift_type: string | null;
   declare callout_date: Date;
   declare callout_time: Date;
   declare supervisor_comments: string;
@@ -85,6 +96,7 @@ class CallOut
   declare arrived_late_mins: number | null;
   declare employee_id: ForeignKey<string>;
   declare supervisor_id: ForeignKey<string>;
+  declare edited_by_supervisor_id: ForeignKey<string> | null;
   declare leave_type_id: ForeignKey<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -110,6 +122,14 @@ CallOut.init(
     shift_date: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    shift_date_to: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    shift_type: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     shift_time: {
       type: DataTypes.DATE,
@@ -149,6 +169,17 @@ CallOut.init(
     supervisor_id: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isUUID: 4
+      },
+      references: {
+        model: 'supervisors',
+        key: 'id'
+      }
+    },
+    edited_by_supervisor_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
         isUUID: 4
       },

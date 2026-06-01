@@ -1,9 +1,9 @@
 'use client';
-import { uuid } from '../../../lib/utils';
-import { Toast, ToastTypes } from '../Toast';
-import { trim } from '../../../lib/utils/shared/strings';
-import { useEffect, useState, useCallback } from 'react';
-import { useIsMounted } from '../../../hooks';
+import {uuid} from '../../../lib/utils';
+import {Toast, ToastTypes} from '../Toast';
+import {trim} from '../../../lib/utils/shared/strings';
+import React, {useEffect, useState, useCallback} from 'react';
+import {useIsMounted} from '../../../hooks';
 
 export type IToastMessageContextType = {
   id?: string;
@@ -18,7 +18,7 @@ export type IToasterMessage = {
 };
 
 export const makeToast = (props: IToastMessageContextType): void => {
-  window.dispatchEvent(new CustomEvent('toast', { detail: props }));
+  window.dispatchEvent(new CustomEvent('toast', {detail: props}));
 };
 const styles = {
   toaster: `absolute top-0 left-1/2 transform -translate-x-1/2 z-50 w-auto flex flex-col
@@ -53,22 +53,22 @@ const testToasts: Record<string, IToastMessageContextType> = {
   // }
 };
 
-export function Toaster(): JSX.Element {
+export function Toaster(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [toasts, setToasts] = useState<Record<string, IToastMessageContextType>>(testToasts);
 
   const setToaster = useCallback((event: CustomEvent): void => {
     const id = uuid();
-    const { detail } = event;
-    const { message, title, type } = detail as IToastMessageContextType;
-    setToasts(prevToasts => ({ ...prevToasts, [id]: { id, message, title, type } }));
+    const {detail} = event;
+    const {message, title, type} = detail as IToastMessageContextType;
+    setToasts(prevToasts => ({...prevToasts, [id]: {id, message, title, type}}));
   }, []);
 
   const handleRemoveToast = useCallback((event: CustomEvent): void => {
-    const { detail } = event;
-    const { id } = detail as { id: string };
+    const {detail} = event;
+    const {id} = detail as {id: string};
     setToasts(prevToasts => {
-      const newToasts = { ...prevToasts };
+      const newToasts = {...prevToasts};
       delete newToasts[id];
       return newToasts;
     });
@@ -96,7 +96,7 @@ export function Toaster(): JSX.Element {
 
   return (
     <section className={trim(styles.toaster)}>
-      {Object.values(toasts).map(({ id, title, type, message }, index) => (
+      {Object.values(toasts).map(({id, title, type, message}, index) => (
         <Toast
           id={id}
           key={id}

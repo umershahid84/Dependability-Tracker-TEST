@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import jwt, { Algorithm } from 'jsonwebtoken';
+import jwt, {Algorithm, Secret, SignOptions} from 'jsonwebtoken';
 import type { ApiData } from '../lib/apiController';
 import { getLoginCredentialFromDB } from '../lib/db/controller/LoginCredential';
 import { logTemplate } from '../lib/utils/server';
 
-const EXPIRES_IN: string = process.env.JWT_EXPIRES_IN ?? '24h';
-const SECRET: string = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
-const ALGORITHM: Algorithm = (process.env.JWT_ALGORITHM as Algorithm) ?? ('HS256' as Algorithm);
+const EXPIRES_IN = (process.env.JWT_EXPIRES_IN ?? '24h') as SignOptions['expiresIn'];
+
+const SECRET: Secret = process.env.JWT_SECRET ?? '3+@71]i-nk6Al4kZ7666kM?ka8+G&mms';
+
+const ALGORITHM: SignOptions['algorithm'] = (process.env.JWT_ALGORITHM as Algorithm) ?? 'HS256';
 
 // TODO: Encrypt the JWT so it is unreadable by the client
 

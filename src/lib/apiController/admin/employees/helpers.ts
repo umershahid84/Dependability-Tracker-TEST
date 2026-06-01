@@ -1,5 +1,6 @@
-import {EmployeeFormData} from '../../../../client-api';
+import {EmployeeFormData} from '../../../../client-api/employees';
 import {getDivisionFromDB} from '../../../db/controller';
+import {isValid24HourTimeHHMM} from '../../../utils';
 
 export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   {
@@ -9,6 +10,22 @@ export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   {
     name: 'Division',
     key: 'division'
+  },
+  {
+    name: 'Shift Start Time',
+    key: 'shiftStartTime'
+  },
+  {
+    name: 'Shift End Time',
+    key: 'shiftEndTime'
+  },
+  {
+    name: 'Days Off',
+    key: 'daysOffType'
+  },
+  {
+    name: 'Employee Status',
+    key: 'employeeStatus'
   }
 ];
 
@@ -46,6 +63,26 @@ export const validateAddEmployeeForm = async (
     if (formData.isAdmin === '1' && formData.isSupervisor === '0') {
       validated = false;
       throw new Error('Admins must be supervisors');
+    }
+
+    if (!isValid24HourTimeHHMM(formData.shiftStartTime)) {
+      validated = false;
+      throw new Error('Shift Start Time must be in HH:MM format');
+    }
+
+    if (!isValid24HourTimeHHMM(formData.shiftEndTime)) {
+      validated = false;
+      throw new Error('Shift End Time must be in HH:MM format');
+    }
+
+    if (!['2_DAYS_OFF', '3_DAYS_OFF', '4_DAYS_OFF'].includes(formData.daysOffType)) {
+      validated = false;
+      throw new Error('Days Off must be one of: 2, 3, or 4 Days Off');
+    }
+
+    if (!['FULL_TIME', 'PART_TIME'].includes(formData.employeeStatus)) {
+      validated = false;
+      throw new Error('Employee Status must be Full-Time or Part-Time');
     }
 
     return [validated, missingFields];

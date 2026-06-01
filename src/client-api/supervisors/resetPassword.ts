@@ -8,19 +8,21 @@ export async function ResetPassword(formState: ResetPasswordFormState): Promise<
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(formState)
     });
-    const {error} = await response.json();
+    const payload = await response.json();
+    const error = payload?.error;
 
     if (!response.ok || error) {
       throw new Error(error ?? 'Failed to reset password');
     }
 
     makeToast({
-      type: ToastTypes.Success,
+      type: payload?.emailSent === false ? ToastTypes.Warning : ToastTypes.Success,
       title: 'Password Reset',
-      message: 'A credential-creation invite has been sent to your registered email.'
+      message:
+        payload?.message ?? 'A credential-creation invite has been sent to your registered email.'
     });
 
-    return await response.json();
+    return;
   } catch (error) {
     makeToast({
       type: ToastTypes.Error,

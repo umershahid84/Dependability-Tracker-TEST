@@ -5,5 +5,6 @@ export * from './dashboard';
 export type ApiData<T = any> = {
   message?: string;
   error?: string;
+  emailSent?: boolean;
   data?: T;
 };

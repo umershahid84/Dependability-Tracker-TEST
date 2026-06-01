@@ -4,7 +4,11 @@ import {enforceAdminOnly} from '../../../../../../auth';
 import {postSupervisorEmailCredentialInviteApiHandler} from '../../../../../../lib/apiController';
 
 export default async function handler(req: Request, res: Response) {
-  await enforceAdminOnly(req, res);
+  const token = await enforceAdminOnly(req, res);
+
+  if (!token || !('email' in token)) {
+    return;
+  }
 
   if (req.method === 'POST') {
     return postSupervisorEmailCredentialInviteApiHandler(req, res);

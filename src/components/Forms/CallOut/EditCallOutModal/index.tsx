@@ -1,17 +1,18 @@
-import { TextArea } from '../../FormInputs/TextArea';
-import { DateInput } from '../../FormInputs/DateInput';
-import { TimeInput } from '../../FormInputs/TimeInput';
-import { trim } from '../../../../lib/utils/shared/strings';
-import { DefaultCallOutFormData } from '../../../../client-api';
-import { dateTo_HH_MM_SS, makeDate } from '../../../../lib/utils';
-import { useCallOutAdvancedSearchContext } from '../../../../providers';
-import { LeftEarlyWithRange } from '../../FormInputs/LeftEarlyWithRange';
-import { SelectEmployeeName } from '../../FormInputs/SelectEmployeeName';
-import { SelectLeaveTypeReason } from '../../FormInputs/SelectLeaveType';
-import { CallOutWithAssociations } from '../../../../lib/db/models/types';
-import { ArrivedLateWithRange } from '../../FormInputs/ArrivedLateWithRange';
-import { CallOutFormActionButtons } from '../../FormInputs/CallOutFormActionButtons';
-import { UseEditCallOutFormState, useEditCallOutFormState } from '../../../../hooks';
+import {CallOutFormActionButtons} from '../../FormInputs/CallOutFormActionButtons';
+import {DateInput} from '../../FormInputs/DateInput';
+import {ArrivedLateWithRange} from '../../FormInputs/ArrivedLateWithRange';
+import {LeftEarlyWithRange} from '../../FormInputs/LeftEarlyWithRange';
+import {SelectEmployeeName} from '../../FormInputs/SelectEmployeeName';
+import {SelectLeaveTypeReason} from '../../FormInputs/SelectLeaveType';
+import {TextArea} from '../../FormInputs/TextArea';
+import {TimeInput} from '../../FormInputs/TimeInput';
+import {ModalAction} from '../../../Modal';
+import {DefaultCallOutFormData} from '../../../../client-api/employees/employee-callout';
+import {UseEditCallOutFormState, useEditCallOutFormState} from '../../../../hooks';
+import {CallOutWithAssociations} from '../../../../lib/db/models/types';
+import {dateTo_HH_MM_SS, makeDate} from '../../../../lib/utils';
+import {trim} from '../../../../lib/utils/shared/strings';
+import {useCallOutAdvancedSearchContext} from '../../../../providers';
 
 export type EditCallOutModalProps = {
   callOutData: CallOutWithAssociations;
@@ -30,9 +31,15 @@ export function EditCallOutModal({
   callOutData,
   onModalEditCallBack
 }: Readonly<EditCallOutModalProps>) {
+  const onSuccessfulEdit = (updatedCallOut: CallOutWithAssociations) => {
+    onModalEditCallBack(updatedCallOut);
+    window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
+  };
+
   const defaultFormData: DefaultCallOutFormData = {
     comment: callOutData.supervisor_comments,
     shiftDate: makeDate(callOutData.shift_date),
+    shiftDateTo: callOutData.shift_date_to ? makeDate(callOutData.shift_date_to) : '',
     callDate: makeDate(callOutData.callout_date),
     leaveType: callOutData.leaveType.id.toString(),
     employeeName: callOutData.employee.id.toString(),
@@ -41,9 +48,9 @@ export function EditCallOutModal({
     callTime: dateTo_HH_MM_SS(callOutData.callout_time),
     lateArrivalMinutes: callOutData?.arrived_late_mins ?? 0
   };
-  const { employees, leaveTypes } = useCallOutAdvancedSearchContext();
-  const { formData, resetFormData, onChangeHandler, handleFormSubmit }: UseEditCallOutFormState =
-    useEditCallOutFormState(callOutData.id, defaultFormData, onModalEditCallBack);
+  const {employees, leaveTypes} = useCallOutAdvancedSearchContext();
+  const {formData, resetFormData, onChangeHandler, handleFormSubmit}: UseEditCallOutFormState =
+    useEditCallOutFormState(callOutData.id, defaultFormData, onSuccessfulEdit);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
@@ -83,14 +90,6 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
           />
 
-          <DateInput
-            name="shiftDate"
-            label="Shift Date"
-            className={styles.input}
-            date={formData.shiftDate}
-            onChangeHandler={onChangeHandler}
-          />
-
           <TimeInput
             name="shiftTime"
             label="Shift Time"
@@ -99,19 +98,36 @@ export function EditCallOutModal({
             onChangeHandler={onChangeHandler}
           />
 
+          <DateInput
+            name="shiftDate"
+            label="Shift Date From"
+            className={styles.input}
+            date={formData.shiftDate}
+            onChangeHandler={onChangeHandler}
+          />
+
+          <DateInput
+            name="shiftDateTo"
+            label="Shift Date To"
+            required={false}
+            className={styles.input}
+            date={formData.shiftDateTo}
+            onChangeHandler={onChangeHandler}
+          />
+
           <SelectLeaveTypeReason
             leaveTypes={leaveTypes}
             leaveType={formData.leaveType}
             onChangeHandler={onChangeHandler}
-            className={styles.input + ' p-[10.5px]'}
+            className={styles.input + ' p-[10.5px] md:col-span-2'}
           />
+
+          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={onChangeHandler} />
 
           <ArrivedLateWithRange
             value={formData.lateArrivalMinutes}
             onChangeHandler={onChangeHandler}
           />
-
-          <LeftEarlyWithRange value={formData.leftEarlyMinutes} onChangeHandler={onChangeHandler} />
         </div>
         <div className="w-full p-4">
           <TextArea

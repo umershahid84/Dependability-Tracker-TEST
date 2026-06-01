@@ -1,6 +1,7 @@
+import React from 'react';
 import type {IIconProps} from './types';
 
-export default function SuccessIcon(props: Readonly<IIconProps>): JSX.Element {
+export default function SuccessIcon(props: Readonly<IIconProps>): React.ReactElement {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

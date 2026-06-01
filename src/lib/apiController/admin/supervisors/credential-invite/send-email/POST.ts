@@ -8,10 +8,11 @@ import type { ApiData } from '../../../../index';
 import { LoginCredential } from '../../../../../db';
 import { sendCredentialInvite } from '../../../../../email';
 import { logTemplate } from '../../../../../utils/server';
+import { SupervisorWithAssociations } from '../../../../../db/models/Supervisor';
 
 export default async function postSupervisorEmailCredentialInviteApiHandler(
   req: Request,
-  res: Response<ApiData<{ email: string }>>
+  res: Response<ApiData<SupervisorWithAssociations | null>>
 ) {
   try {
     const { body } = req as { body: { supervisorsEmail: string; forSupervisor: string } };
@@ -51,7 +52,9 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       });
     }
 
-    if (process.env.SEND_EMAILS === 'true') {
+    const shouldSendEmails = process.env.SEND_EMAILS === 'true';
+
+    if (shouldSendEmails) {
       const emailSent = await sendCredentialInvite(
         supervisorEmail,
         credentialInvite.invite_token,
@@ -64,9 +67,23 @@ export default async function postSupervisorEmailCredentialInviteApiHandler(
       }
     }
 
-    return res
-      .status(200)
-      .json({ message: 'Email sent successfully', data: { email: supervisorEmail } });
+    const updatedData: SupervisorWithAssociations | null = await getSupervisorFromDB.byId(
+      forSupervisorId,
+      {
+        showCredentials: true,
+        showCreateCredentialsInvite: true
+      }
+    );
+
+    if (!updatedData) {
+      throw new Error('Email sent, but failed to load updated supervisor data');
+    }
+
+    const message = shouldSendEmails
+      ? 'Email sent successfully'
+      : 'Invite is ready, but email sending is disabled (SEND_EMAILS is not true)';
+
+    return res.status(200).json({ message, emailSent: shouldSendEmails, data: updatedData });
   } catch (error) {
     const errMessage = '❌ Error in postSupervisorEmailCredentialInviteApiHandler:' + ' ' + error;
     console.error(logTemplate(errMessage, 'error'));

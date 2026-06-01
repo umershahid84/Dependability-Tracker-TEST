@@ -1,7 +1,7 @@
-import {ClientAPI} from '../../client-api';
 import React, {useEffect, useState} from 'react';
 import {FormInputWithErrors, Form, FormAction} from '../../components';
 import {useInputValidation, IUseValidators, useIsMounted} from '../../hooks';
+import {ResetPassword} from '../../client-api/supervisors';
 
 export type ResetPasswordFormState = {
   username: string;
@@ -13,7 +13,7 @@ export const defaultResetPasswordFormState: ResetPasswordFormState = {
   email: ''
 };
 
-export function ResetPasswordForm(): React.JSX.Element {
+export function ResetPasswordForm(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [hasError, setHasError] = useState<boolean>(false);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
@@ -36,7 +36,7 @@ export function ResetPasswordForm(): React.JSX.Element {
     e?.preventDefault();
     e?.stopPropagation();
 
-    await ClientAPI.Supervisors.ResetPassword(formState);
+    await ResetPassword(formState);
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>): void => {

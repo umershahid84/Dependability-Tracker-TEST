@@ -1,10 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
-import {enforceAdminOnly} from '../../../auth';
+import {getJwtTokenForAPI} from '../../../auth';
 import {getDivisionsApiHandler} from '../../../lib/apiController';
 
 export default async function handler(req: Request, res: Response) {
-  await enforceAdminOnly(req, res);
+  const authToken = await getJwtTokenForAPI(req, res);
+
+  if (!authToken) {
+    return;
+  }
 
   if (req.method === 'GET') {
     return getDivisionsApiHandler(req, res);

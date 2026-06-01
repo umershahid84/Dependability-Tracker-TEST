@@ -3,10 +3,10 @@ import {
   PaginationQueryParams,
   EmployeeWithAssociations
 } from '../lib/db/controller';
-import {ClientAPI} from '../client-api';
 import {useIsMounted} from './isMounted';
 import {useEffect, useState} from 'react';
 import {EmployeeSortBy, ToastTypes, makeToast} from '../components';
+import {GetEmployees} from '../client-api/employees';
 
 export type UseGetEmployees = {
   isLoading: boolean;
@@ -30,7 +30,7 @@ export function useGetEmployees(
 
   const fetchEmployees = async (queryParams?: PaginationQueryParams) => {
     try {
-      const data = await ClientAPI.Employees.Read(queryParams);
+      const data = await GetEmployees(queryParams);
 
       const employees = Array.isArray(data.data)
         ? {

@@ -32,7 +32,7 @@ export type PaginationContainerProps = {
       | RenderCallOutsListProps['onModalEditCallBack']
       | ((employee: EmployeeWithAssociations) => void)
       | ((supervisor: SupervisorWithAssociations) => void);
-  }) => React.JSX.Element[];
+  }) => React.ReactElement[];
 };
 
 const figureOffset = (offset: number, numRecords: number): number => {
@@ -46,7 +46,7 @@ export function PaginationContainer({
   setQueryParams,
   onModalEditCallBack,
   onModalDeleteCallBack
-}: Readonly<PaginationContainerProps>): React.JSX.Element {
+}: Readonly<PaginationContainerProps>): React.ReactElement {
   const [offset, setOffset] = useState<number>(0);
   const [ending, setEnding] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);

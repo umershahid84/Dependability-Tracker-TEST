@@ -47,9 +47,11 @@ export function ResetSupervisorPassword({
         throw new Error(data.error ?? 'Unable to reset credentials');
       } else {
         makeToast({
-          type: ToastTypes.Success,
+          type: data.emailSent === false ? ToastTypes.Warning : ToastTypes.Success,
           title: 'Success',
-          message: `Password reset initiated. Credentials invite sent to ${data?.data?.create_credentials_invite?.email}`
+          message:
+            data.message ??
+            `Password reset initiated. Credentials invite sent to ${data?.data?.create_credentials_invite?.email}`
         });
 
         setLoading(false);

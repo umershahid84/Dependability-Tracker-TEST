@@ -68,6 +68,11 @@ export function CallOutsListItemAccordion({
       );
     }
   };
+
+  const editedBy = callOut.editedBySupervisor
+    ? `${callOut.editedBySupervisor.supervisor_info.name} (${getDate(callOut.updatedAt)} @ ${getTime(callOut.updatedAt)})`
+    : '-';
+
   return (
     show && (
       <div className={trim(styles.div)}>
@@ -77,21 +82,26 @@ export function CallOutsListItemAccordion({
               Call Date: {getDate(callOut.callout_date)} @ {getTimeNoSeconds(callOut.callout_time)}
             </p>
             <p>Entered By: {callOut.supervisor.supervisor_info.name} </p>
+            <p>Edited By: {editedBy}</p>
             <p>Employee: {callOut.employee.name}</p>
 
             <p>
               Division(s): {callOut.employee.divisions.map(division => division.name).join(', ')}
             </p>
             <p>
-              Shift Date: {getDate(callOut.shift_date)} @ {getTimeNoSeconds(callOut.shift_time)}
+              Shift Date:{' '}
+              {callOut.shift_date_to
+                ? `${getDate(callOut.shift_date)} - ${getDate(callOut.shift_date_to)}`
+                : `${getDate(callOut.shift_date)}`}{' '}
+              @ {getTimeNoSeconds(callOut.shift_time)}
             </p>
             <p>Reason: {callOut.leaveType.reason}</p>
-            {(callOut?.left_early_mins ?? 0) > 0 && (
-              <p>Left Early: {callOut.left_early_mins} mins</p>
-            )}
-
             {(callOut?.arrived_late_mins ?? 0) > 0 && (
               <p>Arrived Late: {callOut.arrived_late_mins} mins</p>
+            )}
+
+            {(callOut?.left_early_mins ?? 0) > 0 && (
+              <p>Left Early: {callOut.left_early_mins} mins</p>
             )}
           </div>
           <p className={styles.superComments}>Supervisor Comments: {callOut.supervisor_comments}</p>

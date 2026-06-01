@@ -13,14 +13,76 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
   return `${_hours}:${_minutes}:${_seconds}`;
 };
 
-export const dateTo_YYYY_MM_DD = (date: Date | undefined): string => {
+const default_tz = 'America/Los_Angeles';
+
+export const APP_TZ = (): string => {
+  // On the server, always use env var or default
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || default_tz;
+  }
+
+  // On the client, use browser's timezone or env var or default
+  return (
+    (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null) ||
+    process.env.NEXT_PUBLIC_TIMEZONE ||
+    process.env.TIMEZONE ||
+    default_tz
+  );
+};
+
+export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ()): string => {
   if (!date) return '';
-  const _date = new Date(date);
-  return _date.toISOString().split('T')[0];
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(d);
+};
+
+export const formatTime_hh_mm_ss_TZ = (date?: Date | string, tz = APP_TZ()): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).format(d);
+};
+
+export const formatTimeNoSeconds_TZ = (date?: Date | string, tz = APP_TZ()): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  }).format(d);
+};
+
+export const dateTo_YYYY_MM_DD = (date: Date | string | undefined): string => {
+  if (!date) return '';
+  if (typeof date === 'string') return date;
+  const d = new Date(date);
+  // Use UTC methods to avoid timezone shifts for date-only values stored in DB
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 export const getDate = (date: Date): string => {
-  return new Date(date).toLocaleDateString();
+  // For date-only values from DB (stored as UTC midnight), use UTC methods
+  // to avoid timezone shifts
+  const d = new Date(date);
+  return d.toLocaleDateString('en-US', {timeZone: 'UTC'});
 };
 
 export const getTime = (date: Date): string => {
@@ -78,3 +140,25 @@ export const formatTimeWithAmPm = (time: string): string => {
 };
 
 export const makeDate = (date: Date | string) => new Date(date);
+
+export const isValid24HourTimeHHMM = (value: string): boolean =>
+  /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
+
+export const formatDateToISODateOnly = (value: Date): string =>
+  `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(
+    value.getDate()
+  ).padStart(2, '0')}`;
+
+export const getMonthDateRange = (
+  dateValue: Date | string
+): {
+  startDate: string;
+  endDate: string;
+} => {
+  const date =
+    typeof dateValue === 'string' ? new Date(`${dateValue}T00:00:00`) : new Date(dateValue);
+  const start = new Date(date.getFullYear(), date.getMonth(), 1);
+  const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  return {startDate: formatDateToISODateOnly(start), endDate: formatDateToISODateOnly(end)};
+};

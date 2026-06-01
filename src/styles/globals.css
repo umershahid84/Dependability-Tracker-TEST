@@ -76,11 +76,19 @@ input:-o-autofill:active {
 }
 
 .Text-outline {
-  text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black !important;
+  text-shadow:
+    1px 1px 0 black,
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black !important;
 }
 
 .Text-outline-hover:hover {
-  text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black !important;
+  text-shadow:
+    1px 1px 0 black,
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black !important;
 }
 
 input[type='date']::-webkit-calendar-picker-indicator,

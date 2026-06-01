@@ -1,11 +1,16 @@
 import {useState} from 'react';
-import {EmployeeFormData} from '../client-api';
+import {EmployeeFormData} from '../client-api/employees';
 
 export const defaultEmployeeFormData: EmployeeFormData = {
   name: '',
   division: '',
   isAdmin: '0',
-  isSupervisor: '0'
+  isSupervisor: '0',
+  shiftStartTime: '07:00',
+  shiftEndTime: '15:00',
+  daysOff: '0,6',
+  daysOffType: '2_DAYS_OFF',
+  employeeStatus: 'FULL_TIME'
 };
 
 export type UseEmployeeFormState = {
