@@ -54,13 +54,21 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
       return res.status(400).json({error: `Missing required fields: ${missingFields.join(', ')}`});
     }
 
-    let supervisorId = (token as JwtPayload).supervisorId;
-    if (!supervisorId && (token as JwtPayload).email) {
-      const loginCredential = await getLoginCredentialFromDB.byEmail((token as JwtPayload).email);
-      supervisorId = loginCredential?.supervisor_info?.id ?? '';
+    const tokenPayload = token as JwtPayload;
+    let supervisorId = tokenPayload.supervisorId;
+    if (!supervisorId) {
+      if (!tokenPayload.email) {
+        return res
+          .status(401)
+          .json({error: 'Unable to determine supervisor ID from authentication token'});
+      }
+      const loginCredential = await getLoginCredentialFromDB.byEmail(tokenPayload.email);
+      supervisorId = loginCredential?.supervisor_info?.id;
     }
     if (!supervisorId) {
-      return res.status(401).json({error: 'Unauthorized request'});
+      return res
+        .status(401)
+        .json({error: 'Unable to determine supervisor ID from authentication token'});
     }
 
     // Parse date strings as local dates, not UTC
