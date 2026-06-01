@@ -55,7 +55,7 @@ export default async function editEmployeeCallOutApiHandler( //NOSONAR
     }
 
     const tokenPayload = token as JwtPayload;
-    let supervisorId = tokenPayload.supervisorId;
+    let supervisorId: string | undefined = tokenPayload.supervisorId;
     if (!supervisorId) {
       if (!tokenPayload.email) {
         return res
