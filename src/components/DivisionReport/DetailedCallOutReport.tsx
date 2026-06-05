@@ -2,7 +2,6 @@
 import {PrinterIcon} from '../Icons';
 import {useEffect, useState} from 'react';
 import DownloadPDF from '../PDF/DownloadPdfButton';
-import DownloadCSV from '../CSV/DownloadCsvButton';
 import {NextRouter, useRouter} from 'next/router';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {EmployeeCalendarProjection} from '../../client-api/employees';
@@ -129,7 +128,6 @@ export function DetailedCallOutHistory({
         {showDownloadButton && (
           <span className={styles.buttonContainer}>
             <DownloadPDF callOuts={callOuts} calendar={calendar ?? null} />
-            <DownloadCSV callOuts={callOuts} />
             <PrintButton />
           </span>
         )}
