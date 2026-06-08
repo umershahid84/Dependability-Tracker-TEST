@@ -3,6 +3,7 @@ import {getTime, getTimeNoSeconds, makeDate} from '../../lib/utils';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {Page, Text, View, Document, StyleSheet} from '@react-pdf/renderer';
 import {EmployeeCalendarProjection} from '../../client-api/employees';
+import CalendarGrid from './CalendarGrid';
 
 // Define styles
 const styles = StyleSheet.create({
@@ -45,18 +46,6 @@ const styles = StyleSheet.create({
     color: '#888'
   },
   heading: {fontSize: 16, marginBottom: 20, textAlign: 'center'}
-  ,
-  calendarContainer: {
-    marginTop: 10,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 6
-  },
-  calendarDayText: {
-    fontSize: 8,
-    marginBottom: 2
-  }
 });
 
 // Define table data
@@ -113,7 +102,8 @@ const TablePdfDocument = ({
             <View style={styles.tableCell}>
               <Text>{callOut.leaveType?.reason}</Text>
               <Text style={styles.subCell}>
-                {`${(callOut?.arrived_late_mins ?? 0) > 0 ? `Arrived Late: ${callOut?.arrived_late_mins ?? 0} mins` : ''} ${(callOut?.left_early_mins ?? 0) > 0 ? `Left Early: ${callOut?.left_early_mins ?? 0} mins` : ''}`}
+                {`${(callOut?.arrived_late_mins ?? 0) > 0 ? `Arrived Late: ${callOut?.arrived_late_mins ?? 0} mins` : ''} ${(callOut?.left_early_mins ?? 0) > 0 ? `Left Early: ${callOut?.left_earl[...]
+                : ''}`}
               </Text>
             </View>
             <View style={styles.tableCell}>
@@ -136,20 +126,7 @@ const TablePdfDocument = ({
           </View>
         ))}
       </View>
-      {calendar && (
-        <View style={styles.calendarContainer}>
-          <Text style={{fontSize: 10, marginBottom: 4}}>
-            Employee Calendar ({calendar.startDate} to {calendar.endDate})
-          </Text>
-          <View style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-            {calendar.days.map(day => (
-              <Text key={day.date} style={styles.calendarDayText}>
-                {day.date}: {day.isCallOut ? 'Call-out' : day.isDayOff ? 'Day off' : 'Work day'}{'  '}
-              </Text>
-            ))}
-          </View>
-        </View>
-      )}
+      {calendar && <CalendarGrid calendar={calendar} />}
     </Page>
   </Document>
 );
