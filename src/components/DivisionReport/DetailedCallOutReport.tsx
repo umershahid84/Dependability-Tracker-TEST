@@ -68,7 +68,7 @@ export function DetailedCallOutHistory({
   callOuts: CallOutWithAssociations[];
   calendar?: EmployeeCalendarProjection | null;
   showDownloadButton?: boolean;
-  onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
+  onModalEditCallBack?: (callOut: CallOutWithAssociations) => void;
 }>) {
   const router: NextRouter = useRouter();
   const [mounted, setMounted] = useState(false);
