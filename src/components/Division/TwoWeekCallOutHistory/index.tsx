@@ -7,7 +7,7 @@ export function TwoWeekCallOutHistory({
   onModalEditCallBack
 }: Readonly<{
   callOuts: CallOutWithAssociations[];
-  onModalEditCallBack: (callOut: CallOutWithAssociations) => void;
+  onModalEditCallBack?: (callOut: CallOutWithAssociations) => void;
 }>) {
   return callOuts.length > 0 ? (
     <DetailedCallOutHistory callOuts={callOuts} onModalEditCallBack={onModalEditCallBack} />
