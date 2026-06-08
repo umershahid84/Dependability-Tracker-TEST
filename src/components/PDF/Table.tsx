@@ -102,8 +102,7 @@ const TablePdfDocument = ({
             <View style={styles.tableCell}>
               <Text>{callOut.leaveType?.reason}</Text>
               <Text style={styles.subCell}>
-                {`${(callOut?.arrived_late_mins ?? 0) > 0 ? `Arrived Late: ${callOut?.arrived_late_mins ?? 0} mins` : ''} ${(callOut?.left_early_mins ?? 0) > 0 ? `Left Early: ${callOut?.left_earl[...]
-                : ''}`}
+                {`${(callOut?.arrived_late_mins ?? 0) > 0 ? `Arrived Late: ${callOut?.arrived_late_mins ?? 0} mins` : ''} ${(callOut?.left_early_mins ?? 0) > 0 ? `Left Early: ${callOut?.left_early_mins ?? 0} mins` : ''}`}
               </Text>
             </View>
             <View style={styles.tableCell}>
