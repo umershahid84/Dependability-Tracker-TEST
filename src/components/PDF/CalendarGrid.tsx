@@ -196,11 +196,14 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
 
       {/* Weekday Headers */}
       <View style={styles.weekdaysRow}>
-        {weekDays.map((day, index) => (
-          <View key={day} style={[styles.weekday, index === 6 && styles.weekdayLast]}>
-            <Text>{day}</Text>
-          </View>
-        ))}
+        {weekDays.map((day, index) => {
+          const weekdayStyle = index === 6 ? [styles.weekday, styles.weekdayLast] : [styles.weekday];
+          return (
+            <View key={day} style={weekdayStyle}>
+              <Text>{day}</Text>
+            </View>
+          );
+        })}
       </View>
 
       {/* Calendar Grid */}
