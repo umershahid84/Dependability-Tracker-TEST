@@ -22,11 +22,30 @@ const styles = StyleSheet.create({
     padding: 8,
     pageBreakInside: 'avoid',
   },
+  multiMonthContainer: {
+    marginTop: 15,
+  },
+  monthContainer: {
+    marginBottom: 15,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000',
+    padding: 8,
+    pageBreakInside: 'avoid',
+  },
   calendarTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
+  },
+  monthTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 6,
+    textAlign: 'center',
+    backgroundColor: '#e5e7eb',
+    padding: 4,
   },
   scheduleInfo: {
     fontSize: 9,
@@ -135,64 +154,86 @@ const getDayLabel = (day: {
   return 'Work';
 };
 
-interface CalendarGridProps {
-  calendar: EmployeeCalendarProjection;
+const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+interface MonthCalendarData {
+  year: number;
+  month: number;
+  monthName: string;
+  startDate: Date;
+  endDate: Date;
+  dates: Date[];
 }
 
-export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
-  const startDate = new Date(calendar.startDate + 'T00:00:00');
-  const endDate = new Date(calendar.endDate + 'T00:00:00');
+// Helper function to get month name
+const getMonthName = (date: Date): string => {
+  return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+};
 
-  // Calculate empty cells at the beginning
-  const firstDayOfWeek = startDate.getDay();
-  const emptyDays = Array(firstDayOfWeek).fill(null);
-
-  // Create a map of dates to days for quick lookup
-  const daysMap = new Map(calendar.days.map(d => [d.date, d]));
-
-  // Get all dates in range
-  const allDates: (Date | null)[] = [];
+// Helper function to check if date range spans multiple months
+const getMonthsInRange = (startDate: Date, endDate: Date): MonthCalendarData[] => {
+  const months: MonthCalendarData[] = [];
   const current = new Date(startDate);
+
   while (current <= endDate) {
-    allDates.push(new Date(current));
-    current.setDate(current.getDate() + 1);
+    const year = current.getFullYear();
+    const month = current.getMonth();
+
+    // Get the first day of the current month within the range
+    const monthStart = new Date(Math.max(startDate.getTime(), new Date(year, month, 1).getTime()));
+
+    // Get the last day of the current month within the range
+    const monthEnd = new Date(Math.min(endDate.getTime(), new Date(year, month + 1, 0).getTime()));
+
+    // Collect all dates in this month
+    const dates: Date[] = [];
+    const temp = new Date(monthStart);
+    while (temp <= monthEnd) {
+      dates.push(new Date(temp));
+      temp.setDate(temp.getDate() + 1);
+    }
+
+    months.push({
+      year,
+      month,
+      monthName: getMonthName(new Date(year, month)),
+      startDate: monthStart,
+      endDate: monthEnd,
+      dates,
+    });
+
+    // Move to next month
+    current.setMonth(current.getMonth() + 1);
+    current.setDate(1);
   }
 
-  // Combine empty days with actual dates
-  const calendarDays = [...emptyDays, ...allDates];
+  return months;
+};
 
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Single month calendar component
+const SingleMonthCalendar: React.FC<{
+  month: MonthCalendarData;
+  daysMap: Map<string, any>;
+  showScheduleInfo?: boolean;
+  schedule?: any;
+}> = ({ month, daysMap, showScheduleInfo = false, schedule }) => {
+  const firstDayOfWeek = month.startDate.getDay();
+  const emptyDays = Array(firstDayOfWeek).fill(null);
+  const calendarDays = [...emptyDays, ...month.dates];
 
   return (
-    <View style={styles.calendarContainer}>
-      <Text style={styles.calendarTitle}>
-        Employee Calendar ({calendar.startDate} to {calendar.endDate})
-      </Text>
+    <View style={styles.monthContainer}>
+      <Text style={styles.monthTitle}>{month.monthName}</Text>
 
-      {calendar.schedule && (
+      {showScheduleInfo && schedule && (
         <Text style={styles.scheduleInfo}>
-          Shift {calendar.schedule.shift_start_time}-{calendar.schedule.shift_end_time} •{' '}
-          {calendar.schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'} •{' '}
-          {calendar.schedule.days_off && calendar.schedule.days_off.length > 0
-            ? `Days Off: ${calendar.schedule.days_off.map(d => weekDays[d]).join(', ')}`
-            : calendar.schedule.days_off_type?.replace(/_/g, ' ')}
+          Shift {schedule.shift_start_time}-{schedule.shift_end_time} •{' '}
+          {schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'} •{' '}
+          {schedule.days_off && schedule.days_off.length > 0
+            ? `Days Off: ${schedule.days_off.map((d: number) => weekDays[d]).join(', ')}`
+            : schedule.days_off_type?.replace(/_/g, ' ')}
         </Text>
       )}
-
-      {/* Legend */}
-      <View style={styles.legendContainer}>
-        {Object.entries(callOutColorMap).map(([label, color]) => (
-          <View key={label} style={styles.legendItem}>
-            <View
-              style={[
-                styles.legendColor,
-                { backgroundColor: color, borderWidth: 0.5, borderColor: '#000' },
-              ]}
-            />
-            <Text>{label}</Text>
-          </View>
-        ))}
-      </View>
 
       {/* Weekday Headers */}
       <View style={styles.weekdaysRow}>
@@ -214,9 +255,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
             return <View key={`empty-${index}`} style={styles.dayCell} />;
           }
 
-          const dateKey = dateOrNull
-            .toLocaleDateString('en-CA')
-            .split('T')[0];
+          const dateKey = dateOrNull.toLocaleDateString('en-CA').split('T')[0];
           const day = daysMap.get(dateKey);
           const dayOfMonth = dateOrNull.getDate();
           const bgColor = day ? getColorForDay(day) : '#ffffff';
@@ -234,13 +273,174 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
                 },
               ]}>
               <Text style={[styles.dayNumber, { color: textColor }]}>{dayOfMonth}</Text>
-              {label && (
-                <Text style={[styles.dayLabel, { color: textColor }]}>{label}</Text>
-              )}
+              {label && <Text style={[styles.dayLabel, { color: textColor }]}>{label}</Text>}
             </View>
           );
         })}
       </View>
+    </View>
+  );
+};
+
+interface CalendarGridProps {
+  calendar: EmployeeCalendarProjection;
+}
+
+export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
+  const startDate = new Date(calendar.startDate + 'T00:00:00');
+  const endDate = new Date(calendar.endDate + 'T00:00:00');
+
+  // Create a map of dates to days for quick lookup
+  const daysMap = new Map(calendar.days.map(d => [d.date, d]));
+
+  // Check if date range spans multiple months
+  const months = getMonthsInRange(startDate, endDate);
+  const isMultiMonth = months.length > 1;
+
+  // Single month view (original logic)
+  if (!isMultiMonth) {
+    // Calculate empty cells at the beginning
+    const firstDayOfWeek = startDate.getDay();
+    const emptyDays = Array(firstDayOfWeek).fill(null);
+
+    // Get all dates in range
+    const allDates: (Date | null)[] = [];
+    const current = new Date(startDate);
+    while (current <= endDate) {
+      allDates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+
+    // Combine empty days with actual dates
+    const calendarDays = [...emptyDays, ...allDates];
+
+    return (
+      <View style={styles.calendarContainer}>
+        <Text style={styles.calendarTitle}>
+          Employee Calendar ({calendar.startDate} to {calendar.endDate})
+        </Text>
+
+        {calendar.schedule && (
+          <Text style={styles.scheduleInfo}>
+            Shift {calendar.schedule.shift_start_time}-{calendar.schedule.shift_end_time} •{' '}
+            {calendar.schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'} •{' '}
+            {calendar.schedule.days_off && calendar.schedule.days_off.length > 0
+              ? `Days Off: ${calendar.schedule.days_off.map(d => weekDays[d]).join(', ')}`
+              : calendar.schedule.days_off_type?.replace(/_/g, ' ')}
+          </Text>
+        )}
+
+        {/* Legend */}
+        <View style={styles.legendContainer}>
+          {Object.entries(callOutColorMap).map(([label, color]) => (
+            <View key={label} style={styles.legendItem}>
+              <View
+                style={[
+                  styles.legendColor,
+                  { backgroundColor: color, borderWidth: 0.5, borderColor: '#000' },
+                ]}
+              />
+              <Text>{label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Weekday Headers */}
+        <View style={styles.weekdaysRow}>
+          {weekDays.map((day, index) => {
+            const weekdayStyle = index === 6 ? [styles.weekday, styles.weekdayLast] : [styles.weekday];
+            return (
+              <View key={day} style={weekdayStyle}>
+                <Text>{day}</Text>
+              </View>
+            );
+          })}
+        </View>
+
+        {/* Calendar Grid */}
+        <View style={styles.calendarGrid}>
+          {calendarDays.map((dateOrNull, index) => {
+            if (!dateOrNull) {
+              // Empty cell
+              return <View key={`empty-${index}`} style={styles.dayCell} />;
+            }
+
+            const dateKey = dateOrNull.toLocaleDateString('en-CA').split('T')[0];
+            const day = daysMap.get(dateKey);
+            const dayOfMonth = dateOrNull.getDate();
+            const bgColor = day ? getColorForDay(day) : '#ffffff';
+            const textColor = getTextColorForBackground(bgColor);
+            const label = day ? getDayLabel(day) : '';
+
+            return (
+              <View
+                key={dateKey}
+                style={[
+                  styles.dayCell,
+                  {
+                    backgroundColor: bgColor,
+                    color: textColor,
+                  },
+                ]}>
+                <Text style={[styles.dayNumber, { color: textColor }]}>{dayOfMonth}</Text>
+                {label && (
+                  <Text style={[styles.dayLabel, { color: textColor }]}>{label}</Text>
+                )}
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
+  // Multi-month view (new feature)
+  return (
+    <View style={styles.multiMonthContainer}>
+      <View
+        style={[
+          styles.calendarContainer,
+          { marginBottom: 10, pageBreakInside: 'avoid' },
+        ]}>
+        <Text style={styles.calendarTitle}>
+          Employee Calendar ({calendar.startDate} to {calendar.endDate})
+        </Text>
+
+        {calendar.schedule && (
+          <Text style={styles.scheduleInfo}>
+            Shift {calendar.schedule.shift_start_time}-{calendar.schedule.shift_end_time} •{' '}
+            {calendar.schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'} •{' '}
+            {calendar.schedule.days_off && calendar.schedule.days_off.length > 0
+              ? `Days Off: ${calendar.schedule.days_off.map(d => weekDays[d]).join(', ')}`
+              : calendar.schedule.days_off_type?.replace(/_/g, ' ')}
+          </Text>
+        )}
+
+        {/* Legend */}
+        <View style={styles.legendContainer}>
+          {Object.entries(callOutColorMap).map(([label, color]) => (
+            <View key={label} style={styles.legendItem}>
+              <View
+                style={[
+                  styles.legendColor,
+                  { backgroundColor: color, borderWidth: 0.5, borderColor: '#000' },
+                ]}
+              />
+              <Text>{label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Render individual month calendars */}
+      {months.map((month, index) => (
+        <SingleMonthCalendar
+          key={`month-${index}`}
+          month={month}
+          daysMap={daysMap}
+          showScheduleInfo={false} // Schedule info already shown at the top
+        />
+      ))}
     </View>
   );
 };
