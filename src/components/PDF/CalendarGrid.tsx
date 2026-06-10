@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     padding: 8,
   },
+  monthHeader: {
+    marginBottom: 8,
+  },
   calendarTitle: {
     fontSize: 12,
     fontWeight: 'bold',
@@ -38,12 +41,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   monthTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 'bold',
     marginBottom: 6,
     textAlign: 'center',
     backgroundColor: '#e5e7eb',
     padding: 4,
+    borderRadius: 3,
   },
   scheduleInfo: {
     fontSize: 9,
@@ -158,51 +162,39 @@ interface MonthCalendarData {
   year: number;
   month: number;
   monthName: string;
-  startDate: Date;
-  endDate: Date;
-  dates: Date[];
+  firstDate: Date;
+  lastDate: Date;
 }
 
 // Helper function to get month name
-const getMonthName = (date: Date): string => {
-  return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+const getMonthName = (year: number, month: number): string => {
+  return new Date(year, month, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
 };
 
-// Helper function to check if date range spans multiple months
+// Helper function to get all months between start and end date
 const getMonthsInRange = (startDate: Date, endDate: Date): MonthCalendarData[] => {
   const months: MonthCalendarData[] = [];
-  const current = new Date(startDate);
+  const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
 
   while (current <= endDate) {
     const year = current.getFullYear();
     const month = current.getMonth();
 
-    // Get the first day of the current month within the range
-    const monthStart = new Date(Math.max(startDate.getTime(), new Date(year, month, 1).getTime()));
+    const monthStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month + 1, 0);
 
-    // Get the last day of the current month within the range
-    const monthEnd = new Date(Math.min(endDate.getTime(), new Date(year, month + 1, 0).getTime()));
-
-    // Collect all dates in this month
-    const dates: Date[] = [];
-    const temp = new Date(monthStart);
-    while (temp <= monthEnd) {
-      dates.push(new Date(temp));
-      temp.setDate(temp.getDate() + 1);
+    // Only add if this month overlaps with our date range
+    if (monthEnd >= startDate && monthStart <= endDate) {
+      months.push({
+        year,
+        month,
+        monthName: getMonthName(year, month),
+        firstDate: new Date(Math.max(startDate.getTime(), monthStart.getTime())),
+        lastDate: new Date(Math.min(endDate.getTime(), monthEnd.getTime())),
+      });
     }
 
-    months.push({
-      year,
-      month,
-      monthName: getMonthName(new Date(year, month)),
-      startDate: monthStart,
-      endDate: monthEnd,
-      dates,
-    });
-
-    // Move to next month
     current.setMonth(current.getMonth() + 1);
-    current.setDate(1);
   }
 
   return months;
@@ -212,26 +204,23 @@ const getMonthsInRange = (startDate: Date, endDate: Date): MonthCalendarData[] =
 const SingleMonthCalendar: React.FC<{
   month: MonthCalendarData;
   daysMap: Map<string, any>;
-  showScheduleInfo?: boolean;
-  schedule?: any;
-}> = ({ month, daysMap, showScheduleInfo = false, schedule }) => {
-  const firstDayOfWeek = month.startDate.getDay();
+}> = ({ month, daysMap }) => {
+  // Get all dates for this specific month
+  const monthDates: Date[] = [];
+  const current = new Date(month.firstDate);
+  while (current <= month.lastDate) {
+    monthDates.push(new Date(current));
+    current.setDate(current.getDate() + 1);
+  }
+
+  // Calculate empty cells at the beginning of the month
+  const firstDayOfWeek = new Date(month.year, month.month, 1).getDay();
   const emptyDays = Array(firstDayOfWeek).fill(null);
-  const calendarDays = [...emptyDays, ...month.dates];
+  const calendarDays = [...emptyDays, ...monthDates];
 
   return (
     <View style={styles.monthContainer}>
       <Text style={styles.monthTitle}>{month.monthName}</Text>
-
-      {showScheduleInfo && schedule && (
-        <Text style={styles.scheduleInfo}>
-          Shift {schedule.shift_start_time}-{schedule.shift_end_time} •{' '}
-          {schedule.employee_status === 'FULL_TIME' ? 'Full-Time' : 'Part-Time'} •{' '}
-          {schedule.days_off && schedule.days_off.length > 0
-            ? `Days Off: ${schedule.days_off.map((d: number) => weekDays[d]).join(', ')}`
-            : schedule.days_off_type?.replace(/_/g, ' ')}
-        </Text>
-      )}
 
       {/* Weekday Headers */}
       <View style={styles.weekdaysRow}>
@@ -395,7 +384,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
   // Multi-month view (new feature)
   return (
     <View style={styles.multiMonthContainer}>
-      <View style={[styles.calendarContainer, { marginBottom: 10 }]}>
+      <View style={styles.calendarContainer}>
         <Text style={styles.calendarTitle}>
           Employee Calendar ({calendar.startDate} to {calendar.endDate})
         </Text>
@@ -429,10 +418,9 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
       {/* Render individual month calendars */}
       {months.map((month, index) => (
         <SingleMonthCalendar
-          key={`month-${index}`}
+          key={`month-${month.year}-${month.month}`}
           month={month}
           daysMap={daysMap}
-          showScheduleInfo={false} // Schedule info already shown at the top
         />
       ))}
     </View>
