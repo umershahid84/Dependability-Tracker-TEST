@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     padding: 8,
-    pageBreakInside: 'avoid',
   },
   multiMonthContainer: {
     marginTop: 15,
@@ -31,7 +30,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     padding: 8,
-    pageBreakInside: 'avoid',
   },
   calendarTitle: {
     fontSize: 12,
@@ -397,11 +395,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ calendar }) => {
   // Multi-month view (new feature)
   return (
     <View style={styles.multiMonthContainer}>
-      <View
-        style={[
-          styles.calendarContainer,
-          { marginBottom: 10, pageBreakInside: 'avoid' },
-        ]}>
+      <View style={[styles.calendarContainer, { marginBottom: 10 }]}>
         <Text style={styles.calendarTitle}>
           Employee Calendar ({calendar.startDate} to {calendar.endDate})
         </Text>
