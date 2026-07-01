@@ -1,30 +1,10 @@
-import {
-  AddEmployeeForm,
-  EditCallOutModal,
-  EditEmployeeForm,
-  CallOutsAdvancedSearch
-} from '../Forms';
-import {
-  ResetSupervisorPassword,
-  RevokeCredentialsInvite,
-  ResendCreateCredentialInviteByEmail,
-  CreateCredentialInviteAndEmailItToSupervisor
-} from '../Forms/Supervisors';
-import {Modal} from './Modal';
-import React, {useEffect} from 'react';
-import {useIsMounted} from '../../hooks';
-import {EmployeeWithAssociations} from '../../lib/db/controller';
-import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
-import type {CallOutWithAssociations} from '../../lib/db/models/types';
-import {RevokeCredentials} from '../Forms/Supervisors/RevokeCredentials';
-import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
-
 export enum ModalType {
   ADD_EMPLOYEE = 'Add Employee',
   EDIT_CALL_OUT = 'Edit Call Out',
   EDIT_EMPLOYEE = 'Edit Employee',
   RESEND_INVITE = 'Resend Invite',
   RESET_PASSWORD = 'Reset Password',
+  CREATE_TEMP_PASSWORD = 'Create Temporary Password',
   DELETE_CALL_OUT = 'Delete Call Out',
   DELETE_EMPLOYEE = 'Delete Employee',
   REVOKE_CREDENTIALS = 'Revoke Credentials',
@@ -97,6 +77,13 @@ function RenderModalBody({
           onModalEditCallBack={data?.onModalEditCallBack}
         />
       );
+    case ModalType.CREATE_TEMP_PASSWORD:
+      return (
+        <CreateTemporaryPassword
+          supervisor={data?.supervisor}
+          onModalEditCallBack={data?.onModalEditCallBack}
+        />
+      );
     case ModalType.CREATE_AND_SEND_INVITE:
       return (
         <CreateCredentialInviteAndEmailItToSupervisor
@@ -133,34 +120,3 @@ function RenderModalBody({
 export function ModalViewer(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [data, setData] = React.useState<any>(null);
-  const [type, setType] = React.useState<ModalType | null>(null);
-  const [showModal, setShowModal] = React.useState<boolean>(false);
-  const [modalClasses, setModalClasses] = React.useState<string | null>(null);
-
-  const handleModalEvent = (event: Event) => {
-    const {detail} = event as CustomEvent<ModalActionProps>;
-
-    setType(detail.type);
-    setData(detail?.payload ?? null);
-    setShowModal(detail?.action === ModalAction.OPEN);
-    setModalClasses(detail?.payload?.modalClasses ?? null);
-  };
-
-  useEffect(() => {
-    if (isMounted) {
-      window.addEventListener('modalEvent', handleModalEvent);
-    }
-
-    return () => {
-      window.removeEventListener('modalEvent', handleModalEvent);
-    };
-  }, [isMounted]);
-
-  return showModal && type ? (
-    <Modal setShowModal={setShowModal} modalClassName={modalClasses ?? undefined}>
-      <RenderModalBody type={type} data={data} />
-    </Modal>
-  ) : (
-    <></>
-  );
-}
