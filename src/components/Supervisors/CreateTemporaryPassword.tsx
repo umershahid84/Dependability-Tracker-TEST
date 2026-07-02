@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ModalAction } from '../Modal';
-import FormInputWithErrors from '../FormInputs/FormInputWithErrors';
+import { FormInputWithErrors } from '../Forms';
 import { makeToast, ToastTypes } from '../Toasts';
 
 export default function CreateTemporaryPassword({ supervisor, onModalEditCallBack }: any) {
