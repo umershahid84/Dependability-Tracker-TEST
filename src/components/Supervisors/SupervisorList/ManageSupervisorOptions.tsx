@@ -37,6 +37,8 @@ export function ManageSupervisorOptions({
           return ModalType.REVOKE_CREDENTIALS;
         case 'Revoke Credentials Invite':
           return ModalType.REVOKE_CREDENTIALS_INVITE;
+        case 'Create Temporary Password':
+          return ModalType.CREATE_TEMP_PASSWORD;
         default:
           return undefined;
       }
@@ -99,6 +101,14 @@ export function ManageSupervisorOptions({
           </button>
         </>
       )}
+
+      {/* New admin action */}
+      <button
+        type="button"
+        onClick={handleOnClick}
+        className={styles.button + ' ' + styles.sendInvite}>
+        Create Temporary Password
+      </button>
     </div>
   );
 }
