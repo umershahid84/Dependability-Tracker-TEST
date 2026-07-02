@@ -1,3 +1,21 @@
+import React, {useEffect} from 'react';
+import {useIsMounted} from '../../hooks/isMounted';
+import {AddEmployeeForm} from '../Forms/EmployeeModal/AddEmployeeForm';
+import {EditEmployeeForm} from '../Forms/EmployeeModal/EditEmployeeForm';
+import {DeleteEmployeeForm} from '../Forms/EmployeeModal/DeleteEmployeeForm';
+import {CallOutsAdvancedSearch} from '../Forms/CallOut/CallOutsModal/AdvancedSearch';
+import {EditCallOutModal} from '../Forms/CallOut/EditCallOutModal';
+import {DeleteCallOutForm} from '../Forms/CallOut/DeleteCallOutModal';
+import {ResetSupervisorPassword} from '../Forms/Supervisors/ResetPassword';
+import CreateTemporaryPassword from '../Supervisors/CreateTemporaryPassword';
+import {CreateCredentialInviteAndEmailItToSupervisor} from '../Forms/Supervisors/CreateAndSendInvite';
+import {ResendCreateCredentialInviteByEmail} from '../Forms/Supervisors/ResendInvite';
+import {RevokeCredentials} from '../Forms/Supervisors/RevokeCredentials';
+import {RevokeCredentialsInvite} from '../Forms/Supervisors/RevokeCredentialsInvite';
+import {EmployeeWithAssociations} from '../../lib/db/models/Employee';
+import {CallOutWithAssociations} from '../../lib/db/models/Callout';
+import {Modal} from './Modal';
+
 export enum ModalType {
   ADD_EMPLOYEE = 'Add Employee',
   EDIT_CALL_OUT = 'Edit Call Out',
@@ -120,3 +138,35 @@ function RenderModalBody({
 export function ModalViewer(): React.ReactElement {
   const isMounted: boolean = useIsMounted();
   const [data, setData] = React.useState<any>(null);
+  const [type, setType] = React.useState<ModalType | null>(null);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    const handleModalEvent = (event: Event) => {
+      const {action, type: modalType, payload} = (event as CustomEvent<ModalActionProps>).detail;
+
+      if (action === ModalAction.OPEN) {
+        setType(modalType);
+        setData(payload);
+        setShowModal(true);
+      } else if (action === ModalAction.CLOSE) {
+        setShowModal(false);
+      }
+    };
+
+    window.addEventListener('modalEvent', handleModalEvent);
+    return () => {
+      window.removeEventListener('modalEvent', handleModalEvent);
+    };
+  }, []);
+
+  if (!isMounted || !showModal || !type) {
+    return <></>;
+  }
+
+  return (
+    <Modal setShowModal={setShowModal}>
+      <RenderModalBody type={type} data={data} />
+    </Modal>
+  );
+}
