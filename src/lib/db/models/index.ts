@@ -7,6 +7,7 @@ import Division, {DefaultDivisions} from './Division';
 import LeaveType, {DefaultLeaveTypes} from './LeaveType';
 import CreateCredentialsInvite from './CreateCredentialsInvite';
 import EmployeeSchedule from './EmployeeSchedule';
+import PasswordResetCode from './PasswordResetCode';
 
 CallOut.belongsTo(Employee, {
   foreignKey: 'employee_id',
@@ -97,6 +98,18 @@ Supervisor.hasMany(CreateCredentialsInvite, {
   onDelete: 'CASCADE'
 });
 
+PasswordResetCode.belongsTo(Supervisor, {
+  foreignKey: 'supervisor_id',
+  as: 'supervisor',
+  onDelete: 'SET NULL'
+});
+
+Supervisor.hasMany(PasswordResetCode, {
+  sourceKey: 'id',
+  foreignKey: 'supervisor_id',
+  as: 'password_reset_codes'
+});
+
 const models = {
   CallOut,
   Division,
@@ -105,7 +118,8 @@ const models = {
   Supervisor,
   EmployeeSchedule,
   LoginCredential,
-  CreateCredentialsInvite
+  CreateCredentialsInvite,
+  PasswordResetCode
 };
 
 export default models;
@@ -120,5 +134,6 @@ export {
   LoginCredential,
   DefaultDivisions,
   DefaultLeaveTypes,
-  CreateCredentialsInvite
+  CreateCredentialsInvite,
+  PasswordResetCode
 };
