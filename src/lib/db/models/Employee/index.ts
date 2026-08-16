@@ -27,6 +27,7 @@ import {EmployeeScheduleAttributes} from '../EmployeeSchedule';
 export interface EmployeeAttributes {
   id: string;
   name: string;
+  is_active: boolean;
   createdAt: Date;
   updatedAt: Date;
   division_ids: string[];
@@ -37,6 +38,7 @@ export interface EmployeeAttributes {
 export type EmployeeWithAssociations = {
   id: string;
   name: string;
+  is_active: boolean;
   role?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -48,6 +50,7 @@ export type EmployeeWithAssociations = {
 export type EmployeeCreationAttributes = {
   id?: string;
   name: string;
+  is_active?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   division_ids: string[];
@@ -62,6 +65,7 @@ class Employee
   // model attributes
   declare name: string;
   declare id: CreationOptional<string>;
+  declare is_active: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare division_ids: ForeignKey<string[]>;
@@ -105,6 +109,11 @@ Employee.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

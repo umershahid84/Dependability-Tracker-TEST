@@ -2,14 +2,29 @@ import React from 'react';
 import { View, Text, StyleSheet } from '@react-pdf/renderer';
 import { EmployeeCalendarProjection } from '../../client-api/employees';
 
-// Color mapping for call-out types (matching your UI)
+// Color mapping for call-out types (matching actual DB leave type values and UI colors)
 const callOutColorMap: Record<string, string> = {
   'Sick': '#DC2626', // Red
   'FMLA': '#9333EA', // Purple
-  'Late Arrival': '#86EFAC', // Light Green
+  'Tardiness': '#86EFAC', // Light Green (DB value for Late Arrival)
+  'Late Arrival': '#86EFAC', // Light Green (alias)
   'Left Early': '#FCD34D', // Light Yellow
+  'Leaving Early': '#FCD34D', // Light Yellow (alias)
   'PTO': '#15803D', // Dark Green
-  'Other Call-out': '#F97316', // Orange
+  'FCA': '#F97316', // Orange
+  'No Call-No Show': '#991B1B', // Dark Red
+  'Bereavement': '#6B7280', // Gray
+  'LWOP': '#78350F', // Brown
+  'Personal Holiday': '#0EA5E9', // Sky Blue
+  'Holiday': '#0EA5E9', // Sky Blue
+  'Holiday Opt.': '#0EA5E9', // Sky Blue
+  'PHEL': '#7C3AED', // Violet
+  'Jury Duty': '#64748B', // Slate
+  'Maternity': '#EC4899', // Pink
+  'Paternity': '#3B82F6', // Blue
+  'Military': '#16A34A', // Green
+  'Others': '#F97316', // Orange
+  'Other Call-out': '#F97316', // Orange (alias)
   'Day off': '#FBBF24', // Amber
 };
 
@@ -138,7 +153,7 @@ const getColorForDay = (day: {
 const getTextColorForBackground = (bgColor: string): string => {
   // Light backgrounds get dark text, dark backgrounds get light text
   const lightBackgrounds = ['#86EFAC', '#FCD34D', '#FBBF24', '#ffffff'];
-  return lightBackgrounds.includes(bgColor) ? '#000' : '#fff';
+  return lightBackgrounds.includes(bgColor) ? '#000000' : '#ffffff';
 };
 
 const getDayLabel = (day: {

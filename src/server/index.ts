@@ -10,7 +10,8 @@ import sequelize, {
   ensureCalloutShiftDateToColumn,
   ensureCalloutShiftTypeColumn,
   ensureEmployeeScheduleDaysOffColumn,
-  ensureCalloutEditedBySupervisorColumn
+  ensureCalloutEditedBySupervisorColumn,
+  ensureEmployeeIsActiveColumn
 } from '../lib/db/connection';
 import express, {Express, Request, Response} from 'express';
 import {logTemplate} from '../lib/utils/server';
@@ -98,6 +99,7 @@ export const startServer = async () => {
   await ensureCalloutShiftTypeColumn(sequelize);
   await ensureCalloutEditedBySupervisorColumn(sequelize);
   await ensureEmployeeScheduleDaysOffColumn(sequelize);
+  await ensureEmployeeIsActiveColumn(sequelize);
   // start the next functionality and bootstrap it to the express server
   await nextExpress(app);
 
