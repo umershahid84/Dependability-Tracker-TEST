@@ -142,7 +142,8 @@ export const getEmployeeFromDB = {
           where: {
             id: {
               [Op.notIn]: supervisorIds
-            }
+            },
+            is_active: true
           },
           ...convertedOptions
         });
@@ -365,11 +366,35 @@ export const deleteEmployeeFromDB = async (employeeId: string): Promise<number |
   }
 };
 
+// Toggle employee active status (enable/disable)
+export const toggleEmployeeActiveStatusInDB = async (
+  employeeId: string,
+  isActive: boolean
+): Promise<number | null> => {
+  try {
+    const employee = await Employee.findByPk(employeeId);
+    if (!employee) {
+      throw new Error(`\n❌ Employee with ID ${employeeId} not found`);
+    }
+
+    const updatedEmployee = await Employee.update(
+      {is_active: isActive},
+      {where: {id: employeeId}}
+    );
+
+    return updatedEmployee[0];
+  } catch (error) {
+    // istanbul ignore next
+    throw new Error(`\n❌ Error toggling employee active status: ${error}`);
+  }
+};
+
 export const employeeModelController = {
   getEmployeeFromDB,
   createEmployeeInDB,
   updateEmployeeInDB,
-  deleteEmployeeFromDB
+  deleteEmployeeFromDB,
+  toggleEmployeeActiveStatusInDB
 };
 
 export default employeeModelController;

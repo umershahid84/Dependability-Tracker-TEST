@@ -68,6 +68,7 @@ export const populateEmployeeWithDivisions = async (
   return {
     id: employee.id,
     name: employee.name,
+    is_active: employee.is_active !== false,
     createdAt: employee.createdAt,
     updatedAt: employee.updatedAt,
     divisions,

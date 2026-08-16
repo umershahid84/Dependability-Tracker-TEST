@@ -40,7 +40,7 @@ export function EmployeeScheduleCalendar({
       : null;
 
   return (
-    <div className="w-full border rounded-md p-4 bg-tertiary">
+    <div className="w-full border rounded-md p-4 bg-tertiary [print-color-adjust:exact] [-webkit-print-color-adjust:exact]">
       <h3 className="font-semibold mb-1">{title ?? 'Employee Schedule Calendar'}</h3>
       <p className="text-xs text-tertiary mb-2">
         {calendar.schedule

@@ -2,7 +2,8 @@ import {
   putEmployeesApiHandler,
   getEmployeesApiHandler,
   postEmployeesApiHandler,
-  deleteEmployeesApiHandler
+  deleteEmployeesApiHandler,
+  patchEmployeesApiHandler
 } from '../../../lib/apiController';
 import {Request, Response} from 'express';
 import {enforceAdminOnly, getJwtTokenForAPI} from '../../../auth';
@@ -30,6 +31,10 @@ export default async function handler(req: Request, res: Response) {
 
   if (req.method === 'PUT') {
     return putEmployeesApiHandler(req, res);
+  }
+
+  if (req.method === 'PATCH') {
+    return patchEmployeesApiHandler(req, res);
   }
 
   if (req.method === 'DELETE') {
