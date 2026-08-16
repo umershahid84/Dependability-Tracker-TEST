@@ -3,14 +3,18 @@ import {Request, Response} from 'express';
 import {toggleEmployeeActiveStatusInDB} from '../../../db/controller';
 import {logTemplate} from '../../../utils/server';
 
-export type ToggleEmployeeStatusProps = {
+type PatchEmployeeStatusBody = {
   id: string;
   is_active: boolean;
 };
 
 export default async function patchEmployeesApiHandler(req: Request, res: Response<ApiData>) {
   try {
-    const {body} = req as {body: ToggleEmployeeStatusProps};
+    const {body} = req as {body: PatchEmployeeStatusBody};
+
+    if (!body.id) {
+      return res.status(400).json({error: 'id is required'});
+    }
 
     if (typeof body.is_active !== 'boolean') {
       return res.status(400).json({error: 'is_active must be a boolean'});

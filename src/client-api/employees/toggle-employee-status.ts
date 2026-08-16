@@ -1,6 +1,5 @@
 'use client';
 
-import {ModalAction} from '../../components/Modal';
 import {makeToast, ToastTypes} from '../../components';
 
 export type ToggleEmployeeStatusProps = {
@@ -32,7 +31,6 @@ export const ToggleEmployeeStatus = async ({
         type: ToastTypes.Success,
         message: `Employee ${action}!`
       });
-      window.dispatchEvent(new CustomEvent('modalEvent', {detail: {action: ModalAction.CLOSE}}));
       return true;
     }
   } catch (error) {
