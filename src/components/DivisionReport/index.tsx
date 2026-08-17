@@ -4,7 +4,7 @@ import {DivisionLayout} from '../Division';
 import {DivisionReportForm} from '../Forms';
 import {DetailedCallOutHistory} from './DetailedCallOutReport';
 import {CallOutWithAssociations} from '../../lib/db/models/types';
-import {EmployeeCalendarProjection} from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 
 export function DivisionReport(
   props: Readonly<{

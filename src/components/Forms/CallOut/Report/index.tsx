@@ -17,7 +17,8 @@ import {SelectEmployeeName} from '../../../Forms/FormInputs/SelectEmployeeName';
 import {SelectLeaveTypeReason} from '../../../Forms/FormInputs/SelectLeaveType';
 import {capitalizeWords, getDivisionNameFromPath} from '../../../../lib/utils/shared/strings';
 import {GetCallOuts} from '../../../../client-api/callouts';
-import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
+import {GetEmployeeCalendar} from '../../../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../../../client-api/employees';
 import {formatDateToISODateOnly} from '../../../../lib/utils';
 
 export type DivisionCalloutReportFormData = {
