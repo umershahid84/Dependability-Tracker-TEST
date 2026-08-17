@@ -15,7 +15,8 @@ import { ArrivedLateWithRange } from '../../FormInputs/ArrivedLateWithRange';
 import { CallOutFormActionButtons } from '../../FormInputs/CallOutFormActionButtons';
 import { UseCreateCallOutFormState, useCreateCallOutFormState } from '../../../../hooks';
 import {EmployeeScheduleCalendar} from '../../../Calendar';
-import {EmployeeCalendarProjection, GetEmployeeCalendar} from '../../../../client-api/employees';
+import {GetEmployeeCalendar} from '../../../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../../../client-api/employees';
 import {getMonthDateRange} from '../../../../lib/utils';
 
 const styles = {

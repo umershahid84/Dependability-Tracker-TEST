@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from '@react-pdf/renderer';
-import { EmployeeCalendarProjection } from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 
 // Color mapping for call-out types (matching actual DB leave type values and UI colors)
 const callOutColorMap: Record<string, string> = {

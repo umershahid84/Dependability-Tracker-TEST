@@ -1,5 +1,5 @@
 import React from 'react';
-import {EmployeeCalendarProjection} from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 

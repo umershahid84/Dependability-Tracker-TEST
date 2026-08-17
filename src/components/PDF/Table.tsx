@@ -2,7 +2,7 @@ import React from 'react';
 import {getTime, getTimeNoSeconds, makeDate} from '../../lib/utils';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
 import {Page, Text, View, Document, StyleSheet} from '@react-pdf/renderer';
-import {EmployeeCalendarProjection} from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 import CalendarGrid from './CalendarGrid';
 
 // Define styles

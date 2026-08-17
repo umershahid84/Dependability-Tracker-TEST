@@ -4,7 +4,7 @@ import { DownloadIcon } from '../Icons';
 import { pdf } from '@react-pdf/renderer';
 import { trim } from '../../lib/utils/shared/strings';
 import { CallOutWithAssociations } from '../../lib/db/models/Callout';
-import {EmployeeCalendarProjection} from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 
 const styles = {
     icon: `w-4 h-4`,

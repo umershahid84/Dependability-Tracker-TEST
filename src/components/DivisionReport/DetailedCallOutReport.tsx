@@ -5,7 +5,7 @@ import DownloadPDF from '../PDF/DownloadPdfButton';
 import DownloadCSV from '../CSV/DownloadCsvButton';
 import {NextRouter, useRouter} from 'next/router';
 import {CallOutWithAssociations} from '../../lib/db/models/Callout';
-import {EmployeeCalendarProjection} from '../../client-api/employees';
+import type {EmployeeCalendarProjection} from '../../client-api/employees';
 import {
   formatDate_YYYY_MM_DD_TZ,
   formatTimeNoSeconds_TZ,
