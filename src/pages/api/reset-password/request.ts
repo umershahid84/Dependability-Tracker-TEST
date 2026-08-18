@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { createPasswordResetCodeInDB } from '../../../lib/db/controller/PasswordResetCode';
 import { sendPasswordResetCode } from '../../../lib/email/sendPasswordResetCode';
-import { getLoginCredentialFromDB } from '../../../lib/db/controller/LoginCredential';
+import { getLoginCredentialFromDB, deleteLoginCredentialFromDB } from '../../../lib/db/controller/LoginCredential';
+import { createCreateCredentialsInviteInDB } from '../../../lib/db/controller';
 import { logTemplate } from '../../../lib/utils/server';
 
 export default async function handler(req: Request, res: Response) {
@@ -40,14 +41,30 @@ export default async function handler(req: Request, res: Response) {
       expires_at: expiresAt
     });
 
+    // create a new invite (for the "Create Credentials" email link)
+    const credentialInvite = await createCreateCredentialsInviteInDB({
+      email: existing.email,
+      created_by: existing.supervisor_info.id,
+      supervisor_id: existing.supervisor_info.id
+    });
+
     const shouldSendEmails = process.env.SEND_EMAILS === 'true';
 
     if (shouldSendEmails) {
-      const emailSent = await sendPasswordResetCode(existing.email, code, existing.supervisor_info.supervisor_info.name);
+      const emailSent = await sendPasswordResetCode(
+        existing.email,
+        code,
+        existing.supervisor_info.supervisor_info.name,
+        credentialInvite?.id,
+        credentialInvite?.invite_token
+      );
       if (!emailSent) {
         throw new Error('Error sending email');
       }
     }
+
+    // delete existing credentials only after email is sent successfully
+    await deleteLoginCredentialFromDB(existing.id);
 
     const message = shouldSendEmails
       ? 'Password reset code sent successfully'

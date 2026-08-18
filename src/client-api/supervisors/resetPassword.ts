@@ -1,7 +1,7 @@
 import { makeToast, ToastTypes } from '../../components';
 import { ResetPasswordFormState } from '../../components/Forms/ResetPassword';
 
-export async function ResetPasswordRequest(formState: ResetPasswordFormState): Promise<void> {
+export async function ResetPasswordRequest(formState: ResetPasswordFormState): Promise<boolean> {
   try {
     const response = await fetch('/api/reset-password/request', {
       method: 'POST',
@@ -21,7 +21,7 @@ export async function ResetPasswordRequest(formState: ResetPasswordFormState): P
       message: payload?.message ?? 'A reset code has been sent to your registered email.'
     });
 
-    return;
+    return true;
   } catch (error) {
     makeToast({
       type: ToastTypes.Error,
@@ -29,11 +29,11 @@ export async function ResetPasswordRequest(formState: ResetPasswordFormState): P
       message: String(error)
     });
 
-    return;
+    return false;
   }
 }
 
-export async function ResetPasswordConfirm({ email, code, password }: { email: string; code: string; password: string }): Promise<void> {
+export async function ResetPasswordConfirm({ email, code, password }: { email: string; code: string; password: string }): Promise<boolean> {
   try {
     const response = await fetch('/api/reset-password/confirm', {
       method: 'POST',
@@ -53,7 +53,7 @@ export async function ResetPasswordConfirm({ email, code, password }: { email: s
       message: payload?.message ?? 'Password has been updated.'
     });
 
-    return;
+    return true;
   } catch (error) {
     makeToast({
       type: ToastTypes.Error,
@@ -61,6 +61,6 @@ export async function ResetPasswordConfirm({ email, code, password }: { email: s
       message: String(error)
     });
 
-    return;
+    return false;
   }
 }

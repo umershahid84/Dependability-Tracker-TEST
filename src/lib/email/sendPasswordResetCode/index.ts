@@ -7,7 +7,9 @@ import { checkForTLS, PORT, TLS_PORT } from '../../../server';
 export const sendPasswordResetCode = async (
   email: string,
   code: string,
-  username: string
+  username: string,
+  inviteId?: string,
+  inviteToken?: string
 ): Promise<boolean> => {
   const { hasSupportForTLS } = checkForTLS();
 
@@ -20,7 +22,7 @@ export const sendPasswordResetCode = async (
     from: process.env.EMAIL_SENDER as string,
     to: email,
     subject: 'Dependability Tracker - Password Reset Code',
-    html: credentialInviteTemplate('', username, '', URL, code)
+    html: credentialInviteTemplate(inviteId ?? '', username, inviteToken ?? '', inviteId && inviteToken ? URL : undefined, code)
   };
 
   return await sendEmail(emailData);
