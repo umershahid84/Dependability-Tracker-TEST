@@ -36,6 +36,7 @@ describe('Email Verification Template', () => {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+    editedBySupervisor: null,
     supervisor_comments: 'N/A',
     createdAt: new Date(),
     updatedAt: new Date()
