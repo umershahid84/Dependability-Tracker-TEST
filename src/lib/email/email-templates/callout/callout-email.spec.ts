@@ -13,6 +13,7 @@ describe('Email Verification Template', () => {
     employee: {
       name: 'Testy McTestface',
       id: '1234',
+      is_active: true,
       divisions: [],
       createdAt: new Date(),
       updatedAt: new Date()
@@ -24,6 +25,7 @@ describe('Email Verification Template', () => {
       supervisor_info: {
         name: 'Supervisor',
         id: '1234',
+        is_active: true,
         createdAt: new Date(),
         updatedAt: new Date(),
         divisions: []
