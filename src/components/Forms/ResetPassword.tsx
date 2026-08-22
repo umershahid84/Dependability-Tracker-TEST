@@ -191,7 +191,7 @@ export function ResetPasswordForm(): React.ReactElement {
 
       {showConfirmModal && (
         <Modal setShowModal={setShowConfirmModal}>
-          <h2 className="text-xl font-bold mb-4 text-center">Enter Reset Code</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Enter Temporary Password</h2>
           <p className="text-sm text-center mb-4">
             Enter your temporary password (or reset code) along with your new password.
           </p>
