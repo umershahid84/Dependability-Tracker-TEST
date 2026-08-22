@@ -16,13 +16,13 @@ export const sendPasswordResetCode = async (
   const port = hasSupportForTLS ? TLS_PORT : PORT;
   const host = hasSupportForTLS ? ip : 'localhost';
   const protocol = hasSupportForTLS ? 'https' : 'http';
-  const URL = `${protocol}://${host}:${port}/sign-up/`;
+  const URL = `${protocol}://${host}:${port}/reset-password/`;
 
   const emailData: Email = {
     from: process.env.EMAIL_SENDER as string,
     to: email,
     subject: 'Dependability Tracker - Password Reset Code',
-    html: credentialInviteTemplate(inviteId ?? '', username, inviteToken ?? '', inviteId && inviteToken ? URL : undefined, code)
+    html: credentialInviteTemplate(inviteId ?? '', username, inviteToken ?? '', URL, code)
   };
 
   return await sendEmail(emailData);

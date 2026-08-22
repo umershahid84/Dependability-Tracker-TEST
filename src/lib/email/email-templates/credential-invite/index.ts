@@ -9,6 +9,7 @@ export const credentialInviteTemplate = (
 ): string => {
   const showLink = typeof createLoginCredentialsLink === 'string' && createLoginCredentialsLink.length > 0;
   const showCode = typeof resetCode === 'string' && resetCode.length > 0;
+  const inviteQuery = inviteId && inviteToken ? `?invite-id=${inviteId}&token=${inviteToken}` : '';
 
   return `
     <!DOCTYPE html>
@@ -40,7 +41,7 @@ export const credentialInviteTemplate = (
                                 <p style="margin-bottom: 20px; color: #e2e2e2 !important;">Click on the link below to create your login credentials:</p>
                                
                                 <div style="text-align: center; margin-bottom: 20px; font-size: 12px">
-                                    ${showLink ? `<a href="${createLoginCredentialsLink}?invite-id=${inviteId}&token=${inviteToken}" target="_blank" rel="noopener noreferrer" style="display: block; background-color: #4aca00 !important; color: #ffffff !important; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; width: 90%;">Create Credentials</a>` : ''}
+                                    ${showLink ? `<a href="${createLoginCredentialsLink}${inviteQuery}" target="_blank" rel="noopener noreferrer" style="display: block; background-color: #4aca00 !important; color: #ffffff !important; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; width: 90%;">Create Credentials</a>` : ''}
                                 </div>
                                 ${showCode ? `<div style="text-align:center; padding:16px; margin-top: 8px; background-color: #111827; border-radius:6px;">
                                   <p style="font-size:16px; color:#e2e2e2;">Your password reset / temporary password is:</p>

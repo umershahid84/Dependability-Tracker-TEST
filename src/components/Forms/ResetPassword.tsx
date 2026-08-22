@@ -15,13 +15,13 @@ export const defaultResetPasswordFormState: ResetPasswordFormState = {
 };
 
 type ConfirmFormState = {
-  code: string;
+  temporaryPassword: string;
   password: string;
   confirmPassword: string;
 };
 
 const defaultConfirmFormState: ConfirmFormState = {
-  code: '',
+  temporaryPassword: '',
   password: '',
   confirmPassword: ''
 };
@@ -81,8 +81,8 @@ export function ResetPasswordForm(): React.ReactElement {
     e?.stopPropagation();
 
     const errors: string[] = [];
-    if (confirmForm.code.trim().length !== 6) {
-      errors.push('Verification code must be 6 digits.');
+    if (confirmForm.temporaryPassword.trim().length === 0) {
+      errors.push('Temporary password is required.');
     }
     if (!confirmForm.password) {
       errors.push('New password is required.');
@@ -98,7 +98,7 @@ export function ResetPasswordForm(): React.ReactElement {
 
     const success = await ResetPasswordConfirm({
       email: formState.email,
-      code: confirmForm.code.trim(),
+      code: confirmForm.temporaryPassword.trim(),
       password: confirmForm.password
     });
 
@@ -146,7 +146,7 @@ export function ResetPasswordForm(): React.ReactElement {
   // Confirm form validation
   useEffect(() => {
     const valid =
-      confirmForm.code.trim().length === 6 &&
+      confirmForm.temporaryPassword.trim().length > 0 &&
       confirmForm.password.length > 0 &&
       confirmForm.password === confirmForm.confirmPassword;
     setIsConfirmValid(valid);
@@ -193,8 +193,7 @@ export function ResetPasswordForm(): React.ReactElement {
         <Modal setShowModal={setShowConfirmModal}>
           <h2 className="text-xl font-bold mb-4 text-center">Enter Reset Code</h2>
           <p className="text-sm text-center mb-4">
-            A 6-digit verification code has been sent to your email. Enter it below along with your
-            new password.
+            Enter your temporary password (or reset code) along with your new password.
           </p>
 
           {confirmErrors.length > 0 && (
@@ -215,12 +214,12 @@ export function ResetPasswordForm(): React.ReactElement {
             }
           }}>
             <FormInputWithErrors
-              label="6-Digit Verification Code"
+              label="Temporary Password"
               type="text"
-              id="code"
+              id="temporaryPassword"
               required
-              placeholder="Enter 6-digit code"
-              value={confirmForm.code}
+              placeholder="Enter temporary password"
+              value={confirmForm.temporaryPassword}
               // eslint-disable-next-line
               // @ts-ignore
               onChange={handleConfirmInputChange}
