@@ -1,5 +1,6 @@
 import PasswordResetCode from '../../models/PasswordResetCode';
 import bcrypt from 'bcrypt';
+import { Op } from 'sequelize';
 
 export const createPasswordResetCodeInDB = async (props: {
   supervisor_id?: string | null;
@@ -33,7 +34,7 @@ export const getActivePasswordResetCodeByEmail = async (email: string) => {
   try {
     const now = new Date();
     const record = await PasswordResetCode.findOne({
-      where: { email, used: false, expires_at: { ["$gt"]: now } },
+      where: { email, used: false, expires_at: { [Op.gt]: now } },
       order: [['created_at', 'DESC']]
     });
     return record;
