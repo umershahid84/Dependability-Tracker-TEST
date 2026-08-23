@@ -2,7 +2,7 @@ import React from 'react';
 
 const styles = {
   innerDiv: 'bg-tertiary p-8 rounded-md shadow-lg relative w-full max-w-md',
-  div: 'fixed inset-0 z-40 overflow-auto bg-black bg-opacity-50 flex justify-center items-center',
+  div: 'fixed inset-0 z-40 overflow-auto bg-black bg-opacity-50 flex justify-center items-start pt-24',
   button:
     'absolute top-4 right-4 text-primary print:text-black cursor-pointer hover:text-red-500 text-2xl'
 };

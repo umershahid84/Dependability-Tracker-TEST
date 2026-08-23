@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import { Op } from 'sequelize';
 import PasswordResetCode from '../../../lib/db/models/PasswordResetCode';
 import { getLoginCredentialFromDB } from '../../../lib/db/controller/LoginCredential';
 import LoginCredential from '../../../lib/db/models/LoginCredential';
@@ -24,7 +25,7 @@ export default async function handler(req: Request, res: Response) {
     // find active code
     const now = new Date();
     const resetRecord: any = await PasswordResetCode.findOne({
-      where: { email, used: false, expires_at: { ["$gt"]: now } },
+      where: { email, used: false, expires_at: { [Op.gt]: now } },
       order: [['created_at', 'DESC']]
     });
 
