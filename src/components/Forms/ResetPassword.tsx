@@ -82,7 +82,7 @@ export function ResetPasswordForm(): React.ReactElement {
 
     const errors: string[] = [];
     if (confirmForm.temporaryPassword.trim().length === 0) {
-      errors.push('Temporary password is required.');
+      errors.push('OTP (One-time Passcode) is required.');
     }
     if (!confirmForm.password) {
       errors.push('New password is required.');
@@ -191,9 +191,9 @@ export function ResetPasswordForm(): React.ReactElement {
 
       {showConfirmModal && (
         <Modal setShowModal={setShowConfirmModal}>
-          <h2 className="text-xl font-bold mb-4 text-center">Enter Temporary Password</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Enter OTP (One-time Passcode)</h2>
           <p className="text-sm text-center mb-4">
-            Enter your temporary password (or reset code) along with your new password.
+            Enter your OTP (One-time Passcode) along with your new password.
           </p>
 
           {confirmErrors.length > 0 && (
@@ -214,11 +214,11 @@ export function ResetPasswordForm(): React.ReactElement {
             }
           }}>
             <FormInputWithErrors
-              label="Temporary Password"
+              label="OTP (One-time Passcode)"
               type="text"
               id="temporaryPassword"
               required
-              placeholder="Enter temporary password"
+              placeholder="Enter OTP (One-time Passcode)"
               value={confirmForm.temporaryPassword}
               // eslint-disable-next-line
               // @ts-ignore
