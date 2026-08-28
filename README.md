@@ -268,7 +268,6 @@ The kiosk only ever displays callouts entered within the **last 24 hours**, most
 
 - Employee Name
 - Call Date
-- Call Time
 - Shift Date From
 - Shift Date To
 - Shift Time

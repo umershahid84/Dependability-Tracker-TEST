@@ -12,7 +12,6 @@ export type KioskCallOut = {
   id: string;
   employeeName: string;
   callDate: string;
-  callTime: string;
   shiftDateFrom: string;
   shiftDateTo: string;
   shiftTime: string;
@@ -66,7 +65,6 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
         id: callOut.id,
         employeeName: callOut.employee?.name ?? 'Unknown',
         callDate: getDate(callOut.callout_date),
-        callTime: getTimeNoSeconds(callOut.callout_time),
         shiftDateFrom: getDate(callOut.shift_date),
         shiftDateTo: getDate(callOut.shift_date_to ?? callOut.shift_date),
         shiftTime: getTimeNoSeconds(callOut.shift_time)

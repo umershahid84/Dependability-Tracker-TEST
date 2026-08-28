@@ -17,11 +17,12 @@ const styles = {
   navLinkActive: 'bg-accent-primary text-primary',
   navLinkInactive: 'bg-secondary text-tertiary hover:bg-tertiary',
   list: 'w-full max-w-5xl flex flex-col gap-4',
-  card: 'w-full bg-secondary border-l-8 border-accent-primary rounded-md shadow-lg p-6 grid grid-cols-1 sm:grid-cols-3 gap-4',
+  card: 'w-full bg-secondary border-l-8 border-accent-primary rounded-md shadow-lg p-6 flex flex-col gap-4',
+  fields: 'grid grid-cols-2 sm:grid-cols-4 gap-4',
   field: 'flex flex-col',
   fieldLabel: 'text-xs uppercase tracking-wider text-tertiary',
   fieldValue: 'text-xl font-semibold text-primary',
-  employeeName: 'text-2xl font-bold text-primary sm:col-span-3',
+  employeeName: 'text-2xl font-bold text-primary',
   empty: 'text-2xl text-tertiary text-center mt-24',
   loading: 'flex items-center justify-center mt-24'
 };
@@ -30,25 +31,23 @@ function CallOutCard({callOut}: Readonly<{callOut: KioskCallOut}>) {
   return (
     <div className={styles.card}>
       <p className={styles.employeeName}>{callOut.employeeName}</p>
-      <div className={styles.field}>
-        <span className={styles.fieldLabel}>Call Date</span>
-        <span className={styles.fieldValue}>{callOut.callDate}</span>
-      </div>
-      <div className={styles.field}>
-        <span className={styles.fieldLabel}>Call Time</span>
-        <span className={styles.fieldValue}>{callOut.callTime}</span>
-      </div>
-      <div className={styles.field}>
-        <span className={styles.fieldLabel}>Shift Date From</span>
-        <span className={styles.fieldValue}>{callOut.shiftDateFrom}</span>
-      </div>
-      <div className={styles.field}>
-        <span className={styles.fieldLabel}>Shift Date To</span>
-        <span className={styles.fieldValue}>{callOut.shiftDateTo}</span>
-      </div>
-      <div className={styles.field}>
-        <span className={styles.fieldLabel}>Shift Time</span>
-        <span className={styles.fieldValue}>{callOut.shiftTime}</span>
+      <div className={styles.fields}>
+        <div className={styles.field}>
+          <span className={styles.fieldLabel}>Call Date</span>
+          <span className={styles.fieldValue}>{callOut.callDate}</span>
+        </div>
+        <div className={styles.field}>
+          <span className={styles.fieldLabel}>Shift Date From</span>
+          <span className={styles.fieldValue}>{callOut.shiftDateFrom}</span>
+        </div>
+        <div className={styles.field}>
+          <span className={styles.fieldLabel}>Shift Date To</span>
+          <span className={styles.fieldValue}>{callOut.shiftDateTo}</span>
+        </div>
+        <div className={styles.field}>
+          <span className={styles.fieldLabel}>Shift Time</span>
+          <span className={styles.fieldValue}>{callOut.shiftTime}</span>
+        </div>
       </div>
     </div>
   );
