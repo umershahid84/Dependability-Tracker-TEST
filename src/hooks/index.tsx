@@ -5,6 +5,7 @@ export * from './useDivisions';
 export * from './useLeaveTypes';
 export * from './useQueryParams';
 export * from './useGetCallOuts';
+export * from './useKioskCallOuts';
 export * from './useNumberRange';
 export * from './useGetEmployees';
 export * from './useDashboardData';
