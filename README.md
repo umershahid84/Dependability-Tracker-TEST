@@ -269,11 +269,11 @@ The kiosk only ever displays callouts entered within the **last 24 hours**, most
 - Employee Name
 - Call Date
 - Call Time
-- Shift Date
+- Shift Date From
+- Shift Date To
 - Shift Time
-- Leave Type
 
-No other employee or callout information (supervisor comments, IDs, edit history, etc.) is exposed on this page or by its API endpoint (`/api/kiosk/callouts`).
+No other employee or callout information (leave type, supervisor comments, IDs, edit history, etc.) is exposed on this page or by its API endpoint (`/api/kiosk/callouts`). Leave Type was removed for now and may be added back later.
 
 ### Auto-Updating
 

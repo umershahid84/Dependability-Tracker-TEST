@@ -39,12 +39,12 @@ function CallOutCard({callOut}: Readonly<{callOut: KioskCallOut}>) {
         <span className={styles.fieldValue}>{callOut.callTime}</span>
       </div>
       <div className={styles.field}>
-        <span className={styles.fieldLabel}>Leave Type</span>
-        <span className={styles.fieldValue}>{callOut.leaveType}</span>
+        <span className={styles.fieldLabel}>Shift Date From</span>
+        <span className={styles.fieldValue}>{callOut.shiftDateFrom}</span>
       </div>
       <div className={styles.field}>
-        <span className={styles.fieldLabel}>Shift Date</span>
-        <span className={styles.fieldValue}>{callOut.shiftDate}</span>
+        <span className={styles.fieldLabel}>Shift Date To</span>
+        <span className={styles.fieldValue}>{callOut.shiftDateTo}</span>
       </div>
       <div className={styles.field}>
         <span className={styles.fieldLabel}>Shift Time</span>

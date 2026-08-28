@@ -13,9 +13,9 @@ export type KioskCallOut = {
   employeeName: string;
   callDate: string;
   callTime: string;
-  shiftDate: string;
+  shiftDateFrom: string;
+  shiftDateTo: string;
   shiftTime: string;
-  leaveType: string;
 };
 
 // This endpoint is intentionally public (no auth check) so it can be displayed
@@ -67,11 +67,9 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
         employeeName: callOut.employee?.name ?? 'Unknown',
         callDate: getDate(callOut.callout_date),
         callTime: getTimeNoSeconds(callOut.callout_time),
-        shiftDate: callOut.shift_date_to
-          ? `${getDate(callOut.shift_date)} - ${getDate(callOut.shift_date_to)}`
-          : getDate(callOut.shift_date),
-        shiftTime: getTimeNoSeconds(callOut.shift_time),
-        leaveType: callOut.leaveType?.reason ?? 'Unknown'
+        shiftDateFrom: getDate(callOut.shift_date),
+        shiftDateTo: getDate(callOut.shift_date_to ?? callOut.shift_date),
+        shiftTime: getTimeNoSeconds(callOut.shift_time)
       }));
 
     return res.status(200).json({data: kioskCallOuts});
