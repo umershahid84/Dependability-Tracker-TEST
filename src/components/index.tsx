@@ -9,6 +9,7 @@ export * from './Toasts';
 export * from './Layout';
 export * from './Loading';
 export * from './Spinner';
+export * from './Kiosk';
 export * from './CallOuts';
 export * from './Division';
 export * from './ModelList';
