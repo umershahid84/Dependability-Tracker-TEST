@@ -249,6 +249,19 @@ For example, on a local dev server this is typically `http://localhost:3000/kios
 
 This page is intentionally public and does **not** require a supervisor/admin login, since it's meant to be left running unattended on a break-room or common-area display. It is excluded from the auth-protected routes in `src/proxy.ts`.
 
+### Per-Division Kiosks
+
+A separate kiosk display is also available for each line of business, showing only callouts for employees in that division:
+
+| Division | URL |
+| --- | --- |
+| All Divisions | `/kiosk` |
+| Public Parking | `/kiosk/public-parking` |
+| Employee Parking | `/kiosk/employee-parking` |
+| Ground Transportation | `/kiosk/ground-transportation` |
+
+Each kiosk page has a small nav bar at the top linking to the other divisions, so you can switch which board is showing without typing a new URL. Point a dedicated screen at whichever URL matches the line of business it's posted in.
+
 ### What It Shows
 
 The kiosk only ever displays callouts entered within the **last 24 hours**, most recent first, and only the following fields per callout:

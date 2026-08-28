@@ -2,6 +2,7 @@ import {useIsMounted} from './isMounted';
 import {useEffect, useRef, useState} from 'react';
 import type {KioskCallOut} from '../pages/api/kiosk/callouts';
 import {getKioskCallOuts} from '../client-api/kiosk/getKioskCallOuts';
+import type {KioskDivisionSlug} from '../lib/utils/shared/kioskDivisions';
 
 const POLL_INTERVAL_MS = 15000;
 
@@ -11,7 +12,7 @@ export type UseKioskCallOuts = {
   error: string | null;
 };
 
-export function useKioskCallOuts(): UseKioskCallOuts {
+export function useKioskCallOuts(division?: KioskDivisionSlug): UseKioskCallOuts {
   const isMounted = useIsMounted();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export function useKioskCallOuts(): UseKioskCallOuts {
     let cancelled = false;
 
     const fetchCallOuts = async () => {
-      const {data, error} = await getKioskCallOuts();
+      const {data, error} = await getKioskCallOuts(division);
 
       if (cancelled) {
         return;
@@ -42,6 +43,7 @@ export function useKioskCallOuts(): UseKioskCallOuts {
       setIsLoading(false);
     };
 
+    setIsLoading(true);
     fetchCallOuts();
     intervalRef.current = setInterval(fetchCallOuts, POLL_INTERVAL_MS);
 
@@ -52,7 +54,7 @@ export function useKioskCallOuts(): UseKioskCallOuts {
         intervalRef.current = null;
       }
     };
-  }, [isMounted]);
+  }, [isMounted, division]);
 
   return {callOuts, isLoading, error};
 }

@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
 import {ApiData} from '../../../lib/apiController';
-import {getDate, getTimeNoSeconds} from '../../../lib/utils';
-import {logTemplate} from '../../../lib/utils/server';
-import {getCallOutFromDB} from '../../../lib/db/controller';
+import {getCallOutFromDB, getDivisionFromDB} from '../../../lib/db/controller';
 import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import {getDate, getKioskDivisionBySlug, getTimeNoSeconds} from '../../../lib/utils';
+import {logTemplate} from '../../../lib/utils/server';
 
 // Trimmed-down callout shape shown on the kiosk display.
 // Only these fields should ever be exposed to this public, unauthenticated route.
@@ -26,6 +26,23 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
   }
 
   try {
+    const {division: divisionSlug} = req.query as {division: string | undefined};
+
+    let divisionId: string | null = null;
+    if (divisionSlug) {
+      const kioskDivision = getKioskDivisionBySlug(divisionSlug);
+      if (!kioskDivision) {
+        return res.status(400).json({error: `Unknown division: ${divisionSlug}`});
+      }
+
+      const division = await getDivisionFromDB.byName(kioskDivision.name);
+      if (!division) {
+        // Division isn't seeded in the DB yet - treat as "no callouts" rather than erroring.
+        return res.status(200).json({data: []});
+      }
+      divisionId = division.id;
+    }
+
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -41,6 +58,10 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
         const createdAt = new Date(callOut.createdAt).getTime();
         return createdAt >= twentyFourHoursAgo.getTime() && createdAt <= now.getTime();
       })
+      .filter(
+        callOut =>
+          !divisionId || callOut.employee?.divisions?.some(division => division.id === divisionId)
+      )
       .map(callOut => ({
         id: callOut.id,
         employeeName: callOut.employee?.name ?? 'Unknown',
