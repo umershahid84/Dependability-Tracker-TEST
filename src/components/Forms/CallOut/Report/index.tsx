@@ -31,6 +31,13 @@ export type DivisionCalloutReportFormData = {
 
 const today = () => new Date();
 const twoWeeksBeforeNow = () => new Date(today().setDate(today().getDate() - 14));
+
+// The date input stores its value as a "YYYY-MM-DD" string once touched, and
+// `new Date("YYYY-MM-DD")` parses that as UTC midnight — shifting it back a
+// calendar day in any timezone behind UTC. Pass date-only strings through
+// unchanged instead of re-parsing them.
+const toISODateOnly = (value: Date | string): string =>
+  typeof value === 'string' ? value : formatDateToISODateOnly(value);
 export const defaultDivisionCalloutReportFormData: DivisionCalloutReportFormData = {
   division: '',
   employeeId: '',
@@ -96,8 +103,8 @@ export function DivisionReportForm(props: Readonly<DivisionReportProps>) {
       if (formData.employeeId && formData.employeeId !== 'all') {
         const calendar = await GetEmployeeCalendar({
           employeeId: formData.employeeId,
-          startDate: formatDateToISODateOnly(new Date(formData.startDate)),
-          endDate: formatDateToISODateOnly(new Date(formData.endDate))
+          startDate: toISODateOnly(formData.startDate),
+          endDate: toISODateOnly(formData.endDate)
         });
 
         props.setCalendar(calendar.data ?? null);

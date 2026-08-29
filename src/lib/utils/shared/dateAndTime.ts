@@ -16,18 +16,10 @@ export const dateTo_HH_MM_SS = (date: Date | undefined): string => {
 const default_tz = 'America/Los_Angeles';
 
 export const APP_TZ = (): string => {
-  // On the server, always use env var or default
-  if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || default_tz;
-  }
-
-  // On the client, use browser's timezone or env var or default
-  return (
-    (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null) ||
-    process.env.NEXT_PUBLIC_TIMEZONE ||
-    process.env.TIMEZONE ||
-    default_tz
-  );
+  // Always use the configured app timezone (Pacific by default) on both
+  // server and client, so displayed dates/times are consistent regardless
+  // of the server's or viewer's local timezone.
+  return process.env.NEXT_PUBLIC_TIMEZONE || process.env.TIMEZONE || default_tz;
 };
 
 export const formatDate_YYYY_MM_DD_TZ = (date?: Date | string, tz = APP_TZ()): string => {
@@ -85,31 +77,9 @@ export const getDate = (date: Date): string => {
   return d.toLocaleDateString('en-US', {timeZone: 'UTC'});
 };
 
-export const getTime = (date: Date): string => {
-  return new Date(date).toLocaleTimeString();
-};
+export const getTime = (date: Date): string => formatTime_hh_mm_ss_TZ(date);
 
-export const getTimeNoSeconds = (date: Date): string => {
-  date = new Date(date);
-  let dateString = `${date.toLocaleTimeString().slice(0, 5)} ${
-    date.toLocaleTimeString().split(' ')[1]
-  }`;
-
-  let numberOfColons = dateString.split(':').length - 1;
-
-  if (numberOfColons === 2) {
-    const timeOfDay = dateString.split(' ')[1]?.trim();
-    let [time] = dateString.split(timeOfDay);
-    time = time.trim();
-
-    if (time.endsWith(':')) {
-      time = time.slice(0, -1);
-    }
-    return `${time.trim()} ${timeOfDay.trim()}`;
-  }
-
-  return dateString;
-};
+export const getTimeNoSeconds = (date: Date): string => formatTimeNoSeconds_TZ(date);
 
 // Function to normalize date to the beginning of the day in UTC
 export const normalizeToStartOfDayUTC = (date: Date) => {
