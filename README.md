@@ -16,6 +16,7 @@ Dependability Tracker is a Node.JS Application built with `Next.JS`, `React.JS`,
   - [Send Default Admin Their Sign-Up Invite](#7-send-the-create-credential-email-invite-to-the-default-admin)
 - [Updating](#updating)
 - [Remove Service](#uninstall-service)
+- [Employee Callout Kiosk Display](#employee-callout-kiosk-display)
 
 ## Installation
 
@@ -230,6 +231,59 @@ npm run seed-callout numberOfCallOutsToGenerate
 
 ```bash
 npm run seed-callouts-365
+```
+
+## Employee Callout Kiosk Display
+
+Dependability Tracker includes a read-only kiosk display for on-duty employees to check whether someone has called out for their shift, without needing a login.
+
+### Accessing the Kiosk
+
+Once the server is running (see [Installation](#installation)), open the following URL in a browser on the kiosk screen, replacing `<host>` with your server's address:
+
+```
+http://<host>:<port>/kiosk
+```
+
+For example, on a local dev server this is typically `http://localhost:3000/kiosk`.
+
+This page is intentionally public and does **not** require a supervisor/admin login, since it's meant to be left running unattended on a break-room or common-area display. It is excluded from the auth-protected routes in `src/proxy.ts`.
+
+### Per-Division Kiosks
+
+A separate kiosk display is also available for each line of business, showing only callouts for employees in that division:
+
+| Division | URL |
+| --- | --- |
+| All Divisions | `/kiosk` |
+| Public Parking | `/kiosk/public-parking` |
+| Employee Parking | `/kiosk/employee-parking` |
+| Ground Transportation | `/kiosk/ground-transportation` |
+
+Each kiosk page has a small nav bar at the top linking to the other divisions, so you can switch which board is showing without typing a new URL. Point a dedicated screen at whichever URL matches the line of business it's posted in.
+
+### What It Shows
+
+The kiosk only ever displays callouts entered within the **last 24 hours**, most recent first, and only the following fields per callout:
+
+- Employee Name
+- Call Date
+- Shift Date From
+- Shift Date To
+- Shift Time
+
+No other employee or callout information (leave type, supervisor comments, IDs, edit history, etc.) is exposed on this page or by its API endpoint (`/api/kiosk/callouts`). Leave Type was removed for now and may be added back later.
+
+### Auto-Updating
+
+The kiosk page polls for new callouts automatically every 15 seconds, so a callout entered by a supervisor appears on screen without anyone needing to refresh the page.
+
+### Running It as an Actual Kiosk
+
+To display this on a dedicated screen (e.g. a TV or monitor in a break room), point any browser at the `/kiosk` URL and run it fullscreen. Most browsers support a kiosk mode flag, for example with Chrome/Chromium:
+
+```bash
+chromium --kiosk http://<host>:<port>/kiosk
 ```
 
 ## Managing Services With Systemd

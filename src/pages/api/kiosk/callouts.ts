@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {Request, Response} from 'express';
 import {ApiData} from '../../../lib/apiController';
-import {getDate, getTimeNoSeconds} from '../../../lib/utils';
-import {logTemplate} from '../../../lib/utils/server';
-import {getCallOutFromDB} from '../../../lib/db/controller';
+import {getCallOutFromDB, getDivisionFromDB} from '../../../lib/db/controller';
 import {CallOutWithAssociations} from '../../../lib/db/models/Callout';
+import {getDate, getKioskDivisionBySlug, getTimeNoSeconds} from '../../../lib/utils';
+import {logTemplate} from '../../../lib/utils/server';
 
 // Trimmed-down callout shape shown on the kiosk display.
 // Only these fields should ever be exposed to this public, unauthenticated route.
@@ -12,10 +12,9 @@ export type KioskCallOut = {
   id: string;
   employeeName: string;
   callDate: string;
-  callTime: string;
-  shiftDate: string;
+  shiftDateFrom: string;
+  shiftDateTo: string;
   shiftTime: string;
-  leaveType: string;
 };
 
 // This endpoint is intentionally public (no auth check) so it can be displayed
@@ -26,6 +25,23 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
   }
 
   try {
+    const {division: divisionSlug} = req.query as {division: string | undefined};
+
+    let divisionId: string | null = null;
+    if (divisionSlug) {
+      const kioskDivision = getKioskDivisionBySlug(divisionSlug);
+      if (!kioskDivision) {
+        return res.status(400).json({error: `Unknown division: ${divisionSlug}`});
+      }
+
+      const division = await getDivisionFromDB.byName(kioskDivision.name);
+      if (!division) {
+        // Division isn't seeded in the DB yet - treat as "no callouts" rather than erroring.
+        return res.status(200).json({data: []});
+      }
+      divisionId = division.id;
+    }
+
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -41,16 +57,17 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
         const createdAt = new Date(callOut.createdAt).getTime();
         return createdAt >= twentyFourHoursAgo.getTime() && createdAt <= now.getTime();
       })
+      .filter(
+        callOut =>
+          !divisionId || callOut.employee?.divisions?.some(division => division.id === divisionId)
+      )
       .map(callOut => ({
         id: callOut.id,
         employeeName: callOut.employee?.name ?? 'Unknown',
         callDate: getDate(callOut.callout_date),
-        callTime: getTimeNoSeconds(callOut.callout_time),
-        shiftDate: callOut.shift_date_to
-          ? `${getDate(callOut.shift_date)} - ${getDate(callOut.shift_date_to)}`
-          : getDate(callOut.shift_date),
-        shiftTime: getTimeNoSeconds(callOut.shift_time),
-        leaveType: callOut.leaveType?.reason ?? 'Unknown'
+        shiftDateFrom: getDate(callOut.shift_date),
+        shiftDateTo: getDate(callOut.shift_date_to ?? callOut.shift_date),
+        shiftTime: getTimeNoSeconds(callOut.shift_time)
       }));
 
     return res.status(200).json({data: kioskCallOuts});
