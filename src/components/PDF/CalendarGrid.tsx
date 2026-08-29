@@ -231,9 +231,11 @@ const SingleMonthCalendar: React.FC<{
     current.setDate(current.getDate() + 1);
   }
   
-  // Calculate empty cells at the beginning of the actual calendar month
-  const firstDayOfMonth = monthStart.getDay();
-  const emptyDays = Array(firstDayOfMonth).fill(null);
+  // Calculate empty cells at the beginning, based on the weekday of the
+  // first date actually rendered (which may not be the 1st of the month
+  // when the report range starts mid-month).
+  const firstRenderedDay = monthDates.length > 0 ? monthDates[0].getDay() : monthStart.getDay();
+  const emptyDays = Array(firstRenderedDay).fill(null);
   const calendarDays = [...emptyDays, ...monthDates];
   
   return (
