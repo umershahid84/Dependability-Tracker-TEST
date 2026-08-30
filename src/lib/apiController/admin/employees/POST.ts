@@ -28,7 +28,8 @@ export default async function postEmployeesApiHandler(
 
     const newEmployee: EmployeeWithAssociations | null = await createEmployeeInDB({
       name: body.name,
-      division_ids: body.division.split(',')
+      division_ids: body.division.split(','),
+      shuttle_number: body.shuttleNumber || null
     });
 
     if (!newEmployee) {

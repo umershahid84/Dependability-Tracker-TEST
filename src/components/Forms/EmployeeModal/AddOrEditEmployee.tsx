@@ -85,7 +85,8 @@ export function AddOrEditEmployeeForm({
           ? employeeData.activeSchedule.days_off.join(',')
           : '0,6',
         daysOffType: employeeData?.activeSchedule?.days_off_type ?? '2_DAYS_OFF',
-        employeeStatus: employeeData?.activeSchedule?.employee_status ?? 'FULL_TIME'
+        employeeStatus: employeeData?.activeSchedule?.employee_status ?? 'FULL_TIME',
+        shuttleNumber: employeeData?.shuttle_number ?? ''
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -25,7 +25,8 @@ export const EditEmployee = async ({
         shiftEndTime: formData.shiftEndTime,
         daysOff: formData.daysOff,
         daysOffType: formData.daysOffType,
-        employeeStatus: formData.employeeStatus
+        employeeStatus: formData.employeeStatus,
+        shuttleNumber: formData.shuttleNumber
       }
     };
 

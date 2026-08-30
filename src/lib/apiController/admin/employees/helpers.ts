@@ -1,6 +1,6 @@
 import {EmployeeFormData} from '../../../../client-api/employees';
 import {getDivisionFromDB} from '../../../db/controller';
-import {isValid24HourTimeHHMM} from '../../../utils';
+import {isValid24HourTimeHHMM, shuttleNumberOptions} from '../../../utils';
 
 export const requiredFieldsEmployeeFields: {name: string; key: string}[] = [
   {
@@ -83,6 +83,11 @@ export const validateAddEmployeeForm = async (
     if (!['FULL_TIME', 'PART_TIME'].includes(formData.employeeStatus)) {
       validated = false;
       throw new Error('Employee Status must be Full-Time or Part-Time');
+    }
+
+    if (formData.shuttleNumber && !shuttleNumberOptions.includes(formData.shuttleNumber)) {
+      validated = false;
+      throw new Error(`Shuttle Number must be one of: ${shuttleNumberOptions.join(', ')}`);
     }
 
     return [validated, missingFields];

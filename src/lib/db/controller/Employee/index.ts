@@ -8,6 +8,7 @@ import {
 } from '../../models/types';
 import {
   validateEmployeeName,
+  validateShuttleNumber,
   validateEmployeeDivisionIds,
   populateEmployeeWithDivisions
 } from './helpers';
@@ -23,15 +24,45 @@ import {getDivisionFromDB} from '../Division';
 import {EmployeeFormData} from '../../../../client-api/employees';
 import {ModelWithPagination, PaginationQueryParams, convertOptions} from '..';
 
+/**
+ * Shuttle numbers only make sense for Employee Parking employees. Given a set of
+ * division IDs, returns the shuttle number if that set includes Employee Parking,
+ * or null otherwise (silently dropping a shuttle number assigned to a non-Employee
+ * Parking employee rather than erroring, e.g. after a division change).
+ */
+const shuttleNumberForDivisions = async (
+  divisionIds: string[],
+  shuttleNumber: string | null | undefined
+): Promise<string | null> => {
+  if (!shuttleNumber) {
+    return null;
+  }
+
+  const employeeParkingDivision = await getDivisionFromDB.byName('Employee Parking');
+  if (!employeeParkingDivision || !divisionIds.includes(employeeParkingDivision.id)) {
+    return null;
+  }
+
+  return shuttleNumber;
+};
+
 // (C)reate
 export const createEmployeeInDB = async (
   withEmployeeData: EmployeeCreationAttributes
 ): Promise<EmployeeWithAssociations | null> => {
   validateEmployeeName(withEmployeeData.name);
   validateEmployeeDivisionIds(withEmployeeData.division_ids);
+  validateShuttleNumber(withEmployeeData.shuttle_number);
 
   try {
-    const createdEmployee = (await Employee.create(withEmployeeData)).get({
+    const shuttle_number = await shuttleNumberForDivisions(
+      withEmployeeData.division_ids,
+      withEmployeeData.shuttle_number
+    );
+
+    const createdEmployee = (
+      await Employee.create({...withEmployeeData, shuttle_number})
+    ).get({
       // istanbul ignore next
       plain: true
     }) as EmployeeAttributes;
@@ -265,6 +296,7 @@ export const updateEmployeeInDB = {
   ): Promise<number | null> => {
     validateEmployeeName(withEmployeeData.name);
     validateEmployeeDivisionIds(withEmployeeData.division.split(','));
+    validateShuttleNumber(withEmployeeData.shuttleNumber || null);
 
     try {
       const employee = await Employee.findByPk(employeeId);
@@ -284,10 +316,17 @@ export const updateEmployeeInDB = {
       }
 
       // Update the employee here
+      const divisionIds = withEmployeeData.division.split(',').map(id => id.trim());
+      const shuttle_number = await shuttleNumberForDivisions(
+        divisionIds,
+        withEmployeeData.shuttleNumber
+      );
+
       const updatedEmployee = await Employee.update(
         {
           name: withEmployeeData.name,
-          division_ids: withEmployeeData.division.split(',').map(id => id.trim())
+          division_ids: divisionIds,
+          shuttle_number
         },
         {where: {id: employeeId}}
       );

@@ -18,20 +18,20 @@ const styles = {
   navLinkInactive: 'bg-secondary text-tertiary hover:bg-tertiary',
   list: 'w-full max-w-5xl flex flex-col gap-4',
   card: 'w-full bg-secondary border-l-8 border-accent-primary rounded-md shadow-lg p-6 flex flex-col gap-4',
-  fields: 'grid grid-cols-2 sm:grid-cols-4 gap-4',
+  fields: 'grid grid-cols-2 gap-4',
   field: 'flex flex-col',
   fieldLabel: 'text-xs uppercase tracking-wider text-tertiary',
   fieldValue: 'text-xl font-semibold text-primary',
-  employeeName: 'text-2xl font-bold text-primary',
   empty: 'text-2xl text-tertiary text-center mt-24',
   loading: 'flex items-center justify-center mt-24'
 };
 
 function CallOutCard({callOut}: Readonly<{callOut: KioskCallOut}>) {
+  const hasShuttleNumber = callOut.shuttleNumber !== undefined;
+
   return (
     <div className={styles.card}>
-      <p className={styles.employeeName}>{callOut.employeeName}</p>
-      <div className={styles.fields}>
+      <div className={`${styles.fields} ${hasShuttleNumber ? 'sm:grid-cols-5' : 'sm:grid-cols-4'}`}>
         <div className={styles.field}>
           <span className={styles.fieldLabel}>Call Date</span>
           <span className={styles.fieldValue}>{callOut.callDate}</span>
@@ -48,6 +48,12 @@ function CallOutCard({callOut}: Readonly<{callOut: KioskCallOut}>) {
           <span className={styles.fieldLabel}>Shift Time</span>
           <span className={styles.fieldValue}>{callOut.shiftTime}</span>
         </div>
+        {hasShuttleNumber && (
+          <div className={styles.field}>
+            <span className={styles.fieldLabel}>Shuttle Number</span>
+            <span className={styles.fieldValue}>{callOut.shuttleNumber}</span>
+          </div>
+        )}
       </div>
     </div>
   );

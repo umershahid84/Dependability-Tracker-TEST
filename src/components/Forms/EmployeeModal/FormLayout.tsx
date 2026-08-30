@@ -3,6 +3,7 @@ import {FormLabel} from '../FormInputs/FormLabel';
 import {EmployeeFormData} from '../../../client-api/employees';
 import {DynamicOptions, DynamicOption} from '../FormInputs/DynamicOptions';
 import {DivisionAttributes} from '../../../lib/db/models/Division';
+import {shuttleNumberOptions} from '../../../lib/utils/shared/shuttleNumbers';
 
 const styles = {
   h2: 'text-2xl font-bold mb-4',
@@ -47,6 +48,12 @@ export function EmployeeCrudFromModalLayout({
   divisions,
   divisionOptions
 }: Readonly<EmployeeCrudFormModalLayoutProps>): React.ReactElement {
+  const employeeParkingDivisionId = divisions.find(d => d.name === 'Employee Parking')?.id;
+  const selectedDivisionIds = formData.division ? formData.division.split(',') : [];
+  const showShuttleNumber = Boolean(
+    employeeParkingDivisionId && selectedDivisionIds.includes(employeeParkingDivisionId)
+  );
+
   return (
     <>
       <h2 className={styles.h2}>{title}</h2>
@@ -80,6 +87,25 @@ export function EmployeeCrudFromModalLayout({
             <option value={divisions.map(el => el.id).join(',')}>Assign All</option>
           </select>
         </FormLabelContainer>
+
+        {showShuttleNumber && (
+          <FormLabelContainer>
+            <FormLabel label="Shuttle Number" htmlFor="shuttleNumber" />
+            <select
+              name="shuttleNumber"
+              title="Shuttle Number"
+              className={styles.input}
+              value={formData.shuttleNumber}
+              onChange={onChange}>
+              <option value="">Unassigned</option>
+              {shuttleNumberOptions.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </FormLabelContainer>
+        )}
 
         <FormLabelContainer>
           <FormLabel label="Admin?" htmlFor="isAdmin" />

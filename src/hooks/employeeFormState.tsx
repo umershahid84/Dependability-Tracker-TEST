@@ -10,7 +10,8 @@ export const defaultEmployeeFormData: EmployeeFormData = {
   shiftEndTime: '15:00',
   daysOff: '0,6',
   daysOffType: '2_DAYS_OFF',
-  employeeStatus: 'FULL_TIME'
+  employeeStatus: 'FULL_TIME',
+  shuttleNumber: ''
 };
 
 export type UseEmployeeFormState = {

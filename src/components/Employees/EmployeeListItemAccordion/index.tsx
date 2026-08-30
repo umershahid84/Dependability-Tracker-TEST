@@ -76,6 +76,13 @@ export function EmployeeListItemAccordion({
             <strong>Divisions: </strong>
             {employee.divisions.map(division => division.name).join(', ')}
           </p>
+
+          {employee.shuttle_number && (
+            <p className="mt-2">
+              <strong>Shuttle Number: </strong>
+              {employee.shuttle_number}
+            </p>
+          )}
         </div>
         <div className={styles.hideOnPrint} onClick={handleOnClick}>
           <button type="button" className={styles.edit}>

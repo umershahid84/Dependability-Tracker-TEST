@@ -9,6 +9,7 @@ import { DateInput } from '../../FormInputs/DateInput';
 import { TimeInput } from '../../FormInputs/TimeInput';
 import { trim } from '../../../../lib/utils/shared/strings';
 import { SelectEmployeeName } from '../../FormInputs/SelectEmployeeName';
+import { DisabledTextInput } from '../../FormInputs/DisabledTextInput';
 import { LeftEarlyWithRange } from '../../FormInputs/LeftEarlyWithRange';
 import { SelectLeaveTypeReason } from '../../FormInputs/SelectLeaveType';
 import { ArrivedLateWithRange } from '../../FormInputs/ArrivedLateWithRange';
@@ -82,6 +83,11 @@ export function CreateCallOutForm({
     onChangeHandler(e);
   };
 
+  const selectedEmployee = employees.find(employee => employee.id === trim(formData.employeeName));
+  const isEmployeeParkingContext = employees.some(employee =>
+    employee.divisions?.some(division => division.name === 'Employee Parking')
+  );
+
   const handleEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -104,6 +110,15 @@ export function CreateCallOutForm({
             onChangeHandler={handleFormValueChange}
             employeeName={trim(formData.employeeName)}
           />
+
+          {isEmployeeParkingContext && (
+            <DisabledTextInput
+              name="shuttleNumber"
+              label="Shuttle Number"
+              className={styles.input}
+              value={selectedEmployee?.shuttle_number || 'Not Assigned'}
+            />
+          )}
 
           <DateInput
             name="callDate"
