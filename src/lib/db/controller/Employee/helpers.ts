@@ -4,6 +4,7 @@
 import { uuidV4Regex } from '../../../utils';
 import { logTemplate } from '../../../utils/server';
 import { Employee, Division } from '../../models';
+import { shuttleNumberOptions } from '../../../utils/shared/shuttleNumbers';
 import { EmployeeAttributes, DivisionAttributes, EmployeeWithAssociations } from '../../models/types';
 import {getEmployeeScheduleFromDB} from '../EmployeeSchedule';
 
@@ -72,6 +73,7 @@ export const populateEmployeeWithDivisions = async (
     createdAt: employee.createdAt,
     updatedAt: employee.updatedAt,
     divisions,
+    shuttle_number: employee.shuttle_number ?? null,
     activeSchedule
   };
 };
@@ -95,6 +97,20 @@ export const validateEmployeeDivisionIds = (divisionIds: string[]): void => {
         `\n❌ Error creating employee: division_ids must be an array of valid MongoDB ObjectID strings`
       );
     }
+  }
+};
+
+/**
+ * Ensures that the shuttle number, if provided, is one of the known shuttle options
+ * @param shuttleNumber - The shuttle number to validate
+ */
+export const validateShuttleNumber = (shuttleNumber: string | null | undefined): void => {
+  if (!shuttleNumber) {
+    return;
+  }
+
+  if (!shuttleNumberOptions.includes(shuttleNumber)) {
+    throw new Error(`\n❌ Error: shuttle_number must be one of: ${shuttleNumberOptions.join(', ')}`);
   }
 };
 

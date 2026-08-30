@@ -31,6 +31,8 @@ export interface EmployeeAttributes {
   createdAt: Date;
   updatedAt: Date;
   division_ids: string[];
+  // Only meaningful for Employee Parking employees; one of shuttleNumberOptions or null.
+  shuttle_number: string | null;
   callouts?: (CallOutAttributes | CallOutWithAssociations)[];
   activeSchedule?: EmployeeScheduleAttributes | null;
 }
@@ -43,6 +45,7 @@ export type EmployeeWithAssociations = {
   createdAt: Date;
   updatedAt: Date;
   divisions: DivisionAttributes[];
+  shuttle_number?: string | null;
   callouts?: (CallOutAttributes | CallOutWithAssociations)[];
   activeSchedule?: EmployeeScheduleAttributes | null;
 };
@@ -54,6 +57,7 @@ export type EmployeeCreationAttributes = {
   createdAt?: Date;
   updatedAt?: Date;
   division_ids: string[];
+  shuttle_number?: string | null;
 };
 
 class Employee
@@ -69,6 +73,7 @@ class Employee
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare division_ids: ForeignKey<string[]>;
+  declare shuttle_number: CreationOptional<string | null>;
 
   // model inclusions
 
@@ -122,6 +127,11 @@ Employee.init(
       type: DataTypes.JSON(DataTypes.STRING),
       allowNull: true,
       defaultValue: []
+    },
+    shuttle_number: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null
     }
   },
   {

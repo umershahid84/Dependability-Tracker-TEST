@@ -270,6 +270,7 @@ The kiosk only ever displays callouts entered within the **last 24 hours**, most
 - Shift Date From
 - Shift Date To
 - Shift Time
+- **Shuttle Number** — Employee Parking kiosk (`/kiosk/employee-parking`) only. Public Parking and Ground Transportation do not show this field.
 
 No other employee or callout information (leave type, supervisor comments, IDs, edit history, etc.) is exposed on this page or by its API endpoint (`/api/kiosk/callouts`). Leave Type was removed for now and may be added back later.
 
@@ -284,6 +285,12 @@ To display this on a dedicated screen (e.g. a TV or monitor in a break room), po
 ```bash
 chromium --kiosk http://<host>:<port>/kiosk
 ```
+
+### Shuttle Number (Employee Parking)
+
+Employee Parking employees can be assigned a **Shuttle Number** on their profile in the admin Employees screen — the field only appears when Employee Parking is one of the employee's assigned divisions. Options are `Shuttle 1` through `Shuttle 15`, `Lunch Relief`, `Fueler`, and `Express Shuttle`.
+
+Once an employee has a shuttle number, it auto-fills as a read-only field on the callout form as soon as that employee is selected (it isn't part of what a supervisor enters — it's just informational). It also shows up on the Employee Parking kiosk display for that employee's callouts, as described above.
 
 ## Managing Services With Systemd
 

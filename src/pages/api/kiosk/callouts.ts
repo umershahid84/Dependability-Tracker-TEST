@@ -14,6 +14,8 @@ export type KioskCallOut = {
   shiftDateFrom: string;
   shiftDateTo: string;
   shiftTime: string;
+  // Only populated for the Employee Parking kiosk.
+  shuttleNumber?: string;
 };
 
 // This endpoint is intentionally public (no auth check) so it can be displayed
@@ -65,7 +67,10 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
         callDate: getDate(callOut.callout_date),
         shiftDateFrom: getDate(callOut.shift_date),
         shiftDateTo: getDate(callOut.shift_date_to ?? callOut.shift_date),
-        shiftTime: getTimeNoSeconds(callOut.shift_time)
+        shiftTime: getTimeNoSeconds(callOut.shift_time),
+        ...(divisionSlug === 'employee-parking' && {
+          shuttleNumber: callOut.employee?.shuttle_number || 'Not Assigned'
+        })
       }));
 
     return res.status(200).json({data: kioskCallOuts});
