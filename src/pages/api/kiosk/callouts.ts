@@ -10,7 +10,6 @@ import {logTemplate} from '../../../lib/utils/server';
 // Only these fields should ever be exposed to this public, unauthenticated route.
 export type KioskCallOut = {
   id: string;
-  employeeName: string;
   callDate: string;
   shiftDateFrom: string;
   shiftDateTo: string;
@@ -63,7 +62,6 @@ export default async function handler(req: Request, res: Response<ApiData<KioskC
       )
       .map(callOut => ({
         id: callOut.id,
-        employeeName: callOut.employee?.name ?? 'Unknown',
         callDate: getDate(callOut.callout_date),
         shiftDateFrom: getDate(callOut.shift_date),
         shiftDateTo: getDate(callOut.shift_date_to ?? callOut.shift_date),

@@ -266,7 +266,6 @@ Each kiosk page has a small nav bar at the top linking to the other divisions, s
 
 The kiosk only ever displays callouts entered within the **last 24 hours**, most recent first, and only the following fields per callout:
 
-- Employee Name
 - Call Date
 - Shift Date From
 - Shift Date To

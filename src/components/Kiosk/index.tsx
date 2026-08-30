@@ -22,7 +22,6 @@ const styles = {
   field: 'flex flex-col',
   fieldLabel: 'text-xs uppercase tracking-wider text-tertiary',
   fieldValue: 'text-xl font-semibold text-primary',
-  employeeName: 'text-2xl font-bold text-primary',
   empty: 'text-2xl text-tertiary text-center mt-24',
   loading: 'flex items-center justify-center mt-24'
 };
@@ -30,7 +29,6 @@ const styles = {
 function CallOutCard({callOut}: Readonly<{callOut: KioskCallOut}>) {
   return (
     <div className={styles.card}>
-      <p className={styles.employeeName}>{callOut.employeeName}</p>
       <div className={styles.fields}>
         <div className={styles.field}>
           <span className={styles.fieldLabel}>Call Date</span>
