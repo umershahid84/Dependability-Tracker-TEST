@@ -80,6 +80,7 @@ quit;
 ```bash
 if needed run this:
 command ALTER TABLE employees ADD COLUMN shuttle_number VARCHAR(255) NULL;
+```
 
 ### 3. Remove Next.JS Telemetry Reporting
 
