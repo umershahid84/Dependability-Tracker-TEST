@@ -72,6 +72,10 @@ CREATE DATABASE dependability_tracker;
 CREATE DATABASE dependability_tracker_test;
 ```
 
+```bash
+if needed run this:
+command ALTER TABLE employees ADD COLUMN shuttle_number VARCHAR(255) NULL;
+
 Then exit the shell:
 
 ```bash
