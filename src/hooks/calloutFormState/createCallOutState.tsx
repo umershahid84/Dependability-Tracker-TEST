@@ -81,13 +81,17 @@ export function useCreateCallOutFormState(
         shiftTime: localDateAndTimeToUTC(formData.shiftDate, shiftTime)
       });
 
+      if (data.error || !data.data) {
+        throw new Error(data.error ?? 'Failed to create callout');
+      }
+
       makeToast({
         title: 'Success',
         type: ToastTypes.Success,
         message: data.message ?? 'Callout Created Successfully'
       });
       resetFormData();
-      callback?.(data?.data as CallOutWithAssociations);
+      callback?.(data.data);
     } catch (error) {
       console.error('Error Creating Callout:\n', error);
       makeToast({
