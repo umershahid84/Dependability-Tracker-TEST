@@ -16,6 +16,9 @@ export function CallOutPageContainer(
   const leaveTypes = JSON.parse(props.leaveTypes);
 
   const addCallout = (callOut: CallOutWithAssociations) => {
+    if (!callOut) {
+      return;
+    }
     setCallOuts([callOut, ...callOuts]);
   };
 
